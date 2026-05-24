@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SOJU POUR — 소주 Matrix Melt · nonrocker</title>
+
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --pink:   #ff00cc;
+      --green:  #39ff14;
+      --cyan:   #00f0ff;
+      --violet: #7a00ff;
+      --amber:  #ffb800;
+      --black:  #050008;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html, body { background:var(--black); color:#fff; font-family:'VT323',monospace; overflow-x:hidden; }
+
+    /* CRT */
+    body::before {
+      content:""; position:fixed; inset:0; pointer-events:none;
+      background:repeating-linear-gradient(to bottom,
+        rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.20) 3px,rgba(0,0,0,0) 4px);
+      z-index:9000; mix-blend-mode:multiply;
+    }
+    body::after {
+      content:""; position:fixed; inset:0; pointer-events:none;
+      background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,0.80) 100%);
+      z-index:8999;
+    }
+
+    /* Noise */
+    .noise {
+      position:fixed; inset:0; pointer-events:none; z-index:8900;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      mix-blend-mode:screen; opacity:0.12;
+      animation:nz 0.15s steps(4) infinite;
+    }
+    @keyframes nz {
+      0%{transform:translate(0,0)} 25%{transform:translate(-3%,2%)}
+      50%{transform:translate(2%,-3%)} 75%{transform:translate(-2%,-2%)}
+      100%{transform:translate(3%,3%)}
+    }
+
+    /* VHS */
+    .vhs {
+      position:fixed; left:0; right:0; height:80px; pointer-events:none; z-index:8800;
+      background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,0.07) 40%,
+        rgba(255,255,255,0.15) 50%,rgba(255,255,255,0.07) 60%,transparent 100%);
+      mix-blend-mode:screen; animation:vhs 2.1s linear infinite;
+    }
+    @keyframes vhs { 0%{top:-80px} 100%{top:100%} }
+
+    /* Progress */
+    .progress { position:fixed; top:0; left:0; right:0; height:2px; z-index:9100; background:rgba(57,255,20,.12); }
+    .progress__bar { height:100%; width:0%; background:linear-gradient(90deg,var(--green),var(--cyan),var(--pink)); }
+
+    /* Ticker */
+    .ticker {
+      position:fixed; bottom:0; left:0; right:0; z-index:8500;
+      background:#000; border-top:1px solid var(--green); color:var(--green);
+      font-family:'Press Start 2P',monospace; font-size:9px; letter-spacing:.1em;
+      padding:7px 0; overflow:hidden; white-space:nowrap;
+    }
+    .ticker__track { display:inline-block; padding-left:100%; animation:tick 40s linear infinite; }
+    @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-100%)} }
+
+    /* ── Journey ─────────────────────────────────── */
+    .journey { height:700vh; position:relative; }
+    .stage {
+      position:sticky; top:0; height:100vh; width:100%;
+      overflow:hidden;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      background:var(--black);
+    }
+
+    /* ── Soju bottle (positioned above canvas) ───── */
+    .bottle-wrap {
+      position:absolute;
+      top:0; left:50%;
+      transform-origin:50% 100%;   /* pivot at bottle bottom / pour point */
+      z-index:30; pointer-events:none;
+    }
+    .bottle-svg { display:block; }
+
+    /* Pour stream (CSS element from bottle neck to canvas top) */
+    .pour-stream {
+      position:absolute;
+      top:0; left:50%;
+      width:0px; /* set by JS */
+      background:linear-gradient(to bottom,
+        rgba(57,255,20,0.85) 0%,
+        rgba(57,255,20,0.55) 40%,
+        rgba(255,0,204,0.30) 75%,
+        transparent 100%);
+      border-radius:2px;
+      transform-origin:top center;
+      pointer-events:none;
+      z-index:25;
+      filter:blur(1.5px);
+    }
+
+    /* ── Main canvas ─────────────────────────────── */
+    #cvs {
+      display:block;
+      position:relative; z-index:20;
+      image-rendering:auto;
+    }
+
+    /* ── Matrix canvas (overlay, same size as #cvs) ── */
+    #matCvs {
+      position:absolute;
+      z-index:21;
+      pointer-events:none;
+      image-rendering:pixelated;
+    }
+
+    /* ── UI labels ───────────────────────────────── */
+    @keyframes blink { 50%{opacity:.2} }
+
+    .status-label {
+      position:fixed; bottom:36px; left:50%; transform:translateX(-50%);
+      font-family:'Press Start 2P',monospace; font-size:9px;
+      color:var(--green); letter-spacing:.12em; z-index:8600;
+      pointer-events:none; opacity:0; white-space:nowrap;
+    }
+
+    .pour-pct {
+      position:fixed; top:18px; right:18px;
+      font-family:'Press Start 2P',monospace; font-size:9px;
+      color:var(--green); letter-spacing:.08em; z-index:8600;
+      pointer-events:none; opacity:0; line-height:1.7;
+    }
+
+    .skull-headline {
+      position:fixed; bottom:50px; left:50%; transform:translateX(-50%);
+      font-family:'Metal Mania',cursive;
+      font-size:clamp(36px,8vw,96px); line-height:.9;
+      text-align:center;
+      text-shadow:4px 0 var(--pink),-4px 0 var(--cyan);
+      z-index:8600; pointer-events:none; opacity:0; white-space:nowrap;
+    }
+
+    .scroll-hint {
+      position:fixed; bottom:36px; left:50%; transform:translateX(-50%);
+      font-family:'Press Start 2P',monospace; font-size:9px;
+      color:rgba(255,255,255,.28); z-index:8600; pointer-events:none;
+      animation:blink 1.3s steps(2) infinite; white-space:nowrap;
+    }
+
+    /* ── Glow halo behind canvas ─────────────────── */
+    .glow-halo {
+      position:absolute;
+      width:600px; height:600px; border-radius:50%;
+      background:radial-gradient(circle,rgba(255,0,204,.38) 0%,rgba(122,0,255,.14) 40%,transparent 70%);
+      filter:blur(50px); opacity:0; z-index:10; pointer-events:none;
+    }
+
+    /* ── Final section ───────────────────────────── */
+    .final {
+      min-height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:24px;
+      text-align:center; padding:60px 24px 80px;
+      background:linear-gradient(180deg,#001800 0%,var(--black) 100%);
+      position:relative;
+    }
+    .final::before {
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(57,255,20,.07) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(57,255,20,.07) 1px,transparent 1px);
+      background-size:55px 55px;
+    }
+    .final-tag { font-family:'Press Start 2P',monospace; font-size:9px; color:var(--green); letter-spacing:.1em; position:relative; }
+    .final-h { font-family:'Metal Mania',cursive; font-size:clamp(52px,11vw,130px); line-height:.88; text-shadow:4px 0 var(--green),-4px 0 var(--cyan); position:relative; }
+    .final-p { font-family:'VT323',monospace; font-size:20px; color:rgba(255,255,255,.65); max-width:46ch; line-height:1.5; position:relative; }
+    .final-btns { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; position:relative; }
+    .final-meta { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--green); letter-spacing:.08em; position:relative; }
+  </style>
+</head>
+<body>
+<sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+<div class="noise"></div>
+<div class="vhs"></div>
+<div class="progress"><div class="progress__bar" id="prog"></div></div>
+
+<div class="status-label"  id="statusLbl"></div>
+<div class="pour-pct"      id="pourPct"></div>
+<div class="skull-headline" id="skullHead">SKULL<br>.EXE</div>
+<div class="scroll-hint"   id="scrollHint">▼ SCROLL TO POUR ▼</div>
+
+<!-- ═══════════════════════════
+     SCROLL JOURNEY
+════════════════════════════ -->
+<div class="journey" id="journey">
+  <div class="stage" id="stage">
+
+    <!-- CSS glow halo -->
+    <div class="glow-halo" id="halo"></div>
+
+    <!-- Pour stream (CSS) -->
+    <div class="pour-stream" id="pourStream"></div>
+
+    <!-- Soju bottle SVG -->
+    <div class="bottle-wrap" id="bottleWrap">
+      <svg class="bottle-svg" id="bottleSvg" width="100" height="200" viewBox="0 0 100 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Bottle body - classic Korean soju shape -->
+        <rect x="22" y="82" width="56" height="98" rx="16" fill="#1c4820" stroke="#39ff14" stroke-width="1.8"/>
+        <!-- Liquid level (green soju) -->
+        <rect x="23.5" y="120" width="53" height="59" rx="0 0 14 14" fill="rgba(57,255,20,0.28)"/>
+        <!-- Label background -->
+        <rect x="26" y="102" width="48" height="58" rx="4" fill="#0d2610" stroke="#39ff14" stroke-width="0.8"/>
+        <!-- Label text - Korean -->
+        <text x="50" y="120" text-anchor="middle" fill="#39ff14" font-size="13" font-family="serif" letter-spacing="2">소주</text>
+        <text x="50" y="134" text-anchor="middle" fill="#39ff14" font-size="8" font-family="monospace">SOJU NATION</text>
+        <!-- Decorative label lines -->
+        <line x1="28" y1="140" x2="72" y2="140" stroke="rgba(57,255,20,0.4)" stroke-width="0.5"/>
+        <text x="50" y="151" text-anchor="middle" fill="rgba(57,255,20,0.7)" font-size="7" font-family="monospace">NRK-666</text>
+        <text x="50" y="161" text-anchor="middle" fill="rgba(57,255,20,0.5)" font-size="6" font-family="monospace">BATTLE DAMAGE</text>
+        <!-- Bottle neck -->
+        <rect x="34" y="36" width="32" height="48" rx="8" fill="#1c4820" stroke="#39ff14" stroke-width="1.8"/>
+        <!-- Neck highlight -->
+        <line x1="39" y1="42" x2="39" y2="78" stroke="rgba(255,255,255,0.12)" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Cap -->
+        <rect x="30" y="18" width="40" height="22" rx="6" fill="#ff00cc" stroke="#39ff14" stroke-width="1.2"/>
+        <text x="50" y="33" text-anchor="middle" fill="#fff" font-size="8" font-family="monospace">소주</text>
+        <!-- Pour mouth (bottle opening at bottom of cap, this is where liquid exits when tilted) -->
+        <circle cx="50" cy="196" r="3" fill="#39ff14" opacity="0.4"/>
+        <!-- Body highlight -->
+        <line x1="30" y1="92" x2="30" y2="168" stroke="rgba(255,255,255,0.10)" stroke-width="3" stroke-linecap="round"/>
+        <!-- Bottle shine -->
+        <ellipse cx="68" cy="110" rx="4" ry="8" fill="rgba(255,255,255,0.08)" transform="rotate(15 68 110)"/>
+      </svg>
+    </div>
+
+    <!-- Main image composite canvas -->
+    <canvas id="cvs"></canvas>
+
+    <!-- Matrix rain canvas (overlaid, same position/size) -->
+    <canvas id="matCvs"></canvas>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     FINAL SECTION
+════════════════════════════ -->
+<div class="final">
+  <div class="final-tag">// 소주 PROTOCOL COMPLETE · MELT SEQUENCE FINISHED</div>
+  <h2 class="final-h">Soju<br>Protocol</h2>
+  <p class="final-p">
+    The bottle tilted. The matrix fell. The marble had no defense against soju and math.
+    STATUE.EXE could not outrun the pour.
+    The skull was waiting in the rain.
+  </p>
+  <div class="final-btns">
+    <sp-button variant="accent" size="xl" href="slides.html">Full EPK</sp-button>
+    <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-sequence.html">Sequence</sp-button>
+    <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v2.html">V2</sp-button>
+    <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v3.html">V3</sp-button>
+  </div>
+  <div class="final-meta">nonrocker records · 소주 nation · ALL MARBLE DISSOLVES IN SOJU · NRK-666</div>
+</div>
+
+<div class="ticker">
+  <div class="ticker__track">
+    ▓ 소주 PROTOCOL ACTIVE ▓ 가나다라마바사아자차카타파하 ▓ MARBLE DISSOLUTION VIA MATRIX ▓ SOJU NATION ▓ NRK-666 ▓ THE BOTTLE TILTS ▓ THE SKULL ANSWERS ▓ POUR RATE: CRITICAL ▓ SKULL COVERAGE: RISING ▓ DO NOT ADJUST YOUR BOTTLE ▓
+  </div>
+</div>
+
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+const clamp = (v,lo,hi) => Math.max(lo,Math.min(hi,v));
+const lerp  = (a,b,t)   => a+(b-a)*t;
+const ss    = t => { const c=clamp(t,0,1); return c*c*(3-2*c); };
+const map   = (v,a,b,c,d) => lerp(c,d,ss(clamp((v-a)/(b-a),0,1)));
+
+// ═══════════════════════════════════════════════════
+// CANVAS SETUP
+// ═══════════════════════════════════════════════════
+const cvs    = document.getElementById('cvs');
+const ctx    = cvs.getContext('2d');
+const matCvs = document.getElementById('matCvs');
+const mCtx   = matCvs.getContext('2d');
+
+function sizeCanvases() {
+  const maxH = window.innerHeight * 0.84;
+  const maxW = window.innerWidth  * 0.90;
+  let h = maxH;
+  let w = h * 0.80;
+  if (w > maxW) { w = maxW; h = w / 0.80; }
+  const cw = Math.round(w), ch = Math.round(h);
+
+  cvs.width  = cw; cvs.height  = ch;
+  cvs.style.width  = cw+'px'; cvs.style.height  = ch+'px';
+  matCvs.width  = cw; matCvs.height  = ch;
+  matCvs.style.width  = cw+'px'; matCvs.style.height  = ch+'px';
+
+  // Position matCvs exactly over cvs
+  // Both are in the stage flex container, so overlay via CSS absolute
+  matCvs.style.position = 'absolute';
+
+  // Reposition bottle based on canvas
+  positionBottle();
+  reinitMatrix();
+}
+
+function canvasTop() {
+  const r = cvs.getBoundingClientRect();
+  const s = document.getElementById('stage').getBoundingClientRect();
+  return r.top - s.top;
+}
+function canvasLeft() {
+  const r = cvs.getBoundingClientRect();
+  const s = document.getElementById('stage').getBoundingClientRect();
+  return r.left - s.left;
+}
+
+window.addEventListener('resize', sizeCanvases);
+
+// ═══════════════════════════════════════════════════
+// IMAGE LOADING
+// ═══════════════════════════════════════════════════
+const img1 = new Image(); img1.src = 'facemelt-premelt.png';
+const img2 = new Image(); img2.src = 'Facemelt.png';
+const img3 = new Image(); img3.src = 'Facemelt-endmelt.png';
+let imgsLoaded = 0;
+[img1,img2,img3].forEach(i => { i.onload = () => { imgsLoaded++; }; });
+
+// ═══════════════════════════════════════════════════
+// MATRIX RAIN
+// ═══════════════════════════════════════════════════
+// Korean characters + numbers for the rain
+const CHARS = '가나다라마바사아자차카타파하소주막걸리금은보화평화사랑010111001011010ﾊﾐﾋｸﾷｦｲﾑﾃﾎ';
+const FONT_SIZE = 14;
+let matCols    = 0;
+let matDrops   = [];
+let matSpeeds  = [];
+
+// Per-column melt level (0=premelt, 0.5=Facemelt, 1=endmelt)
+const NUM_IMG_COLS = 30;
+const meltLevel    = new Float32Array(NUM_IMG_COLS);
+
+function reinitMatrix() {
+  const w = matCvs.width;
+  matCols   = Math.floor(w / FONT_SIZE);
+  matDrops  = Array.from({length: matCols}, () => Math.random() * -60);
+  matSpeeds = Array.from({length: matCols}, () => 0.4 + Math.random() * 1.2);
+  mCtx.fillStyle = '#050008';
+  mCtx.fillRect(0,0,matCvs.width,matCvs.height);
+}
+
+// Scroll-driven pour intensity (0-1)
+let pourIntensity = 0;
+// Total overall melt progress (average of meltLevel)
+let globalMelt = 0;
+
+function drawMatrix(time) {
+  const w = matCvs.width, h = matCvs.height;
+
+  // Semi-transparent fade — creates trail
+  // More fade = shorter trails (at high pour intensity, trails are longer)
+  const fadeAlpha = lerp(0.18, 0.06, pourIntensity);
+  mCtx.fillStyle = `rgba(5,0,8,${fadeAlpha})`;
+  mCtx.fillRect(0,0,w,h);
+
+  // Pour is centered on the canvas; rain concentrates at center first,
+  // then spreads as pourIntensity grows
+  const pourCenterX = w / 2;
+  const spreadRadius = lerp(w * 0.08, w * 0.55, ss(pourIntensity));
+
+  for (let i = 0; i < matCols; i++) {
+    const charX = i * FONT_SIZE;
+    const distFromCenter = Math.abs(charX - pourCenterX);
+
+    // Column active if within current spread radius
+    const isActive = distFromCenter < spreadRadius;
+    if (!isActive && matDrops[i] <= 0) continue;
+
+    const charY = matDrops[i] * FONT_SIZE;
+    const char  = CHARS[Math.floor(Math.random() * CHARS.length)];
+
+    // Color: head = white, body shifts green→pink as melt increases
+    const imgCol = Math.floor((charX / w) * NUM_IMG_COLS);
+    const ml = meltLevel[clamp(imgCol, 0, NUM_IMG_COLS-1)];
+    const isHead = Math.random() < 0.07;
+
+    if (isHead) {
+      mCtx.fillStyle = `rgba(255,255,255,${0.9 + Math.random()*0.1})`;
+      mCtx.font = `bold ${FONT_SIZE}px monospace`;
+    } else {
+      // Green → pink based on column melt level
+      const r = Math.round(lerp(57, 255, ml));
+      const g = Math.round(lerp(255,   0, ml));
+      const b = Math.round(lerp(20,  204, ml));
+      const a = 0.35 + Math.random() * 0.55;
+      mCtx.fillStyle = `rgba(${r},${g},${b},${a})`;
+      mCtx.font = `${FONT_SIZE}px monospace`;
+    }
+
+    mCtx.fillText(char, charX, charY);
+
+    // ── Update melt levels based on drop position ──
+    // If drop is in the upper-skull zone of the image, increment melt for that column
+    const skullZoneTop = h * 0.05;
+    const skullZoneBot = h * 0.55;
+    if (charY >= skullZoneTop && charY <= skullZoneBot && isActive) {
+      // More melt at columns closer to center (where soju pours)
+      const centerProx = 1 - clamp(distFromCenter / spreadRadius, 0, 1);
+      const inc = 0.0018 * pourIntensity * (0.4 + 0.6 * centerProx);
+      meltLevel[imgCol] = Math.min(1, meltLevel[imgCol] + inc);
+    }
+
+    // Advance or reset drop
+    if (isActive) {
+      matDrops[i] += matSpeeds[i] * (0.5 + pourIntensity);
+    }
+    if (matDrops[i] * FONT_SIZE > h) {
+      // Reset, but bias toward when pour is active
+      if (Math.random() > 0.97 - pourIntensity * 0.02) {
+        matDrops[i] = 0;
+      }
+    }
+  }
+
+  // Compute global melt average
+  let sum = 0;
+  for (let c = 0; c < NUM_IMG_COLS; c++) sum += meltLevel[c];
+  globalMelt = sum / NUM_IMG_COLS;
+}
+
+// ═══════════════════════════════════════════════════
+// IMAGE COMPOSITE DRAW
+// ═══════════════════════════════════════════════════
+function drawComposite() {
+  if (imgsLoaded < 3) {
+    ctx.fillStyle = '#050008';
+    ctx.fillRect(0,0,cvs.width,cvs.height);
+    ctx.fillStyle='rgba(57,255,20,0.3)';
+    ctx.font='12px monospace'; ctx.textAlign='center';
+    ctx.fillText('LOADING...',cvs.width/2,cvs.height/2);
+    return;
+  }
+
+  const w = cvs.width, h = cvs.height;
+  const colW_cvs = w / NUM_IMG_COLS;
+
+  ctx.clearRect(0,0,w,h);
+
+  for (let c = 0; c < NUM_IMG_COLS; c++) {
+    const ml    = meltLevel[c];
+    const dstX  = c * colW_cvs;
+    const dstW  = colW_cvs + 1; // +1 to avoid sub-pixel gaps
+
+    // Source column in image (images may be different natural sizes, normalize)
+    const srcX1 = (c / NUM_IMG_COLS) * img1.naturalWidth;
+    const srcX2 = (c / NUM_IMG_COLS) * img2.naturalWidth;
+    const srcX3 = (c / NUM_IMG_COLS) * img3.naturalWidth;
+    const srcW1 = img1.naturalWidth / NUM_IMG_COLS;
+    const srcW2 = img2.naturalWidth / NUM_IMG_COLS;
+    const srcW3 = img3.naturalWidth / NUM_IMG_COLS;
+
+    // Three-state blend weights:
+    // ml 0→0.5: premelt fades out, Facemelt fades in
+    // ml 0.5→1: Facemelt fades out, endmelt fades in
+    let a1, a2, a3;
+    if (ml <= 0.5) {
+      a1 = 1 - ml * 2;         // 1→0 across 0-0.5
+      a2 = ml * 2;              // 0→1 across 0-0.5
+      a3 = 0;
+    } else {
+      a1 = 0;
+      a2 = 1 - (ml - 0.5) * 2; // 1→0 across 0.5-1
+      a3 = (ml - 0.5) * 2;      // 0→1 across 0.5-1
+    }
+
+    // Draw premelt column
+    if (a1 > 0.01) {
+      ctx.globalAlpha = a1;
+      ctx.drawImage(img1, srcX1, 0, srcW1, img1.naturalHeight, dstX, 0, dstW, h);
+    }
+    // Draw Facemelt column on top
+    if (a2 > 0.01) {
+      ctx.globalAlpha = a2;
+      ctx.drawImage(img2, srcX2, 0, srcW2, img2.naturalHeight, dstX, 0, dstW, h);
+    }
+    // Draw endmelt column on top
+    if (a3 > 0.01) {
+      ctx.globalAlpha = a3;
+      ctx.drawImage(img3, srcX3, 0, srcW3, img3.naturalHeight, dstX, 0, dstW, h);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // Global skull glow overlay (intensifies as melt progresses)
+  if (globalMelt > 0.1) {
+    const skullGlowA = globalMelt * 0.35;
+    const sg = ctx.createRadialGradient(w*0.5, h*0.3, 0, w*0.5, h*0.3, w*0.45);
+    sg.addColorStop(0, `rgba(255,0,204,${skullGlowA})`);
+    sg.addColorStop(0.4, `rgba(122,0,255,${skullGlowA*0.5})`);
+    sg.addColorStop(1, 'rgba(5,0,8,0)');
+    ctx.fillStyle = sg;
+    ctx.fillRect(0,0,w,h);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// SOJU BOTTLE + POUR STREAM POSITIONING
+// ═══════════════════════════════════════════════════
+const bottleWrap = document.getElementById('bottleWrap');
+const bottleSvg  = document.getElementById('bottleSvg');
+const pourStream = document.getElementById('pourStream');
+
+// Bottle bottle-mouth position when tilted
+// The bottle SVG is 100x200. The pour mouth is at (50, 196) in SVG space.
+// We rotate around the pivot (50%, 100%) = bottom center of SVG.
+// When tilted, the spout (which is at the cap, top of bottle) moves.
+
+function positionBottle() {
+  const cTop  = canvasTop();
+  const cLeft = canvasLeft();
+  const cW    = cvs.width;
+  const cH    = cvs.height;
+
+  // Bottle pivot point: center-top of canvas area, slightly above
+  // The bottle hangs above the canvas and tilts over it
+  const pivotX = cLeft + cW / 2;   // center horizontally over canvas
+  const pivotY = cTop  - 20;       // just above canvas top edge
+
+  // Position the bottle-wrap so its bottom-center (transform-origin) is at pivot
+  const bW = 100; // bottle SVG width
+  const bH = 200; // bottle SVG height
+  bottleWrap.style.left    = (pivotX - bW/2) + 'px';
+  bottleWrap.style.top     = (pivotY - bH)   + 'px';
+
+  // Pour stream position: from bottle cap area (top of bottle, mid-tilt)
+  pourStream.style.left = pivotX + 'px';
+  pourStream.style.top  = (pivotY) + 'px';
+}
+
+function updateBottle(t) {
+  // Bottle appears at scroll start, tilts progressively
+  // t=0: upright, bottle hidden
+  // t=0.06: bottle appears
+  // t=0.12-0.75: tilts from -12° to -58° (pouring heavily)
+  // t=0.80-1.0: bottle slowly rights itself as pour ends
+
+  const bottleVis  = map(t, 0.02, 0.10, 0, 1);
+  bottleWrap.style.opacity = bottleVis;
+
+  let tiltDeg;
+  if (t < 0.10) {
+    tiltDeg = map(t, 0.04, 0.10, -5, -18);
+  } else if (t < 0.75) {
+    tiltDeg = map(t, 0.10, 0.75, -18, -62);
+  } else {
+    tiltDeg = map(t, 0.75, 1.0, -62, -20);
+  }
+  bottleWrap.style.transform = `rotate(${tiltDeg}deg)`;
+
+  // Pour stream: width and height based on pour intensity
+  // Height: from bottle pivot down to canvas top
+  const streamH = map(t, 0.08, 0.18, 0, canvasTop() - 0 + 10);
+  const streamW = map(t, 0.08, 0.25, 0, 8) * (1 - map(t, 0.78, 1.0, 0, 0.9));
+  const streamA = map(t, 0.08, 0.18, 0, 0.8) * (1 - map(t, 0.82, 1.0, 0, 1));
+
+  pourStream.style.height  = streamH  + 'px';
+  pourStream.style.width   = streamW  + 'px';
+  pourStream.style.marginLeft = (-streamW/2) + 'px';
+  pourStream.style.opacity = streamA;
+
+  // Pulse the stream width for a liquid wobble effect
+  const pulse = 1 + 0.15 * Math.sin(performance.now() * 0.008);
+  pourStream.style.transform = `scaleX(${pulse})`;
+}
+
+// ═══════════════════════════════════════════════════
+// UI UPDATES
+// ═══════════════════════════════════════════════════
+const prog       = document.getElementById('prog');
+const statusLbl  = document.getElementById('statusLbl');
+const pourPct    = document.getElementById('pourPct');
+const skullHead  = document.getElementById('skullHead');
+const scrollHint = document.getElementById('scrollHint');
+const halo       = document.getElementById('halo');
+
+function updateUI(t) {
+  prog.style.width = (t*100)+'%';
+
+  // Scroll hint
+  scrollHint.style.opacity = t < 0.04 ? 1 : map(t,0.04,0.10,1,0);
+
+  // Status label
+  if (t < 0.08) {
+    statusLbl.textContent = '// STATUE.EXE — MARBLE PHASE';
+    statusLbl.style.color = 'rgba(255,255,255,0.3)';
+    statusLbl.style.opacity = map(t,0,0.04,0,1);
+  } else if (globalMelt < 0.15) {
+    statusLbl.textContent = '// MATRIX POUR INITIATED';
+    statusLbl.style.color = 'var(--green)';
+    statusLbl.style.opacity = map(t,0.08,0.14,0,1) * map(t,0.90,1.0,1,0);
+  } else if (globalMelt < 0.50) {
+    statusLbl.textContent = '// MARBLE DISSOLVING';
+    statusLbl.style.color = 'var(--amber)';
+    statusLbl.style.opacity = 1 * map(t,0.90,1.0,1,0);
+  } else if (globalMelt < 0.80) {
+    statusLbl.textContent = '// SKULL EMERGING';
+    statusLbl.style.color = 'var(--pink)';
+    statusLbl.style.opacity = 1 * map(t,0.90,1.0,1,0);
+  } else {
+    statusLbl.style.opacity = 0;
+  }
+
+  // Pour percentage readout (top-right, terminal style)
+  if (t > 0.08 && t < 0.96) {
+    pourPct.style.opacity = 1;
+    const pctMelt  = Math.round(globalMelt * 100);
+    const pctPour  = Math.round(pourIntensity * 100);
+    // Count columns in each phase
+    let c1=0,c2=0,c3=0;
+    for(let c=0;c<NUM_IMG_COLS;c++){
+      if(meltLevel[c]<0.5) c1++;
+      else if(meltLevel[c]<0.9) c2++;
+      else c3++;
+    }
+    pourPct.innerHTML =
+      `POUR: ${pctPour}%<br>` +
+      `<span style="color:rgba(255,255,255,.4)">MARBLE:</span> ${c1}<br>` +
+      `<span style="color:var(--pink)">MELTING:</span> ${c2}<br>` +
+      `<span style="color:var(--pink)">SKULL:</span> ${c3}`;
+  } else {
+    pourPct.style.opacity = 0;
+  }
+
+  // Skull headline (late scroll)
+  skullHead.style.opacity = map(t, 0.84, 0.95, 0, 1);
+  const pulse = 0.5 + 0.5 * Math.sin(performance.now()*0.002);
+  skullHead.style.textShadow =
+    `4px 0 #ff00cc,-4px 0 #00f0ff,0 0 ${20+30*pulse}px rgba(255,0,204,${0.6+0.4*pulse})`;
+
+  // Glow halo
+  const ha = globalMelt * 0.9;
+  halo.style.opacity = ha;
+
+  // Position matCvs exactly over cvs using bounding rects
+  const cr = cvs.getBoundingClientRect();
+  const sr = document.getElementById('stage').getBoundingClientRect();
+  matCvs.style.left = (cr.left - sr.left) + 'px';
+  matCvs.style.top  = (cr.top  - sr.top)  + 'px';
+}
+
+// ═══════════════════════════════════════════════════
+// SCROLL → POUR INTENSITY
+// ═══════════════════════════════════════════════════
+// Pour intensity ramp:
+// 0.00–0.08:  0      (setup, bottle appears)
+// 0.08–0.20:  0→1    (pour begins, ramps up)
+// 0.20–0.75:  1      (full pour)
+// 0.75–0.90:  1→0    (pour slows)
+// 0.90–1.00:  0      (empty, skull revealed)
+function computePourIntensity(t) {
+  if (t < 0.08) return 0;
+  if (t < 0.20) return map(t, 0.08, 0.20, 0, 1);
+  if (t < 0.75) return 1;
+  if (t < 0.90) return map(t, 0.75, 0.90, 1, 0);
+  return 0;
+}
+
+// ═══════════════════════════════════════════════════
+// ANIMATION LOOP
+// ═══════════════════════════════════════════════════
+let lastScrollT = 0;
+
+function loop(timestamp) {
+  pourIntensity = computePourIntensity(lastScrollT);
+  drawMatrix(timestamp / 1000);
+  drawComposite();
+  updateBottle(lastScrollT);
+  updateUI(lastScrollT);
+  requestAnimationFrame(loop);
+}
+
+// ═══════════════════════════════════════════════════
+// SCROLL
+// ═══════════════════════════════════════════════════
+const journey = document.getElementById('journey');
+function onScroll() {
+  const rect   = journey.getBoundingClientRect();
+  const totalH = journey.offsetHeight - window.innerHeight;
+  lastScrollT  = clamp(-rect.top / totalH, 0, 1);
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+sizeCanvases();
+
+// Wait a tick so the DOM is laid out before positioning
+setTimeout(() => {
+  positionBottle();
+  onScroll();
+  requestAnimationFrame(loop);
+}, 60);
+</script>
+
+</sp-theme>
+</body>
+</html>

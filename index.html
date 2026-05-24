@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>nonrocker / Turbolag — Electronic Press Kit</title>
+  <meta name="description" content="EPK for nonrocker (rebrand in progress: Turbolag). Soju, Kazoos, and Didgeridoos. Out now on Soju Nation." />
+
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/styles@1.7.0/all-medium-dark.css"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Major+Mono+Display&family=Metal+Mania&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =====================================================================
+       CHAOS LAYER  (intentionally clashes with the calm S2 base underneath)
+       ===================================================================== */
+
+    :root {
+      --chaos-pink: #ff00cc;
+      --chaos-green: #39ff14;
+      --chaos-cyan: #00f0ff;
+      --chaos-violet: #7a00ff;
+      --chaos-black: #0a0010;
+      --chaos-amber: #ffb800;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--chaos-black);
+      color: #f4eaff;
+      font-family: 'VT323', monospace;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanlines across the entire page */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px,
+        rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.18) 3px,
+        rgba(0,0,0,0) 4px
+      );
+      z-index: 9990;
+      mix-blend-mode: multiply;
+    }
+
+    /* Diagonal vaporwave grid behind everything */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(255,0,204,0.15), transparent 60%),
+        radial-gradient(ellipse at 80% 90%, rgba(57,255,20,0.10), transparent 60%),
+        radial-gradient(ellipse at 50% 50%, rgba(122,0,255,0.10), transparent 70%);
+      z-index: -1;
+    }
+
+    /* Top marquee ticker */
+    .ticker {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--chaos-pink);
+      color: #000;
+      border-bottom: 2px solid #000;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 6px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker__track {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker 28s linear infinite;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-100%); }
+    }
+
+    /* Section frame */
+    section {
+      position: relative;
+      padding: clamp(48px, 8vw, 96px) clamp(16px, 5vw, 64px);
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    section + section {
+      border-top: 1px dashed rgba(255, 0, 204, 0.35);
+    }
+
+    /* Generic display heading */
+    .display {
+      font-family: 'Metal Mania', 'Bungee', cursive;
+      letter-spacing: 0.02em;
+      line-height: 0.95;
+      text-shadow:
+        2px 0 var(--chaos-pink),
+        -2px 0 var(--chaos-cyan),
+        0 0 18px rgba(255,0,204,0.6);
+    }
+    .display--xl  { font-size: clamp(56px, 14vw, 180px); }
+    .display--lg  { font-size: clamp(40px, 7vw, 88px); }
+    .display--md  { font-size: clamp(28px, 4vw, 48px); }
+
+    .mono {
+      font-family: 'VT323', 'Major Mono Display', monospace;
+      letter-spacing: 0.04em;
+    }
+    .pixel {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    /* =====================================================================
+       HERO
+       ===================================================================== */
+    .hero {
+      min-height: 92vh;
+      max-width: none;
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: center;
+      padding: 0;
+      overflow: hidden;
+    }
+    .hero__bg {
+      position: absolute;
+      inset: 0;
+      background-image: url("BD3D75D0-98E8-45FC-86B2-894AB3064A32.png");
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.15) contrast(1.05) hue-rotate(-8deg);
+      z-index: 0;
+    }
+    .hero__bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(10,0,16,0.35) 0%, rgba(10,0,16,0.85) 85%, var(--chaos-black) 100%),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) 3px, rgba(0,0,0,0.4) 4px, rgba(0,0,0,0) 5px);
+    }
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      padding: clamp(48px, 10vw, 120px) clamp(16px, 6vw, 80px);
+      max-width: 1240px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Identity flicker: nonrocker <-> Turbolag */
+    .identity {
+      position: relative;
+      display: inline-block;
+      color: #fff;
+    }
+    .identity__a, .identity__b {
+      display: inline-block;
+      transition: opacity 0.18s steps(2, end);
+    }
+    .identity__b {
+      position: absolute;
+      inset: 0;
+      color: var(--chaos-green);
+      font-family: 'Bungee', sans-serif;
+      letter-spacing: -0.02em;
+      transform: skewX(-4deg);
+      opacity: 0;
+    }
+    @keyframes flicker {
+      0%, 62% { opacity: 1; }
+      63%, 70% { opacity: 0; }
+      71%, 76% { opacity: 1; }
+      77%, 80% { opacity: 0; }
+      81%, 100% { opacity: 1; }
+    }
+    @keyframes flicker-inv {
+      0%, 62% { opacity: 0; }
+      63%, 70% { opacity: 1; }
+      71%, 76% { opacity: 0; }
+      77%, 80% { opacity: 1; }
+      81%, 100% { opacity: 0; }
+    }
+    .identity__a { animation: flicker 7s infinite; }
+    .identity__b { animation: flicker-inv 7s infinite; }
+
+    .hero__strike {
+      display: inline-block;
+      text-decoration: line-through;
+      text-decoration-color: var(--chaos-pink);
+      text-decoration-thickness: 0.06em;
+      opacity: 0.6;
+      font-size: 0.42em;
+      font-family: 'Major Mono Display', monospace;
+      letter-spacing: 0.1em;
+      margin-right: 0.5em;
+    }
+    .hero__sub {
+      font-family: 'Major Mono Display', monospace;
+      letter-spacing: 0.14em;
+      color: var(--chaos-green);
+      font-size: clamp(14px, 1.8vw, 22px);
+      margin: 18px 0 0;
+      text-transform: uppercase;
+    }
+    .hero__tag {
+      color: #fff;
+      opacity: 0.85;
+      font-size: clamp(16px, 1.6vw, 22px);
+      margin: 14px 0 40px;
+      max-width: 60ch;
+    }
+    .hero__ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    /* Floating Win95-style faux dialog */
+    .win95 {
+      position: absolute;
+      background: #c0c0c0;
+      color: #000;
+      border: 2px solid #fff;
+      box-shadow: inset -2px -2px #000, inset 2px 2px #dfdfdf, 4px 4px 0 rgba(0,0,0,0.6);
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      width: 280px;
+      z-index: 3;
+    }
+    .win95__title {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: #fff;
+      padding: 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      letter-spacing: 0.08em;
+    }
+    .win95__body { padding: 12px 10px; }
+    .win95__btns {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+      padding: 0 10px 10px;
+    }
+    .win95__btn {
+      font-family: inherit;
+      background: #c0c0c0;
+      color: #000;
+      border: 2px solid #fff;
+      box-shadow: inset -2px -2px #000, inset 2px 2px #dfdfdf;
+      padding: 4px 14px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .win95--1 { top: 12%; right: 4%; transform: rotate(2deg); }
+    .win95--2 { bottom: 6%; left: 4%; transform: rotate(-3deg); width: 260px; }
+    @media (max-width: 720px) { .win95 { display: none; } }
+
+    /* =====================================================================
+       BIO
+       ===================================================================== */
+    .bio__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    @media (min-width: 880px) {
+      .bio__grid { grid-template-columns: 1.4fr 1fr; }
+    }
+    .bio__text p {
+      font-size: clamp(16px, 1.4vw, 20px);
+      line-height: 1.55;
+      margin: 0 0 18px;
+      color: #f4eaff;
+    }
+    .bio__pull {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(28px, 4vw, 44px);
+      color: var(--chaos-green);
+      border-left: 6px solid var(--chaos-pink);
+      padding: 8px 0 8px 20px;
+      margin: 30px 0;
+      line-height: 1.15;
+    }
+    .bio__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .tag {
+      background: rgba(255, 0, 204, 0.12);
+      color: var(--chaos-pink);
+      border: 1px solid var(--chaos-pink);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .bio__sidekick {
+      border: 1px dashed rgba(57, 255, 20, 0.6);
+      padding: 16px;
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      color: var(--chaos-green);
+      background: rgba(57, 255, 20, 0.04);
+    }
+    .bio__sidekick h4 {
+      margin: 0 0 8px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: var(--chaos-pink);
+      letter-spacing: 0.1em;
+    }
+    .progress {
+      height: 14px;
+      background: #1a0030;
+      border: 1px solid var(--chaos-pink);
+      margin-top: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress__bar {
+      width: 13%;
+      height: 100%;
+      background: repeating-linear-gradient(45deg, var(--chaos-pink), var(--chaos-pink) 6px, var(--chaos-violet) 6px, var(--chaos-violet) 12px);
+      animation: rebrand 9s steps(13) infinite;
+    }
+    @keyframes rebrand {
+      0% { width: 11%; }
+      40% { width: 18%; }
+      45% { width: 7%; }
+      80% { width: 22%; }
+      100% { width: 13%; }
+    }
+
+    /* =====================================================================
+       MEMBER CARDS
+       ===================================================================== */
+    .members__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+    }
+    .member {
+      background: linear-gradient(160deg, rgba(255,0,204,0.08), rgba(57,255,20,0.04));
+      border: 1px solid rgba(255, 0, 204, 0.4);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .member:hover {
+      transform: translateY(-3px) rotate(-0.5deg);
+      box-shadow: 6px 6px 0 var(--chaos-pink);
+    }
+    .member__portrait {
+      aspect-ratio: 1 / 1;
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 14px;
+      filter: contrast(1.05) saturate(1.1);
+      border: 1px solid rgba(57, 255, 20, 0.4);
+    }
+    .member__name {
+      font-family: 'Metal Mania', cursive;
+      font-size: 28px;
+      color: #fff;
+      margin: 0 0 6px;
+      text-shadow: 2px 2px 0 var(--chaos-pink);
+    }
+    .member__role {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--chaos-green);
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .member__bio {
+      font-size: 16px;
+      color: #d9c8ff;
+      line-height: 1.35;
+    }
+    .member__stamp {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: var(--chaos-amber);
+      border: 1px solid var(--chaos-amber);
+      padding: 2px 5px;
+      transform: rotate(8deg);
+    }
+
+    /* =====================================================================
+       MUSIC
+       ===================================================================== */
+    .music__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    @media (min-width: 940px) {
+      .music__grid { grid-template-columns: 320px 1fr; }
+    }
+    .music__cover {
+      aspect-ratio: 1 / 1;
+      background-image: url("ECFCB7E5-CA55-4D86-832B-4D83CA05E511.png");
+      background-size: cover;
+      background-position: center;
+      border: 1px solid var(--chaos-pink);
+      box-shadow: 8px 8px 0 var(--chaos-violet);
+      position: relative;
+    }
+    .music__cover::after {
+      content: "NRK-2024  33⅓ RPM  STEREO";
+      position: absolute;
+      left: -1px;
+      bottom: -28px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--chaos-green);
+      letter-spacing: 0.1em;
+    }
+    .tracks {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      color: #fff;
+    }
+    .tracks th, .tracks td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px dashed rgba(255,0,204,0.25);
+    }
+    .tracks th {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--chaos-pink);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--chaos-pink);
+    }
+    .tracks td.num { color: var(--chaos-green); width: 36px; }
+    .tracks td.time { color: var(--chaos-amber); width: 70px; text-align: right; }
+    .tracks tr.highlight td { background: rgba(255,0,204,0.06); }
+    .tracks .meta { color: var(--chaos-cyan); font-size: 14px; }
+    .play {
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid var(--chaos-green);
+      color: var(--chaos-green);
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      padding: 2px 8px;
+      letter-spacing: 0.1em;
+    }
+    .play:hover { background: var(--chaos-green); color: #000; }
+    .credits {
+      margin-top: 22px;
+      padding: 14px;
+      border: 1px dashed rgba(57,255,20,0.5);
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      color: var(--chaos-green);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px 22px;
+    }
+    .credits strong { color: var(--chaos-pink); font-family: 'Press Start 2P', monospace; font-size: 9px; letter-spacing: 0.08em; }
+
+    /* Metaldata callout (track 1 special art) */
+    .metaldata {
+      margin-top: 32px;
+      padding: 20px;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid var(--chaos-green);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      align-items: center;
+    }
+    .metaldata__logo {
+      aspect-ratio: 3 / 2;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: invert(1);
+    }
+    .metaldata__logo.kawaii { filter: none; background-color: #fff; }
+    .metaldata__note {
+      grid-column: 1 / -1;
+      color: var(--chaos-amber);
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+    }
+    .metaldata__note strong {
+      color: var(--chaos-pink);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+    }
+
+    /* =====================================================================
+       GALLERY
+       ===================================================================== */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-auto-rows: 220px;
+      gap: 10px;
+    }
+    .gallery__cell {
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.18s ease, filter 0.18s ease;
+      border: 1px solid rgba(255,0,204,0.3);
+    }
+    .gallery__cell:hover {
+      transform: rotate(-1deg) scale(1.02);
+      filter: hue-rotate(20deg) saturate(1.3);
+      z-index: 1;
+    }
+    .gallery__cell.wide { grid-column: span 2; }
+    .gallery__cell.tall { grid-row: span 2; }
+    .gallery__cell::after {
+      content: attr(data-caption);
+      position: absolute;
+      left: 6px;
+      bottom: 6px;
+      background: rgba(0,0,0,0.7);
+      color: var(--chaos-green);
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      padding: 2px 6px;
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+    .gallery__cell:hover::after { opacity: 1; }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 24px;
+      cursor: pointer;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 92vw;
+      max-height: 84vh;
+      border: 2px solid var(--chaos-pink);
+      box-shadow: 12px 12px 0 var(--chaos-green);
+    }
+    .lightbox__caption {
+      position: absolute;
+      bottom: 22px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: var(--chaos-green);
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+    }
+
+    /* =====================================================================
+       PRESS
+       ===================================================================== */
+    .press__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+    .quote {
+      padding: 22px;
+      background: rgba(255, 0, 204, 0.05);
+      border-top: 3px solid var(--chaos-pink);
+      position: relative;
+    }
+    .quote::before {
+      content: "“";
+      position: absolute;
+      top: -8px;
+      left: 8px;
+      font-size: 80px;
+      color: var(--chaos-green);
+      font-family: 'Metal Mania', cursive;
+      line-height: 1;
+    }
+    .quote__text {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 18px;
+      line-height: 1.35;
+      color: #fff;
+      margin: 16px 0 14px 30px;
+    }
+    .quote__by {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--chaos-green);
+      letter-spacing: 0.08em;
+      margin-left: 30px;
+    }
+    .quote__star {
+      margin-left: 30px;
+      color: var(--chaos-amber);
+      letter-spacing: 0.2em;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* =====================================================================
+       TOUR
+       ===================================================================== */
+    .tour {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      color: #fff;
+    }
+    .tour th, .tour td {
+      padding: 10px 12px;
+      border-bottom: 1px dashed rgba(57,255,20,0.25);
+      text-align: left;
+    }
+    .tour th {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--chaos-green);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--chaos-green);
+    }
+    .tour td.date { color: var(--chaos-amber); width: 130px; }
+    .tour td.status .dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .dot.go     { background: var(--chaos-green); box-shadow: 0 0 8px var(--chaos-green); }
+    .dot.meh    { background: var(--chaos-amber); box-shadow: 0 0 8px var(--chaos-amber); }
+    .dot.no     { background: var(--chaos-pink); box-shadow: 0 0 8px var(--chaos-pink); }
+    .tour td.status { color: #d9c8ff; }
+    .tour tr:hover td { background: rgba(255,0,204,0.04); }
+
+    /* =====================================================================
+       CONTACT / FOOTER
+       ===================================================================== */
+    .contact {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+    @media (min-width: 760px) {
+      .contact { grid-template-columns: 1.2fr 1fr; }
+    }
+    .contact__card {
+      padding: 22px;
+      border: 1px solid var(--chaos-pink);
+      background: rgba(122, 0, 255, 0.06);
+    }
+    .contact__row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 8px 18px;
+      margin-bottom: 10px;
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+    }
+    .contact__row strong {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--chaos-green);
+      letter-spacing: 0.08em;
+    }
+    .contact__row a { color: var(--chaos-cyan); text-decoration: none; }
+    .contact__row a:hover { color: var(--chaos-pink); }
+    .socials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 50px 16px 70px;
+      color: rgba(244, 234, 255, 0.5);
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      border-top: 1px dashed rgba(57, 255, 20, 0.35);
+    }
+    footer .small {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      color: var(--chaos-pink);
+    }
+
+    /* Decorative stickers */
+    .sticker {
+      position: absolute;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 6px 8px;
+      background: var(--chaos-amber);
+      color: #000;
+      transform: rotate(-6deg);
+      pointer-events: none;
+      box-shadow: 3px 3px 0 #000;
+      z-index: 2;
+    }
+    .sticker--advisory { background: #000; color: #fff; border: 2px solid #fff; }
+    .sticker--explicit { background: var(--chaos-pink); color: #000; }
+    .sticker--666     { background: var(--chaos-green); color: #000; transform: rotate(7deg); }
+
+    /* S2 polish: minor overrides so accents fit the chaos backdrop */
+    sp-theme { display: block; }
+    sp-button[variant="accent"]::part(button) {
+      /* fall back if the part isn't exposed; harmless otherwise */
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===================================================================
+     STICKY TICKER (chaos signal)
+     =================================================================== -->
+<div class="ticker" role="status" aria-label="rebrand status ticker">
+  <div class="ticker__track">
+    ▓▓▓ REBRAND IN PROGRESS ▓ NONROCKER → TURBOLAG ▓ STATUS: 13% ▓ EST. ARRIVAL: NEVER ▓ SOJU LEVEL: CRITICAL ▓ KAZOO COUNT: 4 ▓ DIDGERIDOO COUNT: 1 (broken) ▓ PARENTAL ADVISORY: EXISTENTIAL CONTENT ▓ © 2024 NONROCKER · ALL WRONGS RESERVED ▓ MADE IN CYBERSPACE ▓ NO BPM NO GOD ▓ PLEASE DO NOT FEED THE BAND ▓▓▓
+  </div>
+</div>
+
+<sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+<!-- ===================================================================
+     1. HERO
+     =================================================================== -->
+<section class="hero" id="hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+
+  <div class="win95 win95--1" aria-hidden="true">
+    <div class="win95__title"><span>nonrocker.exe</span><span>_ □ X</span></div>
+    <div class="win95__body">Reality not found.<br/>Would you like to install delirium?</div>
+    <div class="win95__btns">
+      <button class="win95__btn">OK</button>
+      <button class="win95__btn">Cancel</button>
+      <button class="win95__btn">Fuck it</button>
+    </div>
+  </div>
+
+  <div class="win95 win95--2" aria-hidden="true">
+    <div class="win95__title"><span>System Message</span><span>_ □ X</span></div>
+    <div class="win95__body">soju.exe has stopped responding.<br/>Yes / No / Maybe</div>
+  </div>
+
+  <div class="hero__content">
+    <div class="pixel" style="color: var(--chaos-pink); margin-bottom: 18px;">
+      <span class="hero__strike">formerly nonrocker</span> presents
+    </div>
+    <h1 class="display display--xl" aria-label="nonrocker (rebranding to Turbolag)">
+      <span class="identity">
+        <span class="identity__a">nonrocker</span>
+        <span class="identity__b" aria-hidden="true">TURBOLAG</span>
+      </span>
+    </h1>
+    <p class="hero__sub">soju · kazoos · didgeridoos · digital audio</p>
+    <p class="hero__tag">
+      Five-piece (allegedly) cyber-kazoo combo recorded somewhere between
+      competence and chaos. Out now on Soju Nation / Future Delusions Entertainment.
+      No rules. Just noise. Please send help.
+    </p>
+
+    <div class="hero__ctas">
+      <sp-button variant="accent" size="xl" href="mailto:booking@nonrocker.fake?subject=Book%20the%20band%20before%20we%20rebrand%20again">
+        Book the band
+      </sp-button>
+      <sp-button variant="secondary" size="xl" treatment="outline" onclick="document.getElementById('music').scrollIntoView({behavior:'smooth'})">
+        Hear the tracks
+      </sp-button>
+      <sp-button variant="primary" size="xl" treatment="outline" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+        Press kit
+      </sp-button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     2. BIO
+     =================================================================== -->
+<section id="bio">
+  <div class="pixel" style="color: var(--chaos-green); margin-bottom: 10px;">// 02_BIO.TXT</div>
+  <h2 class="display display--lg">Who, allegedly</h2>
+
+  <div class="bio__grid">
+    <div class="bio__text">
+      <p>
+        <strong style="color: var(--chaos-pink); font-family: 'Bungee', sans-serif;">nonrocker</strong>
+        (<s>nonrocker</s> <em>Turbolag</em>, <s>Turbolag</s> <em>TurboLag</em>, the matter is unresolved)
+        formed in a Salt Lake basement somewhere between the second and third soju. The brief was
+        simple: do not make rock. Make whatever the opposite of rock is, but with more kazoos and
+        slightly more remorse.
+      </p>
+      <p>
+        The band operates at the intersection of vaporwave, digital hardcore, and the Sunday-morning
+        feeling of waking up next to a Windows 95 install disc. Their debut LP
+        <em>Soju, Kazoos and Didgeridoos</em> (NRK-2024) is engineered to crash whichever app
+        you play it in. Reviews have been swift, brief, and largely sent from legal departments.
+      </p>
+      <p>
+        The rebrand to <strong style="color: var(--chaos-green); font-family: 'Bungee', sans-serif;">Turbolag</strong>
+        has been in progress for an indeterminate number of months. The bassist insists it is two words.
+        The drummer insists there is no drummer. We are not taking questions at this time.
+      </p>
+
+      <blockquote class="bio__pull">
+        Recorded somewhere between competence and chaos.
+      </blockquote>
+
+      <div class="pixel" style="color: var(--chaos-amber); margin-bottom: 6px;">SOUNDS LIKE</div>
+      <div class="bio__tags">
+        <span class="tag">vaporwave</span>
+        <span class="tag">digital hardcore</span>
+        <span class="tag">nu-kazoo</span>
+        <span class="tag">didgeri-doom</span>
+        <span class="tag">Seoul-fi</span>
+        <span class="tag">existential leakage</span>
+        <span class="tag">corporate burnout</span>
+        <span class="tag">windows 95 worship</span>
+      </div>
+    </div>
+
+    <aside class="bio__sidekick">
+      <h4>// REBRAND_STATUS.LOG</h4>
+      <div>Current name: <span style="color: var(--chaos-pink)">nonrocker</span></div>
+      <div>Pending name: <span style="color: var(--chaos-amber)">Turbolag</span></div>
+      <div>Alt casing under review: TurboLag · turbolag · TURBOLAG · turbo lag</div>
+      <div class="progress" aria-label="rebrand progress 13%"><div class="progress__bar"></div></div>
+      <div style="margin-top: 10px;">Confidence level: <span style="color: var(--chaos-amber)">moderate to declining</span></div>
+      <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed rgba(57,255,20,0.4);">
+        <div style="color: var(--chaos-pink); font-family: 'Press Start 2P', monospace; font-size: 9px; letter-spacing: 0.1em;">// QUICK_FACTS</div>
+        <div style="margin-top: 8px;">Formed: 2024 · Salt Lake City, UT</div>
+        <div>Members: 5 (debatable)</div>
+        <div>Kazoos owned: 4</div>
+        <div>Didgeridoos owned: 1 (cracked)</div>
+        <div>Soju shots logged: 412</div>
+        <div>Songs about Windows 95: 3</div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ===================================================================
+     3. MEMBERS
+     =================================================================== -->
+<section id="members">
+  <div class="pixel" style="color: var(--chaos-green); margin-bottom: 10px;">// 03_MEMBERS.SYS</div>
+  <h2 class="display display--lg">The accused</h2>
+  <p style="color: rgba(244,234,255,0.7); font-family: 'VT323', monospace; font-size: 18px; margin: 0 0 28px;">
+    Five people who agreed to this in writing. Two of them now claim they did not.
+  </p>
+
+  <div class="members__grid">
+    <article class="member">
+      <div class="member__stamp">VOX</div>
+      <div class="member__portrait" style="background-image: url('BD3D75D0-98E8-45FC-86B2-894AB3064A32.png'); background-position: center 12%;"></div>
+      <h3 class="member__name">Yung Soju</h3>
+      <div class="member__role">KAZOO · SCREAMS · LIABILITY</div>
+      <p class="member__bio">
+        Lead kazoo, occasional vocalist. Lives off convenience-store gimbap and three hours of sleep.
+        Once finished a set inside the dumpster on the album cover. Claims to remember none of it.
+      </p>
+    </article>
+
+    <article class="member">
+      <div class="member__stamp">LOW END</div>
+      <div class="member__portrait" style="background-image: url('CABED3F4-1567-45B8-8B84-15D96F664CA5.png'); background-position: 25% center;"></div>
+      <h3 class="member__name">DJ 막걸리</h3>
+      <div class="member__role">DIDGERIDOO · DROP-INS · CRASHES</div>
+      <p class="member__bio">
+        Sole keeper of the band's one cracked didgeridoo. Doubles as live audio engineer until
+        approximately track 4, after which the audio engineers itself.
+      </p>
+    </article>
+
+    <article class="member">
+      <div class="member__stamp">LEAD</div>
+      <div class="member__portrait" style="background-image: url('8F75C3AB-B236-42F3-BB35-2BB2F5D0B79A.png'); background-position: center 10%;"></div>
+      <h3 class="member__name">STATUE.EXE</h3>
+      <div class="member__role">VOX · MARBLE · GREEN GOO</div>
+      <p class="member__bio">
+        Frontperson. Made entirely of cracked plaster and unprocessed grief. Does not blink, does not
+        encore. Allegedly weeps a fluid resembling soju on the third verse of every song.
+      </p>
+    </article>
+
+    <article class="member">
+      <div class="member__stamp">FX</div>
+      <div class="member__portrait" style="background-image: url('D36C7D8E-2EC2-404C-8F39-C1C0759E2CF0.png'); background-position: center 20%;"></div>
+      <h3 class="member__name">NULLSOFT</h3>
+      <div class="member__role">SAMPLES · WIN95 · MS PAINT</div>
+      <p class="member__bio">
+        Sample wrangler. Refuses to use any DAW released after 1998. Sole proprietor of the band's
+        Pepe collection. Has not opened a file dialog since 2003.
+      </p>
+    </article>
+
+    <article class="member">
+      <div class="member__stamp">UNCONFIRMED</div>
+      <div class="member__portrait" style="background-image: url('8F82E415-53A6-46B7-AFDE-FC8C5472B282.png'); background-position: 60% 20%;"></div>
+      <h3 class="member__name">??? (the drummer)</h3>
+      <div class="member__role">DRUMS · MAYBE · UNCONFIRMED</div>
+      <p class="member__bio">
+        The drummer maintains that they are not the drummer, and that there is no drummer. We have
+        footage. We have witnesses. We do not have a drummer. The matter is in arbitration.
+      </p>
+    </article>
+  </div>
+</section>
+
+<!-- ===================================================================
+     4. MUSIC
+     =================================================================== -->
+<section id="music">
+  <div class="pixel" style="color: var(--chaos-green); margin-bottom: 10px;">// 04_MUSIC.DAT</div>
+  <h2 class="display display--lg">The record</h2>
+  <p style="color: rgba(244,234,255,0.75); font-family: 'VT323', monospace; font-size: 20px; margin: 0 0 30px;">
+    <em>Soju, Kazoos and Didgeridoos</em> · NRK-2024 · 33⅓ RPM · Stereo · Soju Nation
+  </p>
+
+  <div class="music__grid">
+    <div class="music__cover" aria-label="Soju, Kazoos and Didgeridoos album cover"></div>
+
+    <div>
+      <table class="tracks" aria-label="album tracklist">
+        <thead>
+          <tr><th>#</th><th>Title</th><th></th><th style="text-align:right;">Time</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td class="num">01</td>
+            <td><strong>Metaldata</strong> <span class="meta">(opener / one song, three logos)</span></td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">3:11</td>
+          </tr>
+          <tr>
+            <td class="num">02</td>
+            <td>Daehan Dreamscape</td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">4:02</td>
+          </tr>
+          <tr>
+            <td class="num">03</td>
+            <td>Seoul Sleepover <span class="meta">feat. Yung Soju</span></td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">3:47</td>
+          </tr>
+          <tr>
+            <td class="num">04</td>
+            <td>Kazoo Dreams</td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">2:18</td>
+          </tr>
+          <tr>
+            <td class="num">05</td>
+            <td>Windows 95 Love Theme</td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">5:11</td>
+          </tr>
+          <tr>
+            <td class="num">06</td>
+            <td>Glitch In My Soul</td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">3:33</td>
+          </tr>
+          <tr>
+            <td class="num">07</td>
+            <td>Didgeridon't</td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">4:20</td>
+          </tr>
+          <tr>
+            <td class="num">08</td>
+            <td>Cyber 호들이</td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">2:55</td>
+          </tr>
+          <tr>
+            <td class="num">09</td>
+            <td>Virtual 막걸리</td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">3:09</td>
+          </tr>
+          <tr>
+            <td class="num">10</td>
+            <td>help.png</td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">1:47</td>
+          </tr>
+          <tr>
+            <td class="num">11</td>
+            <td>Error 404: 인생 없음 <span class="meta">(bonus / hidden / not actually hidden)</span></td>
+            <td><button class="play" onclick="kazoo()">▶ play</button></td>
+            <td class="time">6:06</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="credits">
+        <div><strong>Cat #</strong><br/>NRK-2024 / NRK-666</div>
+        <div><strong>Runtime</strong><br/>40:19 (approx.)</div>
+        <div><strong>Label</strong><br/>Soju Nation / Future Delusions Ent.</div>
+        <div><strong>Year</strong><br/>2024</div>
+        <div><strong>Engineer</strong><br/>NULLSOFT (allegedly)</div>
+        <div><strong>Mastered at</strong><br/>a Best Buy parking lot</div>
+      </div>
+
+      <!-- METALDATA: track 1's three-headed identity -->
+      <div class="metaldata">
+        <div class="pixel" style="color: var(--chaos-amber); grid-column: 1 / -1;">// TRACK_01_ART.DIR</div>
+        <div class="metaldata__logo kawaii" style="background-image: url('C5983B52-D2D2-4679-9459-74E635C6DC60.png');" aria-label="metaldata kawaii logo"></div>
+        <div class="metaldata__logo" style="background-image: url('2DAFBE0E-39B2-4FF8-9992-0AA3CE9C7623.png');" aria-label="metaldata metal logo"></div>
+        <div class="metaldata__logo" style="background-image: url('A9C2AC0B-A0C6-471F-BDA5-1205DC56B31B.png');" aria-label="metaldata black metal logo"></div>
+        <p class="metaldata__note">
+          <strong>METALDATA</strong> · Track 1 ships with three official logos.
+          The designer was asked to pick a direction. The designer refused.
+          You are entitled to all three. We are sorry. You are welcome.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     5. GALLERY
+     =================================================================== -->
+<section id="gallery">
+  <div class="pixel" style="color: var(--chaos-green); margin-bottom: 10px;">// 05_GALLERY.IMG</div>
+  <h2 class="display display--lg">Visual evidence</h2>
+  <p style="color: rgba(244,234,255,0.7); font-family: 'VT323', monospace; font-size: 18px; margin: 0 0 24px;">
+    Click any cell to make it bigger. Will not improve.
+  </p>
+
+  <div class="gallery" id="galleryGrid">
+    <div class="gallery__cell wide" data-src="2D50CEEE-D2F0-4732-A252-5D48171F0CAD.png" data-caption="property of nonrocker · no bpm no god" style="background-image: url('2D50CEEE-D2F0-4732-A252-5D48171F0CAD.png');"></div>
+    <div class="gallery__cell" data-src="ECFCB7E5-CA55-4D86-832B-4D83CA05E511.png" data-caption="album cover · ECFC issue" style="background-image: url('ECFCB7E5-CA55-4D86-832B-4D83CA05E511.png');"></div>
+    <div class="gallery__cell" data-src="BD3D75D0-98E8-45FC-86B2-894AB3064A32.png" data-caption="hero variant · cracked bust" style="background-image: url('BD3D75D0-98E8-45FC-86B2-894AB3064A32.png');"></div>
+    <div class="gallery__cell" data-src="8F75C3AB-B236-42F3-BB35-2BB2F5D0B79A.png" data-caption="existential leakage 3:27 / 4:20" style="background-image: url('8F75C3AB-B236-42F3-BB35-2BB2F5D0B79A.png');"></div>
+    <div class="gallery__cell" data-src="8F82E415-53A6-46B7-AFDE-FC8C5472B282.png" data-caption="soju.exe has stopped responding" style="background-image: url('8F82E415-53A6-46B7-AFDE-FC8C5472B282.png');"></div>
+    <div class="gallery__cell" data-src="CABED3F4-1567-45B8-8B84-15D96F664CA5.png" data-caption="\\m/ · gold kazoo summons" style="background-image: url('CABED3F4-1567-45B8-8B84-15D96F664CA5.png');"></div>
+    <div class="gallery__cell" data-src="D36C7D8E-2EC2-404C-8F39-C1C0759E2CF0.png" data-caption="dead-eyes smiley · NRK-666" style="background-image: url('D36C7D8E-2EC2-404C-8F39-C1C0759E2CF0.png');"></div>
+    <div class="gallery__cell wide" data-src="F16541D8-C37B-407A-B51C-219AF29BB62A.png" data-caption="back cover · welcome to hell.lagains" style="background-image: url('F16541D8-C37B-407A-B51C-219AF29BB62A.png');"></div>
+    <div class="gallery__cell" data-src="C5983B52-D2D2-4679-9459-74E635C6DC60.png" data-caption="metaldata · kawaii edition" style="background-image: url('C5983B52-D2D2-4679-9459-74E635C6DC60.png');"></div>
+    <div class="gallery__cell" data-src="2DAFBE0E-39B2-4FF8-9992-0AA3CE9C7623.png" data-caption="metaldata · band logo draft" style="background-image: url('2DAFBE0E-39B2-4FF8-9992-0AA3CE9C7623.png'); background-color:#fff;"></div>
+    <div class="gallery__cell" data-src="A9C2AC0B-A0C6-471F-BDA5-1205DC56B31B.png" data-caption="metaldata · black metal version" style="background-image: url('A9C2AC0B-A0C6-471F-BDA5-1205DC56B31B.png'); background-color:#fff;"></div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="full size" />
+  <div class="lightbox__caption" id="lightboxCaption"></div>
+</div>
+
+<!-- ===================================================================
+     6. PRESS
+     =================================================================== -->
+<section id="press">
+  <div class="pixel" style="color: var(--chaos-green); margin-bottom: 10px;">// 06_PRESS.QUOTES</div>
+  <h2 class="display display--lg">What people say (under duress)</h2>
+  <p style="color: rgba(244,234,255,0.7); font-family: 'VT323', monospace; font-size: 18px; margin: 0 0 24px;">
+    None of these are real. Most of these have legal advice attached.
+  </p>
+
+  <div class="press__grid">
+    <blockquote class="quote">
+      <p class="quote__text">I demand my four minutes back, and a slightly different four minutes as compensation.</p>
+      <div class="quote__by">— PITCHFORK (probably) · 4.2 / 10</div>
+      <div class="quote__star">★★★★☆</div>
+    </blockquote>
+    <blockquote class="quote">
+      <p class="quote__text">They made me reinstall my soul. I now blue-screen on Tuesdays.</p>
+      <div class="quote__by">— DAEHAN ZINE · 어쩌라고</div>
+      <div class="quote__star">★★★★★</div>
+    </blockquote>
+    <blockquote class="quote">
+      <p class="quote__text">Sounds like a printer dying inside a temple, mixed by someone who has clearly never been to either.</p>
+      <div class="quote__by">— NME (allegedly) · WITHHELD</div>
+      <div class="quote__star">★★★☆☆</div>
+    </blockquote>
+    <blockquote class="quote">
+      <p class="quote__text">Not music. Definitely not <em>not</em>-music. Possibly a war crime under the new statute.</p>
+      <div class="quote__by">— ANONYMOUS · subreddit r/letsnot</div>
+      <div class="quote__star">★★★★★</div>
+    </blockquote>
+    <blockquote class="quote">
+      <p class="quote__text">Best kazoo record of the decade. Worst record of every other category.</p>
+      <div class="quote__by">— THE WIRE (we made this up)</div>
+      <div class="quote__star">★★★★☆</div>
+    </blockquote>
+    <blockquote class="quote">
+      <p class="quote__text">My CD-ROM drive ejected mid-listen and I have not seen it since.</p>
+      <div class="quote__by">— /b/ (sincere) · 666 upvotes</div>
+      <div class="quote__star">★★★★★</div>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ===================================================================
+     7. TOUR
+     =================================================================== -->
+<section id="tour">
+  <div class="pixel" style="color: var(--chaos-green); margin-bottom: 10px;">// 07_TOUR.LIVE</div>
+  <h2 class="display display--lg">Where we will (probably) be</h2>
+  <p style="color: rgba(244,234,255,0.7); font-family: 'VT323', monospace; font-size: 18px; margin: 0 0 24px;">
+    All dates subject to existential review.
+  </p>
+
+  <table class="tour" aria-label="tour dates">
+    <thead>
+      <tr><th>Date</th><th>City</th><th>Venue</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="date">12 Jun 2026</td><td>Salt Lake City, UT</td><td>Kilby Court (after-hours)</td><td class="status"><span class="dot go"></span>Confirmed</td></tr>
+      <tr><td class="date">28 Jun 2026</td><td>Provo, UT</td><td>The Velour</td><td class="status"><span class="dot no"></span>Cancelled (existential)</td></tr>
+      <tr><td class="date">11 Jul 2026</td><td>Seoul, KR</td><td>Dongmyo Soju Bar (back room)</td><td class="status"><span class="dot go"></span>Confirmed</td></tr>
+      <tr><td class="date">12 Jul 2026</td><td>Seoul, KR</td><td>Daehan-ro 1-gil (street)</td><td class="status"><span class="dot meh"></span>Permit pending</td></tr>
+      <tr><td class="date">21 Jul 2026</td><td>Busan, KR</td><td>Gwangalli Underpass</td><td class="status"><span class="dot meh"></span>Maybe</td></tr>
+      <tr><td class="date">04 Aug 2026</td><td>Las Vegas, NV</td><td>Parking lot of an unspecified buffet</td><td class="status"><span class="dot meh"></span>Soft-hold</td></tr>
+      <tr><td class="date">19 Aug 2026</td><td>Cyberspace</td><td>Discord stage (server TBD)</td><td class="status"><span class="dot go"></span>Confirmed</td></tr>
+      <tr><td class="date">02 Sep 2026</td><td>The Recycle Bin</td><td>Right-click → Restore</td><td class="status"><span class="dot no"></span>Cancelled (lost)</td></tr>
+      <tr><td class="date">26 Sep 2026</td><td>Boise, ID</td><td>Neurolux</td><td class="status"><span class="dot meh"></span>Negotiating</td></tr>
+      <tr><td class="date">31 Oct 2026</td><td>Salt Lake City, UT</td><td>The Urban Lounge</td><td class="status"><span class="dot go"></span>SOLD OUT</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===================================================================
+     8. CONTACT
+     =================================================================== -->
+<section id="contact">
+  <div class="pixel" style="color: var(--chaos-green); margin-bottom: 10px;">// 08_CONTACT.SYS</div>
+  <h2 class="display display--lg">Book us before we rebrand</h2>
+
+  <div class="contact">
+    <div class="contact__card">
+      <div class="contact__row"><strong>Booking</strong><a href="mailto:booking@nonrocker.fake">booking@nonrocker.fake</a></div>
+      <div class="contact__row"><strong>Press</strong><a href="mailto:press@nonrocker.fake">press@nonrocker.fake</a></div>
+      <div class="contact__row"><strong>Mgmt</strong><a href="mailto:management@turbolag.fake">management@turbolag.fake</a> <span class="mono" style="color: var(--chaos-amber);">(may forward to booking, may not)</span></div>
+      <div class="contact__row"><strong>PR</strong><span>still trying to find a publicist who will sign the NDA</span></div>
+      <div class="contact__row"><strong>Label</strong><span>Soju Nation / Future Delusions Entertainment</span></div>
+
+      <div class="socials">
+        <sp-action-button size="m" href="#">Bandcamp</sp-action-button>
+        <sp-action-button size="m" href="#">SoundCloud</sp-action-button>
+        <sp-action-button size="m" href="#">Instagram</sp-action-button>
+        <sp-action-button size="m" href="#">YouTube</sp-action-button>
+        <sp-action-button size="m" href="#">TikTok (under review)</sp-action-button>
+        <sp-action-button size="m" href="#">Discord</sp-action-button>
+      </div>
+    </div>
+
+    <aside class="contact__card" style="background: rgba(57,255,20,0.04); border-color: var(--chaos-green);">
+      <div class="pixel" style="color: var(--chaos-pink);">// SUGGEST_A_NAME.TXT</div>
+      <p style="font-family: 'VT323', monospace; font-size: 18px; color: #fff; margin: 12px 0;">
+        The rebrand to <strong style="color: var(--chaos-green); font-family: 'Bungee', sans-serif;">Turbolag</strong>
+        is not final. The bassist has not signed off. The drummer claims they were not consulted.
+      </p>
+      <p style="font-family: 'VT323', monospace; font-size: 18px; color: #fff; margin: 12px 0;">
+        We are taking suggestions. Most have been rejected. The current frontrunner is "Turbolag." The
+        runner-up is "Turbo Lag." The third place is genuinely just our previous name written backwards.
+      </p>
+      <sp-button variant="accent" size="l" href="mailto:names@nonrocker.fake?subject=Better%20than%20Turbolag">
+        Suggest a name
+      </sp-button>
+    </aside>
+  </div>
+</section>
+
+<footer>
+  <div class="small">© 2024 NONROCKER · ALL WRONGS RESERVED · MADE IN CYBERSPACE</div>
+  <div style="margin-top: 10px;">"No BPM No God" · NRK-666 · Compact Dick Digital Audio</div>
+  <div style="margin-top: 10px; color: rgba(244,234,255,0.35);">This site is a press kit for a band that does not legally exist.</div>
+</footer>
+
+</sp-theme>
+
+<script>
+  // Lightbox
+  document.querySelectorAll('.gallery__cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const src = cell.getAttribute('data-src');
+      const caption = cell.getAttribute('data-caption') || '';
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightboxCaption').textContent = caption;
+      document.getElementById('lightbox').classList.add('open');
+    });
+  });
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Kazoo "player" — a single sine-wave honk via Web Audio, no asset needed
+  function kazoo() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sawtooth';
+      o.frequency.value = 220 + Math.random() * 220;
+      o.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6);
+      o.start();
+      o.stop(ctx.currentTime + 0.65);
+      o.onended = () => ctx.close();
+    } catch (err) { /* silent; this is a press kit, not a daw */ }
+  }
+</script>
+
+</body>
+</html>

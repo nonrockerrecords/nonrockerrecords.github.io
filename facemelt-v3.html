@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STATUE.EXE — FATAL EXCEPTION (NRK-666) · nonrocker</title>
+
+  <!-- Spectrum Web Components (matches slides.html CDN version) -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+
+  <!-- Fonts (matches slides.html) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Major+Mono+Display&family=Metal+Mania&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --chaos-pink:   #ff00cc;
+      --chaos-green:  #39ff14;
+      --chaos-cyan:   #00f0ff;
+      --chaos-violet: #7a00ff;
+      --chaos-amber:  #ffb800;
+      --chaos-black:  #050008;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--chaos-black);
+      color: #fff;
+      font-family: 'VT323', monospace;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanlines (matches slides.html) */
+    .crt-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.22) 3px, rgba(0,0,0,0) 4px
+      );
+      z-index: 9000;
+      mix-blend-mode: multiply;
+    }
+
+    /* Vignette */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.65) 100%);
+      z-index: 8999;
+    }
+
+    /* VHS tracking line */
+    .vhs {
+      position: fixed;
+      left: 0; right: 0;
+      height: 90px;
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(255,255,255,0.06) 30%,
+        rgba(255,255,255,0.16) 50%,
+        rgba(255,255,255,0.06) 70%,
+        transparent 100%
+      );
+      mix-blend-mode: screen;
+      pointer-events: none;
+      animation: vhs-roll 2.1s linear infinite;
+      z-index: 8700;
+    }
+    @keyframes vhs-roll {
+      0%   { top: -90px; }
+      100% { top: 100%; }
+    }
+
+    /* Noise overlay */
+    .noise {
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      mix-blend-mode: screen;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 8600;
+      animation: noise-shift 0.14s steps(4) infinite;
+    }
+    @keyframes noise-shift {
+      0%   { transform: translate(0,0); }
+      25%  { transform: translate(-3%,2%); }
+      50%  { transform: translate(2%,-3%); }
+      75%  { transform: translate(-2%,-2%); }
+      100% { transform: translate(3%,3%); }
+    }
+
+    /* ================================================
+       TICKER
+       ================================================ */
+    .ticker {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #000;
+      color: var(--chaos-amber);
+      border-top: 1px solid var(--chaos-amber);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      z-index: 8500;
+    }
+    .ticker__track {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker 40s linear infinite;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-100%); }
+    }
+
+    /* ================================================
+       GLOBAL LAYOUT: TWO-COLUMN STICKY
+       ================================================ */
+    .page-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 800px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .image-panel { display: none; } /* Hide image on mobile, embed in sections */
+    }
+
+    /* ================================================
+       LEFT COLUMN: SCROLLING TERMINAL NARRATIVE
+       ================================================ */
+    .terminal-column {
+      padding: 0 0 100px;
+    }
+
+    /* ================================================
+       RIGHT COLUMN: STICKY IMAGE PANEL
+       ================================================ */
+    .image-panel {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      overflow: hidden;
+      border-left: 1px solid rgba(255,0,204,0.2);
+    }
+
+    .image-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(122,0,255,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .statue-wrapper {
+      position: relative;
+      width: min(360px, 90%);
+    }
+
+    .statue-img {
+      width: 100%;
+      display: block;
+      /* Start: no skull, no melt. Use grayscale + clip to show only base */
+      filter: grayscale(1) brightness(1.25) contrast(1.1) saturate(0);
+      clip-path: polygon(0 52%, 100% 52%, 100% 100%, 0 100%);
+    }
+
+    .statue-label {
+      position: absolute;
+      bottom: -32px;
+      left: 0; right: 0;
+      text-align: center;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--chaos-green);
+      letter-spacing: 0.1em;
+    }
+
+    .skull-frame {
+      position: absolute;
+      inset: -8px;
+      border: 1px solid var(--chaos-pink);
+      box-shadow:
+        0 0 20px var(--chaos-pink),
+        0 0 60px rgba(255,0,204,0.5),
+        inset 0 0 20px rgba(255,0,204,0.15);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ================================================
+       TERMINAL SECTION BASE
+       ================================================ */
+    .terminal-section {
+      min-height: 100vh;
+      padding: 60px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      border-bottom: 1px dashed rgba(255,255,255,0.08);
+    }
+
+    .section-tag {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--chaos-green);
+      letter-spacing: 0.1em;
+      margin-bottom: 22px;
+    }
+
+    .section-tag.amber { color: var(--chaos-amber); }
+    .section-tag.pink  { color: var(--chaos-pink); }
+    .section-tag.cyan  { color: var(--chaos-cyan); }
+
+    /* ================================================
+       TERMINAL BLOCK
+       ================================================ */
+    .terminal {
+      background: rgba(0,0,0,0.7);
+      border: 1px solid rgba(57,255,20,0.4);
+      padding: 20px 20px 24px;
+      font-family: 'VT323', monospace;
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--chaos-green);
+      position: relative;
+    }
+
+    .terminal::before {
+      content: "NONROCKER RUNTIME v1.0.0";
+      display: block;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: rgba(57,255,20,0.5);
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed rgba(57,255,20,0.3);
+    }
+
+    .terminal.amber {
+      border-color: rgba(255,184,0,0.5);
+      color: var(--chaos-amber);
+    }
+    .terminal.amber::before { color: rgba(255,184,0,0.5); content: "SYSTEM WARNING — NON-FATAL (YET)"; }
+
+    .terminal.pink {
+      border-color: rgba(255,0,204,0.6);
+      color: #fff;
+    }
+    .terminal.pink::before { color: rgba(255,0,204,0.6); content: "FATAL_EXCEPTION — UNRECOVERABLE"; }
+
+    .terminal.cyan {
+      border-color: rgba(0,240,255,0.5);
+      color: var(--chaos-cyan);
+    }
+    .terminal.cyan::before { color: rgba(0,240,255,0.5); content: "SYSTEM REBOOT — RECONFIGURING"; }
+
+    .t-line { display: block; }
+    .t-ok     { color: var(--chaos-green); }
+    .t-warn   { color: var(--chaos-amber); }
+    .t-err    { color: var(--chaos-pink); }
+    .t-prompt { color: rgba(255,255,255,0.4); }
+    .t-dim    { color: rgba(255,255,255,0.3); }
+    .t-bar    { color: var(--chaos-green); letter-spacing: -0.05em; }
+
+    .cursor::after {
+      content: "_";
+      animation: blink-cursor 0.8s steps(2) infinite;
+    }
+    @keyframes blink-cursor { 50% { opacity: 0; } }
+
+    /* ================================================
+       SECTION 1: BOOT
+       ================================================ */
+    .boot-heading {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(38px, 5vw, 60px);
+      line-height: 0.92;
+      text-shadow: 2px 0 var(--chaos-green), -2px 0 var(--chaos-cyan);
+      margin-bottom: 22px;
+    }
+
+    /* ================================================
+       SECTION 2: WARNING
+       ================================================ */
+    .warning-heading {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(36px, 4.5vw, 56px);
+      color: var(--chaos-amber);
+      line-height: 0.92;
+      text-shadow: 2px 0 var(--chaos-pink), -2px 0 var(--chaos-amber);
+      margin-bottom: 22px;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0;
+    }
+    .progress-bar-mini {
+      flex: 1;
+      height: 10px;
+      background: rgba(255,0,204,0.12);
+      border: 1px solid var(--chaos-pink);
+      overflow: hidden;
+    }
+    .progress-bar-mini__fill {
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--chaos-pink), var(--chaos-pink) 5px,
+        var(--chaos-violet) 5px, var(--chaos-violet) 10px
+      );
+      transition: width 0.4s ease;
+    }
+
+    /* ================================================
+       SECTION 3: BSOD
+       ================================================ */
+    .bsod {
+      background: var(--chaos-pink);
+      padding: 30px 28px;
+      color: #000;
+      font-family: 'VT323', monospace;
+      font-size: 17px;
+      line-height: 1.55;
+      border: 4px solid #000;
+      box-shadow: 6px 6px 0 var(--chaos-violet), -6px -6px 0 var(--chaos-green);
+      position: relative;
+    }
+
+    .bsod::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 3px,
+        rgba(0,0,0,0.08) 4px, rgba(0,0,0,0) 5px
+      );
+      pointer-events: none;
+    }
+
+    .bsod__title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(11px, 1.4vw, 16px);
+      letter-spacing: 0.06em;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .bsod__stop {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1vw, 12px);
+      margin-top: 16px;
+      letter-spacing: 0.05em;
+      border-top: 2px solid #000;
+      padding-top: 14px;
+    }
+
+    .bsod-heading {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(34px, 4vw, 54px);
+      color: var(--chaos-pink);
+      line-height: 0.92;
+      text-shadow: 3px 0 #000, -3px 0 #000;
+      margin-bottom: 22px;
+    }
+
+    /* ================================================
+       SECTION 4: REBOOT
+       ================================================ */
+    .reboot-heading {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(36px, 4.5vw, 56px);
+      color: var(--chaos-cyan);
+      line-height: 0.92;
+      text-shadow: 2px 0 var(--chaos-violet), -2px 0 var(--chaos-cyan);
+      margin-bottom: 22px;
+    }
+
+    /* ================================================
+       SECTION 5: ONLINE / MEMBER CARD
+       ================================================ */
+    .online-heading {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(52px, 7vw, 90px);
+      line-height: 0.9;
+      text-shadow: 4px 0 var(--chaos-pink), -4px 0 var(--chaos-cyan);
+      margin-bottom: 26px;
+    }
+
+    .member-card {
+      background: linear-gradient(160deg, rgba(255,0,204,0.08), rgba(57,255,20,0.04));
+      border: 1px solid rgba(255,0,204,0.4);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .member-card__name {
+      font-family: 'Metal Mania', cursive;
+      font-size: 32px;
+      text-shadow: 2px 2px 0 var(--chaos-pink);
+    }
+
+    .member-card__role {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--chaos-green);
+      letter-spacing: 0.08em;
+    }
+
+    .member-card__bio {
+      font-family: 'VT323', monospace;
+      font-size: 17px;
+      color: #d9c8ff;
+      line-height: 1.35;
+    }
+
+    .member-card__ver {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: var(--chaos-amber);
+      letter-spacing: 0.1em;
+      margin-top: 6px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      background: rgba(255,0,204,0.12);
+      border: 1px solid var(--chaos-pink);
+      color: var(--chaos-pink);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      letter-spacing: 0.08em;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    /* ================================================
+       SCROLL-DRIVEN IMAGE STATES (via JS classes)
+       ================================================ */
+    .statue-img.state-boot {
+      filter: grayscale(1) brightness(1.25) contrast(1.1) saturate(0);
+      clip-path: polygon(0 52%, 100% 52%, 100% 100%, 0 100%);
+    }
+
+    .statue-img.state-warning {
+      filter: grayscale(0.4) brightness(1.1) contrast(1.15) saturate(0.6) sepia(0.3);
+      clip-path: polygon(0 35%, 100% 35%, 100% 100%, 0 100%);
+      transition: filter 0.8s ease, clip-path 0.8s ease;
+    }
+
+    .statue-img.state-bsod {
+      filter: brightness(1) contrast(1.2) saturate(0.7) hue-rotate(-10deg);
+      clip-path: polygon(0 18%, 100% 18%, 100% 100%, 0 100%);
+      transition: filter 0.8s ease, clip-path 0.8s ease;
+    }
+
+    .statue-img.state-reboot {
+      filter: brightness(1.05) contrast(1.25) saturate(0.85);
+      clip-path: polygon(0 5%, 100% 5%, 100% 100%, 0 100%);
+      transition: filter 0.6s ease, clip-path 0.6s ease;
+    }
+
+    .statue-img.state-online {
+      filter: brightness(1.05) contrast(1.1) saturate(1);
+      clip-path: polygon(0 0%, 100% 0%, 100% 100%, 0 100%);
+      transition: filter 0.5s ease, clip-path 0.5s ease;
+    }
+
+    /* Glitch pulse on BSOD section */
+    @keyframes glitch-pulse {
+      0%, 90%, 100% { transform: translate(0,0); }
+      91%  { transform: translate(-4px, 2px); filter: hue-rotate(90deg); }
+      93%  { transform: translate(3px, -2px); }
+      95%  { transform: translate(-2px, 4px); filter: hue-rotate(-90deg); }
+      97%  { transform: translate(4px, 0); }
+    }
+
+    .statue-img.state-bsod {
+      animation: glitch-pulse 3s steps(4) infinite;
+    }
+
+    /* ================================================
+       AMBER WARNING TEXT BLINK
+       ================================================ */
+    @keyframes blink { 50% { opacity: 0.3; } }
+
+    .blink-amber { animation: blink 0.7s steps(2) infinite; color: var(--chaos-amber); }
+    .blink-pink  { animation: blink 0.5s steps(2) infinite; color: var(--chaos-pink); }
+
+    /* ================================================
+       SECTION SEPARATORS
+       ================================================ */
+    .divider-line {
+      border: none;
+      border-top: 1px dashed rgba(57,255,20,0.2);
+      margin: 0;
+    }
+
+    /* ================================================
+       MOBILE IMAGE EMBED
+       ================================================ */
+    .mobile-img-embed {
+      display: none;
+      width: 200px;
+      margin: 20px auto 0;
+    }
+    .mobile-img-embed img {
+      width: 100%;
+      display: block;
+    }
+
+    @media (max-width: 800px) {
+      .mobile-img-embed { display: block; }
+      .terminal-section { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+<sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+  <!-- Fixed overlays -->
+  <div class="crt-overlay"></div>
+  <div class="vignette"></div>
+  <div class="noise"></div>
+  <div class="vhs"></div>
+
+  <!-- =====================================================
+       TWO-COLUMN LAYOUT
+       ===================================================== -->
+  <div class="page-layout">
+
+    <!-- LEFT: Scrolling narrative -->
+    <div class="terminal-column" id="terminalCol">
+
+      <!-- ===== SECTION 1: BOOT ===== -->
+      <section class="terminal-section" id="sec-boot" data-state="boot">
+        <div class="section-tag">// 01_BOOT.SYS</div>
+        <h2 class="boot-heading">Booting<br>STATUE<br>.EXE</h2>
+
+        <div class="terminal">
+          <span class="t-line"><span class="t-prompt">&gt;</span> Initializing marble subsystems...</span>
+          <span class="t-line t-bar">████████████████████ 100%</span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line"><span class="t-prompt">MARBLE.SYS</span> <span class="t-dim">............</span> <span class="t-ok">OK</span></span>
+          <span class="t-line"><span class="t-prompt">GRIEF.DLL</span> <span class="t-dim">...............</span> <span class="t-ok">OK</span></span>
+          <span class="t-line"><span class="t-prompt">PLASTER_CODEC</span> <span class="t-dim">..........</span> <span class="t-ok">LOADED</span></span>
+          <span class="t-line"><span class="t-prompt">BLINK.EXE</span> <span class="t-dim">..............</span> <span class="t-warn">DISABLED</span></span>
+          <span class="t-line"><span class="t-prompt">WEEP.SOJ</span> <span class="t-dim">...............</span> <span class="t-ok">ACTIVE (412ml/hr)</span></span>
+          <span class="t-line"><span class="t-prompt">SKULL_DRIVER.EXE</span> <span class="t-dim">....</span> <span class="t-dim">NOT FOUND</span></span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line"><span class="t-ok">Face integrity: NOMINAL</span></span>
+          <span class="t-line"><span class="t-ok">Marble cohesion: 100%</span></span>
+          <span class="t-line"><span class="t-ok">Skull visibility: 0%</span></span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line"><span class="t-prompt">&gt;</span> STATUE.EXE is running normally.</span>
+          <span class="t-line"><span class="t-prompt">&gt;</span> <span class="cursor"></span></span>
+        </div>
+
+        <div class="mobile-img-embed">
+          <img src="Facemelt.png" alt="STATUE.EXE boot state" style="filter:grayscale(1) brightness(1.25) contrast(1.1);clip-path:polygon(0 52%,100% 52%,100% 100%,0 100%);" />
+        </div>
+      </section>
+
+      <hr class="divider-line" />
+
+      <!-- ===== SECTION 2: WARNING ===== -->
+      <section class="terminal-section" id="sec-warn" data-state="warning">
+        <div class="section-tag amber">// 02_WARNING.LOG</div>
+        <h2 class="warning-heading">Anomaly<br>Detected</h2>
+
+        <div class="terminal amber">
+          <span class="t-line blink-amber">!! CRITICAL: Unauthorized process requesting cranial access</span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line">Process name: <span class="t-err">SKULL_DRIVER.EXE</span></span>
+          <span class="t-line">Certificate: <span class="t-err">NOT SIGNED BY nonrocker records</span></span>
+          <span class="t-line">Risk level:  <span class="t-err">HIGH (existential)</span></span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line"><span class="t-prompt">&gt;</span> Do you want to allow this? <span class="t-warn">[Y/N]</span></span>
+          <span class="t-line"><span class="t-prompt">&gt;</span> Y</span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line">Loading SKULL_DRIVER.EXE... <span class="t-warn">23%</span></span>
+          <div class="progress-row">
+            <div class="progress-bar-mini"><div class="progress-bar-mini__fill" style="width:23%"></div></div>
+          </div>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line">Scanning cranial partition...</span>
+          <span class="t-line">MARBLE_CRACKS detected: <span class="t-err">3... 7... 12... 19...</span></span>
+          <span class="t-line">MARBLE_COHESION falling: <span class="t-err">82%... 74%... 61%...</span></span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line blink-amber">!! MARBLE INTEGRITY: WARNING !! MARBLE INTEGRITY: WARNING !!</span>
+        </div>
+
+        <div class="mobile-img-embed">
+          <img src="Facemelt.png" alt="STATUE.EXE warning state" style="filter:grayscale(0.4) brightness(1.1) contrast(1.15);clip-path:polygon(0 35%,100% 35%,100% 100%,0 100%);" />
+        </div>
+      </section>
+
+      <hr class="divider-line" />
+
+      <!-- ===== SECTION 3: BSOD ===== -->
+      <section class="terminal-section" id="sec-bsod" data-state="bsod">
+        <div class="section-tag pink">// 03_FATAL_EXCEPTION.CRASH</div>
+        <h2 class="bsod-heading">Fatal<br>Exception</h2>
+
+        <div class="bsod">
+          <div class="bsod__title">
+            FATAL_EXCEPTION_IN_MARBLE_SYS<br><br>
+            A problem has been detected and STATUE.EXE has been shut
+            down to prevent damage to your face.<br><br>
+            MARBLE_SYSTEM_FAILURE (0x0000SKULL)<br><br>
+            If this is the first time you've seen this stop error screen,
+            restart your statue and try again. If this screen appears again,
+            follow these steps:<br><br>
+            Check to make sure any new plaster or structural constraints
+            are properly installed. If problems continue, disable or remove
+            any newly-installed skull drivers. This is unlikely to help.<br><br>
+          </div>
+          <div class="bsod__stop">
+            Technical information:<br><br>
+            *** STOP: 0x0000SKULL (0xFF00CC, 0x39FF14, 0x00F0FF, 0xNRK666)<br><br>
+            Beginning physical memory dump...<br>
+            Physical memory dump complete.<br><br>
+            Press any key to reboot STATUE.EXE. (Do not press any key.) _
+          </div>
+        </div>
+
+        <div style="margin-top:18px;">
+          <div class="terminal pink">
+            <span class="t-line blink-pink">!! STATUE.EXE has stopped responding</span>
+            <span class="t-line">!! MARBLE.SYS: CRITICAL FAILURE</span>
+            <span class="t-line">!! SKULL_DRIVER.EXE has gained root access</span>
+            <span class="t-line">!! Skull visibility: <span class="t-err">48%... rising...</span></span>
+            <span class="t-line">!! Plaster remaining: <span class="t-err">38%... falling...</span></span>
+            <span class="t-line">&nbsp;</span>
+            <span class="t-line blink-pink">!! THIS FACE WILL NOT LOAD CORRECTLY. PLEASE STAND BY.</span>
+          </div>
+        </div>
+
+        <div class="mobile-img-embed">
+          <img src="Facemelt.png" alt="STATUE.EXE BSOD state" style="filter:brightness(1) contrast(1.2) saturate(0.7);clip-path:polygon(0 18%,100% 18%,100% 100%,0 100%);" />
+        </div>
+      </section>
+
+      <hr class="divider-line" />
+
+      <!-- ===== SECTION 4: REBOOT ===== -->
+      <section class="terminal-section" id="sec-reboot" data-state="reboot">
+        <div class="section-tag cyan">// 04_REBOOT.SYS</div>
+        <h2 class="reboot-heading">Rebooting<br>as SKULL<br>.EXE</h2>
+
+        <div class="terminal cyan">
+          <span class="t-line"><span class="t-prompt">&gt;</span> Rebooting STATUE.EXE...</span>
+          <span class="t-line"><span class="t-prompt">&gt;</span> MARBLE.SYS: <span class="t-err">FAILED TO LOAD</span></span>
+          <span class="t-line"><span class="t-prompt">&gt;</span> Loading fallback: <span style="color:var(--chaos-pink)">SKULL.EXE</span></span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line">SKULL.EXE v1.0.0 .............. <span style="color:var(--chaos-pink)">AUTHENTICATED</span></span>
+          <span class="t-line">Bypassing plaster security .... <span style="color:var(--chaos-cyan)">DONE</span></span>
+          <span class="t-line">Initializing cranial void ...... <span style="color:var(--chaos-cyan)">DONE</span></span>
+          <span class="t-line">Mounting bone subsystems ....... <span style="color:var(--chaos-cyan)">DONE</span></span>
+          <span class="t-line">Loading grief buffer ........... <span style="color:var(--chaos-amber)">OVERFLOW (cleared)</span></span>
+          <span class="t-line">Recalibrating WEEP.SOJ ......... <span style="color:var(--chaos-cyan)">DONE (778ml/hr)</span></span>
+          <span class="t-line">&nbsp;</span>
+          <div class="progress-row">
+            <span style="color:var(--chaos-cyan);font-size:14px;white-space:nowrap;">SKULL.EXE</span>
+            <div class="progress-bar-mini" style="border-color:var(--chaos-cyan);">
+              <div class="progress-bar-mini__fill" style="width:91%;background:repeating-linear-gradient(45deg,var(--chaos-cyan),var(--chaos-cyan) 5px,var(--chaos-violet) 5px,var(--chaos-violet) 10px);"></div>
+            </div>
+            <span style="color:var(--chaos-cyan);font-size:14px;">91%</span>
+          </div>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line"><span style="color:var(--chaos-pink)">SKULL.EXE: RUNNING</span></span>
+          <span class="t-line"><span style="color:var(--chaos-cyan)">Face reconfiguration: COMPLETE</span></span>
+          <span class="t-line">&nbsp;</span>
+          <span class="t-line">System rebooted as: <span style="color:var(--chaos-pink)">STATUE.EXE v2.0</span></span>
+          <span class="t-line">Subtitle: <span style="color:rgba(255,255,255,0.5)">"now with 100% more bone"</span></span>
+          <span class="t-line"><span class="cursor" style="color:var(--chaos-cyan)"></span></span>
+        </div>
+
+        <div class="mobile-img-embed">
+          <img src="Facemelt.png" alt="STATUE.EXE reboot state" style="filter:brightness(1.05) contrast(1.25) saturate(0.85);clip-path:polygon(0 5%,100% 5%,100% 100%,0 100%);" />
+        </div>
+      </section>
+
+      <hr class="divider-line" />
+
+      <!-- ===== SECTION 5: ONLINE ===== -->
+      <section class="terminal-section" id="sec-online" data-state="online">
+        <div class="section-tag pink">// 05_ONLINE.EXE</div>
+        <h2 class="online-heading">STATUE<br>.EXE<br>v2.0</h2>
+
+        <div class="member-card">
+          <div class="member-card__name">STATUE.EXE</div>
+          <div class="member-card__role">VOX · MARBLE · GOO · BONE (NEW) · NRK RUNTIME</div>
+          <div class="tags">
+            <span class="tag">skull confirmed</span>
+            <span class="tag">marble: 0%</span>
+            <span class="tag">weep.soj: active</span>
+            <span class="tag">blink: still disabled</span>
+          </div>
+          <div class="member-card__bio">
+            Frontperson. Previously made of cracked plaster and unprocessed grief.
+            Now made of unprocessed grief and bone. Does not blink.
+            Weeps fluid still resembling soju but at a higher volume.
+            The rebrand is in progress. The skull was not informed of the rebrand.
+          </div>
+          <div class="member-card__ver">STATUE.EXE v2.0 · SKULL_DRIVER.EXE · NRK-666 · ALL PLASTER IS TEMPORARY</div>
+        </div>
+
+        <div class="cta-row" style="margin-top:22px;">
+          <sp-button variant="accent" size="xl" href="slides.html">Full EPK</sp-button>
+          <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v1.html">V1: Parallax</sp-button>
+          <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v2.html">V2: Soju Matrix</sp-button>
+        </div>
+
+        <div class="mobile-img-embed" style="width:280px;">
+          <img src="Facemelt.png" alt="STATUE.EXE final state" />
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT: Sticky image panel -->
+    <div class="image-panel">
+      <div class="statue-wrapper">
+        <img
+          src="Facemelt.png"
+          class="statue-img state-boot"
+          id="statueImg"
+          alt="STATUE.EXE"
+        />
+        <div class="skull-frame" id="skullFrame"></div>
+        <div class="statue-label" id="statueLabel">STATUE.EXE v1.0 — RUNNING</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker__track">
+      ▓ MARBLE_COHESION: 0% ▓ SKULL_VISIBILITY: 100% ▓ STATUE.EXE v2.0 ▓ WEEP.SOJ: 778ml/hr ▓ BLINK.EXE: STILL DISABLED ▓ NRK-666 ▓ FATAL EXCEPTION IN MARBLE.SYS ▓ PRESS ANY KEY TO REBOOT ▓ DO NOT PRESS ANY KEY ▓ GRIEF.DLL UNLOADED ▓
+    </div>
+  </div>
+
+</sp-theme>
+
+<script>
+// ============================================================
+// SECTION SCROLL OBSERVER
+// ============================================================
+// Maps section data-state to: CSS class on img, label text, frame opacity
+const STATE_CONFIG = {
+  boot: {
+    cssClass: 'state-boot',
+    label: 'STATUE.EXE v1.0 — RUNNING',
+    frame: 0,
+  },
+  warning: {
+    cssClass: 'state-warning',
+    label: 'WARNING — SKULL_DRIVER LOADING',
+    frame: 0,
+  },
+  bsod: {
+    cssClass: 'state-bsod',
+    label: 'STATUE.EXE — FATAL EXCEPTION',
+    frame: 0.4,
+  },
+  reboot: {
+    cssClass: 'state-reboot',
+    label: 'SKULL.EXE — REBOOTING',
+    frame: 0.75,
+  },
+  online: {
+    cssClass: 'state-online',
+    label: 'STATUE.EXE v2.0 — ONLINE',
+    frame: 1,
+  },
+};
+
+const statueImg  = document.getElementById('statueImg');
+const skullFrame = document.getElementById('skullFrame');
+const statueLabel = document.getElementById('statueLabel');
+
+let currentState = 'boot';
+
+function applyState(stateName) {
+  if (stateName === currentState) return;
+  currentState = stateName;
+
+  const cfg = STATE_CONFIG[stateName];
+  if (!cfg) return;
+
+  // Swap CSS class on the image
+  Object.keys(STATE_CONFIG).forEach(s => {
+    statueImg.classList.remove(STATE_CONFIG[s].cssClass);
+  });
+  statueImg.classList.add(cfg.cssClass);
+
+  // Skull frame glow
+  skullFrame.style.opacity = cfg.frame;
+
+  // Label
+  statueLabel.textContent = cfg.label;
+  statueLabel.style.color = stateName === 'online' ? 'var(--chaos-pink)' :
+                            stateName === 'reboot' ? 'var(--chaos-cyan)' :
+                            stateName === 'bsod'   ? 'var(--chaos-pink)' :
+                            stateName === 'warning' ? 'var(--chaos-amber)' :
+                            'var(--chaos-green)';
+}
+
+// IntersectionObserver: fire when section hits midpoint of viewport
+const sections = document.querySelectorAll('.terminal-section[data-state]');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      applyState(entry.target.getAttribute('data-state'));
+    }
+  });
+}, {
+  root: null,
+  rootMargin: '-40% 0px -40% 0px', // fires when section is in middle 20% of viewport
+  threshold: 0,
+});
+
+sections.forEach(sec => observer.observe(sec));
+
+// ============================================================
+// GLITCH FLASH on BSOD section entry
+// ============================================================
+const bsodSection = document.getElementById('sec-bsod');
+let bsodFlashed = false;
+
+const bsodObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !bsodFlashed) {
+      bsodFlashed = true;
+      // Brief screen flash
+      const flash = document.createElement('div');
+      flash.style.cssText = 'position:fixed;inset:0;background:#ff00cc;z-index:9999;pointer-events:none;opacity:0;';
+      document.body.appendChild(flash);
+      let f = 0;
+      const frames = [0.8, 0, 0.5, 0, 0.3, 0, 0.1, 0];
+      const step = () => {
+        if (f >= frames.length) { flash.remove(); return; }
+        flash.style.opacity = frames[f++];
+        setTimeout(step, 60);
+      };
+      step();
+    }
+  });
+}, { threshold: 0.3 });
+
+bsodObserver.observe(bsodSection);
+</script>
+
+</sp-theme>
+</body>
+</html>

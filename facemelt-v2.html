@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SOJU PROTOCOL — 소주 프로토콜 · nonrocker</title>
+
+  <!-- Spectrum Web Components (matches slides.html CDN version) -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+
+  <!-- Fonts (matches slides.html) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Major+Mono+Display&family=Metal+Mania&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --chaos-pink:   #ff00cc;
+      --chaos-green:  #39ff14;
+      --chaos-cyan:   #00f0ff;
+      --chaos-violet: #7a00ff;
+      --chaos-amber:  #ffb800;
+      --chaos-black:  #050008;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--chaos-black);
+      color: #fff;
+      font-family: 'VT323', monospace;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanlines (matches slides.html) */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.22) 3px, rgba(0,0,0,0) 4px
+      );
+      z-index: 9000;
+      mix-blend-mode: multiply;
+    }
+
+    /* Vignette */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.65) 100%);
+      z-index: 8999;
+    }
+
+    /* ================================================
+       TICKER
+       ================================================ */
+    .ticker {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #000;
+      color: var(--chaos-green);
+      border-top: 1px solid var(--chaos-green);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      z-index: 8500;
+    }
+    .ticker__track {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker 36s linear infinite;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-100%); }
+    }
+
+    /* ================================================
+       MATRIX CANVAS (full viewport, behind statue)
+       ================================================ */
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ================================================
+       SCROLL JOURNEY
+       ================================================ */
+    .scroll-journey {
+      height: 600vh;
+      position: relative;
+    }
+
+    .sticky-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    /* ================================================
+       SOJU BOTTLE (top of screen, tilts to pour)
+       ================================================ */
+    .soju-bottle {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-8deg);
+      z-index: 30;
+      pointer-events: none;
+      opacity: 0;
+      transform-origin: center bottom;
+    }
+
+    .bottle-svg {
+      width: 60px;
+      height: auto;
+    }
+
+    /* ================================================
+       POUR STREAM (CSS animated liquid column)
+       ================================================ */
+    .pour-stream {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      background: linear-gradient(
+        to bottom,
+        rgba(57,255,20,0.9),
+        rgba(57,255,20,0.6),
+        rgba(255,0,204,0.4),
+        transparent
+      );
+      transform-origin: top center;
+      z-index: 25;
+      pointer-events: none;
+      height: 0;
+      border-radius: 0 0 4px 4px;
+    }
+
+    /* ================================================
+       STATUE CANVAS (composite image render)
+       ================================================ */
+    #statueCanvas {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      image-rendering: pixelated;
+    }
+
+    /* ================================================
+       PHASE TEXTS
+       ================================================ */
+    .phase-text {
+      position: absolute;
+      left: 0; right: 0;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 40;
+    }
+
+    .phase-init {
+      top: 8%;
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(42px, 9vw, 110px);
+      line-height: 0.9;
+      text-shadow: 3px 0 var(--chaos-green), -3px 0 var(--chaos-cyan);
+    }
+
+    .phase-pour {
+      top: 12%;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.2vw, 13px);
+      color: var(--chaos-green);
+      letter-spacing: 0.12em;
+    }
+
+    .phase-dissolve {
+      bottom: 22%;
+      font-family: 'Major Mono Display', monospace;
+      font-size: clamp(14px, 1.8vw, 24px);
+      color: var(--chaos-pink);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .phase-complete {
+      bottom: 18%;
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(36px, 7vw, 88px);
+      line-height: 0.9;
+      text-shadow: 4px 0 var(--chaos-pink), -4px 0 var(--chaos-green);
+    }
+
+    /* ================================================
+       CORRUPT TEXT NODES
+       ================================================ */
+    .corrupt {
+      position: absolute;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      mix-blend-mode: difference;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 35;
+    }
+
+    /* ================================================
+       COLUMN REVEAL INDICATOR (left edge)
+       ================================================ */
+    .col-meter {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 180px;
+      border: 1px solid rgba(57,255,20,0.4);
+      background: rgba(0,0,0,0.6);
+      z-index: 40;
+    }
+    .col-meter__fill {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 0%;
+      background: var(--chaos-green);
+      box-shadow: 0 0 8px var(--chaos-green);
+      transition: height 0.1s linear;
+    }
+    .col-meter__label {
+      position: absolute;
+      bottom: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: var(--chaos-green);
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+    }
+
+    /* ================================================
+       PROGRESS BAR
+       ================================================ */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: rgba(57,255,20,0.15);
+      z-index: 9100;
+    }
+    .scroll-progress__bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--chaos-green), var(--chaos-cyan), var(--chaos-pink));
+    }
+
+    /* ================================================
+       SCROLL HINT
+       ================================================ */
+    .scroll-hint {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: rgba(57,255,20,0.45);
+      text-align: center;
+      z-index: 40;
+      white-space: nowrap;
+    }
+    @keyframes blink { 50% { opacity: 0.2; } }
+    .scroll-hint { animation: blink 1.2s steps(2) infinite; }
+
+    /* Warning bar */
+    .warning-bar {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: var(--chaos-green);
+      border: 1px solid var(--chaos-green);
+      padding: 4px 12px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      opacity: 0;
+      z-index: 8800;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .warning-bar.visible { opacity: 1; animation: blink 0.7s steps(2) infinite; }
+
+    /* ================================================
+       NOISE OVERLAY
+       ================================================ */
+    .noise {
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      mix-blend-mode: screen;
+      opacity: 0.14;
+      pointer-events: none;
+      z-index: 8700;
+      animation: noise-shift 0.14s steps(4) infinite;
+    }
+    @keyframes noise-shift {
+      0%   { transform: translate(0,0); }
+      25%  { transform: translate(-3%,2%); }
+      50%  { transform: translate(2%,-3%); }
+      75%  { transform: translate(-2%,-2%); }
+      100% { transform: translate(3%,3%); }
+    }
+
+    /* ================================================
+       FINAL SECTION
+       ================================================ */
+    .final-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      text-align: center;
+      padding: 60px 24px 80px;
+      background: linear-gradient(180deg, #001a00 0%, var(--chaos-black) 100%);
+      position: relative;
+    }
+
+    .final-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(57,255,20,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(57,255,20,0.08) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+    }
+
+    .final-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--chaos-green);
+      letter-spacing: 0.1em;
+      position: relative;
+    }
+
+    .final-heading {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(48px, 10vw, 120px);
+      line-height: 0.9;
+      text-shadow: 4px 0 var(--chaos-green), -4px 0 var(--chaos-cyan);
+      position: relative;
+    }
+
+    .final-body {
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      color: rgba(255,255,255,0.65);
+      max-width: 52ch;
+      line-height: 1.45;
+      position: relative;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+    }
+
+    .final-meta {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--chaos-green);
+      letter-spacing: 0.08em;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+<sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+  <!-- Fixed overlays -->
+  <div class="noise"></div>
+  <div class="scroll-progress"><div class="scroll-progress__bar" id="progBar"></div></div>
+  <div class="warning-bar" id="warningBar">▓ SOJU PROTOCOL ACTIVE ▓ MATRIX DISSOLVING MARBLE ▓</div>
+
+  <!-- Matrix rain canvas (full screen background) -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Scroll journey -->
+  <div class="scroll-journey" id="journey">
+    <div class="sticky-stage" id="stage">
+
+      <!-- Soju bottle SVG (pours at top center) -->
+      <div class="soju-bottle" id="sojuBottle">
+        <svg class="bottle-svg" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Bottle body -->
+          <rect x="18" y="40" width="24" height="60" rx="8" fill="#1a4a1a" stroke="#39ff14" stroke-width="1.5"/>
+          <!-- Label -->
+          <rect x="20" y="55" width="20" height="28" rx="2" fill="#0d2e0d" stroke="#39ff14" stroke-width="0.8"/>
+          <text x="30" y="65" text-anchor="middle" fill="#39ff14" font-size="5" font-family="monospace">소주</text>
+          <text x="30" y="74" text-anchor="middle" fill="#39ff14" font-size="4" font-family="monospace">SOJU</text>
+          <text x="30" y="80" text-anchor="middle" fill="#39ff14" font-size="3.5" font-family="monospace">NATION</text>
+          <!-- Neck -->
+          <rect x="23" y="20" width="14" height="22" rx="4" fill="#1a4a1a" stroke="#39ff14" stroke-width="1.5"/>
+          <!-- Cap -->
+          <rect x="21" y="12" width="18" height="10" rx="3" fill="#ff00cc" stroke="#39ff14" stroke-width="1"/>
+          <!-- Liquid inside -->
+          <rect x="19.5" y="80" width="21" height="19" rx="0 0 7 7" fill="rgba(57,255,20,0.3)"/>
+          <!-- Shine -->
+          <line x1="24" y1="45" x2="24" y2="90" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Pour stream -->
+      <div class="pour-stream" id="pourStream"></div>
+
+      <!-- Statue canvas (matrix-composite image render) -->
+      <canvas id="statueCanvas"></canvas>
+
+      <!-- Column reveal meter -->
+      <div class="col-meter">
+        <div class="col-meter__fill" id="colMeterFill"></div>
+        <div class="col-meter__label">SKULL%</div>
+      </div>
+
+      <!-- Phase texts -->
+      <div class="phase-text phase-init"     id="ph0">소주<br>PROTOCOL</div>
+      <div class="phase-text phase-pour"     id="ph1">⚠ MATRIX RAIN INITIATED — MARBLE DISSOLUTION IN PROGRESS ⚠</div>
+      <div class="phase-text phase-dissolve" id="ph2">SKULL SIGNATURE CONFIRMED</div>
+      <div class="phase-text phase-complete" id="ph3">PROTOCOL<br>COMPLETE</div>
+
+      <!-- Corrupt text -->
+      <span class="corrupt" style="top:10%;left:6%;color:var(--chaos-green);"  id="cr0">가나다라마바</span>
+      <span class="corrupt" style="top:20%;right:8%;color:var(--chaos-amber);" id="cr1">소주_INJECT</span>
+      <span class="corrupt" style="bottom:30%;left:8%;color:var(--chaos-cyan);" id="cr2">NRK-666</span>
+      <span class="corrupt" style="bottom:20%;right:6%;color:var(--chaos-pink);" id="cr3">SKULL.LOAD</span>
+      <span class="corrupt" style="top:44%;left:6%;color:#fff;"                id="cr4">사아자차카</span>
+      <span class="corrupt" style="top:32%;right:7%;color:var(--chaos-green);" id="cr5">타파하금은보화</span>
+
+      <!-- Scroll hint -->
+      <div class="scroll-hint" id="scrollHint">▼ SCROLL TO POUR ▼</div>
+
+    </div>
+  </div>
+
+  <!-- Final section -->
+  <div class="final-section">
+    <div class="final-label">// SOJU PROTOCOL — DISSOLUTION COMPLETE</div>
+    <h2 class="final-heading">Matrix<br>Melt</h2>
+    <p class="final-body">
+      The soju entered the matrix. The matrix entered the marble.
+      The marble entered the drain. What remains is bone.
+      STATUE.EXE has never looked better.
+    </p>
+    <div class="cta-row">
+      <sp-button variant="accent" size="xl" href="slides.html">View Full EPK</sp-button>
+      <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v1.html">Version 1</sp-button>
+      <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v3.html">Version 3</sp-button>
+    </div>
+    <div class="final-meta">NRK-666 · SOJU NATION · 소주막걸리 · ALL MARBLE WILL FALL</div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker__track">
+      ▓ 소주 PROTOCOL ACTIVE ▓ MARBLE DISSOLUTION: 100% ▓ MATRIX ORIGIN: SEOUL ▓ SOJU LEVEL: MAXIMUM ▓ STATUE.EXE REBOOTING ▓ NRK-666 ▓ 가나다라마바사아자차카타파하 ▓ THE SKULL WAS ALWAYS IN THE SOJU ▓
+    </div>
+  </div>
+
+</sp-theme>
+
+<script>
+// ============================================================
+// UTILITIES
+// ============================================================
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function lerp(a, b, t)    { return a + (b - a) * t; }
+function smoothstep(t)     { const c = clamp(t, 0, 1); return c * c * (3 - 2 * c); }
+function mapRange(v, inLo, inHi, outLo, outHi) {
+  return lerp(outLo, outHi, smoothstep(clamp((v - inLo) / (inHi - inLo), 0, 1)));
+}
+function phaseOpacity(t, fadeInAt, peakAt, fadeOutAt) {
+  if (t < fadeInAt) return 0;
+  if (t < peakAt)   return smoothstep((t - fadeInAt) / (peakAt - fadeInAt));
+  if (t < fadeOutAt) return smoothstep((fadeOutAt - t) / (fadeOutAt - peakAt));
+  return 0;
+}
+
+// ============================================================
+// MATRIX RAIN CANVAS
+// ============================================================
+const matrixCanvas = document.getElementById('matrixCanvas');
+const mCtx = matrixCanvas.getContext('2d');
+
+// Korean chars + numerals for the matrix rain (lore-accurate: soju, Korean)
+const MATRIX_CHARS = '가나다라마바사아자차카타파하소주막걸리금은보화평화사랑0123456789ﾊﾐﾋｸﾷｦｲﾑﾃﾎ';
+
+let matrixCols = 0;
+let drops = [];
+let scrollIntensity = 0; // 0 to 1
+
+function initMatrix() {
+  matrixCanvas.width  = window.innerWidth;
+  matrixCanvas.height = window.innerHeight;
+  const fontSize = 15;
+  matrixCols = Math.floor(matrixCanvas.width / fontSize);
+  drops = Array.from({length: matrixCols}, () => Math.random() * -50);
+}
+
+function drawMatrix() {
+  const fontSize = 15;
+
+  // Semi-transparent fade (creates trail)
+  mCtx.fillStyle = 'rgba(5, 0, 8, 0.06)';
+  mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+  for (let i = 0; i < drops.length; i++) {
+    const char = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+    const y = drops[i] * fontSize;
+    const x = i * fontSize;
+
+    // Head of drop: bright white/pink, body: green
+    const isHead = Math.random() < 0.08;
+    if (isHead) {
+      mCtx.fillStyle = Math.random() < 0.5 ? '#ffffff' : '#ff00cc';
+      mCtx.font = `bold ${fontSize}px monospace`;
+    } else {
+      // Color shifts from green to pink as skull reveals
+      const pinkMix = totalRevealPct / 100;
+      const r = Math.round(lerp(57, 255, pinkMix));
+      const g = Math.round(lerp(255, 0, pinkMix));
+      const b = Math.round(lerp(20, 204, pinkMix));
+      mCtx.fillStyle = `rgba(${r},${g},${b},${0.4 + Math.random() * 0.5})`;
+      mCtx.font = `${fontSize}px monospace`;
+    }
+
+    mCtx.fillText(char, x, y);
+
+    // Reset drops
+    const speed = 0.3 + scrollIntensity * 1.4;
+    if (y > matrixCanvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+    drops[i] += speed;
+  }
+
+  requestAnimationFrame(drawMatrix);
+}
+
+// ============================================================
+// STATUE CANVAS (column-based skull reveal)
+// ============================================================
+const statueCanvas = document.getElementById('statueCanvas');
+const sCtx = statueCanvas.getContext('2d');
+
+const IMG_SIZE = Math.min(420, Math.min(window.innerWidth * 0.82, window.innerHeight * 0.72));
+statueCanvas.width  = IMG_SIZE;
+statueCanvas.height = IMG_SIZE;
+
+// NUM_COLS columns track individual skull reveal progress
+const NUM_COLS = 24;
+const colReveal = new Array(NUM_COLS).fill(0); // 0 to 1 per column
+let totalRevealPct = 0; // 0-100 for the meter
+
+const faceImg = new Image();
+faceImg.src = 'Facemelt.png';
+
+// SKULL_ZONE: top ~52% of image contains skull
+// We track which matrix drops fall in each column of that zone
+const SKULL_ZONE_BOTTOM_PCT = 0.52;
+
+// Map matrix drop column to statue canvas column
+function matrixColToImageCol(matrixColIdx) {
+  const matX = matrixColIdx * 15; // matrix pixel x
+  const canvasLeft = (window.innerWidth / 2) - (IMG_SIZE / 2);
+  const relX = matX - canvasLeft;
+  if (relX < 0 || relX > IMG_SIZE) return -1;
+  return Math.floor((relX / IMG_SIZE) * NUM_COLS);
+}
+
+// Call this from matrix animation when drops pass through skull zone
+function checkDropsInSkullZone() {
+  const canvasTop  = (window.innerHeight / 2) - (IMG_SIZE / 2);
+  const skullBotY  = canvasTop + IMG_SIZE * SKULL_ZONE_BOTTOM_PCT;
+
+  for (let i = 0; i < drops.length; i++) {
+    const dropY = drops[i] * 15;
+    const dropX = i * 15;
+    const canvasLeft = (window.innerWidth / 2) - (IMG_SIZE / 2);
+    const relX = dropX - canvasLeft;
+
+    if (relX < 0 || relX > IMG_SIZE) continue;
+
+    const canvasY = (window.innerHeight / 2) - (IMG_SIZE / 2);
+
+    // Is this drop currently passing through the skull zone?
+    if (dropY >= canvasY && dropY <= skullBotY) {
+      const col = Math.floor((relX / IMG_SIZE) * NUM_COLS);
+      if (col >= 0 && col < NUM_COLS) {
+        // Increment this column's reveal based on scroll intensity
+        colReveal[col] = Math.min(1, colReveal[col] + 0.004 * Math.max(scrollIntensity, 0.1));
+      }
+    }
+  }
+
+  // Compute overall coverage
+  totalRevealPct = (colReveal.reduce((s, v) => s + v, 0) / NUM_COLS) * 100;
+}
+
+function drawStatueComposite() {
+  if (!faceImg.complete || faceImg.naturalWidth === 0) return;
+
+  const W = statueCanvas.width;
+  const H = statueCanvas.height;
+  const skullBotPx = H * SKULL_ZONE_BOTTOM_PCT;
+  const colW = W / NUM_COLS;
+
+  sCtx.clearRect(0, 0, W, H);
+
+  // 1. Draw the statue base (full image, skull zone will be composited)
+  sCtx.drawImage(faceImg, 0, 0, W, H);
+
+  // 2. Clear the skull zone entirely (hide skull)
+  sCtx.clearRect(0, 0, W, skullBotPx);
+
+  // 3. For each column, draw the revealed portion of the skull zone
+  for (let c = 0; c < NUM_COLS; c++) {
+    if (colReveal[c] <= 0) continue;
+
+    const x = c * colW;
+    const revealH = colReveal[c] * skullBotPx;
+
+    // Draw the skull zone slice for this column (top-down reveal within column)
+    sCtx.drawImage(
+      faceImg,
+      (x / W) * faceImg.naturalWidth,           // src x
+      0,                                          // src y (from top of image)
+      (colW / W) * faceImg.naturalWidth,          // src w
+      (revealH / H) * faceImg.naturalHeight,      // src h
+      x,                                          // dst x
+      0,                                          // dst y
+      colW,                                       // dst w
+      revealH                                     // dst h
+    );
+
+    // Add pink glow at the reveal bottom edge
+    if (colReveal[c] > 0.05) {
+      const grad = sCtx.createLinearGradient(x, revealH - 12, x, revealH + 4);
+      grad.addColorStop(0, 'rgba(255,0,204,0)');
+      grad.addColorStop(0.6, `rgba(255,0,204,${0.5 * colReveal[c]})`);
+      grad.addColorStop(1, 'rgba(255,0,204,0)');
+      sCtx.fillStyle = grad;
+      sCtx.fillRect(x, revealH - 12, colW, 18);
+    }
+  }
+
+  // 4. When nearly fully revealed, add overall pink glow
+  if (totalRevealPct > 70) {
+    const glowStrength = (totalRevealPct - 70) / 30;
+    sCtx.shadowColor = '#ff00cc';
+    sCtx.shadowBlur = 30 * glowStrength;
+    sCtx.drawImage(faceImg, 0, 0, W, H);
+    sCtx.shadowBlur = 0;
+  }
+}
+
+// ============================================================
+// SCROLL STATE
+// ============================================================
+const journey   = document.getElementById('journey');
+const progBar   = document.getElementById('progBar');
+const warningBar = document.getElementById('warningBar');
+const scrollHint = document.getElementById('scrollHint');
+const sojuBottle = document.getElementById('sojuBottle');
+const pourStream = document.getElementById('pourStream');
+const colMeterFill = document.getElementById('colMeterFill');
+
+const ph = [0,1,2,3].map(i => document.getElementById(`ph${i}`));
+const corrupts = [0,1,2,3,4,5].map(i => document.getElementById(`cr${i}`));
+
+let lastT = -1;
+
+function onScroll() {
+  const rect   = journey.getBoundingClientRect();
+  const totalH = journey.offsetHeight - window.innerHeight;
+  const t      = clamp(-rect.top / totalH, 0, 1);
+  if (Math.abs(t - lastT) < 0.001) return;
+  lastT = t;
+
+  // Update scroll intensity for matrix rain speed
+  scrollIntensity = smoothstep(clamp(t * 2, 0, 1));
+
+  // Progress bar
+  progBar.style.width = (t * 100) + '%';
+
+  // Soju bottle: appear and tilt as pour begins
+  const bottleT = mapRange(t, 0.04, 0.18, 0, 1);
+  sojuBottle.style.opacity  = bottleT;
+  sojuBottle.style.transform = `translateX(-50%) rotate(${lerp(-8, -42, smoothstep(t))}deg)`;
+
+  // Pour stream: height grows with scroll
+  const streamH = mapRange(t, 0.08, 0.9, 0, window.innerHeight * 0.55);
+  pourStream.style.height  = `${streamH}px`;
+  pourStream.style.opacity  = t > 0.08 && t < 0.95 ? mapRange(t, 0.08, 0.16, 0, 0.8) : 0;
+  // Stream narrows as it falls (taper)
+  const streamW = lerp(8, 3, t);
+  pourStream.style.width = `${streamW}px`;
+  pourStream.style.marginLeft = `${-streamW / 2}px`;
+
+  // Skull reveal meter
+  colMeterFill.style.height = totalRevealPct + '%';
+
+  // Warning bar
+  if (t > 0.14 && t < 0.94) warningBar.classList.add('visible');
+  else warningBar.classList.remove('visible');
+
+  // Scroll hint
+  scrollHint.style.opacity = t < 0.06 ? 1 : mapRange(t, 0.06, 0.13, 1, 0);
+
+  // Phase texts
+  ph[0].style.opacity = phaseOpacity(t, 0, 0.04, 0.16);
+  ph[1].style.opacity = phaseOpacity(t, 0.18, 0.28, 0.52);
+  ph[2].style.opacity = phaseOpacity(t, 0.55, 0.65, 0.82);
+  ph[3].style.opacity = phaseOpacity(t, 0.84, 0.93, 1.05);
+
+  [ph[1],ph[2],ph[3]].forEach((el, i) => {
+    const fadeStarts = [0.18, 0.55, 0.84][i];
+    const liftT = smoothstep(clamp((t - fadeStarts) / 0.1, 0, 1));
+    el.style.transform = `translateY(${lerp(14, 0, liftT)}px)`;
+  });
+
+  // Corrupts
+  const thresholds = [0.15, 0.24, 0.34, 0.42, 0.52, 0.38];
+  corrupts.forEach((el, i) => {
+    el.style.opacity = t > thresholds[i] ? clamp((t - thresholds[i]) * 6, 0, 1) : 0;
+  });
+}
+
+// ============================================================
+// ANIMATION LOOP
+// ============================================================
+function animLoop() {
+  checkDropsInSkullZone();
+  drawStatueComposite();
+  requestAnimationFrame(animLoop);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  initMatrix();
+
+  // Size statue canvas responsively
+  const newSize = Math.min(420, Math.min(window.innerWidth * 0.82, window.innerHeight * 0.72));
+  statueCanvas.width  = newSize;
+  statueCanvas.height = newSize;
+
+  // Start loops
+  drawMatrix();
+  animLoop();
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('resize', () => {
+  initMatrix();
+  onScroll();
+});
+
+faceImg.onload = init;
+if (faceImg.complete) init();
+
+onScroll();
+</script>
+
+</sp-theme>
+</body>
+</html>

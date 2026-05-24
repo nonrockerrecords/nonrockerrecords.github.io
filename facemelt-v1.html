@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STATUE.EXE — The Great Unmasking · nonrocker</title>
+
+  <!-- Spectrum Web Components (matches slides.html CDN version) -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+
+  <!-- Fonts (matches slides.html) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Major+Mono+Display&family=Metal+Mania&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --chaos-pink:   #ff00cc;
+      --chaos-green:  #39ff14;
+      --chaos-cyan:   #00f0ff;
+      --chaos-violet: #7a00ff;
+      --chaos-amber:  #ffb800;
+      --chaos-black:  #050008;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--chaos-black); color: #fff; font-family: 'VT323', monospace; }
+
+    /* ================================================
+       CRT + VIGNETTE (matches slides.html)
+       ================================================ */
+    body::before {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.22) 3px, rgba(0,0,0,0) 4px
+      );
+      z-index: 9000; mix-blend-mode: multiply;
+    }
+    body::after {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.7) 100%);
+      z-index: 8999;
+    }
+
+    /* ================================================
+       NOISE OVERLAY (matches slides.html)
+       ================================================ */
+    .noise {
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      mix-blend-mode: screen; opacity: 0.17; pointer-events: none;
+      z-index: 8700; animation: noise-shift 0.14s steps(4) infinite;
+    }
+    @keyframes noise-shift {
+      0%   { transform: translate(0,0); }   25% { transform: translate(-3%,2%); }
+      50%  { transform: translate(2%,-3%); } 75% { transform: translate(-2%,-2%); }
+      100% { transform: translate(3%,3%); }
+    }
+
+    /* ================================================
+       VHS TRACKING LINE (matches slides.html)
+       ================================================ */
+    .vhs {
+      position: fixed; left: 0; right: 0; height: 90px;
+      background: linear-gradient(180deg,
+        transparent 0%, rgba(255,255,255,0.08) 30%,
+        rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.08) 70%, transparent 100%);
+      mix-blend-mode: screen; pointer-events: none;
+      animation: vhs-roll 2.1s linear infinite; z-index: 8600;
+    }
+    @keyframes vhs-roll { 0% { top: -90px; } 100% { top: 100%; } }
+
+    /* ================================================
+       TICKER (matches slides.html)
+       ================================================ */
+    .ticker {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #000; color: var(--chaos-pink);
+      border-top: 1px solid var(--chaos-pink);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px; letter-spacing: 0.1em;
+      padding: 8px 0; overflow: hidden; white-space: nowrap; z-index: 8500;
+    }
+    .ticker__track {
+      display: inline-block; padding-left: 100%;
+      animation: ticker 40s linear infinite;
+    }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+    /* ================================================
+       GLITCH SLICES (matches slides.html)
+       ================================================ */
+    .slice {
+      position: fixed; left: 0; right: 0;
+      background: rgba(255,255,255,0.06);
+      mix-blend-mode: difference; pointer-events: none; opacity: 0;
+    }
+    .slice-1 { top: 18%; height: 8px;  animation: slice-jump 1.8s steps(9) infinite; }
+    .slice-2 { top: 42%; height: 14px; animation: slice-jump 1.3s steps(7) infinite reverse; }
+    .slice-3 { top: 67%; height: 5px;  animation: slice-jump 2.4s steps(11) infinite; }
+    @keyframes slice-jump {
+      0%,100% { transform: translateX(0); }   20% { transform: translateX(-30px); }
+      40%     { transform: translateX(45px); } 60% { transform: translateX(-22px); }
+      80%     { transform: translateX(60px); }
+    }
+
+    /* ================================================
+       PROGRESS BAR
+       ================================================ */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; background: rgba(255,0,204,0.15); z-index: 9100;
+    }
+    .scroll-progress__bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--chaos-pink), var(--chaos-violet), var(--chaos-cyan));
+    }
+
+    /* Warning bar */
+    @keyframes blink { 50% { opacity: 0.25; } }
+    .warning-bar {
+      position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+      background: #000; color: var(--chaos-pink); border: 1px solid var(--chaos-pink);
+      padding: 4px 12px; font-family: 'Press Start 2P', monospace;
+      font-size: 9px; letter-spacing: 0.1em; opacity: 0;
+      z-index: 8800; white-space: nowrap; pointer-events: none;
+    }
+    .warning-bar.visible { opacity: 1; animation: blink 0.65s steps(2) infinite; }
+
+    /* ================================================
+       SCROLL JOURNEY
+       ================================================ */
+    .scroll-journey { height: 550vh; position: relative; }
+
+    .sticky-stage {
+      position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden;
+    }
+
+    /* ================================================
+       PARALLAX BACKGROUND LAYERS
+       ================================================ */
+    .bg-layer { position: absolute; inset: 0; pointer-events: none; }
+
+    /* Layer 0: Deep void */
+    .bg-void { background: radial-gradient(ellipse at 50% 65%, #0d0020 0%, #050008 60%); }
+
+    /* Layer 1: Vaporwave hero image (BD3D75D0 - slides.html hero bg) */
+    /* Starts dark/invisible, briefly visible in mid-scroll as context, then fades back */
+    .bg-hero {
+      background-image: url('BD3D75D0-98E8-45FC-86B2-894AB3064A32.png');
+      background-size: cover; background-position: center;
+      filter: blur(14px) brightness(0.12) saturate(0.4);
+      opacity: 0;
+    }
+
+    /* Layer 2: Pink glow radial (appears as skull color returns) */
+    .bg-glow {
+      opacity: 0;
+      background: radial-gradient(
+        ellipse at 50% 38%,
+        rgba(255,0,204,0.5) 0%, rgba(122,0,255,0.25) 40%, rgba(5,0,8,0) 70%
+      );
+    }
+
+    /* Layer 3: Vaporwave perspective grid */
+    .bg-grid {
+      opacity: 0; bottom: 0; top: 55%;
+      background-image:
+        linear-gradient(rgba(255,0,204,0.22) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,0,204,0.22) 1px, transparent 1px);
+      background-size: 70px 70px;
+      transform: perspective(500px) rotateX(55deg); transform-origin: 50% 100%;
+    }
+
+    /* ================================================
+       STATUE IMAGE SYSTEM
+       ================================================ */
+    .statue-container {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(430px, 84vw); z-index: 10;
+    }
+
+    /*
+     * THE REVEAL SYSTEM:
+     * - img starts: full grayscale + brightness boost = skull reads as white marble
+     * - img starts: clip-path inset(52% 0 0 0) = only bottom 48% visible (chin/neck area)
+     * - As scroll progresses: both animate simultaneously
+     *   1. Grayscale drops to 0 = color returns, pink skull materializes
+     *   2. Clip top shrinks to 0 = skull area revealed from top-down
+     * - Result: A "complete white marble bust" that gains its skull in both space & color
+     *
+     * Starting image references:
+     *  - F16541D8 (inner David bust, back cover) shows the cleanest classical bust head
+     *  - BD3D75D0 (slides.html hero bg) provides mid-scroll context
+     *  - Facemelt.png is the main image throughout
+     */
+    .statue-img {
+      width: 100%; display: block;
+      /* START STATE: full grayscale + brightened (skull looks like marble) */
+      /* clip-path set by JS; filter set by JS */
+    }
+
+    /* Neon glow frame (appears near full reveal) */
+    .skull-frame {
+      position: absolute; inset: -8px;
+      border: 1px solid var(--chaos-pink);
+      box-shadow:
+        0 0 24px var(--chaos-pink),
+        0 0 70px rgba(255,0,204,0.5),
+        inset 0 0 24px rgba(255,0,204,0.15);
+      opacity: 0; pointer-events: none;
+    }
+
+    /* Drip SVG layer (at clip boundary) */
+    .drip-wrap {
+      position: absolute; left: -16px; right: -16px;
+      height: 80px; pointer-events: none; opacity: 0;
+      overflow: visible;
+    }
+    .drip-svg { width: 100%; height: 80px; overflow: visible; }
+
+    /* ================================================
+       PHASE TEXTS
+       ================================================ */
+    .phase-text {
+      position: absolute; left: 0; right: 0;
+      text-align: center; pointer-events: none; opacity: 0; z-index: 20;
+    }
+
+    /* Phase 0: STATUE.EXE label (top, visible at start) */
+    .ph-title {
+      top: 8%;
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(54px, 12vw, 140px);
+      line-height: 0.9;
+      text-shadow: 3px 0 var(--chaos-pink), -3px 0 var(--chaos-cyan);
+    }
+
+    /* Phase 1: marble integrity (bottom, mid-scroll) */
+    .ph-warn {
+      bottom: 22%;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.1vw, 13px);
+      color: var(--chaos-amber); letter-spacing: 0.12em;
+    }
+
+    /* Phase 2: Skull confirmed (top, late scroll) */
+    .ph-breach {
+      top: 10%;
+      font-family: 'Major Mono Display', monospace;
+      font-size: clamp(13px, 1.8vw, 24px);
+      color: var(--chaos-green); letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px var(--chaos-green);
+    }
+
+    /* Phase 3: Complete (bottom, end) */
+    .ph-complete {
+      bottom: 18%;
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(40px, 8vw, 100px);
+      line-height: 0.9;
+      text-shadow: 4px 0 var(--chaos-pink), -4px 0 var(--chaos-cyan);
+    }
+
+    /* ================================================
+       CORRUPT TEXT (matches slides.html)
+       ================================================ */
+    .corrupt {
+      position: absolute; font-family: 'Press Start 2P', monospace;
+      font-size: 10px; letter-spacing: 0.08em;
+      mix-blend-mode: difference; pointer-events: none; opacity: 0;
+    }
+
+    /* ================================================
+       SCROLL HINT
+       ================================================ */
+    .scroll-hint {
+      position: absolute; bottom: 68px; left: 50%; transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace; font-size: 9px;
+      color: rgba(255,255,255,0.35); text-align: center;
+      z-index: 20; white-space: nowrap;
+      animation: blink 1.3s steps(2) infinite;
+    }
+
+    /* ================================================
+       FINAL CTA SECTION
+       ================================================ */
+    .final-section {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 26px;
+      text-align: center; padding: 60px 24px 80px;
+      background: linear-gradient(180deg, #120020 0%, var(--chaos-black) 100%);
+      position: relative;
+    }
+    .final-section::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(122,0,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(122,0,255,0.1) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .final-label {
+      font-family: 'Press Start 2P', monospace; font-size: 10px;
+      color: var(--chaos-green); letter-spacing: 0.1em; position: relative;
+    }
+    .final-heading {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(48px, 10vw, 120px); line-height: 0.9;
+      text-shadow: 4px 0 var(--chaos-pink), -4px 0 var(--chaos-cyan); position: relative;
+    }
+    .final-body {
+      font-family: 'VT323', monospace; font-size: 20px;
+      color: rgba(255,255,255,0.65); max-width: 50ch;
+      line-height: 1.45; position: relative;
+    }
+    .cta-row {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      justify-content: center; position: relative;
+    }
+    .final-meta {
+      font-family: 'Press Start 2P', monospace; font-size: 8px;
+      color: var(--chaos-pink); letter-spacing: 0.08em; position: relative;
+    }
+  </style>
+</head>
+<body>
+<sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+  <!-- Fixed overlays -->
+  <div class="noise"></div>
+  <div class="vhs"></div>
+  <div class="slice slice-1"></div>
+  <div class="slice slice-2"></div>
+  <div class="slice slice-3"></div>
+  <div class="scroll-progress"><div class="scroll-progress__bar" id="progBar"></div></div>
+  <div class="warning-bar" id="warningBar">▓ COLOR ANOMALY DETECTED ▓ SKULL MATERIALIZING ▓</div>
+
+  <!-- =====================================================
+       SCROLL JOURNEY
+       ===================================================== -->
+  <div class="scroll-journey" id="journey">
+    <div class="sticky-stage" id="stage">
+
+      <!-- Backgrounds -->
+      <div class="bg-layer bg-void"></div>
+      <div class="bg-layer bg-hero"  id="bgHero"></div>
+      <div class="bg-layer bg-glow"  id="bgGlow"></div>
+      <div class="bg-layer bg-grid"  id="bgGrid"></div>
+
+      <!-- Phase texts -->
+      <div class="phase-text ph-title"    id="ph0">STATUE<br>.EXE</div>
+      <div class="phase-text ph-warn"     id="ph1">⚠ MARBLE INTEGRITY FAILING — COLOR ANOMALY IN CRANIAL SECTOR ⚠</div>
+      <div class="phase-text ph-breach"   id="ph2">SKULL VISIBILITY: RISING</div>
+      <div class="phase-text ph-complete" id="ph3">AWAKENING<br>COMPLETE</div>
+
+      <!-- Corrupt text nodes -->
+      <span class="corrupt" style="top:10%;left:5%;color:var(--chaos-green);"  id="cr0">SIGNAL_LOST</span>
+      <span class="corrupt" style="top:22%;right:7%;color:var(--chaos-amber);" id="cr1">SKULL.EXE</span>
+      <span class="corrupt" style="bottom:28%;left:8%;color:var(--chaos-cyan);" id="cr2">NRK-666</span>
+      <span class="corrupt" style="bottom:18%;right:5%;color:var(--chaos-pink);" id="cr3">REBRAND: 13%</span>
+      <span class="corrupt" style="top:46%;left:5%;color:#fff;"                id="cr4">MARBLE.SYS NOT FOUND</span>
+      <span class="corrupt" style="top:34%;right:6%;color:var(--chaos-green);" id="cr5">SOJU.EXE ACTIVE</span>
+
+      <!-- Statue container -->
+      <div class="statue-container" id="statueContainer">
+
+        <!--
+          REVEAL STRATEGY:
+          1. img starts grayscale(1) brightness(1.32) — skull renders as white marble
+          2. clip-path: inset(52% 0 0 0) — only bottom 48% (chin/face) visible
+          3. JS animates both simultaneously as scroll progresses:
+             - inset top: 52% → 0%  (skull area reveals top-down)
+             - grayscale: 1 → 0     (pink materializes)
+             - brightness: 1.32 → 1.02
+             - saturation: 0 → 1
+        -->
+        <img
+          src="Facemelt.png"
+          class="statue-img"
+          id="statueImg"
+          alt="STATUE.EXE — The Great Unmasking"
+        />
+
+        <!-- SVG drip edge (rendered at clip boundary) -->
+        <div class="drip-wrap" id="dripWrap">
+          <svg class="drip-svg" id="dripSvg" viewBox="0 0 430 80" preserveAspectRatio="none">
+            <defs>
+              <filter id="dGlow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <g id="dripGroup"></g>
+          </svg>
+        </div>
+
+        <!-- Neon frame (late reveal) -->
+        <div class="skull-frame" id="skullFrame"></div>
+
+      </div>
+
+      <div class="scroll-hint" id="scrollHint">▼ SCROLL TO UNMASK ▼</div>
+
+    </div>
+  </div>
+
+  <!-- =====================================================
+       FINAL CTA SECTION
+       ===================================================== -->
+  <div class="final-section">
+    <div class="final-label">// STATUE.EXE v2.0 — UNMASKING COMPLETE</div>
+    <h2 class="final-heading">The Face<br>Melts</h2>
+    <p class="final-body">
+      STATUE.EXE presented as complete white marble for years.
+      The skull was always there. The color was always there.
+      The plaster was the lie. The neon was the truth.
+    </p>
+    <div class="cta-row">
+      <sp-button variant="accent" size="xl" href="slides.html">View Full EPK</sp-button>
+      <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v2.html">V2: Soju Matrix</sp-button>
+      <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v3.html">V3: BSOD</sp-button>
+    </div>
+    <div class="final-meta">NRK-666 · nonrocker records · ALL COLOR IS PERMANENT</div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker__track">
+      ▓ MARBLE INTEGRITY: 0% ▓ SKULL VISIBILITY: 100% ▓ STATUE.EXE v2.0 ▓ THE PINK WAS ALWAYS THERE ▓ NRK-666 ▓ SOJU NATION ▓ DO NOT ADJUST YOUR FACE ▓ FACEMELT IN PROGRESS ▓ ALL PLASTER IS TEMPORARY ▓ CRANIAL ANOMALY CONFIRMED ▓ GRIEF.DLL UNLOADED ▓
+    </div>
+  </div>
+
+</sp-theme>
+
+<script>
+// ============================================================
+// UTILITIES
+// ============================================================
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function lerp(a, b, t)    { return a + (b - a) * t; }
+function smoothstep(t)     { const c = clamp(t,0,1); return c*c*(3-2*c); }
+function mapRange(v, inLo, inHi, outLo, outHi) {
+  return lerp(outLo, outHi, smoothstep(clamp((v-inLo)/(inHi-inLo), 0, 1)));
+}
+function phaseOpacity(t, fadeInAt, peakAt, fadeOutAt) {
+  if (t < fadeInAt)  return 0;
+  if (t < peakAt)    return smoothstep((t-fadeInAt)/(peakAt-fadeInAt));
+  if (t < fadeOutAt) return smoothstep((fadeOutAt-t)/(fadeOutAt-peakAt));
+  return 0;
+}
+
+// ============================================================
+// DRIP GENERATION
+// ============================================================
+const DRIP_COUNT = 10;
+const dripGroup  = document.getElementById('dripGroup');
+const SVG_NS     = 'http://www.w3.org/2000/svg';
+
+const drips = Array.from({length: DRIP_COUNT}, (_, i) => {
+  const x    = 15 + i * (400 / (DRIP_COUNT - 1));
+  const maxH = 22 + Math.random() * 30;
+  const w    = 4  + Math.random() * 8;
+  const bR   = 3  + Math.random() * 3;
+
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('fill', '#ff00cc');
+  path.setAttribute('filter', 'url(#dGlow)');
+
+  const dot = document.createElementNS(SVG_NS, 'circle');
+  dot.setAttribute('fill', '#ff00cc');
+  dot.setAttribute('filter', 'url(#dGlow)');
+
+  dripGroup.appendChild(path);
+  dripGroup.appendChild(dot);
+
+  return { path, dot, x, w, bR, maxH };
+});
+
+function renderDrips(t) {
+  const container = document.getElementById('statueContainer');
+  const wrap      = document.getElementById('dripWrap');
+  const H         = container.offsetHeight;
+
+  // Position the drip-wrap at the current clip boundary
+  // clip boundary is at inset top% from the top of the container
+  const clipTopPct = mapRange(t, 0.08, 0.9, 52, 0);
+  const boundaryPx = (clipTopPct / 100) * H;
+  wrap.style.top   = `${boundaryPx - 18}px`;
+  wrap.style.opacity = (t > 0.06 && t < 0.96) ? Math.sin(t * Math.PI) : 0;
+
+  drips.forEach((d, i) => {
+    const localT = clamp((t - i * 0.045) * 1.4, 0, 1);
+    const h = d.maxH * smoothstep(localT);
+    const {x, w, bR} = d;
+
+    // Tapered teardrop body
+    d.path.setAttribute('d',
+      `M${x-w/2} 20 Q${x-w/2-3} ${20+h/2} ${x} ${20+h} Q${x+w/2+3} ${20+h/2} ${x+w/2} 20 Z`
+    );
+    d.dot.setAttribute('cx', x);
+    d.dot.setAttribute('cy', 20 + h + bR * localT);
+    d.dot.setAttribute('r', bR * localT);
+  });
+}
+
+// ============================================================
+// SCROLL STATE
+// ============================================================
+const journey    = document.getElementById('journey');
+const statueImg  = document.getElementById('statueImg');
+const bgHero     = document.getElementById('bgHero');
+const bgGlow     = document.getElementById('bgGlow');
+const bgGrid     = document.getElementById('bgGrid');
+const skullFrame = document.getElementById('skullFrame');
+const warningBar = document.getElementById('warningBar');
+const scrollHint = document.getElementById('scrollHint');
+const progBar    = document.getElementById('progBar');
+
+const ph = [0,1,2,3].map(i => document.getElementById(`ph${i}`));
+const crs = [0,1,2,3,4,5].map(i => document.getElementById(`cr${i}`));
+const slices = document.querySelectorAll('.slice');
+
+let lastT = -1;
+
+// Apply starting state immediately so there's no flash of full-color image
+statueImg.style.filter   = 'grayscale(1) brightness(1.32) contrast(1.1) saturate(0)';
+statueImg.style.clipPath = 'inset(52% 0 0 0)';
+
+function onScroll() {
+  const rect   = journey.getBoundingClientRect();
+  const totalH = journey.offsetHeight - window.innerHeight;
+  const t      = clamp(-rect.top / totalH, 0, 1);
+  if (Math.abs(t - lastT) < 0.0008) return;
+  lastT = t;
+
+  // ---- PROGRESS BAR ----
+  progBar.style.width = (t * 100) + '%';
+
+  // ============================================================
+  // STATUE IMAGE: DUAL REVEAL
+  // 1. clip-path: inset top shrinks from 52% → 0% (skull area appears)
+  // 2. filter: grayscale/saturation animates (skull goes from white marble → pink neon)
+  //
+  // The two effects are slightly offset so the skull shape emerges first
+  // as a gray form, then gains color — mimicking neon "warming up"
+  // ============================================================
+  const clipTop  = mapRange(t, 0.08, 0.9,  52, 0);   // reveal position
+  const gray     = mapRange(t, 0.20, 0.88,  1, 0);   // grayscale off
+  const bright   = mapRange(t, 0.20, 0.88, 1.32, 1.02); // brightness normalize
+  const sat      = mapRange(t, 0.30, 0.92,  0, 1);   // saturation on (slightly later)
+  const contrast = lerp(1.1, 1.15, smoothstep(t));
+
+  statueImg.style.clipPath = `inset(${clipTop}% 0 0 0)`;
+  statueImg.style.filter   =
+    `grayscale(${gray.toFixed(3)}) brightness(${bright.toFixed(3)}) contrast(${contrast.toFixed(2)}) saturate(${sat.toFixed(3)})`;
+
+  // ---- DRIPS ----
+  renderDrips(t);
+
+  // ---- BACKGROUNDS ----
+  // Hero bg: faint context early in scroll, fades before skull reveals color
+  bgHero.style.opacity = mapRange(t, 0.05, 0.15, 0, 0.35) - mapRange(t, 0.25, 0.45, 0, 0.35);
+  bgGlow.style.opacity = mapRange(t, 0.40, 0.88, 0, 1);
+  bgGrid.style.opacity = mapRange(t, 0.28, 0.72, 0, 0.6);
+
+  // ---- SKULL FRAME ----
+  skullFrame.style.opacity = mapRange(t, 0.80, 0.96, 0, 1);
+
+  // ---- SCROLL HINT ----
+  scrollHint.style.opacity = t < 0.06 ? 1 : mapRange(t, 0.06, 0.14, 1, 0);
+
+  // ---- WARNING BAR ----
+  if (t > 0.20 && t < 0.90) warningBar.classList.add('visible');
+  else warningBar.classList.remove('visible');
+
+  // ---- PHASE TEXTS ----
+  // ph0 STATUE.EXE: present at very start, fades as scroll begins
+  ph[0].style.opacity   = phaseOpacity(t, 0, 0.04, 0.20);
+
+  // ph1 marble integrity warning: mid early
+  ph[1].style.opacity   = phaseOpacity(t, 0.24, 0.34, 0.56);
+  ph[1].style.transform = `translateY(${lerp(14, 0, smoothstep(clamp((t-0.24)/0.10, 0, 1)))}px)`;
+
+  // ph2 skull visibility rising: mid late
+  ph[2].style.opacity   = phaseOpacity(t, 0.52, 0.62, 0.80);
+  ph[2].style.transform = `translateY(${lerp(10, 0, smoothstep(clamp((t-0.52)/0.10, 0, 1)))}px)`;
+
+  // ph3 AWAKENING COMPLETE: final
+  ph[3].style.opacity   = phaseOpacity(t, 0.84, 0.93, 1.05);
+  ph[3].style.transform = `translateY(${lerp(20, 0, smoothstep(clamp((t-0.84)/0.09, 0, 1)))}px)`;
+
+  // ---- CORRUPT TEXTS ----
+  const thresholds = [0.24, 0.32, 0.40, 0.48, 0.56, 0.44];
+  crs.forEach((el, i) => {
+    el.style.opacity = t > thresholds[i]
+      ? clamp((t - thresholds[i]) * 6, 0, 1) : 0;
+  });
+
+  // ---- GLITCH SLICES ----
+  slices.forEach(s => {
+    s.style.opacity = t > 0.30 ? mapRange(t, 0.30, 0.65, 0, 0.45) : 0;
+  });
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('resize', onScroll);
+
+// Run immediately and also after SWC loads (avoids color flash)
+onScroll();
+document.addEventListener('DOMContentLoaded', onScroll);
+</script>
+
+</sp-theme>
+</body>
+</html>
