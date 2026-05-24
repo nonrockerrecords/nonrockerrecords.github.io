@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FACEMELT V7 // COLUMN POUR — nonrocker records</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Bungee&display=swap" rel="stylesheet">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/elements.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink:  #ff00cc;
+      --cyan:  #00f0ff;
+      --lime:  #39ff14;
+      --amber: #ffb800;
+      --bg:    #050508;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'VT323', monospace;
+      color: #ccc;
+      overflow-x: hidden;
+    }
+
+    /* Fine CRT scanlines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(180deg,
+        rgba(0,0,0,0.13) 0px, rgba(0,0,0,0.13) 1px,
+        transparent 1px, transparent 3px);
+      pointer-events: none; z-index: 9100;
+    }
+
+    /* Corner burn vignette */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%,
+        transparent 48%, rgba(0,0,0,0.65) 100%);
+      pointer-events: none; z-index: 9099;
+    }
+
+    /* ── Loading overlay ── */
+    #loading {
+      position: fixed; inset: 0; z-index: 9990;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 18px;
+      transition: opacity 0.6s;
+    }
+    #loading.done { opacity: 0; pointer-events: none; }
+    .ld-title {
+      font-family: 'Bungee', monospace;
+      font-size: 13px; letter-spacing: 6px; color: var(--pink);
+      text-shadow: 0 0 18px var(--pink);
+    }
+    .ld-sub { font-size: 14px; letter-spacing: 3px; color: rgba(255,0,204,0.4); }
+    .ld-track { width: 280px; height: 2px; background: rgba(255,0,204,0.15); }
+    #ld-bar { height: 100%; width: 0%; background: var(--pink); box-shadow: 0 0 8px var(--pink); transition: width 0.2s; }
+
+    /* ── Header ── */
+    #hdr {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      padding: 9px 22px;
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(5,5,8,0.91);
+      border-bottom: 1px solid rgba(255,0,204,0.20);
+      backdrop-filter: blur(10px);
+    }
+    .hdr-logo { font-family: 'Bungee', monospace; font-size: 12px; letter-spacing: 3px; color: var(--pink); text-shadow: 0 0 10px var(--pink); }
+    .hdr-pipe { width: 1px; height: 14px; background: rgba(255,0,204,0.25); }
+    .hdr-label { font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.25); }
+    .hdr-right { margin-left: auto; font-size: 12px; letter-spacing: 2px; color: var(--lime); text-shadow: 0 0 8px var(--lime); }
+
+    /* ── Scroll journey ── */
+    #journey { height: 800vh; }
+
+    #sticky {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    canvas { display: block; }
+
+    /* ── HUD overlay ── */
+    #hud {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 600;
+      padding: 6px 20px 12px;
+      display: flex; align-items: center; gap: 0;
+      background: rgba(5,5,8,0.80);
+      border-top: 1px solid rgba(255,0,204,0.14);
+      pointer-events: none;
+    }
+    #phase-name { font-size: 17px; letter-spacing: 5px; color: var(--pink); text-shadow: 0 0 12px var(--pink); flex: 1; }
+    #phase-sub  { font-size: 13px; letter-spacing: 2px; color: rgba(0,240,255,0.5); }
+    #pct        { font-size: 13px; letter-spacing: 1px; color: rgba(255,255,255,0.2); margin-left: 16px; }
+
+    /* progress strip */
+    #prog { position: fixed; top: 32px; left: 0; height: 1px; background: linear-gradient(90deg,var(--pink),var(--cyan)); box-shadow: 0 0 5px var(--pink); z-index: 700; }
+
+    /* ── scroll hint ── */
+    #hint { position: fixed; right: 18px; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; font-size: 13px; letter-spacing: 3px; color: rgba(57,255,20,0.30); animation: blink 2s infinite; z-index: 600; }
+    @keyframes blink { 0%,100%{opacity:.30} 50%{opacity:.80} }
+
+    /* ── Footer ── */
+    #foot { padding: 50px 24px 38px; text-align: center; border-top: 1px solid rgba(255,0,204,0.10); display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; background: rgba(5,5,8,0.85); }
+
+    sp-theme { display: contents; }
+  </style>
+</head>
+<body>
+  <sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+    <!-- Loading screen -->
+    <div id="loading">
+      <div class="ld-title">COLUMN POUR // V7</div>
+      <div class="ld-track"><div id="ld-bar"></div></div>
+      <div class="ld-sub">SYNTHESIZING INTERMEDIATE FRAMES…</div>
+    </div>
+
+    <header id="hdr">
+      <span class="hdr-logo">nonrocker records</span>
+      <div class="hdr-pipe"></div>
+      <span class="hdr-label">FACEMELT V7</span>
+      <div class="hdr-pipe"></div>
+      <span class="hdr-label">COLUMN POUR</span>
+      <span class="hdr-right">NRK-2024</span>
+    </header>
+
+    <div id="journey"><div id="sticky"><canvas id="cvs"></canvas></div></div>
+
+    <div id="hud">
+      <span id="phase-name">PREMELT STATE</span>
+      <span id="phase-sub"></span>
+      <span id="pct">0%</span>
+    </div>
+    <div id="hint">↓ SCROLL ↓</div>
+    <div id="prog" style="width:0%"></div>
+
+    <footer id="foot">
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v6.html'">← V6 CRT</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='slides.html'">SLIDES</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v8.html'">V8 WAVE →</sp-button>
+    </footer>
+
+  </sp-theme>
+  <script>
+  (() => {
+    'use strict';
+
+    // ── DOM ─────────────────────────────────────────────────────────────────────
+    const cvs   = document.getElementById('cvs');
+    const ctx   = cvs.getContext('2d');
+    const hud   = { name: document.getElementById('phase-name'), sub: document.getElementById('phase-sub'), pct: document.getElementById('pct') };
+    const prog  = document.getElementById('prog');
+    const ldBar = document.getElementById('ld-bar');
+    const loading = document.getElementById('loading');
+
+    // ── Helpers ─────────────────────────────────────────────────────────────────
+    const clamp   = (v,a,b) => Math.max(a, Math.min(b,v));
+    const invlerp = (a,b,v) => clamp((v-a)/(b-a), 0, 1);
+    const lerp    = (a,b,t) => a + (b-a)*t;
+    const eio     = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    const eo      = t => 1 - Math.pow(1-t, 3);
+
+    // ── Geometry ─────────────────────────────────────────────────────────────────
+    let W=0,H=0, imgX=0,imgY=0,imgW=0,imgH=0, SKULL_CX=0;
+    const SKULL_X_FRAC = 0.50;  // skull center X (fraction of imgW)
+
+    function resize() {
+      W = cvs.width  = window.innerWidth;
+      H = cvs.height = window.innerHeight;
+      const ar = allImgs[0].naturalWidth / allImgs[0].naturalHeight;
+      if (H * ar < W * 0.72) { imgH = H * 0.92; imgW = imgH * ar; }
+      else { imgW = W * 0.70; imgH = imgW / ar; }
+      imgX = (W - imgW) / 2;
+      imgY = (H - imgH) / 2;
+      SKULL_CX = imgX + imgW * SKULL_X_FRAC;
+    }
+    window.addEventListener('resize', () => { if (ready) resize(); });
+
+    // ── Image loading ────────────────────────────────────────────────────────────
+    let allImgs = [], synthA = null, synthB = null, ready = false;
+
+    function loadImg(src) {
+      return new Promise(res => {
+        const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src;
+      });
+    }
+
+    // Pixel-level blend — returns a canvas element at capped resolution
+    function pixelBlend(i1, i2, alpha) {
+      const MAX = 640;
+      const ar  = i1.naturalHeight / i1.naturalWidth;
+      const w   = Math.min(i1.naturalWidth, MAX);
+      const h   = Math.round(w * ar);
+      const oc  = document.createElement('canvas');
+      oc.width = w; oc.height = h;
+      const ox  = oc.getContext('2d');
+      ox.drawImage(i1, 0, 0, w, h);
+      const d1  = ox.getImageData(0, 0, w, h).data;
+      ox.clearRect(0, 0, w, h);
+      ox.drawImage(i2, 0, 0, w, h);
+      const d2  = ox.getImageData(0, 0, w, h).data;
+      const out = ox.createImageData(w, h);
+      const od  = out.data;
+      const b   = alpha, a = 1 - alpha;
+      for (let i = 0; i < od.length; i++) od[i] = d1[i]*a + d2[i]*b;
+      ox.putImageData(out, 0, 0);
+      return oc;
+    }
+
+    async function init() {
+      allImgs = await Promise.all([
+        loadImg('facemelt-premelt.png'),
+        loadImg('Facemelt.png'),
+        loadImg('Facemelt-endmelt.png'),
+      ]);
+      if (!allImgs.every(Boolean)) return;
+
+      ldBar.style.width = '30%';
+      await new Promise(r => setTimeout(r, 10)); // yield for repaint
+
+      synthA = pixelBlend(allImgs[0], allImgs[1], 0.50);
+      ldBar.style.width = '65%';
+      await new Promise(r => setTimeout(r, 10));
+
+      synthB = pixelBlend(allImgs[1], allImgs[2], 0.50);
+      ldBar.style.width = '100%';
+      await new Promise(r => setTimeout(r, 200));
+
+      loading.classList.add('done');
+      setTimeout(() => { loading.style.display = 'none'; }, 700);
+      ready = true;
+      resize();
+      requestAnimationFrame(draw);
+    }
+    init();
+
+    // ── Scroll ───────────────────────────────────────────────────────────────────
+    let scrollT = 0;
+    window.addEventListener('scroll', () => {
+      const el = document.getElementById('journey');
+      scrollT = clamp(window.scrollY / (el.offsetHeight - window.innerHeight), 0, 1);
+      prog.style.width = (scrollT * 100) + '%';
+    }, { passive: true });
+
+    // ── Draw helpers ──────────────────────────────────────────────────────────────
+    function drawFull(img, alpha=1) {
+      if (!img || alpha<=0) return;
+      ctx.save(); ctx.globalAlpha = clamp(alpha,0,1);
+      ctx.drawImage(img, imgX, imgY, imgW, imgH);
+      ctx.restore();
+    }
+
+    // ── COLUMN POUR ──────────────────────────────────────────────────────────────
+    // Modes: 'ltr' | 'rtl' | 'radial' | 'csplit'
+    // Fill front flows from TOP of image downward per column.
+    const N_COLS = 66;
+
+    function drawColPour(imgA, imgB, progress, animT, mode) {
+      const cw = W / N_COLS;
+      const skullCol = Math.round((SKULL_CX - 0) / cw); // column under skull
+
+      // Compute per-column fill-front (0→1, fraction of imgH revealed)
+      const fronts = new Float32Array(N_COLS);
+      for (let c = 0; c < N_COLS; c++) {
+        let delay = 0;
+        if      (mode === 'ltr')    delay = (c / N_COLS) * 0.44;
+        else if (mode === 'rtl')    delay = ((N_COLS-1-c) / N_COLS) * 0.44;
+        else if (mode === 'radial') {
+          const mxD = Math.max(skullCol, N_COLS-1-skullCol);
+          delay = (Math.abs(c - skullCol) / mxD) * 0.40;
+        }
+        else if (mode === 'csplit') delay = (Math.abs(c - N_COLS/2) / (N_COLS/2)) * 0.44;
+        fronts[c] = clamp((progress - delay) / (1 - delay), 0, 1);
+      }
+
+      // 1. Draw imgA as background
+      drawFull(imgA);
+
+      // 2. Compound clip — all imgB zones (top of image to fill front)
+      ctx.save();
+      ctx.beginPath();
+      for (let c = 0; c < N_COLS; c++) {
+        if (fronts[c] <= 0) continue;
+        ctx.rect(c*cw, imgY, cw, fronts[c]*imgH);
+      }
+      ctx.clip();
+      drawFull(imgB);
+      ctx.restore();
+
+      // 3. Neon pour-edge glow per active column
+      ctx.save();
+      ctx.shadowColor = '#ff00cc';
+      ctx.shadowBlur  = 12;
+      for (let c = 0; c < N_COLS; c++) {
+        const f = fronts[c];
+        if (f <= 0.005 || f >= 0.998) continue;
+        const x  = c * cw;
+        const ey = imgY + f * imgH; // bottom edge of revealed region
+
+        // Soft shadow strip above edge
+        const g = ctx.createLinearGradient(0, ey-28, 0, ey+6);
+        g.addColorStop(0, 'rgba(0,0,0,0)');
+        g.addColorStop(.7, 'rgba(0,0,0,0.18)');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(x, ey-28, cw, 34);
+
+        // Neon line
+        const pulse = 0.65 + 0.30 * Math.sin(animT*9 + c*0.27);
+        ctx.fillStyle = `rgba(255,0,204,${pulse})`;
+        ctx.fillRect(x, ey-2, cw, 3);
+
+        // Lime accent flicker on some columns
+        if ((c % 7 === 0)) {
+          ctx.fillStyle = `rgba(57,255,20,${pulse*0.4})`;
+          ctx.fillRect(x, ey+1, cw, 1);
+        }
+      }
+      ctx.restore();
+    }
+
+    // ── Phase table ──────────────────────────────────────────────────────────────
+    // [scrollStart, scrollEnd, label, sub-label, draw-fn]
+    const JOURNEY_H = 800; // vh (for label only)
+
+    function getPhase(t) {
+      if (t < 0.08) return { name:'PREMELT STATE',      sub:'',                  img: allImgs[0], fn: null };
+      if (t < 0.28) return { name:'MELTING: L→R POUR',  sub:'PREMELT → MID',     draw: (p,at)=>drawColPour(allImgs[0], synthA,     eio(p), at, 'ltr'),    p: invlerp(0.08,0.28,t) };
+      if (t < 0.46) return { name:'MELTING: RADIAL',    sub:'MID → FACEMELT',    draw: (p,at)=>drawColPour(synthA,     allImgs[1], eio(p), at, 'radial'), p: invlerp(0.28,0.46,t) };
+      if (t < 0.54) return { name:'MID MELT',           sub:'',                  img: allImgs[1], fn: null };
+      if (t < 0.72) return { name:'MELTING: R→L POUR',  sub:'FACEMELT → MID',    draw: (p,at)=>drawColPour(allImgs[1], synthB,     eio(p), at, 'rtl'),    p: invlerp(0.54,0.72,t) };
+      if (t < 0.90) return { name:'MELTING: CENTER',    sub:'MID → END MELT',    draw: (p,at)=>drawColPour(synthB,     allImgs[2], eio(p), at, 'csplit'), p: invlerp(0.72,0.90,t) };
+      return                { name:'END STATE',          sub:'MELT COMPLETE',     img: allImgs[2], fn: null };
+    }
+
+    // ── Main draw loop ────────────────────────────────────────────────────────────
+    let animT = 0, lastTS = 0;
+
+    function draw(ts=0) {
+      requestAnimationFrame(draw);
+      if (!ready) return;
+
+      const dt = Math.min((ts-lastTS)/1000, 0.05);
+      lastTS = ts; animT += dt;
+
+      const t = scrollT;
+      const ph = getPhase(t);
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#050508';
+      ctx.fillRect(0,0,W,H);
+
+      if (ph.img) {
+        // Hold phase
+        drawFull(ph.img);
+
+        // Subtle crown pulse
+        if (ph.img !== allImgs[0]) { // not premelt — skull is visible
+          const pulse = 0.14 + Math.sin(animT*2.7)*0.07;
+          ctx.save();
+          ctx.globalCompositeOperation = 'screen';
+          const grd = ctx.createRadialGradient(SKULL_CX, imgY+imgH*0.32, 0, SKULL_CX, imgY+imgH*0.32, imgW*0.35);
+          grd.addColorStop(0, `rgba(255,0,204,${pulse})`);
+          grd.addColorStop(1, 'rgba(255,0,80,0)');
+          ctx.fillStyle = grd; ctx.fillRect(0,0,W,H);
+          ctx.restore();
+        }
+      } else {
+        // Transition phase
+        ph.draw(ph.p, animT);
+      }
+
+      // CRT grain roll (subtle)
+      const ry = (animT * 24 % H);
+      ctx.save(); ctx.globalAlpha = 0.03; ctx.fillStyle = '#39ff14';
+      [ry, (ry+H/3)%H, (ry+2*H/3)%H].forEach(y => ctx.fillRect(0,y,W,1));
+      ctx.restore();
+
+      // HUD
+      hud.name.textContent = ph.name;
+      hud.sub.textContent  = ph.sub || '';
+      hud.pct.textContent  = Math.round(t*100)+'%';
+    }
+  })();
+  </script>
+</body>
+</html>

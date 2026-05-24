@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FACEMELT V8 // WAVE MORPH — nonrocker records</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/elements.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink: #ff00cc;
+      --cyan: #00f0ff;
+      --lime: #39ff14;
+      --bg:   #040410;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'VT323', monospace;
+      color: #c8c8d8;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(180deg,
+        rgba(0,0,255,0.03) 0px, rgba(0,0,255,0.03) 1px,
+        transparent 1px, transparent 4px);
+      pointer-events: none; z-index: 9100;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%,
+        transparent 46%, rgba(0,0,0,0.70) 100%);
+      pointer-events: none; z-index: 9099;
+    }
+
+    /* ── Loading ── */
+    #loading {
+      position: fixed; inset: 0; z-index: 9990; background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 20px;
+      transition: opacity 0.6s;
+    }
+    #loading.done { opacity: 0; pointer-events: none; }
+    .ld-title { font-family: 'Major Mono Display', monospace; font-size: 11px; letter-spacing: 6px; color: var(--cyan); text-shadow: 0 0 16px var(--cyan); }
+    .ld-sub   { font-size: 14px; letter-spacing: 3px; color: rgba(0,240,255,0.35); }
+    .ld-track { width: 260px; height: 2px; background: rgba(0,240,255,0.12); }
+    #ld-bar   { height: 100%; width: 0%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); transition: width 0.2s; }
+
+    /* ── Header ── */
+    #hdr {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      padding: 9px 22px;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(4,4,16,0.92);
+      border-bottom: 1px solid rgba(0,240,255,0.18);
+      backdrop-filter: blur(10px);
+    }
+    .hdr-logo  { font-family: 'Major Mono Display', monospace; font-size: 10px; letter-spacing: 3px; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+    .hdr-pipe  { width: 1px; height: 14px; background: rgba(0,240,255,0.22); }
+    .hdr-label { font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.24); }
+    .hdr-right { margin-left: auto; font-size: 12px; letter-spacing: 2px; color: var(--pink); text-shadow: 0 0 8px var(--pink); }
+
+    #journey { height: 800vh; }
+    #sticky  { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    canvas   { display: block; }
+
+    /* ── Wave indicator (side glyph) ── */
+    #wave-glyph {
+      position: fixed; left: 18px; top: 50%;
+      transform: translateY(-50%);
+      width: 24px; height: 120px;
+      z-index: 600; pointer-events: none;
+    }
+
+    /* ── HUD ── */
+    #hud {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 600;
+      padding: 6px 22px 12px;
+      display: flex; align-items: center; gap: 0;
+      background: rgba(4,4,16,0.80);
+      border-top: 1px solid rgba(0,240,255,0.12);
+      pointer-events: none;
+    }
+    #phase-name { font-size: 17px; letter-spacing: 5px; color: var(--cyan); text-shadow: 0 0 12px var(--cyan); flex: 1; }
+    #phase-sub  { font-size: 13px; letter-spacing: 2px; color: rgba(255,0,204,0.45); }
+    #pct        { font-size: 13px; letter-spacing: 1px; color: rgba(255,255,255,0.18); margin-left: 16px; }
+
+    #prog  { position: fixed; top: 32px; left: 0; height: 1px; background: linear-gradient(90deg, var(--cyan), var(--pink)); box-shadow: 0 0 5px var(--cyan); z-index: 700; }
+    #hint  { position: fixed; right: 18px; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; font-size: 13px; letter-spacing: 3px; color: rgba(0,240,255,0.28); animation: blink 2.1s infinite; z-index: 600; }
+    @keyframes blink { 0%,100%{opacity:.28} 50%{opacity:.75} }
+
+    #foot { padding: 50px 24px 38px; text-align: center; border-top: 1px solid rgba(0,240,255,0.08); display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; background: rgba(4,4,16,0.88); }
+
+    sp-theme { display: contents; }
+  </style>
+</head>
+<body>
+  <sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+    <div id="loading">
+      <div class="ld-title">wave morph // v8</div>
+      <div class="ld-track"><div id="ld-bar"></div></div>
+      <div class="ld-sub">SYNTHESIZING PIXEL FRAMES…</div>
+    </div>
+
+    <header id="hdr">
+      <span class="hdr-logo">nonrocker records</span>
+      <div class="hdr-pipe"></div>
+      <span class="hdr-label">FACEMELT V8</span>
+      <div class="hdr-pipe"></div>
+      <span class="hdr-label">WAVE MORPH</span>
+      <span class="hdr-right">NRK-2024</span>
+    </header>
+
+    <div id="journey"><div id="sticky"><canvas id="cvs"></canvas></div></div>
+
+    <!-- Animated side glyph (SVG wave drawn as canvas) -->
+    <canvas id="wave-glyph" width="24" height="120"></canvas>
+
+    <div id="hud">
+      <span id="phase-name">PREMELT STATE</span>
+      <span id="phase-sub"></span>
+      <span id="pct">0%</span>
+    </div>
+    <div id="hint">↓ SCROLL ↓</div>
+    <div id="prog" style="width:0%"></div>
+
+    <footer id="foot">
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v7.html'">← V7 POUR</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='slides.html'">SLIDES</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v9.html'">V9 BLINDS →</sp-button>
+    </footer>
+
+  </sp-theme>
+  <script>
+  (() => {
+    'use strict';
+
+    // ── DOM ──────────────────────────────────────────────────────────────────────
+    const cvs     = document.getElementById('cvs');
+    const ctx     = cvs.getContext('2d');
+    const glyph   = document.getElementById('wave-glyph');
+    const gCtx    = glyph.getContext('2d');
+    const hud     = { name: document.getElementById('phase-name'), sub: document.getElementById('phase-sub'), pct: document.getElementById('pct') };
+    const prog    = document.getElementById('prog');
+    const ldBar   = document.getElementById('ld-bar');
+    const loading = document.getElementById('loading');
+
+    // ── Helpers ──────────────────────────────────────────────────────────────────
+    const clamp   = (v,a,b) => Math.max(a, Math.min(b,v));
+    const invlerp = (a,b,v) => clamp((v-a)/(b-a), 0, 1);
+    const lerp    = (a,b,t) => a + (b-a)*t;
+    const eio     = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+
+    // ── Geometry ─────────────────────────────────────────────────────────────────
+    let W=0,H=0, imgX=0,imgY=0,imgW=0,imgH=0, SKULL_CX=0,SKULL_CY=0, MAX_R=0;
+    const SKULL_X_FRAC = 0.50, SKULL_Y_FRAC = 0.32;
+
+    function resize() {
+      W = cvs.width  = window.innerWidth;
+      H = cvs.height = window.innerHeight;
+      const ar = allImgs[0].naturalWidth / allImgs[0].naturalHeight;
+      if (H * ar < W * 0.72) { imgH = H * 0.92; imgW = imgH * ar; }
+      else { imgW = W * 0.70; imgH = imgW / ar; }
+      imgX = (W-imgW)/2; imgY = (H-imgH)/2;
+      SKULL_CX = imgX + imgW*SKULL_X_FRAC;
+      SKULL_CY = imgY + imgH*SKULL_Y_FRAC;
+      MAX_R = Math.sqrt(Math.max(SKULL_CX**2+SKULL_CY**2, (W-SKULL_CX)**2+SKULL_CY**2,
+        SKULL_CX**2+(H-SKULL_CY)**2, (W-SKULL_CX)**2+(H-SKULL_CY)**2)) * 1.15;
+    }
+    window.addEventListener('resize', () => { if (ready) resize(); });
+
+    // ── Loading / synth ──────────────────────────────────────────────────────────
+    let allImgs = [], synthA = null, synthB = null, ready = false;
+
+    function loadImg(src) {
+      return new Promise(res => { const i=new Image(); i.onload=()=>res(i); i.onerror=()=>res(null); i.src=src; });
+    }
+
+    function pixelBlend(i1, i2, alpha) {
+      const MAX=640, ar=i1.naturalHeight/i1.naturalWidth;
+      const w=Math.min(i1.naturalWidth,MAX), h=Math.round(w*ar);
+      const oc=document.createElement('canvas'); oc.width=w; oc.height=h;
+      const ox=oc.getContext('2d');
+      ox.drawImage(i1,0,0,w,h); const d1=ox.getImageData(0,0,w,h).data;
+      ox.clearRect(0,0,w,h);
+      ox.drawImage(i2,0,0,w,h); const d2=ox.getImageData(0,0,w,h).data;
+      const out=ox.createImageData(w,h); const od=out.data;
+      const b=alpha, a=1-alpha;
+      for (let i=0;i<od.length;i++) od[i]=d1[i]*a+d2[i]*b;
+      ox.putImageData(out,0,0); return oc;
+    }
+
+    async function init() {
+      allImgs = await Promise.all(['facemelt-premelt.png','Facemelt.png','Facemelt-endmelt.png'].map(loadImg));
+      if (!allImgs.every(Boolean)) return;
+      ldBar.style.width='30%'; await new Promise(r=>setTimeout(r,10));
+      synthA = pixelBlend(allImgs[0], allImgs[1], 0.50);
+      ldBar.style.width='65%'; await new Promise(r=>setTimeout(r,10));
+      synthB = pixelBlend(allImgs[1], allImgs[2], 0.50);
+      ldBar.style.width='100%'; await new Promise(r=>setTimeout(r,200));
+      loading.classList.add('done');
+      setTimeout(()=>{ loading.style.display='none'; }, 700);
+      ready = true; resize(); requestAnimationFrame(draw);
+    }
+    init();
+
+    // ── Scroll ───────────────────────────────────────────────────────────────────
+    let scrollT = 0;
+    window.addEventListener('scroll', () => {
+      const el = document.getElementById('journey');
+      scrollT = clamp(window.scrollY / (el.offsetHeight - window.innerHeight), 0, 1);
+      prog.style.width = (scrollT*100)+'%';
+    }, { passive: true });
+
+    // ── Draw full image ───────────────────────────────────────────────────────────
+    function drawFull(img, alpha=1) {
+      if (!img || alpha<=0) return;
+      ctx.save(); ctx.globalAlpha=clamp(alpha,0,1);
+      ctx.drawImage(img, imgX, imgY, imgW, imgH);
+      ctx.restore();
+    }
+
+    // ── Wave functions (return Y for a given x pixel) ────────────────────────────
+
+    // Single sine wave sweeping top→bottom
+    function waveTopDown(x, progress, animT) {
+      const A = 32 * Math.sin(progress * Math.PI); // amplitude peaks mid-transition
+      const nw = (x - imgX) / imgW;
+      return imgY + progress * imgH
+        + A * Math.sin(nw * 2.8 * Math.PI + animT * 1.4)
+        + A * 0.4 * Math.sin(nw * 5.3 * Math.PI - animT * 0.9)
+        + A * 0.2 * Math.sin(nw * 9.1 * Math.PI + animT * 2.1);
+    }
+
+    // Two waves (pincer): top front and bottom front, reveal region ABOVE top and BELOW bottom
+    function wavePincerTop(x, progress, animT) {
+      const A = 28 * Math.sin(progress * Math.PI);
+      const nw = (x - imgX) / imgW;
+      return imgY + progress * imgH * 0.5
+        + A * Math.sin(nw * 3.2 * Math.PI + animT * 1.2)
+        + A * 0.45 * Math.sin(nw * 6.1 * Math.PI - animT * 0.7);
+    }
+    function wavePincerBot(x, progress, animT) {
+      const A = 28 * Math.sin(progress * Math.PI);
+      const nw = (x - imgX) / imgW;
+      return imgY + imgH - progress * imgH * 0.5
+        - A * Math.sin(nw * 3.2 * Math.PI + animT * 1.2 + Math.PI)
+        - A * 0.45 * Math.sin(nw * 6.1 * Math.PI - animT * 0.7 + Math.PI);
+    }
+
+    // Radial circle expand from skull — wave is a circle, not horizontal
+    // Returns radius at this progress
+    function waveRadialRadius(progress) {
+      return eo(progress) * MAX_R;
+    }
+
+    // Single sine wave sweeping bottom→top
+    function waveBottomUp(x, progress, animT) {
+      const A = 32 * Math.sin(progress * Math.PI);
+      const nw = (x - imgX) / imgW;
+      return imgY + imgH - progress * imgH
+        - A * Math.sin(nw * 2.8 * Math.PI - animT * 1.4)
+        - A * 0.4 * Math.sin(nw * 5.3 * Math.PI + animT * 0.9);
+    }
+
+    // ── Build wave clip paths ─────────────────────────────────────────────────────
+    // "topdown" — clip = region ABOVE wave (already swept)
+    function clipTopDown(progress, animT) {
+      const STEP = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, imgY);
+      ctx.lineTo(W, imgY);
+      ctx.lineTo(W, waveTopDown(W, progress, animT));
+      for (let x = W; x >= 0; x -= STEP) ctx.lineTo(x, waveTopDown(x, progress, animT));
+      ctx.closePath();
+    }
+
+    // "pincer" — clip = ABOVE top wave + BELOW bottom wave (two bands)
+    function clipPincer(progress, animT) {
+      const STEP = 3;
+      // Top band
+      ctx.beginPath();
+      ctx.moveTo(0, imgY);
+      ctx.lineTo(W, imgY);
+      ctx.lineTo(W, wavePincerTop(W, progress, animT));
+      for (let x = W; x >= 0; x -= STEP) ctx.lineTo(x, wavePincerTop(x, progress, animT));
+      ctx.closePath();
+      // Bottom band (same path object, second sub-path)
+      ctx.moveTo(0, imgY+imgH);
+      ctx.lineTo(W, imgY+imgH);
+      ctx.lineTo(W, wavePincerBot(W, progress, animT));
+      for (let x = W; x >= 0; x -= STEP) ctx.lineTo(x, wavePincerBot(x, progress, animT));
+      ctx.closePath();
+    }
+
+    // "radial" — clip = circle centered on skull
+    function clipRadial(progress) {
+      const r = waveRadialRadius(progress);
+      ctx.beginPath();
+      ctx.arc(SKULL_CX, SKULL_CY, r, 0, Math.PI*2);
+    }
+
+    // "bottomup" — clip = region BELOW wave (already swept, coming from bottom)
+    function clipBottomUp(progress, animT) {
+      const STEP = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, imgY+imgH);
+      ctx.lineTo(W, imgY+imgH);
+      ctx.lineTo(W, waveBottomUp(W, progress, animT));
+      for (let x = W; x >= 0; x -= STEP) ctx.lineTo(x, waveBottomUp(x, progress, animT));
+      ctx.closePath();
+    }
+
+    // ── Draw wave glow stroke ──────────────────────────────────────────────────────
+    function strokeWave(waveFn, animT, progress, color='#00f0ff') {
+      const STEP = 3;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, waveFn(0, progress, animT));
+      for (let x = 0; x <= W; x += STEP) ctx.lineTo(x, waveFn(x, progress, animT));
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.2;
+      ctx.shadowColor = color;
+      ctx.shadowBlur  = 18;
+      ctx.stroke();
+      // Outer glow
+      ctx.lineWidth = 5;
+      ctx.globalAlpha = 0.2;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function strokeCircle(radius, color='#00f0ff') {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(SKULL_CX, SKULL_CY, radius, 0, Math.PI*2);
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = 2.5;
+      ctx.shadowColor = color;
+      ctx.shadowBlur  = 22;
+      ctx.stroke();
+      ctx.globalAlpha = 0.18;
+      ctx.lineWidth   = 8;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ── Wave morph draw functions ─────────────────────────────────────────────────
+    function drawWaveTopDown(imgA, imgB, progress, animT) {
+      drawFull(imgA);
+      ctx.save(); clipTopDown(progress, animT); ctx.clip(); drawFull(imgB); ctx.restore();
+      strokeWave(waveTopDown, animT, progress, '#00f0ff');
+    }
+
+    function drawWavePincer(imgA, imgB, progress, animT) {
+      drawFull(imgA);
+      ctx.save(); clipPincer(progress, animT); ctx.clip(); drawFull(imgB); ctx.restore();
+      // Stroke both wave fronts
+      strokeWave(wavePincerTop, animT, progress, '#ff00cc');
+      strokeWave(wavePincerBot, animT, progress, '#ff00cc');
+    }
+
+    function drawWaveRadial(imgA, imgB, progress, animT) {
+      drawFull(imgA);
+      ctx.save(); clipRadial(progress); ctx.clip(); drawFull(imgB); ctx.restore();
+      strokeCircle(waveRadialRadius(progress), '#00f0ff');
+    }
+
+    function drawWaveBottomUp(imgA, imgB, progress, animT) {
+      drawFull(imgA);
+      ctx.save(); clipBottomUp(progress, animT); ctx.clip(); drawFull(imgB); ctx.restore();
+      strokeWave(waveBottomUp, animT, progress, '#ff00cc');
+    }
+
+    // ── Phase dispatch ────────────────────────────────────────────────────────────
+    function getPhase(t) {
+      if (t < 0.08) return { name:'PREMELT STATE',       sub:'',               img: allImgs[0] };
+      if (t < 0.28) return { name:'WAVE: TOP→DOWN',      sub:'PREMELT → MID',  draw:(p,at)=>drawWaveTopDown(allImgs[0],synthA,    eio(p),at), p:invlerp(0.08,0.28,t) };
+      if (t < 0.46) return { name:'WAVE: PINCER SQUEEZE',sub:'MID → FACEMELT', draw:(p,at)=>drawWavePincer( synthA,    allImgs[1],eio(p),at), p:invlerp(0.28,0.46,t) };
+      if (t < 0.54) return { name:'MID MELT',            sub:'',               img: allImgs[1] };
+      if (t < 0.72) return { name:'WAVE: RADIAL EXPAND', sub:'FACEMELT → MID', draw:(p,at)=>drawWaveRadial( allImgs[1],synthB,    eio(p),at), p:invlerp(0.54,0.72,t) };
+      if (t < 0.90) return { name:'WAVE: BOTTOM→UP',     sub:'MID → END MELT', draw:(p,at)=>drawWaveBottomUp(synthB,   allImgs[2],eio(p),at), p:invlerp(0.72,0.90,t) };
+      return               { name:'END STATE',            sub:'MELT COMPLETE',  img: allImgs[2] };
+    }
+
+    // ── Side wave glyph ───────────────────────────────────────────────────────────
+    function drawGlyph(animT, t) {
+      gCtx.clearRect(0,0,24,120);
+      gCtx.strokeStyle = 'rgba(0,240,255,0.5)';
+      gCtx.lineWidth = 1.5;
+      gCtx.shadowColor = '#00f0ff';
+      gCtx.shadowBlur  = 6;
+      gCtx.beginPath();
+      for (let y = 0; y <= 120; y += 2) {
+        const x = 12 + 8 * Math.sin(y*0.18 + animT*2.0 + t*4);
+        if (y===0) gCtx.moveTo(x,y); else gCtx.lineTo(x,y);
+      }
+      gCtx.stroke();
+    }
+
+    // ── Main draw loop ─────────────────────────────────────────────────────────────
+    let animT = 0, lastTS = 0;
+
+    function draw(ts=0) {
+      requestAnimationFrame(draw);
+      if (!ready) return;
+      const dt = Math.min((ts-lastTS)/1000, 0.05);
+      lastTS=ts; animT+=dt;
+
+      const t = scrollT;
+      const ph = getPhase(t);
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#040410';
+      ctx.fillRect(0,0,W,H);
+
+      if (ph.img) {
+        drawFull(ph.img);
+        // Hold skull bloom
+        if (ph.img !== allImgs[0]) {
+          const pulse = 0.15 + Math.sin(animT*2.5)*0.07;
+          ctx.save(); ctx.globalCompositeOperation='screen';
+          const grd = ctx.createRadialGradient(SKULL_CX,SKULL_CY,0,SKULL_CX,SKULL_CY,imgW*0.38);
+          grd.addColorStop(0,`rgba(0,240,255,${pulse*0.5})`);
+          grd.addColorStop(0.4,`rgba(255,0,204,${pulse*0.3})`);
+          grd.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+          ctx.restore();
+        }
+      } else {
+        ph.draw(ph.p, animT);
+      }
+
+      // CRT ghost roll
+      const ry = animT*22%H;
+      ctx.save(); ctx.globalAlpha=0.025; ctx.fillStyle='#00f0ff';
+      [ry,(ry+H/2)%H].forEach(y=>ctx.fillRect(0,y,W,1));
+      ctx.restore();
+
+      // Side glyph
+      drawGlyph(animT, t);
+
+      hud.name.textContent = ph.name;
+      hud.sub.textContent  = ph.sub||'';
+      hud.pct.textContent  = Math.round(t*100)+'%';
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>nonrocker records — content directory</title>
+  <meta name="description" content="All pages and variations from nonrocker records. NRK." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:  #060608;
+      --pink:   #ff2d78;
+      --cyan:   #00e5ff;
+      --dim:    rgba(255, 45, 120, 0.22);
+      --text:   #ddd;
+      --sub:    #777;
+    }
+
+    html, body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      min-height: 100vh;
+    }
+
+    /* CRT scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.12) 3px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    /* ── header ── */
+    .site-header {
+      text-align: center;
+      padding: 3.5rem 0 2.5rem;
+      border-bottom: 1px solid var(--dim);
+      margin-bottom: 3rem;
+    }
+
+    .label-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(11px, 2.8vw, 19px);
+      color: var(--pink);
+      text-shadow: 0 0 18px var(--pink), 0 0 50px rgba(255,45,120,0.25);
+      letter-spacing: 0.06em;
+      margin-bottom: 1.2rem;
+    }
+
+    .dir-heading {
+      font-family: 'VT323', monospace;
+      font-size: clamp(28px, 6vw, 48px);
+      color: var(--cyan);
+      letter-spacing: 0.12em;
+    }
+
+    .dir-sub {
+      margin-top: 0.5rem;
+      color: var(--sub);
+      font-size: 17px;
+      letter-spacing: 0.18em;
+    }
+
+    /* ── section ── */
+    .section {
+      margin-bottom: 3.5rem;
+    }
+
+    .section-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--pink);
+      letter-spacing: 0.22em;
+      margin-bottom: 1.1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--dim);
+    }
+
+    /* ── card grid ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: rgba(255, 45, 120, 0.03);
+      border: 1px solid var(--dim);
+      padding: 1rem 1.2rem 1.1rem;
+      transition: border-color 0.14s, box-shadow 0.14s, background 0.14s;
+    }
+
+    .card:hover {
+      border-color: var(--pink);
+      box-shadow: 0 0 16px rgba(255,45,120,0.28), inset 0 0 22px rgba(255,45,120,0.04);
+      background: rgba(255,45,120,0.06);
+    }
+
+    .card-tag {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: var(--sub);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.55rem;
+    }
+
+    .card-title {
+      font-size: 24px;
+      color: var(--text);
+      line-height: 1.15;
+    }
+
+    .card-sub {
+      font-size: 16px;
+      color: var(--sub);
+      margin-top: 0.15rem;
+    }
+
+    .card:hover .card-title { color: #fff; }
+    .card:hover .card-tag   { color: var(--pink); }
+
+    /* ── footer ── */
+    .site-footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--dim);
+      text-align: center;
+      color: var(--sub);
+      font-size: 16px;
+      letter-spacing: 0.1em;
+    }
+
+    .site-footer a {
+      color: var(--pink);
+      text-decoration: none;
+    }
+
+    .site-footer a:hover {
+      text-shadow: 0 0 8px var(--pink);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="site-header">
+      <div class="label-name">nonrocker records</div>
+      <div class="dir-heading">[ CONTENT DIRECTORY ]</div>
+      <div class="dir-sub">NRK &nbsp;·&nbsp; all pages &nbsp;·&nbsp; all variations</div>
+    </header>
+
+    <section class="section">
+      <div class="section-label">// EPK</div>
+      <div class="card-grid">
+        <a class="card" href="index.html">
+          <div class="card-tag">PRESS KIT</div>
+          <div class="card-title">Electronic Press Kit</div>
+          <div class="card-sub">nonrocker / Turbolag · long-scroll</div>
+        </a>
+        <a class="card" href="slides.html">
+          <div class="card-tag">SLIDES</div>
+          <div class="card-title">Black Mirror Deck</div>
+          <div class="card-sub">glitch slide format</div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-label">// FACEMELT COLLECTION</div>
+      <div class="card-grid">
+
+        <a class="card" href="facemelt-v1.html">
+          <div class="card-tag">V1</div>
+          <div class="card-title">THE GREAT UNMASKING</div>
+          <div class="card-sub">STATUE.EXE</div>
+        </a>
+
+        <a class="card" href="facemelt-v2.html">
+          <div class="card-tag">V2</div>
+          <div class="card-title">소주 프로토콜</div>
+          <div class="card-sub">SOJU PROTOCOL</div>
+        </a>
+
+        <a class="card" href="facemelt-v3.html">
+          <div class="card-tag">V3 &nbsp;·&nbsp; NRK-666</div>
+          <div class="card-title">FATAL EXCEPTION</div>
+          <div class="card-sub">STATUE.EXE</div>
+        </a>
+
+        <a class="card" href="facemelt-v4.html">
+          <div class="card-tag">V4</div>
+          <div class="card-title">GLITCH TILES</div>
+          <div class="card-sub">STATUE.EXE</div>
+        </a>
+
+        <a class="card" href="facemelt-v5.html">
+          <div class="card-tag">V5</div>
+          <div class="card-title">LIQUID BLOB</div>
+          <div class="card-sub">nonrocker records</div>
+        </a>
+
+        <a class="card" href="facemelt-v6.html">
+          <div class="card-tag">V6</div>
+          <div class="card-title">CRT POWER CYCLE</div>
+          <div class="card-sub">nonrocker records</div>
+        </a>
+
+        <a class="card" href="facemelt-v7.html">
+          <div class="card-tag">V7</div>
+          <div class="card-title">COLUMN POUR</div>
+          <div class="card-sub">nonrocker records</div>
+        </a>
+
+        <a class="card" href="facemelt-v8.html">
+          <div class="card-tag">V8</div>
+          <div class="card-title">WAVE MORPH</div>
+          <div class="card-sub">nonrocker records</div>
+        </a>
+
+        <a class="card" href="facemelt-v9.html">
+          <div class="card-tag">V9</div>
+          <div class="card-title">VENETIAN CASCADE</div>
+          <div class="card-sub">nonrocker records</div>
+        </a>
+
+        <a class="card" href="facemelt-sequence.html">
+          <div class="card-tag">SEQUENCE</div>
+          <div class="card-title">STATUE.EXE SEQUENCE</div>
+          <div class="card-sub">nonrocker</div>
+        </a>
+
+        <a class="card" href="facemelt-soju.html">
+          <div class="card-tag">SOJU</div>
+          <div class="card-title">소주 MATRIX MELT</div>
+          <div class="card-sub">SOJU POUR</div>
+        </a>
+
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      nonrocker records &nbsp;·&nbsp; NRK &nbsp;·&nbsp;
+      <a href="mailto:nonrockerrecords@proton.me">nonrockerrecords@proton.me</a>
+    </footer>
+
+  </div>
+</body>
+</html>

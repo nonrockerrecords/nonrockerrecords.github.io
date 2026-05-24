@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FACEMELT V5 // LIQUID BLOB — nonrocker records</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/elements.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink:  #ff00cc;
+      --cyan:  #00f0ff;
+      --lime:  #39ff14;
+      --bg:    #06060a;
+      --text:  #d4d4d8;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      font-family: 'VT323', 'Courier New', monospace;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* CRT scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.10) 2px,
+        rgba(0,0,0,0.10) 4px
+      );
+      pointer-events: none;
+      z-index: 9000;
+    }
+
+    /* Corner vignette */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%,
+        transparent 50%,
+        rgba(0,0,0,0.55) 100%
+      );
+      pointer-events: none;
+      z-index: 8999;
+    }
+
+    /* ── Header ── */
+    #site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(6,6,10,0.90);
+      border-bottom: 1px solid rgba(255,0,204,0.22);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--pink);
+      text-shadow: 0 0 10px var(--pink);
+    }
+
+    .hdr-sep { width: 1px; height: 14px; background: rgba(255,0,204,0.28); }
+
+    .hdr-tag {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+    }
+
+    .hdr-badge {
+      margin-left: auto;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--cyan);
+      text-shadow: 0 0 8px var(--cyan);
+    }
+
+    /* ── Scroll journey ── */
+    #journey { height: 700vh; }
+
+    #sticky-wrap {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #main-canvas { display: block; }
+
+    /* ── Phase label ── */
+    #phase-label {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      letter-spacing: 6px;
+      color: rgba(255,0,204,0.75);
+      text-shadow: 0 0 14px rgba(255,0,204,0.5);
+      pointer-events: none;
+      z-index: 600;
+      white-space: nowrap;
+    }
+
+    /* ── Scroll hint ── */
+    #scroll-hint {
+      position: fixed;
+      bottom: 14px;
+      right: 20px;
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: rgba(0,240,255,0.35);
+      animation: blink 1.9s ease-in-out infinite;
+      z-index: 600;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.35; }
+      50%       { opacity: 0.85; }
+    }
+
+    /* ── Progress bar ── */
+    #progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--pink), var(--cyan));
+      box-shadow: 0 0 8px var(--pink);
+      transition: width 0.05s linear;
+      z-index: 700;
+    }
+
+    /* ── Footer ── */
+    #site-footer {
+      padding: 50px 24px 40px;
+      text-align: center;
+      border-top: 1px solid rgba(255,0,204,0.12);
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: rgba(6,6,10,0.8);
+    }
+
+    sp-theme { display: contents; }
+  </style>
+</head>
+<body>
+  <sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+    <header id="site-header">
+      <span class="logo">nonrocker records</span>
+      <div class="hdr-sep"></div>
+      <span class="hdr-tag">FACEMELT V5</span>
+      <div class="hdr-sep"></div>
+      <span class="hdr-tag">LIQUID BLOB</span>
+      <span class="hdr-badge">NRK-2024</span>
+    </header>
+
+    <div id="journey">
+      <div id="sticky-wrap">
+        <canvas id="main-canvas"></canvas>
+      </div>
+    </div>
+
+    <div id="phase-label">PREMELT STATE</div>
+    <div id="scroll-hint">↓ SCROLL</div>
+    <div id="progress-bar" style="width:0%"></div>
+
+    <footer id="site-footer">
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v4.html'">← V4 GLITCH TILES</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='slides.html'">SLIDES</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v6.html'">V6 CRT CYCLE →</sp-button>
+    </footer>
+
+  </sp-theme>
+
+  <script>
+  (() => {
+    // ─── DOM refs ───────────────────────────────────────────────────────────────
+    const canvas     = document.getElementById('main-canvas');
+    const ctx        = canvas.getContext('2d');
+    const phaseLabel = document.getElementById('phase-label');
+    const progressBar = document.getElementById('progress-bar');
+
+    // ─── Load images ────────────────────────────────────────────────────────────
+    let imgs = [], ready = false;
+    Promise.all(['facemelt-premelt.png','Facemelt.png','Facemelt-endmelt.png'].map(src =>
+      new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; })
+    )).then(loaded => {
+      imgs = loaded;
+      if (imgs.every(Boolean)) { ready = true; sizeCanvas(); }
+    });
+
+    // ─── Canvas geometry ────────────────────────────────────────────────────────
+    let W = 0, H = 0, imgX = 0, imgY = 0, imgW = 0, imgH = 0;
+    let SKULL_CX = 0, SKULL_CY = 0, MAX_R = 0;
+
+    function sizeCanvas() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+
+      const nat = imgs[0];
+      const ar  = nat.naturalWidth / nat.naturalHeight;
+
+      // Portrait image: fit to 70% width or full height
+      if (H * ar < W * 0.72) {
+        imgH = H * 0.92;
+        imgW = imgH * ar;
+      } else {
+        imgW = W * 0.70;
+        imgH = imgW / ar;
+      }
+      imgX = (W - imgW) / 2;
+      imgY = (H - imgH) / 2;
+
+      // Skull crown — approx 32% from top of the image
+      SKULL_CX = imgX + imgW * 0.50;
+      SKULL_CY = imgY + imgH * 0.32;
+
+      // Max radius to overflow canvas from skull origin
+      MAX_R = Math.sqrt(Math.max(
+        SKULL_CX**2             + SKULL_CY**2,
+        (W - SKULL_CX)**2       + SKULL_CY**2,
+        SKULL_CX**2             + (H - SKULL_CY)**2,
+        (W - SKULL_CX)**2       + (H - SKULL_CY)**2
+      )) * 1.18;
+    }
+
+    window.addEventListener('resize', () => { if (ready) sizeCanvas(); });
+
+    // ─── Scroll ─────────────────────────────────────────────────────────────────
+    let scrollT = 0;
+    window.addEventListener('scroll', () => {
+      const el    = document.getElementById('journey');
+      const total = el.offsetHeight - window.innerHeight;
+      scrollT = Math.max(0, Math.min(1, window.scrollY / total));
+      progressBar.style.width = (scrollT * 100) + '%';
+    }, { passive: true });
+
+    // ─── Helpers ────────────────────────────────────────────────────────────────
+    const clamp    = (v, a, b) => Math.max(a, Math.min(b, v));
+    const lerp     = (a, b, t) => a + (b - a) * t;
+    const invlerp  = (a, b, v) => clamp((v - a) / (b - a), 0, 1);
+    const mapRange = (v, a, b, c, d) => lerp(c, d, invlerp(a, b, v));
+    const eio = t => t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t;
+    const eo  = t => 1 - Math.pow(1 - t, 3);
+
+    function drawImg(img, alpha = 1) {
+      if (!img || alpha <= 0) return;
+      ctx.save();
+      ctx.globalAlpha = clamp(alpha, 0, 1);
+      ctx.drawImage(img, imgX, imgY, imgW, imgH);
+      ctx.restore();
+    }
+
+    // ─── Blob control points ────────────────────────────────────────────────────
+    const N_BLOB = 18;
+    const blobCtrl = Array.from({ length: N_BLOB }, (_, i) => ({
+      baseA:  (i / N_BLOB) * Math.PI * 2,
+      ph1:    Math.random() * Math.PI * 2,
+      ph2:    Math.random() * Math.PI * 2,
+      ph3:    Math.random() * Math.PI * 2,
+      fr1:    0.55 + Math.random() * 0.50,
+      fr2:    1.10 + Math.random() * 0.80,
+    }));
+
+    // Compute blob spline path and return control points
+    function blobPath(time, radius) {
+      const pts = blobCtrl.map(b => {
+        // Three-frequency wobble
+        const w =
+          Math.sin(b.baseA * 2.3 + time * b.fr1 + b.ph1) * 0.110 +
+          Math.sin(b.baseA * 4.7 + time * b.fr2 + b.ph2) * 0.065 +
+          Math.sin(b.baseA * 1.1 + time * 0.28 + b.ph3) * 0.050;
+        // Gravity: bottom of blob extends further (more drip-like)
+        const grav = 1.0 + clamp(Math.sin(b.baseA), 0, 1) * 0.22;
+        const r = radius * (1 + w) * grav;
+        return { x: SKULL_CX + Math.cos(b.baseA) * r, y: SKULL_CY + Math.sin(b.baseA) * r };
+      });
+
+      ctx.beginPath();
+      for (let i = 0; i < N_BLOB; i++) {
+        const p0 = pts[(i - 1 + N_BLOB) % N_BLOB];
+        const p1 = pts[i];
+        const p2 = pts[(i + 1) % N_BLOB];
+        const p3 = pts[(i + 2) % N_BLOB];
+        if (i === 0) ctx.moveTo(p1.x, p1.y);
+        // Catmull-Rom → cubic bezier
+        ctx.bezierCurveTo(
+          p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6,
+          p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6,
+          p2.x, p2.y
+        );
+      }
+      ctx.closePath();
+      return pts;
+    }
+
+    // ─── Drip tendrils ──────────────────────────────────────────────────────────
+    function drawDrips(pts, intensity, time) {
+      if (intensity <= 0.02) return;
+      // Sort blob points by Y (lowest = most drip-worthy)
+      const byY = [...pts].sort((a, b) => b.y - a.y);
+      const nDrips = Math.ceil(byY.length * 0.45);
+
+      ctx.save();
+      byY.slice(0, nDrips).forEach((p, i) => {
+        const phase = time * (0.8 + i * 0.15) + i * 2.3;
+        const swing = Math.sin(phase) * 14 * intensity;
+        const len   = intensity * (55 + i * 18) * (0.5 + 0.5 * Math.sin(time * 0.7 + i));
+
+        const endX = p.x + swing;
+        const endY = p.y + len;
+
+        const grd = ctx.createLinearGradient(p.x, p.y, endX, endY);
+        grd.addColorStop(0,   `rgba(255,0,204,${0.85 * intensity})`);
+        grd.addColorStop(0.55,`rgba(255,45,180,${0.40 * intensity})`);
+        grd.addColorStop(1,   `rgba(255,0,204,0)`);
+
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.bezierCurveTo(
+          p.x + swing * 0.4, p.y + len * 0.25,
+          endX - swing * 0.2, p.y + len * 0.70,
+          endX, endY
+        );
+
+        ctx.strokeStyle = grd;
+        ctx.lineWidth   = Math.max(0.5, 3.5 * intensity * (1 - i / nDrips));
+        ctx.shadowColor = '#ff00cc';
+        ctx.shadowBlur  = 10 * intensity;
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    // ─── Glitch strip dissolve state (T2) ───────────────────────────────────────
+    const N_STRIPS = 55;
+    const strips = Array.from({ length: N_STRIPS }, () => ({
+      x:     Math.random(),             // normalized x in image
+      w:     0.018 + Math.random() * 0.055,
+      delay: Math.random() * 0.38,
+      speed: 0.30 + Math.random() * 0.62,
+      yOff:  Math.floor(Math.random() * 16 - 8),
+    }));
+
+    // ─── Main animation loop ─────────────────────────────────────────────────────
+    let animTime = 0, lastTS = 0;
+
+    // Phase boundaries
+    const P = {
+      HINT_END:   0.10,  // premelt hold
+      T1_START:   0.10,  // blob grows: premelt → Facemelt
+      T1_END:     0.52,
+      HOLD1_END:  0.60,  // hold Facemelt
+      T2_START:   0.60,  // strip dissolve: Facemelt → endmelt
+      T2_END:     0.94,
+                         // 0.94+ = endmelt hold
+    };
+
+    const LABELS = {
+      premelt:   'PREMELT STATE',
+      awakening: 'THE SURFACE BREAKS',
+      midmelt:   'MID MELT',
+      finalmelt: 'FINAL DISSOLUTION',
+      endmelt:   'END STATE',
+    };
+
+    function draw(ts = 0) {
+      requestAnimationFrame(draw);
+      if (!ready) return;
+
+      const dt = Math.min((ts - lastTS) / 1000, 0.05);
+      lastTS = ts;
+      animTime += dt;
+
+      const t = scrollT;
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#06060a';
+      ctx.fillRect(0, 0, W, H);
+
+      // ─ Phase 0: premelt ─────────────────────────────────────────────────────
+      if (t <= P.HINT_END) {
+        drawImg(imgs[0]);
+        phaseLabel.textContent = LABELS.premelt;
+
+        // Pulsing orb at skull crown hinting at what's coming
+        const orbR = 10 + Math.sin(animTime * 2.2) * 4;
+        const grd = ctx.createRadialGradient(SKULL_CX, SKULL_CY, 0, SKULL_CX, SKULL_CY, orbR * 3);
+        grd.addColorStop(0, `rgba(255,0,204,0.30)`);
+        grd.addColorStop(0.4, `rgba(255,0,204,0.10)`);
+        grd.addColorStop(1, 'rgba(255,0,204,0)');
+        ctx.save();
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+      }
+
+      // ─ Phase 1: blob grows (premelt → Facemelt) ──────────────────────────────
+      else if (t < P.T1_END) {
+        const tRaw = invlerp(P.T1_START, P.T1_END, t);
+        const tBlob = eo(tRaw);
+        const blobR = tBlob * MAX_R;
+        phaseLabel.textContent = LABELS.awakening;
+
+        // Background: premelt
+        drawImg(imgs[0]);
+
+        // Clip to blob → draw Facemelt inside
+        const pts = blobPath(animTime, blobR);
+        ctx.save();
+        ctx.clip();
+        drawImg(imgs[1]);
+        ctx.restore();
+        // Path still valid (save/restore doesn't reset path)
+
+        // Neon edge — hot pink stroke
+        ctx.save();
+        ctx.strokeStyle = '#ff00cc';
+        ctx.lineWidth   = 2.8;
+        ctx.shadowColor = '#ff00cc';
+        ctx.shadowBlur  = 20;
+        ctx.stroke();
+
+        // Outer cyan fringe
+        blobPath(animTime, blobR + 7);
+        ctx.strokeStyle = `rgba(0,240,255,${0.25 * tRaw})`;
+        ctx.lineWidth   = 5;
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur  = 14;
+        ctx.stroke();
+        ctx.restore();
+
+        // Drips below blob (intensity ramps in over first 40% of T1)
+        drawDrips(pts, clamp(tRaw * 2.5, 0, 1) * 0.85, animTime);
+
+        // Inner blob glow
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        const innerGrd = ctx.createRadialGradient(SKULL_CX, SKULL_CY, 0, SKULL_CX, SKULL_CY, blobR * 0.4);
+        innerGrd.addColorStop(0, `rgba(255,0,204,${0.12 * tBlob})`);
+        innerGrd.addColorStop(1, 'rgba(255,0,204,0)');
+        ctx.fillStyle = innerGrd;
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+      }
+
+      // ─ Phase 2: hold Facemelt ────────────────────────────────────────────────
+      else if (t < P.HOLD1_END) {
+        drawImg(imgs[1]);
+        phaseLabel.textContent = LABELS.midmelt;
+
+        // Crown glow — residual energy
+        const pulse = 0.18 + Math.sin(animTime * 3.1) * 0.08;
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        const grd = ctx.createRadialGradient(SKULL_CX, SKULL_CY, 0, SKULL_CX, SKULL_CY, imgW * 0.35);
+        grd.addColorStop(0, `rgba(255,0,204,${pulse})`);
+        grd.addColorStop(0.5, `rgba(180,0,150,${pulse * 0.25})`);
+        grd.addColorStop(1, 'rgba(255,0,100,0)');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+      }
+
+      // ─ Phase 3: glitch strip dissolve (Facemelt → endmelt) ──────────────────
+      else if (t < P.T2_END) {
+        const tD = invlerp(P.T2_START, P.T2_END, t);
+        phaseLabel.textContent = LABELS.finalmelt;
+
+        // Base: Facemelt
+        drawImg(imgs[1]);
+
+        // Each strip reveals endmelt image at its own pace
+        strips.forEach(s => {
+          const localT = clamp((tD - s.delay) / s.speed, 0, 1);
+          if (localT <= 0) return;
+
+          const fillFrac = eio(localT);
+          const sx = imgX + s.x * imgW;
+          const sw = s.w * imgW;
+          const revH = fillFrac * imgH;
+
+          // Clip rect for this strip, draw endmelt inside
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(sx, imgY + s.yOff, sw, revH);
+          ctx.clip();
+          ctx.drawImage(imgs[2], imgX, imgY, imgW, imgH);
+          ctx.restore();
+
+          // Neon leading edge on advancing front
+          if (fillFrac < 0.97) {
+            const edgeY = imgY + s.yOff + revH;
+            const edgeAlpha = (1 - fillFrac) * 0.9;
+            ctx.save();
+            ctx.fillStyle = `rgba(255,0,204,${edgeAlpha})`;
+            ctx.shadowColor = '#ff00cc';
+            ctx.shadowBlur  = 10;
+            ctx.fillRect(sx, edgeY - 1.5, sw, 3);
+            ctx.restore();
+          }
+        });
+
+        // Global chromatic aberration grows in late T2
+        if (tD > 0.55) {
+          const ca = mapRange(tD, 0.55, 1.0, 0, 9);
+          ctx.save();
+          ctx.globalCompositeOperation = 'screen';
+          ctx.globalAlpha = 0.06;
+          ctx.drawImage(imgs[2], imgX - ca, imgY, imgW, imgH);
+          ctx.drawImage(imgs[2], imgX + ca, imgY, imgW, imgH);
+          ctx.restore();
+        }
+      }
+
+      // ─ Phase 4: endmelt ──────────────────────────────────────────────────────
+      else {
+        drawImg(imgs[2]);
+        phaseLabel.textContent = LABELS.endmelt;
+
+        // Pulsing hot bloom
+        const pulse = 0.16 + Math.sin(animTime * 2.6) * 0.09;
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        const grd = ctx.createRadialGradient(SKULL_CX, SKULL_CY, 0, SKULL_CX, SKULL_CY, imgW * 0.48);
+        grd.addColorStop(0,   `rgba(255,0,204,${pulse})`);
+        grd.addColorStop(0.4, `rgba(255,0,100,${pulse * 0.35})`);
+        grd.addColorStop(1,   'rgba(180,0,80,0)');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+      }
+    }
+
+    requestAnimationFrame(draw);
+  })();
+  </script>
+</body>
+</html>

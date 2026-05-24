@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FACEMELT V9 // VENETIAN CASCADE — nonrocker records</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Bungee+Shade&display=swap" rel="stylesheet">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/elements.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink:  #ff00cc;
+      --cyan:  #00f0ff;
+      --amber: #ffb800;
+      --lime:  #39ff14;
+      --bg:    #060408;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'VT323', monospace;
+      color: #d0c8d0;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(180deg,
+        rgba(0,0,0,0.09) 0px, rgba(0,0,0,0.09) 1px,
+        transparent 1px, transparent 3px);
+      pointer-events: none; z-index: 9100;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%,
+        transparent 46%, rgba(4,0,8,0.72) 100%);
+      pointer-events: none; z-index: 9099;
+    }
+
+    /* ── Loading ── */
+    #loading {
+      position: fixed; inset: 0; z-index: 9990; background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 20px;
+      transition: opacity 0.6s;
+    }
+    #loading.done { opacity: 0; pointer-events: none; }
+    .ld-title { font-family: 'Bungee Shade', monospace; font-size: 14px; letter-spacing: 5px; color: var(--amber); text-shadow: 0 0 14px var(--amber); }
+    .ld-sub   { font-size: 14px; letter-spacing: 3px; color: rgba(255,184,0,0.35); }
+    .ld-track { width: 260px; height: 2px; background: rgba(255,184,0,0.12); }
+    #ld-bar   { height: 100%; width: 0%; background: var(--amber); box-shadow: 0 0 8px var(--amber); transition: width 0.2s; }
+
+    /* ── Slice count display (left) ── */
+    #slice-counter {
+      position: fixed; left: 14px; bottom: 50%;
+      transform: translateY(50%);
+      writing-mode: vertical-rl;
+      font-size: 11px; letter-spacing: 2px;
+      color: rgba(255,184,0,0.30);
+      pointer-events: none; z-index: 600;
+    }
+
+    /* ── Header ── */
+    #hdr {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      padding: 9px 22px;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(6,4,8,0.92);
+      border-bottom: 1px solid rgba(255,184,0,0.16);
+      backdrop-filter: blur(10px);
+    }
+    .hdr-logo  { font-family: 'Bungee Shade', monospace; font-size: 12px; letter-spacing: 3px; color: var(--amber); text-shadow: 0 0 10px var(--amber); }
+    .hdr-pipe  { width: 1px; height: 14px; background: rgba(255,184,0,0.22); }
+    .hdr-label { font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.22); }
+    .hdr-right { margin-left: auto; font-size: 12px; letter-spacing: 2px; color: var(--pink); text-shadow: 0 0 8px var(--pink); }
+
+    #journey { height: 800vh; }
+    #sticky  { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    canvas   { display: block; }
+
+    /* ── HUD ── */
+    #hud {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 600;
+      padding: 6px 22px 12px;
+      display: flex; align-items: center; gap: 0;
+      background: rgba(6,4,8,0.80);
+      border-top: 1px solid rgba(255,184,0,0.10);
+      pointer-events: none;
+    }
+    #phase-name { font-size: 17px; letter-spacing: 5px; color: var(--amber); text-shadow: 0 0 12px var(--amber); flex: 1; }
+    #phase-sub  { font-size: 13px; letter-spacing: 2px; color: rgba(255,0,204,0.45); }
+    #pct        { font-size: 13px; letter-spacing: 1px; color: rgba(255,255,255,0.18); margin-left: 16px; }
+    #slice-info { font-size: 12px; letter-spacing: 1px; color: rgba(255,184,0,0.35); margin-left: 14px; }
+
+    #prog  { position: fixed; top: 32px; left: 0; height: 1px; background: linear-gradient(90deg, var(--amber), var(--pink)); box-shadow: 0 0 5px var(--amber); z-index: 700; }
+    #hint  { position: fixed; right: 18px; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; font-size: 13px; letter-spacing: 3px; color: rgba(255,184,0,0.28); animation: blink 2s infinite; z-index: 600; }
+    @keyframes blink { 0%,100%{opacity:.28} 50%{opacity:.75} }
+
+    #foot { padding: 50px 24px 38px; text-align: center; border-top: 1px solid rgba(255,184,0,0.08); display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; background: rgba(6,4,8,0.88); }
+
+    sp-theme { display: contents; }
+  </style>
+</head>
+<body>
+  <sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+    <div id="loading">
+      <div class="ld-title">VENETIAN CASCADE // V9</div>
+      <div class="ld-track"><div id="ld-bar"></div></div>
+      <div class="ld-sub">COMPUTING BLEND FRAMES…</div>
+    </div>
+
+    <header id="hdr">
+      <span class="hdr-logo">nonrocker records</span>
+      <div class="hdr-pipe"></div>
+      <span class="hdr-label">FACEMELT V9</span>
+      <div class="hdr-pipe"></div>
+      <span class="hdr-label">VENETIAN CASCADE</span>
+      <span class="hdr-right">NRK-2024</span>
+    </header>
+
+    <div id="journey"><div id="sticky"><canvas id="cvs"></canvas></div></div>
+
+    <div id="slice-counter">SLICES: –</div>
+
+    <div id="hud">
+      <span id="phase-name">PREMELT STATE</span>
+      <span id="phase-sub"></span>
+      <span id="pct">0%</span>
+      <span id="slice-info"></span>
+    </div>
+    <div id="hint">↓ SCROLL ↓</div>
+    <div id="prog" style="width:0%"></div>
+
+    <footer id="foot">
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v8.html'">← V8 WAVE</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='slides.html'">SLIDES</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v7.html'">V7 POUR</sp-button>
+    </footer>
+
+  </sp-theme>
+  <script>
+  (() => {
+    'use strict';
+
+    // ── DOM ──────────────────────────────────────────────────────────────────────
+    const cvs        = document.getElementById('cvs');
+    const ctx        = cvs.getContext('2d');
+    const hud        = { name: document.getElementById('phase-name'), sub: document.getElementById('phase-sub'), pct: document.getElementById('pct'), info: document.getElementById('slice-info') };
+    const sliceCtr   = document.getElementById('slice-counter');
+    const prog       = document.getElementById('prog');
+    const ldBar      = document.getElementById('ld-bar');
+    const loading    = document.getElementById('loading');
+
+    // ── Helpers ──────────────────────────────────────────────────────────────────
+    const clamp   = (v,a,b) => Math.max(a, Math.min(b,v));
+    const invlerp = (a,b,v) => clamp((v-a)/(b-a), 0, 1);
+    const eio     = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    const eo      = t => 1 - Math.pow(1-t, 3);
+
+    // ── Geometry ─────────────────────────────────────────────────────────────────
+    let W=0,H=0, imgX=0,imgY=0,imgW=0,imgH=0, SKULL_CY=0;
+    const SKULL_Y_FRAC = 0.32; // skull crown position within image
+
+    function resize() {
+      W = cvs.width  = window.innerWidth;
+      H = cvs.height = window.innerHeight;
+      const ar = allImgs[0].naturalWidth / allImgs[0].naturalHeight;
+      if (H * ar < W * 0.72) { imgH = H * 0.92; imgW = imgH * ar; }
+      else { imgW = W * 0.70; imgH = imgW / ar; }
+      imgX = (W-imgW)/2; imgY = (H-imgH)/2;
+      SKULL_CY = imgY + imgH * SKULL_Y_FRAC;
+      // Recompute slice count and variance
+      computeSlices();
+    }
+    window.addEventListener('resize', () => { if (ready) resize(); });
+
+    // ── Loading / synth ──────────────────────────────────────────────────────────
+    let allImgs = [], synthA = null, synthB = null, ready = false;
+
+    function loadImg(src) {
+      return new Promise(res => { const i=new Image(); i.onload=()=>res(i); i.onerror=()=>res(null); i.src=src; });
+    }
+
+    function pixelBlend(i1, i2, alpha) {
+      const MAX=640, ar=i1.naturalHeight/i1.naturalWidth;
+      const w=Math.min(i1.naturalWidth,MAX), h=Math.round(w*ar);
+      const oc=document.createElement('canvas'); oc.width=w; oc.height=h;
+      const ox=oc.getContext('2d');
+      ox.drawImage(i1,0,0,w,h); const d1=ox.getImageData(0,0,w,h).data;
+      ox.clearRect(0,0,w,h);
+      ox.drawImage(i2,0,0,w,h); const d2=ox.getImageData(0,0,w,h).data;
+      const out=ox.createImageData(w,h); const od=out.data;
+      const b=alpha, a=1-alpha;
+      for (let i=0;i<od.length;i++) od[i]=d1[i]*a+d2[i]*b;
+      ox.putImageData(out,0,0); return oc;
+    }
+
+    async function init() {
+      allImgs = await Promise.all(['facemelt-premelt.png','Facemelt.png','Facemelt-endmelt.png'].map(loadImg));
+      if (!allImgs.every(Boolean)) return;
+      ldBar.style.width='30%'; await new Promise(r=>setTimeout(r,10));
+      synthA = pixelBlend(allImgs[0], allImgs[1], 0.50);
+      ldBar.style.width='65%'; await new Promise(r=>setTimeout(r,10));
+      synthB = pixelBlend(allImgs[1], allImgs[2], 0.50);
+      ldBar.style.width='100%'; await new Promise(r=>setTimeout(r,200));
+      loading.classList.add('done');
+      setTimeout(()=>{ loading.style.display='none'; }, 700);
+      ready = true; resize(); requestAnimationFrame(draw);
+    }
+    init();
+
+    // ── Slice setup ───────────────────────────────────────────────────────────────
+    const SLICE_H = 4; // px per horizontal slice
+    let nSlices = 0;
+    let sliceVariance = []; // pre-seeded random per slice [0,1]
+    let sliceRandom   = []; // threshold for 'random' mode [0.05, 0.92]
+
+    function computeSlices() {
+      nSlices = Math.ceil(imgH / SLICE_H);
+      // Only recompute if we need more slots
+      if (sliceVariance.length < nSlices) {
+        sliceVariance = Array.from({length: nSlices}, () => Math.random());
+        sliceRandom   = Array.from({length: nSlices}, () => 0.05 + Math.random() * 0.87);
+      }
+      sliceCtr.textContent = `SLICES: ${nSlices}`;
+    }
+
+    // ── Scroll ───────────────────────────────────────────────────────────────────
+    let scrollT = 0;
+    window.addEventListener('scroll', () => {
+      const el = document.getElementById('journey');
+      scrollT = clamp(window.scrollY / (el.offsetHeight - window.innerHeight), 0, 1);
+      prog.style.width = (scrollT*100)+'%';
+    }, { passive: true });
+
+    // ── Draw helpers ──────────────────────────────────────────────────────────────
+    function drawFull(img, alpha=1) {
+      if (!img || alpha<=0) return;
+      ctx.save(); ctx.globalAlpha=clamp(alpha,0,1);
+      ctx.drawImage(img, imgX, imgY, imgW, imgH);
+      ctx.restore();
+    }
+
+    // ── Slice reveal logic ────────────────────────────────────────────────────────
+    // Returns true if slice i should show imgB at given progress
+    function sliceRevealed(i, progress, mode) {
+      const r = i / nSlices; // normalized position top→bottom [0,1]
+      const v = (sliceVariance[i % sliceVariance.length] - 0.5) * 0.14; // ±7% jitter
+
+      switch (mode) {
+        case 'topdown':    return progress > r + v;
+        case 'bottomup':   return progress > (1-r) + v;
+        case 'centerout': {
+          // Skull crown row is at SKULL_Y_FRAC * nSlices
+          const skulRow = SKULL_Y_FRAC;
+          const dist = Math.abs(r - skulRow) / Math.max(skulRow, 1-skulRow);
+          return progress > dist + v;
+        }
+        case 'random': return progress > sliceRandom[i % sliceRandom.length];
+      }
+      return false;
+    }
+
+    // ── Venetian draw ─────────────────────────────────────────────────────────────
+    function drawVenetian(imgA, imgB, progress, animT, mode) {
+      // 1. Draw imgA as background
+      drawFull(imgA);
+
+      // 2. Build compound clip for all "revealed" slices
+      ctx.save();
+      ctx.beginPath();
+      let revealCount = 0;
+      for (let i = 0; i < nSlices; i++) {
+        if (!sliceRevealed(i, progress, mode)) continue;
+        const sy = imgY + i * SLICE_H;
+        const sh = Math.min(SLICE_H, imgY + imgH - sy);
+        if (sh <= 0) continue;
+        ctx.rect(0, sy, W, sh);
+        revealCount++;
+      }
+      ctx.clip();
+      drawFull(imgB);
+      ctx.restore();
+
+      // 3. Glow lines at active wave front
+      ctx.save();
+      ctx.shadowColor = '#ffb800';
+      ctx.shadowBlur  = 10;
+
+      if (mode === 'topdown') {
+        const frontY = imgY + progress * imgH;
+        ctx.fillStyle = `rgba(255,184,0,${0.55 + 0.35*Math.sin(animT*6)})`;
+        ctx.fillRect(0, frontY - 2, W, 4);
+        // Pink trailing shimmer
+        ctx.fillStyle = `rgba(255,0,204,${0.25 + 0.15*Math.sin(animT*4+1)})`;
+        ctx.fillRect(0, frontY + 3, W, 2);
+      }
+      else if (mode === 'bottomup') {
+        const frontY = imgY + (1-progress) * imgH;
+        ctx.fillStyle = `rgba(255,184,0,${0.55 + 0.35*Math.sin(animT*6)})`;
+        ctx.fillRect(0, frontY - 2, W, 4);
+        ctx.fillStyle = `rgba(255,0,204,${0.25 + 0.15*Math.sin(animT*4+1)})`;
+        ctx.fillRect(0, frontY - 5, W, 2);
+      }
+      else if (mode === 'centerout') {
+        // Two glow lines radiating from skull crown row
+        const skulY    = imgY + SKULL_Y_FRAC * imgH;
+        const maxSpread = Math.max(skulY - imgY, imgH - (skulY - imgY));
+        const spread   = eo(progress) * maxSpread;
+        const a = 0.55 + 0.35*Math.sin(animT*6);
+        ctx.fillStyle = `rgba(255,184,0,${a})`;
+        if (skulY - spread >= imgY)      ctx.fillRect(0, skulY-spread-2, W, 4);
+        if (skulY + spread <= imgY+imgH) ctx.fillRect(0, skulY+spread-2, W, 4);
+      }
+      // 'random' mode: no single wave front, skip glow line
+
+      ctx.restore();
+
+      return revealCount;
+    }
+
+    // ── Phase dispatch ────────────────────────────────────────────────────────────
+    function getPhase(t) {
+      if (t < 0.08) return { name:'PREMELT STATE',         sub:'',               img: allImgs[0] };
+      if (t < 0.28) return { name:'BLINDS: TOP→DOWN',      sub:'PREMELT → MID',  draw:(p,at)=>drawVenetian(allImgs[0],synthA,    eio(p),at,'topdown'),   p:invlerp(0.08,0.28,t) };
+      if (t < 0.46) return { name:'BLINDS: CENTER BURST',  sub:'MID → FACEMELT', draw:(p,at)=>drawVenetian(synthA,    allImgs[1],eio(p),at,'centerout'), p:invlerp(0.28,0.46,t) };
+      if (t < 0.54) return { name:'MID MELT',              sub:'',               img: allImgs[1] };
+      if (t < 0.72) return { name:'BLINDS: CHAOS RANDOM',  sub:'FACEMELT → MID', draw:(p,at)=>drawVenetian(allImgs[1],synthB,    eio(p),at,'random'),    p:invlerp(0.54,0.72,t) };
+      if (t < 0.90) return { name:'BLINDS: BOTTOM→UP',     sub:'MID → END MELT', draw:(p,at)=>drawVenetian(synthB,    allImgs[2],eio(p),at,'bottomup'),  p:invlerp(0.72,0.90,t) };
+      return               { name:'END STATE',              sub:'MELT COMPLETE',  img: allImgs[2] };
+    }
+
+    // ── Main loop ─────────────────────────────────────────────────────────────────
+    let animT = 0, lastTS = 0;
+
+    function draw(ts=0) {
+      requestAnimationFrame(draw);
+      if (!ready) return;
+      const dt = Math.min((ts-lastTS)/1000, 0.05);
+      lastTS=ts; animT+=dt;
+
+      const t = scrollT;
+      const ph = getPhase(t);
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle='#060408';
+      ctx.fillRect(0,0,W,H);
+
+      let revCount = 0;
+
+      if (ph.img) {
+        drawFull(ph.img);
+        // Hold bloom for non-premelt images
+        if (ph.img !== allImgs[0]) {
+          const skulCX = imgX + imgW*0.50;
+          const pulse  = 0.14 + Math.sin(animT*2.5)*0.08;
+          ctx.save(); ctx.globalCompositeOperation='screen';
+          const grd = ctx.createRadialGradient(skulCX,SKULL_CY,0,skulCX,SKULL_CY,imgW*0.36);
+          grd.addColorStop(0,`rgba(255,184,0,${pulse*0.6})`);
+          grd.addColorStop(0.4,`rgba(255,0,204,${pulse*0.4})`);
+          grd.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+          ctx.restore();
+        }
+      } else {
+        revCount = ph.draw(ph.p, animT) || 0;
+      }
+
+      // Tile count display in HUD
+      if (revCount > 0) {
+        hud.info.textContent = `${revCount}/${nSlices} SLICES`;
+      } else {
+        hud.info.textContent = '';
+      }
+
+      // CRT drift line
+      const ry = animT * 20 % H;
+      ctx.save(); ctx.globalAlpha=0.025; ctx.fillStyle='#ffb800';
+      [ry,(ry+H*0.5)%H].forEach(y=>ctx.fillRect(0,y,W,1));
+      ctx.restore();
+
+      hud.name.textContent = ph.name;
+      hud.sub.textContent  = ph.sub||'';
+      hud.pct.textContent  = Math.round(t*100)+'%';
+    }
+  })();
+  </script>
+</body>
+</html>
