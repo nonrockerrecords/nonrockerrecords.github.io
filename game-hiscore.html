@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NONROCKER INVADERS — HALL OF FAME</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;background:#06060a;color:#ddd;font-family:'Press Start 2P',monospace;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(180deg,transparent 0,transparent 2px,rgba(0,0,0,.1) 2px,rgba(0,0,0,.1) 4px);pointer-events:none;z-index:9000}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 48%,rgba(0,0,0,.7) 100%);pointer-events:none;z-index:9001}
+
+.stars{position:fixed;inset:0;z-index:0}
+
+.wrap{position:relative;z-index:10;max-width:760px;margin:0 auto;padding:3rem 1.5rem 5rem}
+
+/* header */
+.hdr{text-align:center;margin-bottom:3rem}
+.hdr-top{font-size:clamp(7px,1.4vw,11px);color:#ffd700;letter-spacing:.25em;margin-bottom:1.2rem;text-shadow:0 0 10px #ffd700}
+.hdr-title{font-size:clamp(16px,4vw,32px);color:#ff00cc;text-shadow:0 0 25px #ff00cc,0 0 50px rgba(255,0,204,.25);letter-spacing:.08em;line-height:1.3}
+.hdr-sub{font-size:clamp(5px,1vw,9px);color:rgba(0,240,255,.5);letter-spacing:.3em;margin-top:.8rem}
+
+/* table */
+.board{width:100%;border-collapse:separate;border-spacing:0 6px;margin-top:1rem}
+.board thead tr th{font-size:clamp(5px,.85vw,8px);color:#555;letter-spacing:.2em;padding:.4rem .6rem 1rem;text-align:left;border-bottom:1px solid rgba(255,0,204,.15)}
+.board thead tr th:last-child{text-align:right}
+.board tbody tr{opacity:0;transform:translateX(-20px);animation:slideIn .4s forwards}
+.board tbody tr td{padding:.6rem .7rem;font-size:clamp(7px,1.2vw,11px);background:rgba(255,0,204,.025);border-top:1px solid rgba(255,0,204,.08);border-bottom:1px solid rgba(255,0,204,.08);transition:background .2s,box-shadow .2s}
+.board tbody tr:hover td{background:rgba(255,0,204,.07);box-shadow:0 0 12px rgba(255,0,204,.15) inset}
+.board tbody tr td:first-child{border-left:1px solid rgba(255,0,204,.08);border-radius:4px 0 0 4px;width:3rem;text-align:center}
+.board tbody tr td:last-child{border-right:1px solid rgba(255,0,204,.08);border-radius:0 4px 4px 0;text-align:right}
+
+@keyframes slideIn{to{opacity:1;transform:translateX(0)}}
+
+/* rank medals */
+.rank-1{color:#ffd700;text-shadow:0 0 10px #ffd700}
+.rank-2{color:#c0c0c0;text-shadow:0 0 8px #c0c0c0}
+.rank-3{color:#cd7f32;text-shadow:0 0 8px #cd7f32}
+.rank-n{color:#444}
+
+.name{color:#00f0ff;letter-spacing:.05em}
+.score{color:#ff00cc;letter-spacing:.05em}
+.wave{color:rgba(255,255,255,.3);font-size:clamp(5px,.85vw,8px)}
+.tag{display:inline-block;font-size:clamp(4px,.7vw,7px);padding:.1rem .35rem;border:1px solid;margin-left:.5rem;vertical-align:middle;letter-spacing:.1em}
+.tag-boss{color:#cc00ff;border-color:#cc00ff}
+.tag-nrk {color:#ff00cc;border-color:#ff00cc}
+.tag-new {color:#39ff14;border-color:#39ff14;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* enter name bar */
+.enter-wrap{margin-top:3rem;border:1px solid rgba(255,0,204,.2);padding:1.5rem;text-align:center}
+.enter-lbl{font-size:clamp(6px,1vw,9px);color:#666;letter-spacing:.2em;margin-bottom:1rem}
+.enter-name{font-size:clamp(12px,2.5vw,22px);color:#00f0ff;letter-spacing:.3em}
+.cursor{animation:blink .8s step-end infinite;color:#ff00cc}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* footer nav */
+.nav{margin-top:3rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.nav a{font-size:clamp(6px,1vw,9px);color:#444;text-decoration:none;letter-spacing:.15em;padding:.4rem .8rem;border:1px solid #222;transition:all .15s}
+.nav a:hover{color:#ff00cc;border-color:rgba(255,0,204,.4);box-shadow:0 0 10px rgba(255,0,204,.2)}
+
+.bottom{text-align:center;margin-top:2rem;font-size:clamp(5px,.8vw,8px);color:#2a2a2a;letter-spacing:.2em}
+</style>
+</head>
+<body>
+<canvas class="stars" id="bg"></canvas>
+
+<div class="wrap">
+  <header class="hdr">
+    <div class="hdr-top">* * * * * * * * * * * * *</div>
+    <div class="hdr-title">HALL OF FAME</div>
+    <div class="hdr-sub">N R K &nbsp;·&nbsp; A L L &nbsp; T I M E &nbsp; H I G H S</div>
+  </header>
+
+  <table class="board">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>NAME</th>
+        <th>WAVE</th>
+        <th>SCORE</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <div class="enter-wrap">
+    <div class="enter-lbl">YOUR NAME</div>
+    <div class="enter-name">_ _ _ _ _ _ _ _ <span class="cursor">█</span></div>
+  </div>
+
+  <nav class="nav">
+    <a href="game.html">▶ PLAY</a>
+    <a href="game-title.html">TITLE</a>
+    <a href="game-select.html">SELECT</a>
+    <a href="variations.html">DIRECTORY</a>
+  </nav>
+
+  <div class="bottom">© NRK · 소주 NATION · SOJU KAZOOS DIDGERIDOOS</div>
+</div>
+
+<script>
+// hi score data (NRK lore names)
+const DATA=[
+  {name:'STATUE.EXE',    score:999660,wave:4,tags:['boss','nrk']},
+  {name:'YUNG_SOJU',     score:847320,wave:4,tags:['nrk']},
+  {name:'DJ막걸리',       score:666420,wave:4,tags:['boss']},
+  {name:'NULLSOFT',      score:512080,wave:3,tags:[]},
+  {name:'???_DRUMR',     score:420000,wave:3,tags:[]},
+  {name:'SOJU_PROTOCOL', score:314159,wave:2,tags:[]},
+  {name:'FATAL.EXE',     score:265000,wave:2,tags:[]},
+  {name:'NRK.666',       score:198440,wave:2,tags:[]},
+  {name:'KAZOO_HAWK',    score:120010,wave:1,tags:[]},
+  {name:'AAA',           score: 10000,wave:1,tags:['new']},
+];
+
+const rankClass=['','rank-1','rank-2','rank-3'];
+const tbody=document.getElementById('rows');
+DATA.forEach((d,i)=>{
+  const tr=document.createElement('tr');
+  tr.style.animationDelay=(i*.08)+'s';
+  const rk=i<3?`<span class="${rankClass[i+1]}">${i+1}</span>`:`<span class="rank-n">${i+1}</span>`;
+  const tags=d.tags.map(t=>`<span class="tag tag-${t}">${t.toUpperCase()}</span>`).join('');
+  const waveStr='WAVE '+d.wave;
+  tr.innerHTML=`<td>${rk}</td><td><span class="name">${d.name}</span>${tags}</td><td><span class="wave">${waveStr}</span></td><td><span class="score">${String(d.score).replace(/\B(?=(\d{3})+(?!\d))/g,',')}</span></td>`;
+  tbody.appendChild(tr);
+});
+
+// starfield
+const cv=document.getElementById('bg');
+const cx=cv.getContext('2d');
+let W=0,H=0,stars=[],floaters=[];
+const FTXT=['소주','NRK','막걸리','666','SOJU','카주'];
+function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;
+  stars=[];for(let i=0;i<100;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.3,s:Math.random()*.6+.15,a:Math.random()*.8+.1});}
+addEventListener('resize',resize);resize();
+let frame=0;
+(function loop(){
+  requestAnimationFrame(loop);frame++;
+  cx.fillStyle='#06060a';cx.fillRect(0,0,W,H);
+  const g=cx.createLinearGradient(0,0,0,H*.4);
+  g.addColorStop(0,'rgba(150,0,150,.08)');g.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  for(const s of stars){s.y+=s.s;if(s.y>H){s.y=0;s.x=Math.random()*W;}cx.globalAlpha=s.a;cx.fillStyle='#fff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.28);cx.fill();}
+  cx.globalAlpha=1;
+  if(Math.random()<.003)floaters.push({x:Math.random()*(W-80)+40,y:H+10,txt:FTXT[0|Math.random()*FTXT.length],a:0,sp:Math.random()*.25+.12,sz:(0|Math.random()*2)*4+8,col:Math.random()<.5?'#ff00cc':'#00f0ff'});
+  for(let i=floaters.length-1;i>=0;i--){
+    const f=floaters[i];f.y-=f.sp;
+    f.a=f.y>H*.55?Math.min(.12,f.a+.004):Math.max(0,f.a-.005);
+    if(f.a<=0&&f.y<H*.4){floaters.splice(i,1);continue;}
+    cx.globalAlpha=f.a;cx.fillStyle=f.col;
+    cx.font=`${f.sz}px 'Press Start 2P',monospace`;cx.textAlign='center';cx.fillText(f.txt,f.x,f.y);
+  }
+  cx.globalAlpha=1;
+})();
+</script>
+</body>
+</html>

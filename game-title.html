@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NONROCKER INVADERS — TITLE SCREEN</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#06060a;font-family:'Press Start 2P',monospace}
+
+/* scanlines */
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(180deg,transparent 0px,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px);pointer-events:none;z-index:900}
+/* vignette */
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 45%,rgba(0,0,0,.75) 100%);pointer-events:none;z-index:901}
+
+canvas{position:fixed;inset:0;width:100%;height:100%}
+
+.ui{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;pointer-events:none}
+
+.hi{font-size:clamp(8px,1.5vw,13px);color:#ffd700;letter-spacing:.2em;margin-bottom:3rem;text-shadow:0 0 12px #ffd700}
+
+.logo-wrap{text-align:center;margin-bottom:2.5rem}
+.logo1{font-size:clamp(22px,6vw,52px);color:#ff00cc;text-shadow:0 0 30px #ff00cc,0 0 60px rgba(255,0,204,.3);letter-spacing:.08em;line-height:1.2}
+.logo2{font-size:clamp(16px,4.5vw,38px);color:#00f0ff;text-shadow:0 0 22px #00f0ff,0 0 50px rgba(0,240,255,.25);letter-spacing:.15em;margin-top:.4rem}
+.sub{font-size:clamp(6px,1vw,10px);color:rgba(255,0,204,.4);letter-spacing:.3em;margin-top:1.2rem}
+
+.enemy-row{display:flex;gap:clamp(20px,4vw,48px);margin:2.5rem 0;align-items:center}
+.enemy-block{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.enemy-canvas{image-rendering:pixelated}
+.enemy-pts{font-size:clamp(6px,.9vw,9px);color:rgba(255,255,255,.5);letter-spacing:.1em}
+
+.insert{font-size:clamp(8px,1.4vw,13px);color:#fff;letter-spacing:.2em;animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.controls{font-size:clamp(5px,.85vw,9px);color:#444;letter-spacing:.15em;margin-top:1.8rem;text-align:center;line-height:2.2}
+
+.footer{position:fixed;bottom:1.5rem;left:0;right:0;text-align:center;font-size:clamp(5px,.8vw,8px);color:#333;letter-spacing:.2em;z-index:100;pointer-events:none}
+
+.play-btn{pointer-events:all;display:inline-block;margin-top:1.5rem;padding:.6rem 1.8rem;background:transparent;border:1px solid #ff00cc;color:#ff00cc;font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.3vw,12px);letter-spacing:.15em;cursor:pointer;text-decoration:none;transition:all .15s}
+.play-btn:hover{background:rgba(255,0,204,.12);box-shadow:0 0 16px rgba(255,0,204,.4);color:#fff}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="ui">
+  <div class="hi">HI-SCORE &nbsp; 0 0 6 6 6 0</div>
+
+  <div class="logo-wrap">
+    <div class="logo1">nonrocker</div>
+    <div class="logo2">INVADERS</div>
+    <div class="sub">N R K &nbsp;·&nbsp; S O J U &nbsp; N A T I O N</div>
+  </div>
+
+  <div class="enemy-row">
+    <div class="enemy-block">
+      <canvas class="enemy-canvas" id="e1" width="48" height="84"></canvas>
+      <div class="enemy-pts">= 10 PTS</div>
+    </div>
+    <div class="enemy-block">
+      <canvas class="enemy-canvas" id="e2" width="76" height="32"></canvas>
+      <div class="enemy-pts">= 20 PTS</div>
+    </div>
+    <div class="enemy-block">
+      <canvas class="enemy-canvas" id="e3" width="104" height="68"></canvas>
+      <div class="enemy-pts">= 30 PTS</div>
+    </div>
+  </div>
+
+  <div class="enemy-block" style="margin:.5rem 0 1.5rem">
+    <div class="enemy-pts" style="color:#cc00ff;font-size:clamp(6px,1vw,10px)">BOSS: NRK-666 = 666 PTS</div>
+  </div>
+
+  <div class="insert">INSERT COIN</div>
+
+  <a class="play-btn" href="game.html">▶ &nbsp; PLAY NOW</a>
+
+  <div class="controls">
+    ARROWS / WASD &nbsp;·&nbsp; SPACE SHOOT &nbsp;·&nbsp; ENTER START<br>
+    © NRK &nbsp;·&nbsp; 소주 KAZOOS DIDGERIDOOS
+  </div>
+</div>
+
+<div class="footer">
+  <a href="variations.html" style="color:#333;text-decoration:none">CONTENT DIRECTORY</a>
+  &nbsp;·&nbsp; nonrocker records &nbsp;·&nbsp; NRK
+</div>
+
+<script>
+// ── starfield bg ──────────────────────────────────────────────────────────
+const bg=document.getElementById('bg');
+const bx=bg.getContext('2d');
+let W=0,H=0,stars=[];
+function resize(){W=bg.width=innerWidth;H=bg.height=innerHeight;initStars();}
+function initStars(){
+  stars=[];
+  for(let i=0;i<140;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,s:Math.random()*.7+.2,a:Math.random()*.9+.1});
+}
+addEventListener('resize',resize);resize();
+
+// floating text
+const ftxt=['소주','NRK','666','막걸리','SOJU','카주','ERROR','참이슬'];
+let floaters=[];
+function spawnF(){
+  if(Math.random()<.004) floaters.push({x:Math.random()*(W-100)+50,y:H+10,txt:ftxt[0|Math.random()*ftxt.length],a:0,sp:Math.random()*.3+.15,sz:(0|Math.random()*2)*4+9,col:Math.random()<.5?'#ff00cc':'#00f0ff'});
+}
+
+let frame=0;
+(function loop(){
+  requestAnimationFrame(loop);frame++;
+  bx.fillStyle='#06060a';bx.fillRect(0,0,W,H);
+  const g=bx.createLinearGradient(0,0,0,H*.45);
+  g.addColorStop(0,'rgba(160,0,160,.1)');g.addColorStop(1,'rgba(0,0,0,0)');
+  bx.fillStyle=g;bx.fillRect(0,0,W,H);
+  for(const s of stars){s.y+=s.s;if(s.y>H){s.y=0;s.x=Math.random()*W;}bx.globalAlpha=s.a;bx.fillStyle='#fff';bx.beginPath();bx.arc(s.x,s.y,s.r,0,6.28);bx.fill();}
+  bx.globalAlpha=1;
+  spawnF();
+  for(let i=floaters.length-1;i>=0;i--){
+    const f=floaters[i];f.y-=f.sp;
+    f.a=f.y>H*.55?Math.min(.15,f.a+.005):Math.max(0,f.a-.006);
+    if(f.a<=0&&f.y<H*.4){floaters.splice(i,1);continue;}
+    bx.globalAlpha=f.a;bx.fillStyle=f.col;
+    bx.font=`${f.sz}px 'Press Start 2P',monospace`;bx.textAlign='center';
+    bx.fillText(f.txt,f.x,f.y);
+  }
+  bx.globalAlpha=1;
+  animateEnemies(frame);
+})();
+
+// ── enemy sprite animations ───────────────────────────────────────────────
+function animateEnemies(f){
+  const t=f*.05;
+
+  // soju bottle
+  const c1=document.getElementById('e1').getContext('2d');
+  const EW=48,EH=84;
+  c1.clearRect(0,0,EW,EH);
+  c1.translate(EW/2,EH/2);
+  c1.fillStyle='#1a7a30';
+  c1.fillRect(-12,-EH/2+16,24,EH-28);
+  c1.fillRect(-6,-EH/2,12,14);
+  c1.fillStyle='#ff00cc';c1.fillRect(-6,-EH/2-3,12,7);
+  c1.save();c1.shadowColor='#39ff14';c1.shadowBlur=5+Math.sin(t)*3;
+  c1.strokeStyle='rgba(57,255,20,.4)';c1.lineWidth=1.5;
+  c1.strokeRect(-12,-EH/2+16,24,EH-28);c1.shadowBlur=0;c1.restore();
+  c1.font='9px "Press Start 2P",monospace';c1.fillStyle='#fff';c1.textAlign='center';
+  c1.fillText('소주',0,8);
+  c1.setTransform(1,0,0,1,0,0);
+
+  // kazoo
+  const c2=document.getElementById('e2').getContext('2d');
+  const KW=76,KH=32;
+  c2.clearRect(0,0,KW,KH);
+  c2.translate(KW/2,KH/2);
+  const kb=Math.sin(t)*2;
+  c2.save();c2.shadowColor='#ffd700';c2.shadowBlur=10;
+  c2.fillStyle='#ffd700';c2.beginPath();
+  c2.moveTo(-32,kb);c2.lineTo(-16,-KH/2+kb);c2.lineTo(32,kb);c2.lineTo(16,KH/2+kb);
+  c2.closePath();c2.fill();c2.shadowBlur=0;c2.restore();
+  c2.font='7px "Press Start 2P",monospace';c2.fillStyle='#555';c2.textAlign='center';
+  c2.fillText('KZO',0,5+kb);
+  c2.setTransform(1,0,0,1,0,0);
+
+  // win95
+  const c3=document.getElementById('e3').getContext('2d');
+  const WW=104,WH=68;
+  c3.clearRect(0,0,WW,WH);
+  c3.translate(WW/2,WH/2);
+  const fl=(0|t*2)%2===0;
+  c3.fillStyle='#c0c0c0';c3.fillRect(-WW/2,-WH/2,WW,WH);
+  c3.fillStyle=fl?'#ff2222':'#000080';c3.fillRect(-WW/2,-WH/2,WW,13);
+  c3.font='6px "Press Start 2P",monospace';c3.fillStyle='#fff';
+  c3.textAlign='left';c3.fillText('ERROR',-WW/2+4,-WH/2+9);
+  c3.fillStyle='#c0c0c0';c3.fillRect(WW/2-15,-WH/2+2,11,9);
+  c3.fillStyle='#000';c3.fillText('X',WW/2-13,-WH/2+9);
+  c3.fillStyle='#333';c3.textAlign='center';
+  c3.font='11px "Press Start 2P",monospace';c3.fillText('⚠',-8,10);
+  c3.font='6px "Press Start 2P",monospace';c3.fillStyle='#000';
+  c3.fillText('NRK',12,6);c3.fillText('SYSTEM ERROR',0,22);
+  c3.setTransform(1,0,0,1,0,0);
+}
+</script>
+</body>
+</html>
