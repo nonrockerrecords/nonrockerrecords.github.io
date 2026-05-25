@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>STRING ART // nonrocker geometric</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--pink:#ff00cc;--cyan:#00f0ff;--lime:#39ff14;--amber:#ffb800;--bg:#04020a;}
+    html,body{background:var(--bg);overflow:hidden;width:100%;height:100%;}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;
+      background:repeating-linear-gradient(180deg,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,.14) 3px,rgba(0,0,0,0) 4px);}
+    canvas{display:block;}
+    #ui{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:10px 20px 16px;
+      background:rgba(4,2,10,0.85);border-top:1px solid rgba(255,0,204,0.15);
+      display:flex;align-items:center;gap:16px;}
+    #mode-name{font-family:'VT323',monospace;font-size:22px;letter-spacing:6px;color:var(--pink);
+      text-shadow:0 0 12px var(--pink);flex:1;}
+    #mode-sub{font-family:'VT323',monospace;font-size:15px;letter-spacing:3px;color:rgba(0,240,255,0.5);}
+    #progress-wrap{width:180px;height:2px;background:rgba(255,0,204,0.12);}
+    #progress-bar{height:100%;width:0%;background:var(--pink);box-shadow:0 0 6px var(--pink);transition:width 0.05s;}
+    #hdr{position:fixed;top:0;left:0;right:0;z-index:200;padding:8px 20px;
+      background:rgba(4,2,10,0.88);border-bottom:1px solid rgba(255,0,204,0.14);
+      display:flex;align-items:center;gap:10px;}
+    .hl{font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:3px;color:var(--pink);text-shadow:0 0 10px var(--pink);}
+    .hs{font-family:'VT323',monospace;font-size:14px;letter-spacing:2px;color:rgba(255,255,255,0.22);}
+    #hint{position:fixed;right:20px;top:50%;transform:translateY(-50%);
+      font-family:'VT323',monospace;font-size:14px;letter-spacing:3px;color:rgba(255,0,204,0.3);
+      writing-mode:vertical-rl;animation:blink 2s infinite;z-index:200;}
+    @keyframes blink{0%,100%{opacity:.3}50%{opacity:.8}}
+    #nav{position:fixed;top:46px;right:20px;display:flex;flex-direction:column;gap:6px;z-index:200;}
+    .nav-btn{font-family:'VT323',monospace;font-size:13px;letter-spacing:1px;color:rgba(255,255,255,0.25);
+      background:none;border:1px solid rgba(255,0,204,0.15);padding:3px 10px;cursor:pointer;transition:all 0.15s;}
+    .nav-btn:hover{color:var(--pink);border-color:var(--pink);text-shadow:0 0 8px var(--pink);}
+  </style>
+</head>
+<body>
+  <header id="hdr">
+    <span class="hl">nonrocker records</span>
+    <span class="hs">·</span>
+    <span class="hs">STRING ART</span>
+    <span class="hs">·</span>
+    <span class="hs">STRAIGHT LINES / CURVED FORMS</span>
+  </header>
+  <canvas id="cvs"></canvas>
+  <div id="hint">↑ NEXT MODE ↑</div>
+  <div id="nav">
+    <button class="nav-btn" onclick="nextMode()">NEXT MODE</button>
+    <button class="nav-btn" onclick="toggleAuto()">AUTO: ON</button>
+  </div>
+  <div id="ui">
+    <span id="mode-name">PARABOLA</span>
+    <span id="mode-sub">TANGENT LINE ENVELOPE</span>
+    <div id="progress-wrap"><div id="progress-bar"></div></div>
+  </div>
+<script>
+'use strict';
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('2d');
+let W=0,H=0,cx=0,cy=0;
+
+function resize(){
+  W=cvs.width=window.innerWidth;
+  H=cvs.height=window.innerHeight;
+  cx=W/2; cy=H/2;
+}
+resize();
+window.addEventListener('resize',resize);
+
+// ── Modes ────────────────────────────────────────────────────────────────────
+// Each mode defines how to compute the two endpoints of each line,
+// given t in [0,1], canvas center (cx,cy), and a size.
+const N = 240; // lines per frame
+const SIZE = Math.min(window.innerWidth, window.innerHeight) * 0.72;
+
+const MODES = [
+  {
+    name: 'PARABOLA',
+    sub: 'TANGENT LINE ENVELOPE · XY CORNER',
+    c1: '#ff00cc', c2: '#00f0ff',
+    // Lines from (t,0) to (0,1-t) on a right-angle corner
+    // Creates a parabola from pure straight lines
+    pts(t, s) {
+      const OX = cx - s/2, OY = cy + s/2;
+      return [OX + t*s, OY, OX, OY - (1-t)*s];
+    }
+  },
+  {
+    name: 'CARDIOID (×2)',
+    sub: 'TIMES-2 TABLE ON CIRCLE',
+    c1: '#ff00cc', c2: '#ffb800',
+    // Connect point k to point 2k on a circle — draws a cardioid
+    pts(t, s) {
+      const R = s * 0.44;
+      const a1 = t * Math.PI * 2;
+      const a2 = (t * 2 % 1) * Math.PI * 2;
+      return [cx + R*Math.cos(a1), cy + R*Math.sin(a1),
+              cx + R*Math.cos(a2), cy + R*Math.sin(a2)];
+    }
+  },
+  {
+    name: 'NEPHROID (×3)',
+    sub: 'TIMES-3 TABLE ON CIRCLE',
+    c1: '#00f0ff', c2: '#39ff14',
+    pts(t, s) {
+      const R = s * 0.44;
+      const a1 = t * Math.PI * 2;
+      const a2 = (t * 3 % 1) * Math.PI * 2;
+      return [cx + R*Math.cos(a1), cy + R*Math.sin(a1),
+              cx + R*Math.cos(a2), cy + R*Math.sin(a2)];
+    }
+  },
+  {
+    name: 'EPICYCLOID (×5)',
+    sub: 'TIMES-5 TABLE ON CIRCLE',
+    c1: '#ffb800', c2: '#7a00ff',
+    pts(t, s) {
+      const R = s * 0.44;
+      const a1 = t * Math.PI * 2;
+      const a2 = (t * 5 % 1) * Math.PI * 2;
+      return [cx + R*Math.cos(a1), cy + R*Math.sin(a1),
+              cx + R*Math.cos(a2), cy + R*Math.sin(a2)];
+    }
+  },
+  {
+    name: 'THREE-CORNER STAR',
+    sub: 'TRIPLE PARABOLA ENVELOPE',
+    c1: '#ff00cc', c2: '#39ff14',
+    pts(t, s) {
+      // Three right-angle corners at 120° offsets, each drawing a parabola
+      const r = s * 0.42;
+      const corner = Math.floor(t * 3); // which of 3 sub-envelopes
+      const lt = (t * 3) % 1;
+      const baseAngle = (corner / 3) * Math.PI * 2 - Math.PI/2;
+      const ax = cx + r*Math.cos(baseAngle);
+      const ay = cy + r*Math.sin(baseAngle);
+      const b1a = baseAngle + Math.PI * 2/3;
+      const b2a = baseAngle + Math.PI * 4/3;
+      const b1x = cx + r*Math.cos(b1a), b1y = cy + r*Math.sin(b1a);
+      const b2x = cx + r*Math.cos(b2a), b2y = cy + r*Math.sin(b2a);
+      // lerp from b1 to ax and from b2 to ax along the t param
+      return [b1x + lt*(ax-b1x), b1y + lt*(ay-b1y),
+              b2x + (1-lt)*(ax-b2x), b2y + (1-lt)*(ay-b2y)];
+    }
+  },
+  {
+    name: 'DELTOID (×0.5)',
+    sub: 'HALF-TABLE ON CIRCLE',
+    c1: '#00f0ff', c2: '#ff00cc',
+    pts(t, s) {
+      const R = s * 0.44;
+      const a1 = t * Math.PI * 2;
+      const a2 = (t * 0.5 % 1) * Math.PI * 2;
+      return [cx + R*Math.cos(a1), cy + R*Math.sin(a1),
+              cx + R*Math.cos(a2), cy + R*Math.sin(a2)];
+    }
+  },
+];
+
+// ── State ────────────────────────────────────────────────────────────────────
+let modeIdx = 0;
+let drawCount = 0;      // 0..N lines currently drawn
+let phase = 0;          // 0=drawing in, 1=hold, 2=fade out
+let phaseTimer = 0;
+let autoMode = true;
+let lastTS = 0;
+
+const MODE_DURATION = { draw: N/1.8, hold: 90, fade: 40 }; // frames approx
+
+function nextMode() {
+  modeIdx = (modeIdx + 1) % MODES.length;
+  drawCount = 0; phase = 0; phaseTimer = 0;
+  updateLabels();
+}
+
+function toggleAuto() {
+  autoMode = !autoMode;
+  document.querySelector('.nav-btn:last-child').textContent = `AUTO: ${autoMode ? 'ON' : 'OFF'}`;
+}
+
+function updateLabels() {
+  const m = MODES[modeIdx];
+  document.getElementById('mode-name').textContent = m.name;
+  document.getElementById('mode-sub').textContent = m.sub;
+  document.getElementById('mode-name').style.color = m.c1;
+  document.getElementById('mode-name').style.textShadow = `0 0 14px ${m.c1}`;
+}
+updateLabels();
+
+// ── Color per line ────────────────────────────────────────────────────────────
+function lineColor(i, alpha, m) {
+  // Interpolate between two mode colors across the line range
+  const t = i / N;
+  // Parse hex to rgb
+  function hx(h) { return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+  const [r1,g1,b1] = hx(m.c1);
+  const [r2,g2,b2] = hx(m.c2);
+  const r = r1 + (r2-r1)*t|0;
+  const g = g1 + (g2-g1)*t|0;
+  const b = b1 + (b2-b1)*t|0;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// ── Draw one frame ────────────────────────────────────────────────────────────
+function draw(ts) {
+  requestAnimationFrame(draw);
+  const dt = Math.min((ts - lastTS)/1000, 0.05);
+  lastTS = ts;
+  const m = MODES[modeIdx];
+  const s = Math.min(W, H) * 0.72;
+
+  // Advance animation state
+  if (phase === 0) {
+    drawCount = Math.min(drawCount + 3, N);
+    if (drawCount >= N) { phase = 1; phaseTimer = 0; }
+  } else if (phase === 1) {
+    phaseTimer++;
+    if (autoMode && phaseTimer > 80) { phase = 2; phaseTimer = 0; }
+  } else if (phase === 2) {
+    phaseTimer++;
+    if (phaseTimer > 30) { nextMode(); }
+  }
+
+  // Background — very slight trail on fade out, hard clear otherwise
+  if (phase === 2) {
+    ctx.fillStyle = `rgba(4,2,10,0.18)`;
+  } else {
+    ctx.fillStyle = '#04020a';
+  }
+  ctx.fillRect(0, 0, W, H);
+
+  // Axis hints (very faint)
+  if (modeIdx === 0) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,0,204,0.10)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4,8]);
+    const OX = cx - s/2, OY = cy + s/2;
+    ctx.beginPath(); ctx.moveTo(OX, OY); ctx.lineTo(OX + s + 20, OY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(OX, OY); ctx.lineTo(OX, OY - s - 20); ctx.stroke();
+    ctx.setLineDash([]);
+    // Tick marks
+    for (let i = 0; i <= 10; i++) {
+      const tx = OX + (i/10)*s;
+      const ty = OY - (i/10)*s;
+      ctx.strokeStyle = 'rgba(255,0,204,0.18)';
+      ctx.beginPath(); ctx.moveTo(tx, OY-3); ctx.lineTo(tx, OY+3); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(OX-3, ty); ctx.lineTo(OX+3, ty); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // Draw lines
+  ctx.save();
+  ctx.lineWidth = 0.9;
+  for (let i = 0; i < drawCount; i++) {
+    const t = i / N;
+    const alpha = phase === 2 ? 1 - phaseTimer/30 : (i < 6 ? i/6 : 1);
+    const [x1,y1,x2,y2] = m.pts(t, s);
+    ctx.strokeStyle = lineColor(i, alpha * 0.82, m);
+    ctx.shadowColor = lineColor(i, 1, m);
+    ctx.shadowBlur = 3;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Progress bar
+  document.getElementById('progress-bar').style.width = (drawCount/N*100) + '%';
+}
+
+document.addEventListener('keydown', e => { if(e.key === ' ' || e.key === 'ArrowRight') nextMode(); });
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GEOMETRIC // nonrocker records</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--pink:#ff00cc;--cyan:#00f0ff;--lime:#39ff14;--amber:#ffb800;--violet:#7a00ff;--bg:#050008;}
+    html,body{background:var(--bg);min-height:100%;font-family:'VT323',monospace;color:#ddd;overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+      background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,.12) 3px,transparent 4px);}
+    body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
+      background:radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(0,0,0,.5) 100%);}
+    .wrap{max-width:980px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+    .site-header{text-align:center;padding:3rem 0 2.5rem;border-bottom:1px solid rgba(255,0,204,0.18);margin-bottom:2.5rem;}
+    .label-name{font-family:'Press Start 2P',monospace;font-size:clamp(10px,2.5vw,17px);color:var(--pink);
+      text-shadow:0 0 18px var(--pink);letter-spacing:0.06em;margin-bottom:1rem;}
+    .dir-heading{font-family:'VT323',monospace;font-size:clamp(30px,6vw,52px);color:var(--cyan);letter-spacing:0.12em;}
+    .dir-sub{margin-top:0.5rem;color:#555;font-size:17px;letter-spacing:0.16em;}
+    .section{margin-bottom:3rem;}
+    .section-label{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pink);
+      letter-spacing:0.2em;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(255,0,204,0.16);}
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+    .card{display:block;text-decoration:none;color:inherit;padding:1.1rem 1.3rem 1.2rem;
+      border:1px solid rgba(255,0,204,0.18);background:rgba(255,0,204,0.02);
+      transition:border-color 0.15s,box-shadow 0.15s,background 0.15s;position:relative;}
+    .card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.15s;
+      background:linear-gradient(135deg,rgba(255,0,204,0.04),transparent);}
+    .card:hover{border-color:var(--pink);box-shadow:0 0 18px rgba(255,0,204,0.22);background:rgba(255,0,204,0.05);}
+    .card:hover::before{opacity:1;}
+    .card-accent{width:3px;height:30px;position:absolute;left:0;top:1rem;}
+    .card-tag{font-family:'Press Start 2P',monospace;font-size:7px;color:#555;letter-spacing:0.15em;margin-bottom:0.5rem;}
+    .card-title{font-size:26px;color:#eee;line-height:1.15;margin-bottom:0.2rem;}
+    .card-sub{font-size:16px;color:#555;}
+    .card:hover .card-title{color:#fff;}
+    .card:hover .card-tag{color:var(--pink);}
+    .site-footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid rgba(255,0,204,0.12);
+      text-align:center;color:#444;font-size:16px;letter-spacing:0.1em;}
+    .site-footer a{color:var(--pink);text-decoration:none;}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <div class="label-name">nonrocker records</div>
+    <div class="dir-heading">[ GEOMETRIC ]</div>
+    <div class="dir-sub">canvas geometry · patterns · pure math made visible</div>
+  </header>
+
+  <section class="section">
+    <div class="section-label">// GEOMETRIC EXPERIMENTS</div>
+    <div class="card-grid">
+
+      <a class="card" href="string-art.html">
+        <div class="card-accent" style="background:var(--pink)"></div>
+        <div class="card-tag">STRING ART</div>
+        <div class="card-title">TANGENT LINES</div>
+        <div class="card-sub">straight lines · curved forms · XY envelope</div>
+      </a>
+
+      <a class="card" href="lissajous.html">
+        <div class="card-accent" style="background:var(--cyan)"></div>
+        <div class="card-tag">LISSAJOUS / BOWDITCH</div>
+        <div class="card-title">FREQUENCY CURVES</div>
+        <div class="card-sub">x=sin(at+φ) y=sin(bt) · 10 ratios · phase drift</div>
+      </a>
+
+      <a class="card" href="kaleidoscope.html">
+        <div class="card-accent" style="background:var(--violet)"></div>
+        <div class="card-tag">KALEIDOSCOPE</div>
+        <div class="card-title">N-FOLD SYMMETRY</div>
+        <div class="card-sub">mirror tiles · animated source · 4/6/8/12/16/24-fold</div>
+      </a>
+
+      <a class="card" href="rose-curves.html">
+        <div class="card-accent" style="background:var(--lime)"></div>
+        <div class="card-tag">POLAR ROSES</div>
+        <div class="card-title">ROSE CURVES</div>
+        <div class="card-sub">r = cos(k·θ) · integer + rational k · animated sweep</div>
+      </a>
+
+      <a class="card" href="spirograph.html">
+        <div class="card-accent" style="background:var(--amber)"></div>
+        <div class="card-tag">SPIROGRAPH</div>
+        <div class="card-title">HYPOTROCHOID</div>
+        <div class="card-sub">rolling circles · 12 presets · trace mode</div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">// BACK TO LABEL</div>
+    <div class="card-grid">
+      <a class="card" href="../variations.html">
+        <div class="card-accent" style="background:var(--pink)"></div>
+        <div class="card-tag">NONROCKER RECORDS</div>
+        <div class="card-title">CONTENT DIRECTORY</div>
+        <div class="card-sub">all facemelt variations · EPK · slides</div>
+      </a>
+      <a class="card" href="../slides.html">
+        <div class="card-accent" style="background:var(--cyan)"></div>
+        <div class="card-tag">EPK</div>
+        <div class="card-title">BLACK MIRROR DECK</div>
+        <div class="card-sub">glitch slide format</div>
+      </a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    nonrocker records &nbsp;·&nbsp; NRK &nbsp;·&nbsp;
+    <a href="mailto:nonrockerrecords@proton.me">nonrockerrecords@proton.me</a>
+  </footer>
+</div>
+</body>
+</html>

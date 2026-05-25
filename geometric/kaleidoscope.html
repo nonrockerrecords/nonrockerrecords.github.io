@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KALEIDOSCOPE // nonrocker geometric</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--pink:#ff00cc;--cyan:#00f0ff;--lime:#39ff14;--amber:#ffb800;--bg:#030006;}
+    html,body{background:var(--bg);overflow:hidden;width:100%;height:100%;}
+    canvas{display:block;}
+    #hdr{position:fixed;top:0;left:0;right:0;z-index:200;padding:8px 20px;
+      background:rgba(3,0,6,0.88);border-bottom:1px solid rgba(122,0,255,0.18);
+      display:flex;align-items:center;gap:10px;}
+    .hl{font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:3px;color:#7a00ff;text-shadow:0 0 10px #7a00ff;}
+    .hs{font-family:'VT323',monospace;font-size:14px;letter-spacing:2px;color:rgba(255,255,255,0.22);}
+    #hud{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:8px 20px 14px;
+      background:rgba(3,0,6,0.85);border-top:1px solid rgba(122,0,255,0.12);
+      display:flex;align-items:center;gap:16px;}
+    #sym-label{font-family:'VT323',monospace;font-size:26px;letter-spacing:6px;color:#7a00ff;
+      text-shadow:0 0 14px #7a00ff;min-width:140px;}
+    #mode-label{font-family:'VT323',monospace;font-size:16px;letter-spacing:3px;color:rgba(255,0,204,0.5);flex:1;}
+    .btn{font-family:'VT323',monospace;font-size:16px;letter-spacing:2px;color:rgba(255,255,255,0.3);
+      background:none;border:1px solid rgba(122,0,255,0.25);padding:4px 14px;cursor:pointer;transition:all 0.15s;}
+    .btn:hover{color:#7a00ff;border-color:#7a00ff;text-shadow:0 0 8px #7a00ff;}
+  </style>
+</head>
+<body>
+  <header id="hdr">
+    <span class="hl">nonrocker records</span>
+    <span class="hs">·</span>
+    <span class="hs">KALEIDOSCOPE</span>
+    <span class="hs">·</span>
+    <span class="hs">N-FOLD SYMMETRY</span>
+  </header>
+  <canvas id="cvs"></canvas>
+  <div id="hud">
+    <span id="sym-label">8-FOLD</span>
+    <span id="mode-label">GEOMETRIC FLOW</span>
+    <button class="btn" onclick="cycleSym()">SYMMETRY ↑</button>
+    <button class="btn" onclick="cycleSpeed()">SPEED</button>
+  </div>
+<script>
+'use strict';
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('2d');
+let W=0,H=0;
+
+// Offscreen source canvas (we draw the raw pattern here, then tile it)
+const src = document.createElement('canvas');
+const sCtx = src.getContext('2d');
+
+function resize() {
+  W = cvs.width = window.innerWidth;
+  H = cvs.height = window.innerHeight;
+  src.width = W; src.height = H;
+}
+resize(); window.addEventListener('resize', resize);
+
+// ── Symmetry options ──────────────────────────────────────────────────────────
+const SYMS = [4, 6, 8, 12, 16, 24];
+let symIdx = 2; // start at 8
+const SPEEDS = [0.3, 0.6, 1.0, 1.8];
+let speedIdx = 1;
+
+function cycleSym() {
+  symIdx = (symIdx+1) % SYMS.length;
+  updateUI();
+}
+function cycleSpeed() {
+  speedIdx = (speedIdx+1) % SPEEDS.length;
+}
+function updateUI() {
+  document.getElementById('sym-label').textContent = `${SYMS[symIdx]}-FOLD`;
+}
+
+// ── Source pattern parameters ─────────────────────────────────────────────────
+// Animated geometric "seed" drawn in one wedge; tiled N times for symmetry.
+// We draw from the center outward within angles [0, wedge].
+
+const PALETTE = ['#ff00cc','#00f0ff','#39ff14','#ffb800','#7a00ff','#ff4444','#00ffaa'];
+
+// Several animated "elements" in the source wedge
+const ELEMENTS = [
+  { type:'line', r0:0.1, r1:0.9, ar:0.10, fr:0.7, ph:0.0, ci:0 },
+  { type:'line', r0:0.2, r1:0.7, ar:0.18, fr:0.5, ph:1.2, ci:1 },
+  { type:'line', r0:0.0, r1:0.6, ar:0.28, fr:0.9, ph:2.1, ci:2 },
+  { type:'arc',  r:0.30, aw:0.35, fr:0.4, ph:0.5, ci:3 },
+  { type:'arc',  r:0.55, aw:0.22, fr:0.6, ph:1.7, ci:1 },
+  { type:'arc',  r:0.75, aw:0.15, fr:0.8, ph:3.0, ci:4 },
+  { type:'dot',  r:0.40, ar:0.12, fr:1.1, ph:0.3, ci:0, sz:0.018 },
+  { type:'dot',  r:0.60, ar:0.20, fr:0.7, ph:2.0, ci:2, sz:0.012 },
+  { type:'dot',  r:0.25, ar:0.05, fr:1.4, ph:1.0, ci:5, sz:0.022 },
+];
+
+function drawSourcePattern(t, N) {
+  const cx = W/2, cy = H/2;
+  const maxR = Math.min(W,H)/2;
+  const wedge = (2 * Math.PI) / N;
+
+  sCtx.clearRect(0, 0, W, H);
+
+  ELEMENTS.forEach(el => {
+    const color = PALETTE[el.ci % PALETTE.length];
+    const speed = SPEEDS[speedIdx];
+    const phase = el.ph;
+    sCtx.save();
+    sCtx.translate(cx, cy);
+    sCtx.strokeStyle = color;
+    sCtx.fillStyle = color;
+    sCtx.shadowColor = color;
+    sCtx.shadowBlur = 8;
+    sCtx.lineWidth = 1.5;
+    sCtx.globalAlpha = 0.85;
+
+    if (el.type === 'line') {
+      const angle = el.ar * wedge * Math.sin(t * el.fr * speed + phase);
+      const x1 = Math.cos(angle) * el.r0 * maxR;
+      const y1 = Math.sin(angle) * el.r0 * maxR;
+      const x2 = Math.cos(angle) * el.r1 * maxR;
+      const y2 = Math.sin(angle) * el.r1 * maxR;
+      sCtx.beginPath(); sCtx.moveTo(x1,y1); sCtx.lineTo(x2,y2); sCtx.stroke();
+    }
+
+    if (el.type === 'arc') {
+      const r = el.r * maxR;
+      const a0 = el.aw * wedge * 0.1 * Math.sin(t * el.fr * speed + phase);
+      const a1 = a0 + el.aw * wedge;
+      sCtx.beginPath(); sCtx.arc(0, 0, r, a0, a1); sCtx.stroke();
+    }
+
+    if (el.type === 'dot') {
+      const angle = el.ar * wedge + el.ar * wedge * 0.5 * Math.sin(t * el.fr * speed + phase);
+      const r = el.r * maxR;
+      const sz = el.sz * maxR;
+      sCtx.beginPath();
+      sCtx.arc(Math.cos(angle)*r, Math.sin(angle)*r, sz, 0, Math.PI*2);
+      sCtx.fill();
+    }
+    sCtx.restore();
+  });
+}
+
+// ── Tile the wedge N times ────────────────────────────────────────────────────
+function tileKaleidoscope(N) {
+  const cx = W/2, cy = H/2;
+  const maxR = Math.hypot(cx,cy) + 10;
+  const wedge = (2 * Math.PI) / N;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#030006';
+  ctx.fillRect(0, 0, W, H);
+
+  for (let k = 0; k < N; k++) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(k * wedge);
+    if (k % 2 === 1) ctx.scale(1, -1); // mirror alternate slices
+
+    // Clip to wedge
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, maxR, 0, wedge);
+    ctx.closePath();
+    ctx.clip();
+
+    // Stamp the source (offset so canvas center aligns with our origin)
+    ctx.drawImage(src, -cx, -cy);
+    ctx.restore();
+  }
+}
+
+// ── Overlay: faint circle at boundary ────────────────────────────────────────
+function drawOverlay() {
+  const cx=W/2, cy=H/2;
+  const r = Math.min(W,H)*0.485;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(122,0,255,0.20)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+  ctx.restore();
+}
+
+let animT = 0, lastTS = 0;
+
+function draw(ts) {
+  requestAnimationFrame(draw);
+  const dt = Math.min((ts-lastTS)/1000, 0.05);
+  lastTS = ts;
+  animT += dt;
+
+  const N = SYMS[symIdx];
+  drawSourcePattern(animT, N);
+  tileKaleidoscope(N);
+  drawOverlay();
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowUp'||e.key==='ArrowRight') cycleSym();
+  if(e.key==='ArrowDown'||e.key==='ArrowLeft') { symIdx=(symIdx-1+SYMS.length)%SYMS.length; updateUI(); }
+  if(e.key===' ') cycleSpeed();
+});
+
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

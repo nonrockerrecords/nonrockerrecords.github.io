@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LISSAJOUS // nonrocker geometric</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--pink:#ff00cc;--cyan:#00f0ff;--lime:#39ff14;--amber:#ffb800;--bg:#02040e;}
+    html,body{background:var(--bg);overflow:hidden;width:100%;height:100%;}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;
+      background:repeating-linear-gradient(180deg,transparent 0px,transparent 2px,rgba(0,0,240,0.04) 3px,transparent 4px);}
+    canvas{display:block;}
+    #hdr{position:fixed;top:0;left:0;right:0;z-index:200;padding:8px 20px;
+      background:rgba(2,4,14,0.90);border-bottom:1px solid rgba(0,240,255,0.14);
+      display:flex;align-items:center;gap:10px;}
+    .hl{font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:3px;color:var(--cyan);text-shadow:0 0 10px var(--cyan);}
+    .hs{font-family:'VT323',monospace;font-size:14px;letter-spacing:2px;color:rgba(255,255,255,0.22);}
+    #info{position:fixed;top:50%;left:24px;transform:translateY(-50%);z-index:200;
+      font-family:'VT323',monospace;color:rgba(0,240,255,0.55);letter-spacing:3px;}
+    #ratio-label{font-size:48px;line-height:1;text-shadow:0 0 20px var(--cyan);}
+    #eq-label{font-size:15px;margin-top:6px;color:rgba(0,240,255,0.3);}
+    #freq-label{font-size:14px;margin-top:4px;color:rgba(255,0,204,0.4);}
+    #hud{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:8px 20px 14px;
+      background:rgba(2,4,14,0.85);border-top:1px solid rgba(0,240,255,0.12);
+      display:flex;align-items:center;gap:20px;}
+    #phase-label{font-family:'VT323',monospace;font-size:22px;letter-spacing:5px;color:var(--cyan);
+      text-shadow:0 0 12px var(--cyan);flex:1;}
+    .dot-row{display:flex;gap:6px;}
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(0,240,255,0.22);transition:background 0.3s;}
+    .dot.active{background:var(--cyan);box-shadow:0 0 6px var(--cyan);}
+  </style>
+</head>
+<body>
+  <header id="hdr">
+    <span class="hl">nonrocker records</span>
+    <span class="hs">·</span>
+    <span class="hs">LISSAJOUS / BOWDITCH CURVES</span>
+    <span class="hs">·</span>
+    <span class="hs">x=sin(at+φ) y=sin(bt)</span>
+  </header>
+  <canvas id="cvs"></canvas>
+  <div id="info">
+    <div id="ratio-label">1:1</div>
+    <div id="eq-label">a=1 b=1</div>
+    <div id="freq-label">φ DRIFTING</div>
+  </div>
+  <div id="hud">
+    <span id="phase-label">PHASE DRIFT</span>
+    <div class="dot-row" id="dots"></div>
+  </div>
+<script>
+'use strict';
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('2d');
+let W=0,H=0;
+function resize(){ W=cvs.width=window.innerWidth; H=cvs.height=window.innerHeight; }
+resize(); window.addEventListener('resize',resize);
+
+// ── Frequency ratios ──────────────────────────────────────────────────────────
+const RATIOS = [
+  { a:1, b:1, name:'DIAGONAL / ELLIPSE', color:'#00f0ff' },
+  { a:1, b:2, name:'FIGURE-8 / PARABOLA', color:'#ff00cc' },
+  { a:1, b:3, name:'TREFOIL', color:'#39ff14' },
+  { a:2, b:3, name:'PRETZEL', color:'#ffb800' },
+  { a:3, b:4, name:'BOW', color:'#ff00cc' },
+  { a:3, b:5, name:'COMPOUND', color:'#00f0ff' },
+  { a:4, b:5, name:'SPIDER', color:'#39ff14' },
+  { a:5, b:6, name:'SNOWFLAKE', color:'#ffb800' },
+  { a:1, b:4, name:'BUTTERFLY', color:'#7a00ff' },
+  { a:5, b:8, name:'COMPLEX MESH', color:'#ff00cc' },
+];
+
+// Dots
+const dotsEl = document.getElementById('dots');
+RATIOS.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  dotsEl.appendChild(d);
+});
+function setActiveDot(i){ document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('active',j===i)); }
+
+// ── Trail buffer ──────────────────────────────────────────────────────────────
+// Store last ~3000 points as ring buffer
+const TRAIL = 3600;
+const trailX = new Float32Array(TRAIL);
+const trailY = new Float32Array(TRAIL);
+let trailHead = 0, trailLen = 0;
+
+function pushTrail(x,y){ trailX[trailHead]=x; trailY[trailHead]=y; trailHead=(trailHead+1)%TRAIL; if(trailLen<TRAIL)trailLen++; }
+function getTrail(offset){ const i=(trailHead-1-offset+TRAIL*2)%TRAIL; return[trailX[i],trailY[i]]; }
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let ratioIdx = 0;
+let animT = 0;
+let phase = 0;          // slowly drifting phase offset
+let cycleDuration = 0;  // how long current ratio has run
+
+const SCALE = () => Math.min(W,H) * 0.40;
+const SPEED = 0.008;    // t increment per frame
+const PHASE_DRIFT = 0.004; // phase drift speed
+const HOLD_FRAMES = 420;   // frames before cycling
+let frameCount = 0;
+
+function cycleRatio() {
+  ratioIdx = (ratioIdx + 1) % RATIOS.length;
+  trailLen = 0; trailHead = 0;
+  cycleDuration = 0;
+  phase = 0;
+  updateUI();
+}
+
+function updateUI() {
+  const r = RATIOS[ratioIdx];
+  document.getElementById('ratio-label').textContent = `${r.a}:${r.b}`;
+  document.getElementById('eq-label').textContent = `a=${r.a}  b=${r.b}`;
+  document.getElementById('phase-label').textContent = r.name;
+  document.getElementById('ratio-label').style.color = r.color;
+  document.getElementById('ratio-label').style.textShadow = `0 0 24px ${r.color}`;
+  setActiveDot(ratioIdx);
+}
+updateUI();
+
+// ── Draw ──────────────────────────────────────────────────────────────────────
+let lastTS = 0;
+
+function draw(ts) {
+  requestAnimationFrame(draw);
+  const dt = Math.min((ts-lastTS)/1000, 0.05);
+  lastTS = ts;
+  const r = RATIOS[ratioIdx];
+  const S = SCALE();
+  const cx = W/2, cy = H/2;
+
+  // Advance time
+  const steps = 6; // sub-steps per frame for smooth curve
+  for (let s = 0; s < steps; s++) {
+    animT += SPEED;
+    const x = cx + S * Math.sin(r.a * animT + phase);
+    const y = cy + S * Math.sin(r.b * animT);
+    pushTrail(x, y);
+  }
+  phase += PHASE_DRIFT;
+
+  // Cycle check
+  cycleDuration++;
+  if (cycleDuration > HOLD_FRAMES) cycleRatio();
+
+  // Clear
+  ctx.fillStyle = 'rgba(2,4,14,0.18)';
+  ctx.fillRect(0, 0, W, H);
+
+  // Faint grid
+  ctx.save();
+  ctx.strokeStyle = 'rgba(0,240,255,0.04)';
+  ctx.lineWidth = 1;
+  [-S,-S/2,0,S/2,S].forEach(off => {
+    ctx.beginPath(); ctx.moveTo(cx+off,0); ctx.lineTo(cx+off,H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,cy+off); ctx.lineTo(W,cy+off); ctx.stroke();
+  });
+  ctx.restore();
+
+  // Draw trail with fade + glow
+  ctx.save();
+  for (let i = 0; i < trailLen - 1; i++) {
+    const age = i / trailLen;   // 0=oldest, 1=newest
+    const [x1,y1] = getTrail(i+1);
+    const [x2,y2] = getTrail(i);
+    const alpha = Math.pow(1-age, 0.6) * 0.85;
+    // Color shifts from faded back to vivid front
+    const hue = age * 40; // slight hue shift along trail
+    ctx.strokeStyle = r.color;
+    ctx.globalAlpha = alpha;
+    ctx.shadowColor = r.color;
+    ctx.shadowBlur = 3 + age * 10;
+    ctx.lineWidth = 0.8 + age * 1.4;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+
+  // Draw head dot (the pen nib)
+  if (trailLen > 0) {
+    const [hx,hy] = getTrail(0);
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = r.color;
+    ctx.shadowBlur = 20;
+    ctx.beginPath();
+    ctx.arc(hx, hy, 3.5, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Phase indicator (how far through the current cycle)
+  const pct = cycleDuration / HOLD_FRAMES;
+  ctx.save();
+  ctx.fillStyle = r.color;
+  ctx.shadowColor = r.color;
+  ctx.shadowBlur = 4;
+  ctx.fillRect(20, H-3, (W-40)*pct, 2);
+  ctx.restore();
+}
+
+document.addEventListener('keydown', e => { if(e.key===' '||e.key==='ArrowRight') cycleRatio(); });
+cvs.addEventListener('click', cycleRatio);
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

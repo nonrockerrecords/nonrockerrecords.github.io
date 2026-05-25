@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ROSE CURVES // nonrocker geometric</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--pink:#ff00cc;--cyan:#00f0ff;--lime:#39ff14;--amber:#ffb800;--bg:#030800;}
+    html,body{background:var(--bg);overflow:hidden;width:100%;height:100%;}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;
+      background:repeating-linear-gradient(180deg,transparent 0,transparent 2px,rgba(0,0,0,.12) 3px,transparent 4px);}
+    canvas{display:block;}
+    #hdr{position:fixed;top:0;left:0;right:0;z-index:200;padding:8px 20px;
+      background:rgba(3,8,0,0.90);border-bottom:1px solid rgba(57,255,20,0.14);
+      display:flex;align-items:center;gap:10px;}
+    .hl{font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:3px;color:var(--lime);text-shadow:0 0 10px var(--lime);}
+    .hs{font-family:'VT323',monospace;font-size:14px;letter-spacing:2px;color:rgba(255,255,255,0.22);}
+    #info{position:fixed;top:50%;left:20px;transform:translateY(-50%);z-index:200;
+      font-family:'VT323',monospace;letter-spacing:3px;pointer-events:none;}
+    #k-big{font-size:64px;color:var(--lime);text-shadow:0 0 24px var(--lime);line-height:1;}
+    #k-eq{font-size:15px;color:rgba(57,255,20,0.4);margin-top:4px;}
+    #petal-count{font-size:15px;color:rgba(255,0,204,0.5);margin-top:4px;}
+    #hud{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:8px 20px 14px;
+      background:rgba(3,8,0,0.85);border-top:1px solid rgba(57,255,20,0.10);
+      display:flex;align-items:center;gap:16px;}
+    #mode-name{font-family:'VT323',monospace;font-size:22px;letter-spacing:5px;color:var(--lime);
+      text-shadow:0 0 12px var(--lime);flex:1;}
+    .btn{font-family:'VT323',monospace;font-size:15px;letter-spacing:2px;color:rgba(255,255,255,0.3);
+      background:none;border:1px solid rgba(57,255,20,0.22);padding:4px 14px;cursor:pointer;transition:all 0.15s;}
+    .btn:hover{color:var(--lime);border-color:var(--lime);text-shadow:0 0 8px var(--lime);}
+  </style>
+</head>
+<body>
+  <header id="hdr">
+    <span class="hl">nonrocker records</span>
+    <span class="hs">·</span>
+    <span class="hs">POLAR ROSE CURVES</span>
+    <span class="hs">·</span>
+    <span class="hs">r = cos(k·θ)</span>
+  </header>
+  <canvas id="cvs"></canvas>
+  <div id="info">
+    <div id="k-big">k=1</div>
+    <div id="k-eq">r = cos(k·θ)</div>
+    <div id="petal-count">1 PETAL</div>
+  </div>
+  <div id="hud">
+    <span id="mode-name">SINGLE PETAL</span>
+    <button class="btn" onclick="setMode('free')">AUTO-SWEEP</button>
+    <button class="btn" onclick="setMode('integer')">INTEGERS</button>
+    <button class="btn" onclick="setMode('rational')">RATIONAL</button>
+    <button class="btn" onclick="toggleLayers()">LAYERS: ON</button>
+  </div>
+<script>
+'use strict';
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('2d');
+let W=0,H=0;
+function resize(){ W=cvs.width=window.innerWidth; H=cvs.height=window.innerHeight; }
+resize(); window.addEventListener('resize',resize);
+
+// ── Modes ─────────────────────────────────────────────────────────────────────
+let mode = 'free';
+let showLayers = true;
+let animT = 0;
+let lastTS = 0;
+
+// Integer k values that produce beautiful roses
+const INTEGER_KS = [1,2,3,4,5,6,7,8,9,11,13];
+let intKIdx = 0;
+let intKTimer = 0;
+const INT_K_HOLD = 200; // frames per integer k
+
+// Rational k values (p/q)
+const RATIONAL_KS = [
+  {p:1,q:2},{p:3,q:2},{p:2,q:3},{p:4,q:3},{p:3,q:4},
+  {p:5,q:4},{p:5,q:3},{p:7,q:4},{p:7,q:3},{p:5,q:2},
+];
+let ratKIdx = 0;
+let ratKTimer = 0;
+
+function setMode(m) {
+  mode = m; animT = 0;
+  intKIdx = 0; intKTimer = 0;
+  ratKIdx = 0; ratKTimer = 0;
+}
+function toggleLayers() {
+  showLayers = !showLayers;
+  document.querySelector('.btn:last-child').textContent = `LAYERS: ${showLayers?'ON':'OFF'}`;
+}
+
+// ── Rose path computation ─────────────────────────────────────────────────────
+// r = cos(k * theta), sweep theta from 0 to maxTheta
+// For integer k: maxTheta = PI (odd k) or 2*PI (even k)
+// For rational p/q: maxTheta = q*PI (or 2q*PI)
+function drawRose(k, R, color, alpha, sweepFrac=1, lineW=1.5) {
+  const maxTheta = getMaxTheta(k);
+  const steps = Math.ceil(800 * Math.abs(k));
+  const sweep = sweepFrac * maxTheta;
+
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 6;
+  ctx.lineWidth = lineW;
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+
+  let first = true;
+  for (let i = 0; i <= steps; i++) {
+    const theta = (i / steps) * sweep;
+    const r = Math.cos(k * theta) * R;
+    const x = W/2 + r * Math.cos(theta);
+    const y = H/2 + r * Math.sin(theta);
+    if (first) { ctx.moveTo(x,y); first=false; } else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function getMaxTheta(k) {
+  if (Number.isInteger(k)) {
+    return (k % 2 === 1) ? Math.PI : 2 * Math.PI;
+  }
+  // For p/q rational: use lcm approach approximation
+  const q = Math.round(1 / (k - Math.floor(k)));
+  return q * Math.PI * 2;
+}
+
+function petalCount(k) {
+  if (Number.isInteger(k)) return k % 2 === 1 ? k : 2*k;
+  return '∞'; // rational k
+}
+
+// ── Color palette (cycles) ───────────────────────────────────────────────────
+const COLORS = ['#39ff14','#ff00cc','#00f0ff','#ffb800','#7a00ff','#ff4444'];
+let colorOffset = 0;
+
+// ── Main draw ─────────────────────────────────────────────────────────────────
+function draw(ts) {
+  requestAnimationFrame(draw);
+  const dt = Math.min((ts-lastTS)/1000, 0.05);
+  lastTS = ts;
+  animT += dt;
+
+  ctx.fillStyle = 'rgba(3,8,0,0.15)';
+  ctx.fillRect(0,0,W,H);
+
+  const R = Math.min(W,H) * 0.41;
+
+  let k;
+  let sweepFrac = 1;
+
+  if (mode === 'free') {
+    // k drifts slowly 1..13 and back
+    k = 1 + 6 * (1 - Math.cos(animT * 0.08));  // oscillates 1..13
+    sweepFrac = 1;
+  } else if (mode === 'integer') {
+    intKTimer++;
+    if (intKTimer > INT_K_HOLD) { intKIdx=(intKIdx+1)%INTEGER_KS.length; intKTimer=0; colorOffset++; }
+    k = INTEGER_KS[intKIdx];
+  } else { // rational
+    ratKTimer++;
+    if (ratKTimer > 240) { ratKIdx=(ratKIdx+1)%RATIONAL_KS.length; ratKTimer=0; colorOffset++; }
+    const rk = RATIONAL_KS[ratKIdx];
+    k = rk.p / rk.q;
+    // Animate the sweep to reveal the curve gradually
+    sweepFrac = Math.min(ratKTimer / 180, 1);
+  }
+
+  // Faint grid circles
+  ctx.save();
+  ctx.strokeStyle = 'rgba(57,255,20,0.05)';
+  ctx.lineWidth = 1;
+  [0.25,0.5,0.75,1.0].forEach(f => {
+    ctx.beginPath(); ctx.arc(W/2,H/2,R*f,0,Math.PI*2); ctx.stroke();
+  });
+  // Cross hairs
+  ctx.strokeStyle = 'rgba(57,255,20,0.04)';
+  ctx.beginPath(); ctx.moveTo(W/2-R-10,H/2); ctx.lineTo(W/2+R+10,H/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2,H/2-R-10); ctx.lineTo(W/2,H/2+R+10); ctx.stroke();
+  ctx.restore();
+
+  // Layer roses (older k values, faded)
+  if (showLayers && mode === 'integer') {
+    for (let back = 3; back >= 1; back--) {
+      const bi = (intKIdx - back + INTEGER_KS.length) % INTEGER_KS.length;
+      const bk = INTEGER_KS[bi];
+      const col = COLORS[(colorOffset - back + COLORS.length) % COLORS.length];
+      drawRose(bk, R, col, 0.08 / back);
+    }
+  }
+
+  // Primary rose
+  const primaryColor = COLORS[colorOffset % COLORS.length];
+  drawRose(k, R, primaryColor, 0.9, sweepFrac, 1.8);
+
+  // Phase-shifted companion rose (slightly)
+  if (showLayers) {
+    drawRose(k, R * 0.88, COLORS[(colorOffset+2)%COLORS.length], 0.25, sweepFrac);
+  }
+
+  // Labels
+  const kDisp = Number.isInteger(k) ? k.toFixed(0) : k.toFixed(3);
+  document.getElementById('k-big').textContent = `k=${kDisp}`;
+  document.getElementById('petal-count').textContent = `${petalCount(Math.round(k*100)/100)} PETALS`;
+  const pc = petalCount(Number.isInteger(k)?k:Math.round(k*100)/100);
+  document.getElementById('mode-name').textContent =
+    mode==='free' ? 'CONTINUOUS SWEEP' :
+    mode==='integer' ? `${pc}-PETAL ROSE` : `p/q = ${RATIONAL_KS[ratKIdx].p}/${RATIONAL_KS[ratKIdx].q}`;
+}
+
+cvs.addEventListener('click', () => {
+  const modes = ['free','integer','rational'];
+  setMode(modes[(modes.indexOf(mode)+1)%modes.length]);
+});
+
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

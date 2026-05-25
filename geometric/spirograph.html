@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SPIROGRAPH // nonrocker geometric</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--pink:#ff00cc;--cyan:#00f0ff;--lime:#39ff14;--amber:#ffb800;--bg:#06020a;}
+    html,body{background:var(--bg);overflow:hidden;width:100%;height:100%;}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;
+      background:repeating-linear-gradient(180deg,transparent 0,transparent 2px,rgba(0,0,0,.10) 3px,transparent 4px);}
+    canvas{display:block;}
+    #hdr{position:fixed;top:0;left:0;right:0;z-index:200;padding:8px 20px;
+      background:rgba(6,2,10,0.90);border-bottom:1px solid rgba(255,184,0,0.14);
+      display:flex;align-items:center;gap:10px;}
+    .hl{font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:3px;color:var(--amber);text-shadow:0 0 10px var(--amber);}
+    .hs{font-family:'VT323',monospace;font-size:14px;letter-spacing:2px;color:rgba(255,255,255,0.22);}
+    #info{position:fixed;top:50%;left:20px;transform:translateY(-50%);z-index:200;
+      font-family:'VT323',monospace;letter-spacing:2px;pointer-events:none;}
+    #params{font-size:16px;color:rgba(255,184,0,0.55);line-height:1.8;}
+    #name-label{font-size:28px;color:var(--amber);text-shadow:0 0 16px var(--amber);margin-bottom:6px;}
+    #hud{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:8px 20px 14px;
+      background:rgba(6,2,10,0.85);border-top:1px solid rgba(255,184,0,0.10);
+      display:flex;align-items:center;gap:16px;}
+    #progress{flex:1;height:2px;background:rgba(255,184,0,0.12);}
+    #progress-fill{height:100%;width:0%;background:var(--amber);box-shadow:0 0 6px var(--amber);transition:width 0.05s;}
+    .btn{font-family:'VT323',monospace;font-size:15px;letter-spacing:2px;color:rgba(255,255,255,0.3);
+      background:none;border:1px solid rgba(255,184,0,0.22);padding:4px 14px;cursor:pointer;transition:all 0.15s;}
+    .btn:hover{color:var(--amber);border-color:var(--amber);text-shadow:0 0 8px var(--amber);}
+    #hud-name{font-family:'VT323',monospace;font-size:20px;letter-spacing:4px;color:var(--amber);
+      text-shadow:0 0 10px var(--amber);min-width:200px;}
+  </style>
+</head>
+<body>
+  <header id="hdr">
+    <span class="hl">nonrocker records</span>
+    <span class="hs">·</span>
+    <span class="hs">SPIROGRAPH</span>
+    <span class="hs">·</span>
+    <span class="hs">HYPOTROCHOID / EPITROCHOID</span>
+  </header>
+  <canvas id="cvs"></canvas>
+  <div id="info">
+    <div id="name-label">HYPOTROCHOID</div>
+    <div id="params">R=&nbsp;— &nbsp; r=&nbsp;— &nbsp; d=&nbsp;—</div>
+  </div>
+  <div id="hud">
+    <span id="hud-name">LOADING</span>
+    <div id="progress"><div id="progress-fill"></div></div>
+    <button class="btn" onclick="nextPreset()">NEXT SHAPE</button>
+    <button class="btn" onclick="toggleTrace()">TRACE: ON</button>
+  </div>
+<script>
+'use strict';
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('2d');
+let W=0,H=0;
+function resize(){ W=cvs.width=window.innerWidth; H=cvs.height=window.innerHeight; }
+resize(); window.addEventListener('resize',resize);
+
+// ── Spirograph presets ────────────────────────────────────────────────────────
+// Hypotrochoid: inner circle rolls INSIDE outer circle
+//   x = (R-r)*cos(t) + d*cos((R-r)/r * t)
+//   y = (R-r)*sin(t) - d*sin((R-r)/r * t)
+// Epitrochoid: inner circle rolls OUTSIDE outer circle
+//   x = (R+r)*cos(t) - d*cos((R+r)/r * t)
+//   y = (R+r)*sin(t) - d*sin((R+r)/r * t)
+
+const BASE = () => Math.min(W,H) * 0.42;
+
+const PRESETS = [
+  { name:'STAR OF 5',     type:'h', R:1.0, r:0.2, d:0.6, color:'#ffb800', turns:5 },
+  { name:'ROSETTE',       type:'h', R:1.0, r:0.3, d:0.9, color:'#ff00cc', turns:10 },
+  { name:'SPIRALOID',     type:'h', R:1.0, r:0.4, d:0.5, color:'#00f0ff', turns:5 },
+  { name:'FLOWER',        type:'h', R:1.0, r:0.25,d:0.75,color:'#39ff14', turns:8 },
+  { name:'MALTESE CROSS', type:'h', R:1.0, r:0.5, d:0.5, color:'#ffb800', turns:4 },
+  { name:'WAVE MESH',     type:'h', R:1.0, r:0.33,d:0.67,color:'#ff00cc', turns:9 },
+  { name:'STARBURST',     type:'e', R:1.0, r:0.15,d:1.0, color:'#00f0ff', turns:7 },
+  { name:'CARDIOID',      type:'e', R:1.0, r:1.0, d:1.0, color:'#39ff14', turns:1 },
+  { name:'LACE',          type:'h', R:1.0, r:0.1, d:0.95,color:'#7a00ff', turns:10 },
+  { name:'GEAR ROSE',     type:'h', R:1.0, r:0.6, d:0.4, color:'#ffb800', turns:5 },
+  { name:'EPI-STAR',      type:'e', R:1.0, r:0.2, d:0.8, color:'#ff00cc', turns:6 },
+  { name:'LIMACON',       type:'e', R:1.0, r:0.5, d:1.2, color:'#00f0ff', turns:2 },
+];
+
+let presetIdx = 0;
+let animT = 0;
+let drawT = 0;           // how far we've drawn (0..maxT)
+let showTrace = true;
+let tracing = true;
+let lastTS = 0;
+
+const DRAW_SPEED = 0.06; // t increment per frame
+
+function nextPreset() {
+  presetIdx = (presetIdx + 1) % PRESETS.length;
+  drawT = 0; animT = 0; tracing = true;
+  // Clear canvas
+  ctx.fillStyle = '#06020a';
+  ctx.fillRect(0,0,W,H);
+  updateUI();
+}
+
+function toggleTrace() {
+  showTrace = !showTrace;
+  document.querySelector('.btn:last-child').textContent = `TRACE: ${showTrace?'ON':'OFF'}`;
+}
+
+function updateUI() {
+  const p = PRESETS[presetIdx];
+  document.getElementById('name-label').textContent = p.type==='h'?'HYPOTROCHOID':'EPITROCHOID';
+  document.getElementById('hud-name').textContent = p.name;
+  document.getElementById('params').textContent = `R=${p.R.toFixed(2)}  r=${p.r.toFixed(2)}  d=${p.d.toFixed(2)}`;
+}
+updateUI();
+
+// ── Spirograph point ──────────────────────────────────────────────────────────
+function spiroPoint(t, p, BASE) {
+  const R=p.R*BASE, r=p.r*BASE, d=p.d*BASE;
+  if (p.type === 'h') {
+    return [
+      (R-r)*Math.cos(t) + d*Math.cos((R-r)/r * t),
+      (R-r)*Math.sin(t) - d*Math.sin((R-r)/r * t),
+    ];
+  } else {
+    return [
+      (R+r)*Math.cos(t) - d*Math.cos((R+r)/r * t),
+      (R+r)*Math.sin(t) - d*Math.sin((R+r)/r * t),
+    ];
+  }
+}
+
+// ── Persistent curve canvas (accumulate the drawing) ─────────────────────────
+const curveCanvas = document.createElement('canvas');
+let curveCtx;
+function initCurve() {
+  curveCanvas.width = W; curveCanvas.height = H;
+  curveCtx = curveCanvas.getContext('2d');
+  curveCtx.clearRect(0,0,W,H);
+}
+initCurve();
+
+function extendCurve(fromT, toT, p) {
+  const BASE_ = BASE();
+  const steps = Math.ceil((toT-fromT) / 0.01);
+  if (steps <= 0) return;
+  const [x0,y0] = spiroPoint(fromT, p, BASE_);
+  curveCtx.save();
+  curveCtx.strokeStyle = p.color;
+  curveCtx.shadowColor = p.color;
+  curveCtx.shadowBlur = 5;
+  curveCtx.lineWidth = 1.5;
+  curveCtx.globalAlpha = 0.88;
+  curveCtx.beginPath();
+  curveCtx.moveTo(W/2+x0, H/2+y0);
+  for (let i = 1; i <= steps; i++) {
+    const t = fromT + (i/steps)*(toT-fromT);
+    const [x,y] = spiroPoint(t, p, BASE_);
+    curveCtx.lineTo(W/2+x, H/2+y);
+  }
+  curveCtx.stroke();
+  curveCtx.restore();
+}
+
+// ── Main loop ─────────────────────────────────────────────────────────────────
+function draw(ts) {
+  requestAnimationFrame(draw);
+  const dt = Math.min((ts-lastTS)/1000, 0.05);
+  lastTS = ts;
+  animT += dt;
+
+  const p = PRESETS[presetIdx];
+  const maxT = p.turns * 2 * Math.PI;
+
+  // Advance the drawing pen
+  if (tracing && drawT < maxT) {
+    const prevT = drawT;
+    drawT = Math.min(drawT + DRAW_SPEED, maxT);
+    extendCurve(prevT, drawT, p);
+    if (drawT >= maxT) tracing = false;
+  }
+
+  // Clear screen
+  ctx.fillStyle = '#06020a';
+  ctx.fillRect(0,0,W,H);
+
+  // Faint guide circles
+  const B = BASE();
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,184,0,0.06)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3,8]);
+  ctx.beginPath(); ctx.arc(W/2,H/2,p.R*B,0,Math.PI*2); ctx.stroke();
+  if (p.type==='h') {
+    ctx.beginPath(); ctx.arc(W/2+(p.R-p.r)*B,H/2,p.r*B,0,Math.PI*2); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // Stamp the accumulated curve
+  ctx.drawImage(curveCanvas, 0, 0);
+
+  // Trace dot (current pen position)
+  if (showTrace && tracing) {
+    const [px,py] = spiroPoint(drawT, p, B);
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    ctx.arc(W/2+px, H/2+py, 4, 0, Math.PI*2);
+    ctx.fill();
+    // Line from inner wheel to pen
+    if (p.type==='h') {
+      const ix = (p.R-p.r)*B*Math.cos(drawT);
+      const iy = (p.R-p.r)*B*Math.sin(drawT);
+      ctx.strokeStyle = `rgba(255,184,0,0.25)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(W/2+ix, H/2+iy);
+      ctx.lineTo(W/2+px, H/2+py);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // Progress
+  document.getElementById('progress-fill').style.width = (Math.min(drawT/maxT,1)*100)+'%';
+
+  // After completion, auto-advance after a pause
+  if (!tracing) {
+    animT += dt;
+    if (animT > 3) { nextPreset(); initCurve(); animT=0; }
+  }
+}
+
+cvs.addEventListener('click', () => { nextPreset(); initCurve(); });
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
