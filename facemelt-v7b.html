@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FACEMELT V7b // COLUMN POUR+ — nonrocker records</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Bungee+Shade&display=swap" rel="stylesheet">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/elements.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --pink:#ff00cc; --cyan:#00f0ff; --lime:#39ff14; --amber:#ffb800; --bg:#050508; }
+    body { background:var(--bg); font-family:'VT323',monospace; color:#ccc; overflow-x:hidden; }
+    /* CRT scanlines */
+    body::after { content:''; position:fixed; inset:0;
+      background:repeating-linear-gradient(180deg,rgba(0,0,0,0.12) 0px,rgba(0,0,0,0.12) 1px,transparent 1px,transparent 3px);
+      pointer-events:none; z-index:9100; }
+    /* Vignette */
+    body::before { content:''; position:fixed; inset:0;
+      background:radial-gradient(ellipse at 50% 50%,transparent 48%,rgba(0,0,0,0.65) 100%);
+      pointer-events:none; z-index:9099; }
+
+    /* ── Loading ── */
+    #loading { position:fixed; inset:0; z-index:9990; background:var(--bg);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+      transition:opacity 0.6s; }
+    #loading.done { opacity:0; pointer-events:none; }
+    .ld-title { font-family:'Bungee Shade',monospace; font-size:14px; letter-spacing:5px; color:var(--pink); text-shadow:0 0 14px var(--pink); }
+    .ld-sub   { font-size:14px; letter-spacing:3px; color:rgba(255,0,204,0.35); }
+    .ld-track { width:260px; height:2px; background:rgba(255,0,204,0.12); }
+    #ld-bar   { height:100%; width:0%; background:var(--pink); box-shadow:0 0 8px var(--pink); transition:width 0.15s; }
+    #ld-step  { font-size:12px; letter-spacing:2px; color:rgba(255,0,204,0.40); }
+
+    /* ── Header ── */
+    #hdr { position:fixed; top:0; left:0; right:0; z-index:500; padding:9px 22px;
+      display:flex; align-items:center; gap:12px; background:rgba(5,5,8,0.92);
+      border-bottom:1px solid rgba(255,0,204,0.18); backdrop-filter:blur(10px); }
+    .hdr-logo  { font-family:'Bungee Shade',monospace; font-size:12px; letter-spacing:3px; color:var(--pink); text-shadow:0 0 10px var(--pink); }
+    .hdr-pipe  { width:1px; height:14px; background:rgba(255,0,204,0.22); }
+    .hdr-label { font-size:13px; letter-spacing:2px; color:rgba(255,255,255,0.22); }
+    .hdr-badge { margin-left:auto; font-size:10px; letter-spacing:2px; color:var(--lime); text-shadow:0 0 8px var(--lime); }
+
+    #journey { height:1200vh; }
+    #sticky  { position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    canvas   { display:block; }
+
+    /* ── HUD ── */
+    #hud { position:fixed; bottom:0; left:0; right:0; z-index:600; padding:6px 22px 12px;
+      display:flex; align-items:center; gap:0; background:rgba(5,5,8,0.82);
+      border-top:1px solid rgba(255,0,204,0.12); pointer-events:none; }
+    #phase-name { font-size:17px; letter-spacing:5px; color:var(--pink); text-shadow:0 0 12px var(--pink); flex:1; }
+    #phase-sub  { font-size:13px; letter-spacing:2px; color:rgba(0,240,255,0.45); }
+    #pct        { font-size:13px; letter-spacing:1px; color:rgba(255,255,255,0.18); margin-left:16px; }
+    #col-info   { font-size:12px; letter-spacing:1px; color:rgba(255,0,204,0.35); margin-left:14px; }
+
+    #prog { position:fixed; top:32px; left:0; height:1px;
+      background:linear-gradient(90deg,var(--pink),var(--cyan)); box-shadow:0 0 5px var(--pink); z-index:700; }
+    #hint { position:fixed; right:18px; top:50%; transform:translateY(-50%); writing-mode:vertical-rl;
+      font-size:13px; letter-spacing:3px; color:rgba(255,0,204,0.28); animation:blink 2s infinite; z-index:600; }
+    @keyframes blink { 0%,100%{opacity:.28} 50%{opacity:.75} }
+    #foot { padding:50px 24px 38px; text-align:center; border-top:1px solid rgba(255,0,204,0.08);
+      display:flex; gap:14px; justify-content:center; flex-wrap:wrap; background:rgba(5,5,8,0.88); }
+    sp-theme { display:contents; }
+  </style>
+</head>
+<body>
+  <sp-theme color="dark" scale="medium" theme="spectrum-two">
+    <div id="loading">
+      <div class="ld-title">COLUMN POUR // V7b</div>
+      <div class="ld-track"><div id="ld-bar"></div></div>
+      <div class="ld-sub">SYNTHESIZING FRAMES</div>
+      <div id="ld-step">LOADING IMAGES…</div>
+    </div>
+    <header id="hdr">
+      <span class="hdr-logo">nonrocker records</span>
+      <div class="hdr-pipe"></div>
+      <span class="hdr-label">FACEMELT V7b</span>
+      <div class="hdr-pipe"></div>
+      <span class="hdr-label">COLUMN POUR+</span>
+      <span class="hdr-badge">NRK-2024 // ENHANCED</span>
+    </header>
+    <div id="journey"><div id="sticky"><canvas id="cvs"></canvas></div></div>
+    <div id="hud">
+      <span id="phase-name">PREMELT STATE</span>
+      <span id="phase-sub"></span>
+      <span id="pct">0%</span>
+      <span id="col-info"></span>
+    </div>
+    <div id="hint">↓ SCROLL ↓</div>
+    <div id="prog" style="width:0%"></div>
+    <footer id="foot">
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v6b.html'">← V6b CRT+</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='slides.html'">SLIDES</sp-button>
+      <sp-button variant="secondary" size="S" onclick="location.href='facemelt-v8b.html'">V8b WAVE+ →</sp-button>
+    </footer>
+  </sp-theme>
+  <script>
+  (() => {
+    'use strict';
+
+    // ── DOM ──────────────────────────────────────────────────────────────────────
+    const cvs    = document.getElementById('cvs');
+    const ctx    = cvs.getContext('2d');
+    const hud    = { name:document.getElementById('phase-name'), sub:document.getElementById('phase-sub'), pct:document.getElementById('pct'), info:document.getElementById('col-info') };
+    const prog   = document.getElementById('prog');
+    const ldBar  = document.getElementById('ld-bar');
+    const ldStep = document.getElementById('ld-step');
+    const loading= document.getElementById('loading');
+
+    // ── Math helpers ─────────────────────────────────────────────────────────────
+    const clamp   = (v,a,b) => Math.max(a, Math.min(b,v));
+    const invlerp = (a,b,v) => clamp((v-a)/(b-a), 0, 1);
+    const eio     = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    const eo      = t => 1 - Math.pow(1-t, 3);
+
+    // ── Geometry ─────────────────────────────────────────────────────────────────
+    let W=0,H=0, imgX=0,imgY=0,imgW=0,imgH=0, SKULL_CX=0, SKULL_CY=0;
+    const SKULL_X_FRAC = 0.50;
+    const SKULL_Y_FRAC = 0.32;
+
+    function resize() {
+      W = cvs.width  = window.innerWidth;
+      H = cvs.height = window.innerHeight;
+      const ar = allImgs[0].naturalWidth / allImgs[0].naturalHeight;
+      if (H*ar < W*0.72) { imgH=H*0.92; imgW=imgH*ar; } else { imgW=W*0.70; imgH=imgW/ar; }
+      imgX=(W-imgW)/2; imgY=(H-imgH)/2;
+      SKULL_CX = imgX + imgW*SKULL_X_FRAC;
+      SKULL_CY = imgY + imgH*SKULL_Y_FRAC;
+      initBloom();
+    }
+    window.addEventListener('resize', () => { if (ready) resize(); });
+
+    // ── Image loading + pixel-blend synthetics ────────────────────────────────────
+    let allImgs=[], synthA25,synthA50,synthA75,synthB25,synthB50,synthB75, ready=false;
+
+    function loadImg(src) {
+      return new Promise(res => { const i=new Image(); i.onload=()=>res(i); i.onerror=()=>res(null); i.src=src; });
+    }
+
+    function pixelBlend(i1,i2,alpha) {
+      const MAX=640, ar=i1.naturalHeight/i1.naturalWidth;
+      const w=Math.min(i1.naturalWidth,MAX), h=Math.round(w*ar);
+      const oc=document.createElement('canvas'); oc.width=w; oc.height=h;
+      const ox=oc.getContext('2d');
+      ox.drawImage(i1,0,0,w,h); const d1=ox.getImageData(0,0,w,h).data;
+      ox.clearRect(0,0,w,h);
+      ox.drawImage(i2,0,0,w,h); const d2=ox.getImageData(0,0,w,h).data;
+      const out=ox.createImageData(w,h); const od=out.data;
+      const b=alpha, a=1-alpha;
+      for (let i=0;i<od.length;i++) od[i]=d1[i]*a+d2[i]*b;
+      ox.putImageData(out,0,0); return oc;
+    }
+
+    async function setLoad(pct, label) {
+      ldBar.style.width = pct+'%';
+      ldStep.textContent = label;
+      await new Promise(r=>setTimeout(r,10));
+    }
+
+    async function init() {
+      allImgs = await Promise.all(['facemelt-premelt.png','Facemelt.png','Facemelt-endmelt.png'].map(loadImg));
+      if (!allImgs.every(Boolean)) { ldStep.textContent='ERROR: IMAGES NOT FOUND'; return; }
+      await setLoad(10,'BLENDING A 25%…');  synthA25 = pixelBlend(allImgs[0],allImgs[1],0.25);
+      await setLoad(25,'BLENDING A 50%…');  synthA50 = pixelBlend(allImgs[0],allImgs[1],0.50);
+      await setLoad(40,'BLENDING A 75%…');  synthA75 = pixelBlend(allImgs[0],allImgs[1],0.75);
+      await setLoad(55,'BLENDING B 25%…');  synthB25 = pixelBlend(allImgs[1],allImgs[2],0.25);
+      await setLoad(70,'BLENDING B 50%…');  synthB50 = pixelBlend(allImgs[1],allImgs[2],0.50);
+      await setLoad(85,'BLENDING B 75%…');  synthB75 = pixelBlend(allImgs[1],allImgs[2],0.75);
+      await setLoad(100,'READY');
+      await new Promise(r=>setTimeout(r,250));
+      loading.classList.add('done');
+      setTimeout(()=>{ loading.style.display='none'; },700);
+      ready=true; resize(); requestAnimationFrame(draw);
+    }
+    init();
+
+    // ── Particle system ───────────────────────────────────────────────────────────
+    class ParticleSystem {
+      constructor(max=600) { this.pool=[]; this.max=max; }
+      emit(x,y,{vx,vy,life,size,color,gravity=0.15}) {
+        if (this.pool.length>=this.max) return;
+        this.pool.push({x,y,vx,vy,life,maxLife:life,size,color,gravity,alpha:1});
+      }
+      update(dt) {
+        for (let i=this.pool.length-1;i>=0;i--) {
+          const p=this.pool[i];
+          p.x+=p.vx*dt*60; p.vy+=p.gravity; p.y+=p.vy*dt*60;
+          p.life--; p.alpha=p.life/p.maxLife;
+          if(p.life<=0) this.pool.splice(i,1);
+        }
+      }
+      draw(ctx) {
+        ctx.save();
+        this.pool.forEach(p=>{
+          ctx.globalAlpha=p.alpha*0.88;
+          ctx.fillStyle=p.color;
+          ctx.shadowColor=p.color; ctx.shadowBlur=p.size*4;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.size*Math.max(0.1,p.alpha),0,Math.PI*2); ctx.fill();
+        });
+        ctx.restore();
+      }
+    }
+    const ps = new ParticleSystem(700);
+
+    // ── Bloom ─────────────────────────────────────────────────────────────────────
+    let bloomC, bloomCtx;
+    function initBloom() {
+      bloomC = document.createElement('canvas');
+      bloomC.width=W>>1; bloomC.height=H>>1;
+      bloomCtx=bloomC.getContext('2d');
+    }
+    function applyBloom(alpha=0.20) {
+      const bW=bloomC.width, bH=bloomC.height;
+      bloomCtx.clearRect(0,0,bW,bH);
+      bloomCtx.filter='blur(9px) brightness(2.2)';
+      bloomCtx.drawImage(cvs,0,0,bW,bH);
+      bloomCtx.filter='none';
+      ctx.save();
+      ctx.globalCompositeOperation='screen';
+      ctx.globalAlpha=alpha;
+      ctx.drawImage(bloomC,0,0,W,H);
+      ctx.restore();
+    }
+
+    // ── Heat haze displacement ────────────────────────────────────────────────────
+    let hazeFrame=0;
+    function applyHeatHaze(centerY, stripH, amp) {
+      if (amp<0.6) return;
+      hazeFrame++;
+      if (hazeFrame%2!==0) return;
+      const y0=Math.max(0,Math.floor(centerY-stripH/2));
+      const y1=Math.min(H,Math.ceil(centerY+stripH/2));
+      const h=y1-y0; if(h<=0) return;
+      const src=ctx.getImageData(0,y0,W,h);
+      const dst=ctx.createImageData(W,h);
+      const sd=src.data,dd=dst.data;
+      const t=performance.now()/1000;
+      for (let row=0;row<h;row++) {
+        const wY=y0+row, env=Math.sin((row/h)*Math.PI);
+        for (let col=0;col<W;col++) {
+          const dx=Math.round(amp*env*Math.sin(wY*0.18+col*0.04+t*2.1));
+          const dy=Math.round(amp*0.3*env*Math.sin(col*0.12+t*1.6));
+          const sc=clamp(col+dx,0,W-1), sr=clamp(row+dy,0,h-1);
+          const si=(sr*W+sc)*4, di=(row*W+col)*4;
+          dd[di]=sd[si]; dd[di+1]=sd[si+1]; dd[di+2]=sd[si+2]; dd[di+3]=sd[si+3];
+        }
+      }
+      ctx.putImageData(dst,0,y0);
+    }
+
+    // ── Scroll ───────────────────────────────────────────────────────────────────
+    let scrollT=0;
+    window.addEventListener('scroll',()=>{
+      const el=document.getElementById('journey');
+      scrollT=clamp(window.scrollY/(el.offsetHeight-window.innerHeight),0,1);
+      prog.style.width=(scrollT*100)+'%';
+    },{passive:true});
+
+    // ── Draw helpers ──────────────────────────────────────────────────────────────
+    function drawFull(img,alpha=1) {
+      if(!img||alpha<=0) return;
+      ctx.save(); ctx.globalAlpha=clamp(alpha,0,1);
+      ctx.drawImage(img,imgX,imgY,imgW,imgH);
+      ctx.restore();
+    }
+
+    // ── COLUMN POUR ──────────────────────────────────────────────────────────────
+    const N_COLS = 66;
+    let emitFrame = 0;
+
+    function drawColPour(imgA, imgB, progress, animT, mode) {
+      const cw = W / N_COLS;
+      const skullCol = Math.round((SKULL_CX) / cw);
+
+      // Per-column fill fronts (0→1 fraction of imgH revealed from top)
+      const fronts = new Float32Array(N_COLS);
+      for (let c=0; c<N_COLS; c++) {
+        let delay = 0;
+        if      (mode==='ltr')    delay = (c / N_COLS) * 0.44;
+        else if (mode==='rtl')    delay = ((N_COLS-1-c) / N_COLS) * 0.44;
+        else if (mode==='radial') {
+          const mxD = Math.max(skullCol, N_COLS-1-skullCol);
+          delay = (Math.abs(c-skullCol) / Math.max(mxD,1)) * 0.40;
+        }
+        else if (mode==='csplit') {
+          delay = (Math.abs(c-N_COLS/2) / (N_COLS/2)) * 0.44;
+        }
+        fronts[c] = clamp((progress-delay)/(1-delay), 0, 1);
+      }
+
+      // 1. Draw background image
+      drawFull(imgA);
+
+      // 2. Compound clip — columns revealed to fill-front
+      ctx.save(); ctx.beginPath();
+      let activeCount=0;
+      for (let c=0; c<N_COLS; c++) {
+        if (fronts[c]<=0) continue;
+        ctx.rect(c*cw, imgY, cw, fronts[c]*imgH);
+        if (fronts[c]>0.01 && fronts[c]<0.99) activeCount++;
+      }
+      ctx.clip(); drawFull(imgB); ctx.restore();
+
+      // 3. Neon pour-edge glow + particles at column fronts
+      emitFrame++;
+      ctx.save(); ctx.shadowColor='#ff00cc'; ctx.shadowBlur=14;
+
+      // Collect active fronts for median heat-haze Y
+      let frontYSum=0, frontYCount=0;
+
+      for (let c=0; c<N_COLS; c++) {
+        const f = fronts[c];
+        if (f<=0.005 || f>=0.998) continue;
+        const x  = c*cw;
+        const ey = imgY + f*imgH; // bottom edge of revealed region
+
+        frontYSum += ey; frontYCount++;
+
+        // Shadow gradient above edge
+        const g = ctx.createLinearGradient(0,ey-28,0,ey+6);
+        g.addColorStop(0,'rgba(0,0,0,0)');
+        g.addColorStop(0.7,'rgba(0,0,0,0.18)');
+        g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=g; ctx.fillRect(x,ey-28,cw,34);
+
+        // Pink neon line at pour front
+        const pulse = 0.60+0.32*Math.sin(animT*9+c*0.27);
+        ctx.fillStyle=`rgba(255,0,204,${pulse})`; ctx.fillRect(x,ey-2,cw,3);
+        // Lime flicker on every 7th column
+        if (c%7===0) { ctx.fillStyle=`rgba(57,255,20,${pulse*0.38})`; ctx.fillRect(x,ey+1,cw,1); }
+
+        // Particle drip from pour front (throttled: every 3rd frame, 1 in 3 cols)
+        if (emitFrame%3===0 && c%3===0) {
+          const ex = x + cw*0.5 + (Math.random()-0.5)*cw;
+          for (let k=0; k<3; k++) {
+            ps.emit(ex, ey, {
+              vx: (Math.random()-0.5)*2.8,
+              vy: 2+Math.random()*4,
+              life: (22+Math.random()*16)|0,
+              size: 1.0+Math.random()*1.8,
+              color: Math.random()<0.72 ? '#ff00cc' : '#00f0ff',
+              gravity: 0.15
+            });
+          }
+        }
+      }
+      ctx.restore();
+
+      // 4. Heat haze at median column-front Y
+      if (frontYCount>0) {
+        const medianY = frontYSum/frontYCount;
+        applyHeatHaze(medianY, 40, 6*Math.sin(progress*Math.PI));
+      }
+
+      return activeCount;
+    }
+
+    // ── Phase dispatch (8 sub-transitions + 3 holds) ─────────────────────────────
+    function getPhase(t) {
+      if (t<0.07) return { name:'PREMELT STATE',        sub:'',               img:allImgs[0] };
+      if (t<0.20) return { name:'POUR: L→R',            sub:'PREMELT → 25%',  draw:(p,at)=>drawColPour(allImgs[0],synthA25, eio(p),at,'ltr'),    p:invlerp(0.07,0.20,t) };
+      if (t<0.33) return { name:'POUR: RADIAL',         sub:'25% → 50%',      draw:(p,at)=>drawColPour(synthA25,  synthA50, eio(p),at,'radial'), p:invlerp(0.20,0.33,t) };
+      if (t<0.44) return { name:'POUR: R→L',            sub:'50% → 75%',      draw:(p,at)=>drawColPour(synthA50,  synthA75, eio(p),at,'rtl'),    p:invlerp(0.33,0.44,t) };
+      if (t<0.54) return { name:'POUR: CENTER SPLIT',   sub:'75% → FACEMELT', draw:(p,at)=>drawColPour(synthA75,  allImgs[1],eio(p),at,'csplit'), p:invlerp(0.44,0.54,t) };
+      if (t<0.62) return { name:'MID MELT',             sub:'',               img:allImgs[1] };
+      if (t<0.71) return { name:'POUR: L→R',            sub:'FACEMELT → 25%', draw:(p,at)=>drawColPour(allImgs[1],synthB25, eio(p),at,'ltr'),    p:invlerp(0.62,0.71,t) };
+      if (t<0.80) return { name:'POUR: RADIAL',         sub:'25% → 50%',      draw:(p,at)=>drawColPour(synthB25,  synthB50, eio(p),at,'radial'), p:invlerp(0.71,0.80,t) };
+      if (t<0.88) return { name:'POUR: R→L',            sub:'50% → 75%',      draw:(p,at)=>drawColPour(synthB50,  synthB75, eio(p),at,'rtl'),    p:invlerp(0.80,0.88,t) };
+      if (t<0.95) return { name:'POUR: CENTER SPLIT',   sub:'75% → END MELT', draw:(p,at)=>drawColPour(synthB75,  allImgs[2],eio(p),at,'csplit'), p:invlerp(0.88,0.95,t) };
+      return              { name:'END STATE',            sub:'MELT COMPLETE',  img:allImgs[2] };
+    }
+
+    // ── Main loop ─────────────────────────────────────────────────────────────────
+    let animT=0, lastTS=0;
+
+    function draw(ts=0) {
+      requestAnimationFrame(draw);
+      if(!ready) return;
+      const dt=Math.min((ts-lastTS)/1000,0.05);
+      lastTS=ts; animT+=dt;
+
+      const t=scrollT;
+      const ph=getPhase(t);
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle='#050508'; ctx.fillRect(0,0,W,H);
+
+      let activeCount=0;
+
+      if (ph.img) {
+        drawFull(ph.img);
+        // Crown pulse on non-premelt hold states
+        if (ph.img!==allImgs[0]) {
+          const pulse=0.13+Math.sin(animT*2.7)*0.07;
+          ctx.save(); ctx.globalCompositeOperation='screen';
+          const grd=ctx.createRadialGradient(SKULL_CX,SKULL_CY,0,SKULL_CX,SKULL_CY,imgW*0.35);
+          grd.addColorStop(0,`rgba(255,0,204,${pulse})`);
+          grd.addColorStop(1,'rgba(255,0,80,0)');
+          ctx.fillStyle=grd; ctx.fillRect(0,0,W,H); ctx.restore();
+        }
+      } else {
+        activeCount = ph.draw(ph.p, animT) || 0;
+      }
+
+      // Particles
+      ps.update(dt); ps.draw(ctx);
+
+      // Bloom (stronger on skull hold states)
+      applyBloom(ph.img && ph.img!==allImgs[0] ? 0.28 : 0.16);
+
+      // CRT grain roll
+      const ry=animT*22%H;
+      ctx.save(); ctx.globalAlpha=0.027; ctx.fillStyle='#ff00cc';
+      [ry,(ry+H*0.45)%H,(ry+H*0.72)%H].forEach(y=>ctx.fillRect(0,y,W,1));
+      ctx.restore();
+
+      hud.name.textContent=ph.name;
+      hud.sub.textContent=ph.sub||'';
+      hud.pct.textContent=Math.round(t*100)+'%';
+      hud.info.textContent=activeCount>0?`${activeCount} ACTIVE COLS`:'';
+    }
+  })();
+  </script>
+</body>
+</html>

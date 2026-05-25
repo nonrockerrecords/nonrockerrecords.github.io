@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>STATUE.EXE — Glitch Tiles+ · nonrocker (V4b)</title>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root { --pink:#ff00cc; --green:#39ff14; --cyan:#00f0ff; --violet:#7a00ff; --black:#050008; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{background:var(--black);overflow-x:hidden;font-family:'VT323',monospace;}
+
+    /* CRT */
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9000;mix-blend-mode:multiply;
+      background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,.20) 3px,rgba(0,0,0,0) 4px);}
+    /* Vignette */
+    body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:8999;
+      background:radial-gradient(ellipse at 50% 50%,transparent 35%,rgba(0,0,0,.85) 100%);}
+
+    .noise{position:fixed;inset:0;pointer-events:none;z-index:8900;mix-blend-mode:screen;opacity:.11;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      animation:nz .15s steps(4) infinite;}
+    @keyframes nz{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-2%)}100%{transform:translate(3%,3%)}}
+
+    .vhs{position:fixed;left:0;right:0;height:80px;pointer-events:none;z-index:8800;mix-blend-mode:screen;
+      background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.07) 40%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.07) 60%,transparent 100%);
+      animation:vhs 2.1s linear infinite;}
+    @keyframes vhs{0%{top:-80px}100%{top:100%}}
+
+    .progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:9100;background:rgba(255,0,204,.12);}
+    .progress__bar{height:100%;width:0%;background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));}
+
+    .ticker{position:fixed;bottom:0;left:0;right:0;z-index:8500;background:#000;border-top:1px solid var(--pink);
+      color:var(--pink);font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:.1em;padding:7px 0;overflow:hidden;white-space:nowrap;}
+    .ticker__track{display:inline-block;padding-left:100%;animation:tick 44s linear infinite;}
+    @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+    .journey{height:600vh;position:relative;}
+    .stage{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;background:var(--black);
+      display:flex;align-items:center;justify-content:center;}
+
+    #cvs{position:absolute;top:0;left:0;width:100%;height:100%;}
+
+    @keyframes blink{50%{opacity:.2}}
+
+    .phase-id{position:fixed;top:18px;left:22px;font-family:'Press Start 2P',monospace;font-size:9px;
+      color:var(--green);letter-spacing:.1em;z-index:8600;pointer-events:none;opacity:0;}
+    .scroll-hint{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);
+      font-family:'Press Start 2P',monospace;font-size:9px;color:rgba(255,255,255,.28);
+      z-index:8600;pointer-events:none;animation:blink 1.3s steps(2) infinite;white-space:nowrap;}
+    .skull-word{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);
+      font-family:'Metal Mania',cursive;font-size:clamp(44px,9vw,108px);line-height:.88;
+      text-align:center;text-shadow:4px 0 var(--pink),-4px 0 var(--cyan);
+      z-index:8600;pointer-events:none;opacity:0;white-space:nowrap;color:#fff;}
+    .tile-readout{position:fixed;top:18px;right:18px;font-family:'Press Start 2P',monospace;
+      font-size:8px;color:rgba(255,0,204,.6);letter-spacing:.08em;z-index:8600;
+      pointer-events:none;opacity:0;line-height:1.8;text-align:right;}
+
+    .final{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:24px;text-align:center;padding:60px 24px 80px;
+      background:linear-gradient(180deg,#160010 0%,var(--black) 100%);position:relative;}
+    .final::before{content:"";position:absolute;inset:0;pointer-events:none;
+      background-image:linear-gradient(rgba(255,0,204,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,0,204,.07) 1px,transparent 1px);
+      background-size:55px 55px;}
+    .final-tag{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green);letter-spacing:.1em;position:relative;}
+    .final-h{font-family:'Metal Mania',cursive;font-size:clamp(52px,11vw,130px);line-height:.88;
+      text-shadow:4px 0 var(--pink),-4px 0 var(--cyan);position:relative;color:#fff;}
+    .final-p{font-family:'VT323',monospace;font-size:20px;color:rgba(255,255,255,.65);max-width:46ch;line-height:1.5;position:relative;}
+    .final-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;}
+    .final-meta{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pink);letter-spacing:.08em;position:relative;}
+  </style>
+</head>
+<body>
+<sp-theme color="dark" scale="medium" theme="spectrum-two">
+
+<div class="noise"></div>
+<div class="vhs"></div>
+<div class="progress"><div class="progress__bar" id="prog"></div></div>
+<div class="phase-id"   id="phaseId"></div>
+<div class="tile-readout" id="tileOut"></div>
+<div class="skull-word" id="skullWord">SKULL.EXE</div>
+<div class="scroll-hint" id="sHint">▼ SCROLL ▼</div>
+
+<div class="journey" id="journey">
+  <div class="stage"><canvas id="cvs"></canvas></div>
+</div>
+
+<div class="final">
+  <div class="final-tag">// NRK-666 · TILE SEQUENCE COMPLETE+</div>
+  <h2 class="final-h">Glitch<br>Tiles+</h2>
+  <p class="final-p">Enhanced: particle sparks, heat haze at the wave front, bloom on the skull holds. 160 tiles. 0 warnings.</p>
+  <div class="final-btns">
+    <sp-button variant="accent" size="xl" href="slides.html">Full EPK</sp-button>
+    <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v5b.html">V5b BLOB+</sp-button>
+    <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v6b.html">V6b CRT+</sp-button>
+    <sp-button variant="secondary" size="xl" treatment="outline" href="facemelt-v7b.html">V7b POUR+</sp-button>
+  </div>
+  <div class="final-meta">nonrocker records · TILE INTEGRITY: 0% · NRK-666 // ENHANCED</div>
+</div>
+
+<div class="ticker"><div class="ticker__track">
+  ▓ TILE_FLIP.EXE ▓ 160 TILES PROCESSING ▓ SKULL EMERGING ▓ MARBLE INTEGRITY: FRAGMENTING ▓ NRK-666 ▓ NONROCKER RECORDS ▓ GLITCH IN PROGRESS ▓ PARTICLES ACTIVE ▓ HEAT HAZE DETECTED ▓ BLOOM ENABLED ▓
+</div></div>
+
+<script>
+'use strict';
+
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const ss=t=>{const c=clamp(t,0,1);return c*c*(3-2*c);};
+const map=(v,a,b,c,d)=>lerp(c,d,ss(clamp((v-a)/(b-a),0,1)));
+
+// ── Canvas ───────────────────────────────────────────
+const cvs=document.getElementById('cvs');
+const ctx=cvs.getContext('2d');
+let W=0,H=0;
+
+function resize(){
+  W=cvs.width=window.innerWidth;
+  H=cvs.height=window.innerHeight;
+  buildTiles();
+  initBloom();
+}
+window.addEventListener('resize',resize);
+
+// ── Images ───────────────────────────────────────────
+const imgs=[new Image(),new Image(),new Image()];
+imgs[0].src='facemelt-premelt.png';
+imgs[1].src='Facemelt.png';
+imgs[2].src='Facemelt-endmelt.png';
+let loaded=0;
+imgs.forEach(i=>{i.onload=()=>loaded++;});
+
+function imgParam(img){
+  if(!img.naturalWidth)return{x:0,y:0,w:W,h:H};
+  const scale=Math.min(W/img.naturalWidth,H/img.naturalHeight);
+  const w=img.naturalWidth*scale, h=img.naturalHeight*scale;
+  return{x:(W-w)/2,y:(H-h)/2,w,h};
+}
+
+// ── Tile grid ────────────────────────────────────────
+const COLS=10, ROWS=16;
+const SKULL_COL_FRAC=0.50, SKULL_ROW_FRAC=0.28;
+let tiles=[];
+
+function buildTiles(){
+  const tw=W/COLS, th=H/ROWS;
+  tiles=[];
+  const sc=SKULL_COL_FRAC*COLS, sr=SKULL_ROW_FRAC*ROWS;
+  let maxD=0;
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const d=Math.hypot(c+.5-sc,r+.5-sr);
+    if(d>maxD)maxD=d;
+  }
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const d=Math.hypot(c+.5-sc,r+.5-sr);
+    tiles.push({c,r,x:c*tw,y:r*th,w:tw,h:th,
+      delayT1:d/maxD*0.62, delayT2:(1-(r/(ROWS-1)))*0.55,
+      jitter:(Math.random()-.5)*0.04});
+  }
+}
+resize();
+
+// ── Particle system ───────────────────────────────────
+class ParticleSystem{
+  constructor(max=600){this.pool=[];this.max=max;}
+  emit(x,y,{vx,vy,life,size,color,gravity=0.10}){
+    if(this.pool.length>=this.max)return;
+    this.pool.push({x,y,vx,vy,life,maxLife:life,size,color,gravity,alpha:1});
+  }
+  update(dt){
+    for(let i=this.pool.length-1;i>=0;i--){
+      const p=this.pool[i];
+      p.x+=p.vx*dt*60; p.vy+=p.gravity; p.y+=p.vy*dt*60;
+      p.life--; p.alpha=p.life/p.maxLife;
+      if(p.life<=0) this.pool.splice(i,1);
+    }
+  }
+  draw(ctx){
+    ctx.save();
+    this.pool.forEach(p=>{
+      ctx.globalAlpha=p.alpha*0.90;
+      ctx.fillStyle=p.color; ctx.shadowColor=p.color; ctx.shadowBlur=p.size*4;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size*Math.max(0.1,p.alpha),0,Math.PI*2); ctx.fill();
+    });
+    ctx.restore();
+  }
+}
+const ps=new ParticleSystem(600);
+
+// ── Bloom ──────────────────────────────────────────────
+let bloomC,bloomCtx;
+function initBloom(){
+  bloomC=document.createElement('canvas'); bloomC.width=W>>1; bloomC.height=H>>1;
+  bloomCtx=bloomC.getContext('2d');
+}
+function applyBloom(alpha=0.18){
+  const bW=bloomC.width,bH=bloomC.height;
+  bloomCtx.clearRect(0,0,bW,bH);
+  bloomCtx.filter='blur(9px) brightness(2.2)';
+  bloomCtx.drawImage(cvs,0,0,bW,bH); bloomCtx.filter='none';
+  ctx.save(); ctx.globalCompositeOperation='screen'; ctx.globalAlpha=alpha;
+  ctx.drawImage(bloomC,0,0,W,H); ctx.restore();
+}
+
+// ── Heat haze ──────────────────────────────────────────
+let hazeFrame=0;
+function applyHeatHaze(centerY,stripH,amp){
+  if(amp<0.6)return; hazeFrame++; if(hazeFrame%2!==0)return;
+  const y0=Math.max(0,Math.floor(centerY-stripH/2));
+  const y1=Math.min(H,Math.ceil(centerY+stripH/2));
+  const h=y1-y0; if(h<=0)return;
+  const src=ctx.getImageData(0,y0,W,h),dst=ctx.createImageData(W,h);
+  const sd=src.data,dd=dst.data,t=performance.now()/1000;
+  for(let row=0;row<h;row++){
+    const wY=y0+row,env=Math.sin((row/h)*Math.PI);
+    for(let col=0;col<W;col++){
+      const dx=Math.round(amp*env*Math.sin(wY*0.18+col*0.04+t*2.1));
+      const dy=Math.round(amp*0.3*env*Math.sin(col*0.12+t*1.6));
+      const sc=clamp(col+dx,0,W-1),sr=clamp(row+dy,0,h-1);
+      const si=(sr*W+sc)*4,di=(row*W+col)*4;
+      dd[di]=sd[si];dd[di+1]=sd[si+1];dd[di+2]=sd[si+2];dd[di+3]=sd[si+3];
+    }
+  }
+  ctx.putImageData(dst,0,y0);
+}
+
+// ── Draw tile ─────────────────────────────────────────
+function drawTile(tile,flipP,imgA,imgB,pA,pB){
+  const{x,y,w,h}=tile;
+  const facing=flipP<0.5;
+  const img=facing?imgA:imgB;
+  const p=facing?pA:pB;
+  if(!img||!img.naturalWidth)return;
+  const squish=Math.abs(Math.cos(flipP*Math.PI));
+  if(squish<0.005)return;
+  const drawW=w*squish, drawX=x+(w-drawW)/2;
+  const srcX=p.x+(x/W)*p.w, srcY=p.y+(y/H)*p.h, srcW=(w/W)*p.w, srcH=(h/H)*p.h;
+  ctx.drawImage(img,srcX,srcY,srcW,srcH,drawX,y,drawW,h);
+  if(squish<0.35){
+    const glitchA=(1-squish/0.35)*0.6;
+    ctx.save();
+    ctx.globalCompositeOperation='screen';
+    ctx.globalAlpha=glitchA*0.45; ctx.fillStyle='#ff00cc'; ctx.fillRect(drawX,y,drawW,h);
+    ctx.globalAlpha=glitchA*0.25; ctx.fillStyle='#00f0ff'; ctx.fillRect(drawX+drawW*0.3,y,drawW*0.4,h);
+    ctx.restore();
+    ctx.save();
+    ctx.strokeStyle=`rgba(255,0,204,${glitchA*0.9})`; ctx.lineWidth=2;
+    ctx.shadowColor='#ff00cc'; ctx.shadowBlur=8; ctx.strokeRect(drawX,y,drawW,h);
+    ctx.restore();
+  }
+}
+
+// ── Spark emission at tile mid-flip point ─────────────
+function emitTileSparks(tile, flipP) {
+  // Only emit near 45-55% flip (the edge-on moment)
+  if(flipP<0.42||flipP>0.58)return;
+  const cx=tile.x+tile.w/2, cy=tile.y+tile.h/2;
+  const n=3+Math.random()*3|0;
+  for(let k=0;k<n;k++){
+    const angle=Math.random()*Math.PI*2;
+    const speed=1.5+Math.random()*3;
+    ps.emit(cx,cy,{
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed,
+      life:(14+Math.random()*12)|0,
+      size:0.8+Math.random()*1.2,
+      color:Math.random()<0.7?'#ff00cc':'#ffb800',
+      gravity:0.10
+    });
+  }
+}
+
+// ── Draw scene ────────────────────────────────────────
+function drawScene(t,time,dt){
+  ctx.clearRect(0,0,W,H);
+  if(loaded<3){
+    ctx.fillStyle='#050008';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,0,204,.3)';ctx.font='13px monospace';ctx.textAlign='center';
+    ctx.fillText('LOADING...',W/2,H/2);
+    return;
+  }
+
+  const p0=imgParam(imgs[0]),p1=imgParam(imgs[1]),p2=imgParam(imgs[2]);
+  let bloomAlpha=0.18;
+  let midFlipYSum=0, midFlipCount=0, midFlipProgress=0;
+
+  // ─ PREMELT ─────────────────────────────────────────
+  if(t<0.20){
+    ctx.drawImage(imgs[0],p0.x,p0.y,p0.w,p0.h);
+    if(Math.random()<0.04){
+      const gr=Math.floor(Math.random()*3), gc=Math.floor(Math.random()*COLS);
+      const tile=tiles[gr*COLS+gc];
+      if(tile){
+        ctx.save(); ctx.globalCompositeOperation='screen'; ctx.globalAlpha=(t/0.20)*0.15;
+        ctx.fillStyle='#ff00cc'; ctx.fillRect(tile.x,tile.y,tile.w,tile.h); ctx.restore();
+      }
+    }
+    bloomAlpha=0.12;
+
+  // ─ T1: flip to Facemelt ───────────────────────────
+  } else if(t<0.48){
+    const trans=(t-0.20)/0.28;
+    let flipping=0,done=0;
+    tiles.forEach(tile=>{
+      const delay=tile.delayT1+tile.jitter, dur=0.35;
+      const localT=clamp((trans-delay)/dur,0,1);
+      const flipP=ss(localT);
+      if(flipP>=1)done++;
+      else if(flipP>0){flipping++;emitTileSparks(tile,flipP);}
+      drawTile({...tile,w:tile.w+1,h:tile.h+1},flipP||0,imgs[0],imgs[1],p0,p1);
+      // Track mid-flip Y for heat haze
+      if(flipP>0.02&&flipP<0.98){ midFlipYSum+=tile.y+tile.h/2; midFlipCount++; }
+    });
+    midFlipProgress=trans;
+    tileOut.style.opacity=1;
+    tileOut.innerHTML=`TILES FLIPPED: ${done}<br>IN PROGRESS: ${flipping}<br>REMAINING: ${160-done-flipping}`;
+    bloomAlpha=0.18;
+
+  // ─ FACEMELT HOLD ─────────────────────────────────
+  } else if(t<0.65){
+    ctx.drawImage(imgs[1],p1.x,p1.y,p1.w,p1.h);
+    const pulse=0.5+0.5*Math.sin(time*2.2);
+    const sg=ctx.createRadialGradient(W/2,H*0.30,0,W/2,H*0.30,W*0.35);
+    sg.addColorStop(0,`rgba(255,0,204,${0.15*pulse})`); sg.addColorStop(1,'rgba(255,0,204,0)');
+    ctx.fillStyle=sg; ctx.fillRect(0,0,W,H);
+    bloomAlpha=0.28;
+
+  // ─ T2: flip to endmelt ───────────────────────────
+  } else if(t<0.88){
+    const trans=(t-0.65)/0.23;
+    let flipping2=0,done2=0;
+    tiles.forEach(tile=>{
+      const delay=tile.delayT2+tile.jitter, dur=0.38;
+      const localT=clamp((trans-delay)/dur,0,1);
+      const flipP=ss(localT);
+      if(flipP>=1)done2++;
+      else if(flipP>0){flipping2++;emitTileSparks(tile,flipP);}
+      drawTile({...tile,w:tile.w+1,h:tile.h+1},flipP||0,imgs[1],imgs[2],p1,p2);
+      if(flipP>0.02&&flipP<0.98){ midFlipYSum+=tile.y+tile.h/2; midFlipCount++; }
+    });
+    midFlipProgress=trans;
+    tileOut.style.opacity=1;
+    tileOut.innerHTML=`TILES FLIPPED: ${done2}<br>IN PROGRESS: ${flipping2}<br>REMAINING: ${160-done2-flipping2}`;
+    bloomAlpha=0.18;
+
+  // ─ ENDMELT HOLD ──────────────────────────────────
+  } else {
+    ctx.drawImage(imgs[2],p2.x,p2.y,p2.w,p2.h);
+    const pulse=0.5+0.5*Math.sin(time*2.6);
+    const sg=ctx.createRadialGradient(W/2,H*0.45,0,W/2,H*0.45,W*0.5);
+    sg.addColorStop(0,`rgba(255,0,204,${0.28*pulse})`);
+    sg.addColorStop(0.5,`rgba(122,0,255,${0.12*pulse})`);
+    sg.addColorStop(1,'rgba(5,0,8,0)');
+    ctx.fillStyle=sg; ctx.fillRect(0,0,W,H);
+    if(Math.random()<0.05){
+      const sy=Math.random()*H, sh=2+Math.random()*10;
+      const shift=(Math.random()<0.5?-1:1)*(10+Math.random()*40);
+      try{const strip=ctx.getImageData(0,sy,W,sh);ctx.putImageData(strip,shift,sy);}catch(e){}
+    }
+    bloomAlpha=0.28;
+  }
+
+  // ── Heat haze at diagonal wave front ──────────────
+  if(midFlipCount>0){
+    const avgY=midFlipYSum/midFlipCount;
+    applyHeatHaze(avgY, 45, 8*Math.sin(midFlipProgress*Math.PI));
+  }
+
+  // ── Particles ─────────────────────────────────────
+  ps.update(dt); ps.draw(ctx);
+
+  // ── Bloom ─────────────────────────────────────────
+  applyBloom(bloomAlpha);
+
+  return bloomAlpha;
+}
+
+// ── UI ───────────────────────────────────────────────
+const phaseId   = document.getElementById('phaseId');
+const skullWord = document.getElementById('skullWord');
+const sHint     = document.getElementById('sHint');
+const prog      = document.getElementById('prog');
+const tileOut   = document.getElementById('tileOut');
+
+function updateUI(t){
+  prog.style.width=(t*100)+'%';
+  sHint.style.opacity=t<0.05?1:map(t,.05,.11,1,0);
+  if(t<0.20){phaseId.textContent='// 01_PREMELT.PNG';phaseId.style.opacity=map(t,0,.04,0,1)*map(t,.16,.20,1,0);}
+  else if(t>=0.48&&t<0.65){phaseId.textContent='// 02_FACEMELT.PNG';phaseId.style.opacity=map(t,.48,.54,0,1)*map(t,.60,.65,1,0);}
+  else if(t>=0.88){phaseId.textContent='// 03_ENDMELT.PNG';phaseId.style.opacity=map(t,.88,.94,0,1);}
+  else if(t>=0.20&&t<0.48){phaseId.textContent='// TILE_FLIP+ → FACEMELT';phaseId.style.opacity=1;}
+  else if(t>=0.65&&t<0.88){phaseId.textContent='// TILE_FLIP+ → ENDMELT';phaseId.style.opacity=1;}
+  if(!((t>=0.20&&t<0.48)||(t>=0.65&&t<0.88))) tileOut.style.opacity=0;
+  skullWord.style.opacity=map(t,.90,1.0,0,1);
+  const p=0.5+0.5*Math.sin(performance.now()*.002);
+  skullWord.style.textShadow=`4px 0 #ff00cc,-4px 0 #00f0ff,0 0 ${20+30*p}px rgba(255,0,204,${.6+.4*p})`;
+}
+
+// ── Loop ────────────────────────────────────────────
+let lastScrollT=0, lastTS=0;
+function loop(ts){
+  const dt=Math.min((ts-(lastTS||ts))/1000,0.05);
+  lastTS=ts;
+  drawScene(lastScrollT, ts/1000, dt);
+  updateUI(lastScrollT);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// ── Scroll ──────────────────────────────────────────
+const journey=document.getElementById('journey');
+window.addEventListener('scroll',()=>{
+  const r=journey.getBoundingClientRect();
+  lastScrollT=clamp(-r.top/(journey.offsetHeight-window.innerHeight),0,1);
+},{passive:true});
+</script>
+</sp-theme>
+</body>
+</html>
