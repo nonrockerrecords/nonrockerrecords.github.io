@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>nonrocker records — DEMON-STRATION // VOID</title>
+
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#050008; --cyan:#00f0ff; --lime:#39ff14; --pink:#ff00cc;
+      --violet:#7a00ff; --amber:#ffb800; --orange:#ff5a00; --red:#ff1430;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
+      font-family:'VT323',monospace;color:#dfe;cursor:crosshair;}
+
+    #void{position:fixed;inset:0;z-index:0;
+      background:radial-gradient(ellipse at 50% 44%,#0d0420 0%,#070110 55%,#050008 100%);}
+    #burst{position:fixed;inset:0;z-index:1;width:100%;height:100%;}
+
+    .crt::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:90;
+      background:repeating-linear-gradient(180deg,transparent 0,transparent 2px,rgba(0,0,0,.20) 3px,transparent 4px);}
+    .crt::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:91;
+      background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,.78) 100%);}
+
+    /* header ticker */
+    #hdr{position:fixed;top:0;left:0;right:0;height:38px;z-index:60;
+      background:rgba(5,0,8,.82);border-bottom:1px solid rgba(0,240,255,.32);
+      overflow:hidden;display:flex;flex-direction:column;justify-content:center;}
+    .tick{white-space:nowrap;font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:6px;}
+    .tick.a{color:var(--cyan);animation:scL 16s linear infinite;text-shadow:0 0 8px var(--cyan);}
+    .tick.b{color:var(--pink);animation:scR 20s linear infinite;font-size:7px;margin-top:2px;}
+    @keyframes scL{from{transform:translateX(0)}to{transform:translateX(-33.33%)}}
+    @keyframes scR{from{transform:translateX(-33.33%)}to{transform:translateX(0)}}
+
+    /* left status */
+    #statusCol{position:fixed;left:14px;top:58px;z-index:55;width:190px;pointer-events:none;}
+    .st-h{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--cyan);
+      letter-spacing:2px;margin-bottom:10px;text-shadow:0 0 8px var(--cyan);}
+    .st-row{font-size:19px;letter-spacing:1px;line-height:1.5;color:var(--lime);
+      text-shadow:0 0 6px rgba(57,255,20,.5);}
+    .st-row b{color:var(--cyan);}
+    .st-data{margin-top:14px;font-size:14px;color:rgba(0,240,255,.5);line-height:1.55;}
+
+    /* right minimap */
+    #dataCol{position:fixed;right:10px;top:58px;bottom:54px;z-index:55;width:138px;overflow:hidden;pointer-events:none;
+      -webkit-mask-image:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent);
+              mask-image:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent);}
+    #dataScroll{font-family:'VT323',monospace;font-size:11px;line-height:1.32;
+      color:rgba(122,0,255,.7);letter-spacing:.5px;animation:dUp 40s linear infinite;}
+    #dataScroll .k{color:var(--cyan);} #dataScroll .v{color:var(--pink);}
+    @keyframes dUp{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+
+    /* slide deck */
+    #stage{position:fixed;inset:0;z-index:40;}
+    .scene{position:absolute;inset:64px 170px 64px;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;gap:16px;
+      opacity:0;visibility:hidden;transition:opacity .35s;}
+    .scene.on{opacity:1;visibility:visible;}
+    .slide-chip{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--pink);
+      letter-spacing:3px;border:1px solid rgba(255,0,204,.4);padding:5px 10px;text-shadow:0 0 8px var(--pink);}
+
+    .intertitle{font-family:'Press Start 2P',monospace;font-size:clamp(13px,2.3vw,26px);
+      color:#fff;line-height:1.7;letter-spacing:2px;text-shadow:0 0 20px var(--cyan),3px 0 var(--pink),-3px 0 var(--lime);}
+    .demon{font-family:'Press Start 2P',monospace;font-size:clamp(22px,5.5vw,62px);line-height:1.1;letter-spacing:.04em;}
+    .demon .d{color:var(--pink);text-shadow:0 0 30px var(--pink),4px 0 var(--cyan);}
+    .demon .s{color:var(--cyan);text-shadow:0 0 30px var(--cyan),-4px 0 var(--lime);}
+    .demon-sub{font-family:'VT323',monospace;font-size:clamp(15px,2vw,24px);color:var(--lime);letter-spacing:6px;}
+
+    .genre-line{font-family:'VT323',monospace;font-size:clamp(16px,2.4vw,30px);
+      color:var(--cyan);letter-spacing:3px;line-height:1.9;}
+    .genre-tag{color:var(--pink);}
+
+    .skull{width:clamp(150px,24vw,260px);filter:drop-shadow(0 0 32px rgba(0,240,255,.7)) saturate(1.4);
+      animation:flo 3.4s ease-in-out infinite;}
+    @keyframes flo{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+    .data-big{font-family:'Press Start 2P',monospace;font-size:clamp(30px,7vw,76px);
+      color:var(--cyan);letter-spacing:6px;text-shadow:0 0 26px var(--cyan),0 0 50px var(--pink);}
+    .data-lbl{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--pink);letter-spacing:5px;}
+
+    .scores{display:flex;flex-direction:column;gap:9px;width:min(64%,520px);}
+    .score{border:2px solid;padding:9px 16px;display:flex;align-items:center;gap:14px;
+      font-family:'Press Start 2P',monospace;background:rgba(0,0,0,.4);}
+    .score .rk{font-size:9px;} .score .nm{font-size:9px;color:#fff;flex:1;text-align:left;letter-spacing:1px;}
+    .score .pt{font-size:11px;}
+    .score.c0{border-color:var(--cyan);} .score.c0 .rk,.score.c0 .pt{color:var(--cyan);}
+    .score.c1{border-color:var(--pink);} .score.c1 .rk,.score.c1 .pt{color:var(--pink);}
+    .score.c2{border-color:var(--lime);} .score.c2 .rk,.score.c2 .pt{color:var(--lime);}
+    .score.c3{border-color:var(--violet);} .score.c3 .rk,.score.c3 .pt{color:var(--violet);}
+    .score.c4{border-color:var(--amber);} .score.c4 .rk,.score.c4 .pt{color:var(--amber);}
+    .score.c5{border-color:var(--orange);} .score.c5 .rk,.score.c5 .pt{color:var(--orange);}
+
+    .creds{width:min(70%,640px);text-align:left;font-family:'VT323',monospace;
+      font-size:clamp(15px,1.9vw,21px);line-height:1.6;color:#dfe;letter-spacing:1px;column-count:2;column-gap:34px;}
+    .creds .ck{color:var(--cyan);}
+    .scene-h{font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.3vw,12px);
+      color:var(--pink);letter-spacing:4px;text-shadow:0 0 12px var(--pink);}
+    .book-email{font-family:'Press Start 2P',monospace;font-size:clamp(9px,1.5vw,15px);
+      color:var(--cyan);text-decoration:none;letter-spacing:2px;text-shadow:0 0 16px var(--cyan);}
+    .book-email:hover{color:#fff;text-shadow:0 0 16px var(--pink);}
+
+    /* footer w/ progress */
+    #ftr{position:fixed;bottom:0;left:0;right:0;height:46px;z-index:60;
+      background:rgba(5,0,8,.85);border-top:1px solid rgba(122,0,255,.4);
+      display:flex;align-items:center;gap:12px;padding:0 14px;}
+    .ft-btn{font-family:'Press Start 2P',monospace;font-size:6px;color:rgba(255,255,255,.4);
+      background:none;border:1px solid rgba(0,240,255,.4);padding:6px 12px;cursor:pointer;letter-spacing:1px;transition:all .12s;}
+    .ft-btn:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,.4);}
+    #prog{flex:1;height:3px;background:rgba(0,240,255,.12);}
+    #progFill{height:100%;width:0;background:var(--cyan);box-shadow:0 0 8px var(--cyan);transition:width .3s;}
+    #count{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pink);letter-spacing:2px;}
+  </style>
+</head>
+<body class="crt">
+
+<div id="void"></div>
+<canvas id="burst"></canvas>
+
+<div id="hdr">
+  <div class="tick a">NONROCKER · MELT · SOJU · NRK · MELT · DEMON-STRATION · NONROCKER · MELT · SOJU · NRK · MELT · DEMON-STRATION · NONROCKER · MELT · SOJU · NRK · MELT · DEMON-STRATION · </div>
+  <div class="tick b">BOMB · KAZOO · BOMB · 막걸리 · BOMB · DIDGERIDOO · BOMB · KAZOO · BOMB · 막걸리 · BOMB · DIDGERIDOO · BOMB · KAZOO · BOMB · 막걸리 · BOMB · DIDGERIDOO · </div>
+</div>
+
+<div id="statusCol">
+  <div class="st-h">// SIGNAL STATUS</div>
+  <div class="st-row">SIGNAL: <b>LOCKED</b></div>
+  <div class="st-row">MELT: <b>STABLE</b></div>
+  <div class="st-row">RE-FORM: <b>ACTIVE</b></div>
+  <div class="st-row">KAZOO: <b>INITIATED</b></div>
+  <div class="st-row">RE-COMBINE: <b>막걸리</b></div>
+  <div class="st-data" id="stData"></div>
+</div>
+
+<div id="dataCol"><div id="dataScroll"></div></div>
+
+<div id="stage">
+  <section class="scene">
+    <div class="slide-chip">00 / INTRO</div>
+    <div class="intertitle">LISTEN TO THE NOISE<br>THAT OUTLIVED<br>THE MELODY</div>
+  </section>
+  <section class="scene">
+    <div class="slide-chip">01 / TITLE</div>
+    <div class="demon"><span class="d">DEMON</span>-<span class="s">STRATION</span></div>
+    <div class="demon-sub">nonrocker records · NRK-2024</div>
+  </section>
+  <section class="scene">
+    <div class="slide-chip">02 / SOUND</div>
+    <div class="scene-h">// SELF-RUNNING DEMO</div>
+    <div class="genre-line">
+      <span class="genre-tag">NIHILIST</span> SOJU-CORE<br>
+      <span class="genre-tag">ANTI-MELODY</span> MUSIC<br>
+      VAPORWAVE · DIGITAL HARDCORE<br>
+      NU-KAZOO · DIDGERI-DOOM · SEOUL-FI
+    </div>
+  </section>
+  <section class="scene" data-burst="hot">
+    <div class="slide-chip">03 / THE MELT</div>
+    <img class="skull" src="Facemelt-endmelt.png" alt="the melt"/>
+    <div class="data-lbl">DATA</div>
+    <div class="data-big" id="dataBig">76 70 26</div>
+  </section>
+  <section class="scene">
+    <div class="slide-chip">04 / HALL OF MELT</div>
+    <div class="scores">
+      <div class="score c0"><span class="rk">1ST</span><span class="nm">YUNG SOJU</span><span class="pt">999666</span></div>
+      <div class="score c1"><span class="rk">2ND</span><span class="nm">DJ 막걸리</span><span class="pt">930739</span></div>
+      <div class="score c2"><span class="rk">3RD</span><span class="nm">STATUE.EXE</span><span class="pt">814580</span></div>
+      <div class="score c3"><span class="rk">4TH</span><span class="nm">NULLSOFT</span><span class="pt">070707</span></div>
+      <div class="score c4"><span class="rk">5TH</span><span class="nm">??? (DRUMMER)</span><span class="pt">006660</span></div>
+      <div class="score c5"><span class="rk">6TH</span><span class="nm">NRK HOUSE</span><span class="pt">005000</span></div>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="slide-chip">05 / PERSONNEL</div>
+    <div class="scene-h">// PERSONNEL &amp; MATERIALS</div>
+    <div class="creds">
+      <div><span class="ck">vox/shaman</span> — Yung Soju</div>
+      <div><span class="ck">turntable</span> — DJ 막걸리</div>
+      <div><span class="ck">bass/construct</span> — STATUE.EXE</div>
+      <div><span class="ck">keys/hacker</span> — NULLSOFT</div>
+      <div><span class="ck">drums</span> — ??? (the drummer)</div>
+      <div><span class="ck">album</span> — Soju, Kazoos &amp; Didgeridoos</div>
+      <div><span class="ck">catalog</span> — NRK-2024 · NRK-666</div>
+      <div><span class="ck">track 01</span> — METALDATA</div>
+      <div style="break-before:column;"><span class="ck">materials</span>:</div>
+      <div>soju · gold kazoo</div>
+      <div>cracked didgeridoo</div>
+      <div>CRT phosphor · melting marble</div>
+      <div>polycarbonate · plastic bust</div>
+      <div>electricity · MIDI · cassette</div>
+      <div>LCD · LED · vaporwave</div>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="slide-chip">06 / BOOKING</div>
+    <div class="intertitle" style="font-size:clamp(11px,1.8vw,19px);">REWARD: ONE (1) BOOKING<br>— CLAIM BELOW —</div>
+    <a class="book-email" href="mailto:nonrockerrecords@proton.me">nonrockerrecords@proton.me</a>
+    <div class="demon-sub" style="font-size:clamp(13px,1.6vw,18px);color:rgba(255,255,255,.45);">BOOKING · PRESS · COLLABS</div>
+  </section>
+</div>
+
+<div id="ftr">
+  <button class="ft-btn" onclick="step(-1)">◄ PREV</button>
+  <span id="count">01 / 07</span>
+  <div id="prog"><div id="progFill"></div></div>
+  <button class="ft-btn" onclick="step(1)">NEXT ►</button>
+</div>
+
+<script>
+'use strict';
+const cv=document.getElementById('burst'),cx=cv.getContext('2d');
+let W,H;function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;}rs();addEventListener('resize',rs);
+
+const SPIKES=110;let hot=false;
+function burst(t){
+  cx.clearRect(0,0,W,H);
+  const ox=W/2,oy=H*0.46,maxR=Math.min(W,H)*0.6;
+  cx.globalCompositeOperation='lighter';
+  for(let i=0;i<SPIKES;i++){
+    const a=(i/SPIKES)*Math.PI*2 + t*0.05;
+    const len=maxR*(0.4+0.6*Math.abs(Math.sin(i*1.7+t*0.6)));
+    const g=cx.createLinearGradient(ox,oy,ox+Math.cos(a)*len,oy+Math.sin(a)*len);
+    if(hot){
+      g.addColorStop(0,'rgba(255,90,0,0)');g.addColorStop(0.15,'rgba(255,90,0,0.5)');
+      g.addColorStop(0.55,'rgba(255,20,48,0.3)');g.addColorStop(1,'rgba(255,184,0,0.02)');
+    }else{
+      g.addColorStop(0,'rgba(0,240,255,0)');g.addColorStop(0.15,'rgba(0,240,255,0.32)');
+      g.addColorStop(0.55,'rgba(122,0,255,0.26)');g.addColorStop(1,'rgba(255,0,204,0.02)');
+    }
+    cx.strokeStyle=g;cx.lineWidth=1.3;
+    cx.beginPath();cx.moveTo(ox,oy);cx.lineTo(ox+Math.cos(a)*len,oy+Math.sin(a)*len);cx.stroke();
+  }
+  const core=cx.createRadialGradient(ox,oy,0,ox,oy,maxR*0.26);
+  if(hot){core.addColorStop(0,'rgba(255,220,120,0.8)');core.addColorStop(0.4,'rgba(255,120,0,0.4)');core.addColorStop(1,'rgba(255,90,0,0)');}
+  else{core.addColorStop(0,'rgba(180,240,255,0.55)');core.addColorStop(0.4,'rgba(0,240,255,0.22)');core.addColorStop(1,'rgba(0,240,255,0)');}
+  cx.fillStyle=core;cx.beginPath();cx.arc(ox,oy,maxR*0.26,0,Math.PI*2);cx.fill();
+  cx.globalCompositeOperation='source-over';
+}
+(function loop(ts){requestAnimationFrame(loop);burst(ts*0.001);})(0);
+
+/* data columns */
+const DATA_LINES=[['ALBUM','SOJU KAZOOS DIDGERIDOOS'],['CAT','NRK-2024'],['CAT','NRK-666'],
+  ['TRK01','METALDATA 3:11'],['TRK02','SOJU SUNRISE'],['TRK03','SEOUL SLEEPOVER'],['TRK04','DIDGERI-DOOM'],
+  ['TRK05','KAZOO.EXE'],['GENRE','NIHILIST SOJU-CORE'],['GENRE','ANTI-MELODY'],['GENRE','VAPORWAVE'],
+  ['GENRE','SEOUL-FI'],['MAT','POLYCARBONATE'],['MAT','MELTING MARBLE'],['MAT','GOLD KAZOO'],
+  ['MAT','CRT PHOSPHOR'],['MAT','LCD LED PLA'],['MAT','SOJU 360ML'],['MEM','YUNG SOJU'],['MEM','DJ 막걸리'],
+  ['MEM','STATUE.EXE'],['MEM','NULLSOFT'],['MEM','??? DRUMMER'],['SYS','RE-FORM OK'],['SYS','MELT STABLE'],['SYS','BPM NULL']];
+let block='';DATA_LINES.forEach(([k,v])=>{block+=`<div><span class="k">${k}</span> <span class="v">${v}</span></div>`;});
+document.getElementById('dataScroll').innerHTML=block+block;
+let sd='';['JMD 99145','DPF 930739','ADM 814580','SA 7000','SA 6000','RE-0','MELT-1','SOJU-360','KZO-4','DDG-1'].forEach(x=>{sd+=`<div>${x}</div>`;});
+document.getElementById('stData').innerHTML=sd;
+
+/* manual slides */
+const scenes=[...document.querySelectorAll('.scene')];
+let cur=0;
+function show(i){
+  scenes[cur].classList.remove('on');
+  cur=((i%scenes.length)+scenes.length)%scenes.length;
+  scenes[cur].classList.add('on');
+  hot=scenes[cur].dataset.burst==='hot';
+  document.getElementById('count').textContent=String(cur+1).padStart(2,'0')+' / '+String(scenes.length).padStart(2,'0');
+  document.getElementById('progFill').style.width=((cur+1)/scenes.length*100)+'%';
+}
+function step(d){show(cur+d);}
+show(0);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();step(1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();step(-1);}
+});
+document.getElementById('stage').addEventListener('click',()=>step(1));
+
+const dataBig=document.getElementById('dataBig');
+setInterval(()=>{const n=()=>String(Math.floor(Math.random()*99)).padStart(2,'0');
+  if(dataBig)dataBig.textContent=`${n()} ${n()} ${n()}`;},700);
+</script>
+</body>
+</html>
