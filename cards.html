@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NRK — Member Trading Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --pink:#ff00cc;
+    --cyan:#00f0ff;
+    --lime:#39ff14;
+    --amber:#ffb800;
+    --violet:#7a00ff;
+    --bg:#06060a;
+    --text:#f4eaff;
+    --sub:#888;
+  }
+
+  html,body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'VT323',monospace;
+    font-size:18px;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* CRT overlay */
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    background:repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.11) 3px,
+      transparent 4px
+    );
+    pointer-events:none;z-index:999;
+  }
+
+  /* ── Header ── */
+  .page-header{
+    text-align:center;
+    padding:3rem 1rem 2rem;
+    border-bottom:1px solid rgba(255,0,204,.18);
+  }
+  .label-tag{
+    font-family:'Press Start 2P',monospace;
+    font-size:clamp(8px,1.4vw,11px);
+    color:var(--pink);
+    letter-spacing:.2em;
+    text-shadow:0 0 14px var(--pink);
+    margin-bottom:.9rem;
+  }
+  .page-title{
+    font-family:'VT323',monospace;
+    font-size:clamp(36px,7vw,64px);
+    color:var(--cyan);
+    letter-spacing:.12em;
+    text-shadow:0 0 24px rgba(0,240,255,.4);
+  }
+  .page-sub{
+    color:var(--sub);
+    font-size:clamp(14px,1.8vw,18px);
+    letter-spacing:.12em;
+    margin-top:.4rem;
+  }
+
+  /* ── Grid ── */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:2rem;
+    padding:2.5rem clamp(1rem,4vw,3rem) 5rem;
+    max-width:1400px;
+    margin:0 auto;
+  }
+
+  /* ── Card scene (flip container) ── */
+  .scene{
+    perspective:900px;
+    height:340px;
+    cursor:pointer;
+  }
+  .scene:hover .card-inner,
+  .scene.flipped .card-inner{
+    transform:rotateY(180deg);
+  }
+  .card-inner{
+    position:relative;
+    width:100%;height:100%;
+    transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Card faces */
+  .card-front,.card-back{
+    position:absolute;inset:0;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .card-back{
+    transform:rotateY(180deg);
+  }
+
+  /* ── FRONT FACE ── */
+  .card-front{
+    background:#0a0018;
+    border:1px solid rgba(255,0,204,.35);
+    display:flex;flex-direction:column;
+    position:relative;
+  }
+
+  /* holographic shimmer layer */
+  .card-front::before{
+    content:'';
+    position:absolute;inset:0;
+    background:conic-gradient(
+      from calc(var(--angle,0deg) + 200deg),
+      rgba(255,0,204,.12) 0deg,
+      rgba(0,240,255,.18) 60deg,
+      rgba(122,0,255,.12) 120deg,
+      rgba(57,255,20,.08) 180deg,
+      rgba(255,184,0,.12) 240deg,
+      rgba(255,0,204,.12) 300deg,
+      rgba(0,240,255,.08) 360deg
+    );
+    mix-blend-mode:screen;
+    pointer-events:none;
+    z-index:2;
+    transition:opacity .2s;
+    opacity:0;
+  }
+  .scene:hover .card-front::before{opacity:1;}
+
+  .card-canvas-wrap{
+    flex:1;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 50% 60%, rgba(122,0,255,.15) 0%, transparent 70%);
+    padding:1rem;
+    position:relative;
+    z-index:1;
+  }
+  .card-canvas-wrap canvas{
+    image-rendering:pixelated;
+    display:block;
+  }
+
+  .card-band{
+    padding:.5rem .8rem;
+    background:rgba(255,0,204,.08);
+    border-top:1px solid rgba(255,0,204,.18);
+    position:relative;z-index:1;
+  }
+  .card-number{
+    font-family:'Press Start 2P',monospace;
+    font-size:6px;
+    color:var(--sub);
+    letter-spacing:.15em;
+    margin-bottom:.25rem;
+  }
+  .card-name{
+    font-size:clamp(18px,2.4vw,22px);
+    color:var(--text);
+    line-height:1.1;
+    letter-spacing:.04em;
+  }
+  .card-role{
+    font-family:'Press Start 2P',monospace;
+    font-size:6px;
+    color:var(--pink);
+    letter-spacing:.12em;
+    margin-top:.25rem;
+  }
+  .card-stats{
+    padding:.55rem .8rem .65rem;
+    display:flex;flex-direction:column;gap:.3rem;
+    background:#06060a;
+    position:relative;z-index:1;
+  }
+  .stat-row{
+    display:flex;align-items:center;gap:.5rem;
+  }
+  .stat-label{
+    font-family:'Press Start 2P',monospace;
+    font-size:5.5px;
+    color:var(--sub);
+    letter-spacing:.1em;
+    width:58px;
+    flex-shrink:0;
+  }
+  .stat-bar-bg{
+    flex:1;height:5px;
+    background:rgba(255,255,255,.06);
+    position:relative;overflow:hidden;
+  }
+  .stat-bar-fill{
+    height:100%;
+    position:absolute;left:0;top:0;
+    width:0%;
+    transition:width .8s cubic-bezier(.4,0,.2,1);
+  }
+  .stat-val{
+    font-family:'Press Start 2P',monospace;
+    font-size:5.5px;
+    color:var(--text);
+    width:22px;
+    text-align:right;
+    flex-shrink:0;
+  }
+
+  /* ── BACK FACE ── */
+  .card-back{
+    background:#08001a;
+    border:1px solid rgba(0,240,255,.3);
+    display:flex;flex-direction:column;
+    padding:1rem 1.1rem 1rem;
+  }
+  .back-header{
+    font-family:'Press Start 2P',monospace;
+    font-size:6px;
+    color:var(--cyan);
+    letter-spacing:.15em;
+    border-bottom:1px solid rgba(0,240,255,.18);
+    padding-bottom:.5rem;
+    margin-bottom:.8rem;
+    display:flex;justify-content:space-between;
+  }
+  .back-name{
+    font-size:clamp(22px,3vw,28px);
+    color:var(--text);
+    letter-spacing:.06em;
+    margin-bottom:.25rem;
+    line-height:1.1;
+  }
+  .back-alias{
+    font-family:'Press Start 2P',monospace;
+    font-size:6px;
+    color:var(--pink);
+    letter-spacing:.1em;
+    margin-bottom:.9rem;
+  }
+  .back-lore{
+    font-size:clamp(14px,1.8vw,17px);
+    color:#aaa;
+    line-height:1.5;
+    flex:1;
+  }
+  .back-catalog{
+    margin-top:.8rem;
+    font-family:'Press Start 2P',monospace;
+    font-size:5.5px;
+    color:var(--sub);
+    letter-spacing:.12em;
+    border-top:1px solid rgba(255,0,204,.12);
+    padding-top:.6rem;
+    display:flex;justify-content:space-between;
+  }
+  .back-catalog span{color:var(--pink);}
+
+  /* ── Lightbox ── */
+  #lightbox{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.88);
+    z-index:900;
+    align-items:center;
+    justify-content:center;
+  }
+  #lightbox.open{display:flex;}
+  #lightbox-card{
+    transform:scale(1.7);
+    transform-origin:center center;
+  }
+  #lightbox-close{
+    position:fixed;top:1.5rem;right:2rem;
+    font-family:'Press Start 2P',monospace;
+    font-size:10px;
+    color:var(--sub);
+    cursor:pointer;
+    letter-spacing:.1em;
+    z-index:901;
+  }
+  #lightbox-close:hover{color:var(--pink);}
+
+  /* ── Footer ── */
+  .page-footer{
+    text-align:center;
+    padding:2rem 1rem 3rem;
+    border-top:1px solid rgba(255,0,204,.12);
+    color:var(--sub);
+    font-size:16px;
+    letter-spacing:.1em;
+  }
+  .page-footer a{color:var(--pink);text-decoration:none;}
+  .page-footer a:hover{text-shadow:0 0 8px var(--pink);}
+
+  /* ── Hint ── */
+  .hint{
+    text-align:center;
+    font-family:'Press Start 2P',monospace;
+    font-size:6px;
+    color:rgba(255,0,204,.35);
+    letter-spacing:.15em;
+    padding:0 1rem 1.5rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="label-tag">nonrocker records &nbsp;·&nbsp; NRK</div>
+  <div class="page-title">[ ROSTER CARDS ]</div>
+  <div class="page-sub">NRK-CARD SERIES &nbsp;·&nbsp; COLLECTOR EDITION &nbsp;·&nbsp; 7 OF 7</div>
+</header>
+
+<p class="hint" style="margin-top:1.2rem;">HOVER TO SHIMMER &nbsp;·&nbsp; CLICK TO FLIP</p>
+
+<div class="grid" id="grid"></div>
+
+<footer class="page-footer">
+  nonrocker records &nbsp;·&nbsp; NRK &nbsp;·&nbsp;
+  <a href="variations.html">&larr; back to directory</a>
+</footer>
+
+<div id="lightbox">
+  <div id="lightbox-close">[ CLOSE ]</div>
+  <div id="lightbox-card"></div>
+</div>
+
+<script>
+// ── CARD DATA ──────────────────────────────────────────────────────────────
+const CARDS = [
+  {
+    id:'STATUE',
+    num:'NRK-CARD-001',
+    name:'STATUE.EXE',
+    role:'BASS // DIGITAL GHOST',
+    lore:'A process running on hardware nobody remembers purchasing. Plays bass by reading memory addresses as tablature. Cannot be terminated gracefully.',
+    stats:[{l:'GLITCH',v:97},{l:'SILENCE',v:88},{l:'LOOP',v:92},{l:'SUSTAIN',v:74},{l:'IDENTITY',v:12}],
+    ship:'STATUE',
+    colors:{hull:'#00f0ff',cockpit:'#ff00cc',engine:'#cc00ff',fin:'#0088aa'},
+    accent:'#00f0ff',
+  },
+  {
+    id:'SOJU',
+    num:'NRK-CARD-002',
+    name:'Yung Soju',
+    role:'VOCALS // CHAOS PILOT',
+    lore:'Named for the drink that fuels all good decisions. Approaches the mic the same way he approaches a roundabout: at full speed, no signals.',
+    stats:[{l:'SPEED',v:95},{l:'FERMENT',v:88},{l:'HAZARD',v:91},{l:'PITCH',v:62},{l:'SOBRIETY',v:8}],
+    ship:'SOJU',
+    colors:{hull:'#39ff14',cockpit:'#00f0ff',engine:'#00f0ff',fin:'#1a7a30'},
+    accent:'#39ff14',
+  },
+  {
+    id:'MAKKU',
+    num:'NRK-CARD-003',
+    name:'DJ 막걸리',
+    role:'TURNTABLE // FREQUENCY DEALER',
+    lore:'Communicates exclusively through crate digs and pitch-bent samples. Has not spoken a word since 2019. The records speak for him.',
+    stats:[{l:'FREQUENCY',v:99},{l:'WARP',v:86},{l:'ECHO',v:78},{l:'TIMING',v:93},{l:'SOBRIETY',v:14}],
+    ship:'MAKKU',
+    colors:{hull:'#ffd700',cockpit:'#ff6600',engine:'#ff2200',fin:'#886600'},
+    accent:'#ffd700',
+  },
+  {
+    id:'KAZOO',
+    num:'NRK-CARD-004',
+    name:'KAZOO_HAWK',
+    role:'KAZOO // ACOUSTIC EXTREMIST',
+    lore:'Trained in the ancient art of didgeri-doom and nu-kazoo. Believes every song needs more kazoo. Every song has gotten more kazoo.',
+    stats:[{l:'TONE',v:42},{l:'CHAOS',v:99},{l:'RESONANCE',v:77},{l:'TECHNIQUE',v:55},{l:'RESTRAINT',v:3}],
+    ship:'KAZOO',
+    colors:{hull:'#cc00ff',cockpit:'#ff00cc',engine:'#ff00cc',fin:'#660088'},
+    accent:'#cc00ff',
+  },
+  {
+    id:'FLYINGV',
+    num:'NRK-CARD-005',
+    name:'FLYING-V',
+    role:'GUITAR // ARENA GHOST',
+    lore:'The guitar plays the musician. A 1979 mahogany body that arrived at rehearsal without its owner. Nobody questioned it.',
+    stats:[{l:'SUSTAIN',v:94},{l:'WHAMMY',v:79},{l:'PHASE',v:88},{l:'WEIGHT',v:97},{l:'SUBTLETY',v:6}],
+    ship:'FLYINGV',
+    colors:{hull:'#ff00cc',cockpit:'#ffd700',engine:'#ff6600',fin:'#880044'},
+    accent:'#ff00cc',
+  },
+  {
+    id:'STRAT',
+    num:'NRK-CARD-006',
+    name:'STRAT',
+    role:'GUITAR // VINTAGE KILLER',
+    lore:'Olympic white. Rosewood board. Three single-coils that somehow sound like nothing that ever existed before. Snap. Then silence.',
+    stats:[{l:'CLEAN',v:96},{l:'SNAP',v:91},{l:'CLARITY',v:88},{l:'BITE',v:74},{l:'GRIT',v:48}],
+    ship:'STRAT',
+    colors:{hull:'#39ff14',cockpit:'#ffb800',engine:'#00f0ff',fin:'#1a5a00'},
+    accent:'#39ff14',
+  },
+  {
+    id:'PSREV',
+    num:'NRK-CARD-007',
+    name:'PS-REV',
+    role:'TWIN CANNON // FLANKER',
+    lore:'Controller orientation inverted. The grips became cannons. Plays rhythm through pure muscle memory from a hundred thousand hours of something that was not guitar practice.',
+    stats:[{l:'DUAL OUT',v:93},{l:'REVERSE',v:88},{l:'OVERLOAD',v:85},{l:'ACCURACY',v:44},{l:'COOLDOWN',v:31}],
+    ship:'PSREV',
+    colors:{hull:'#7a00ff',cockpit:'#00f0ff',engine:'#ff00cc',fin:'#3a0088'},
+    accent:'#7a00ff',
+  },
+];
+
+// ── SHIP DRAW FUNCTIONS ────────────────────────────────────────────────────
+// (ported from game.html — isolated for card rendering)
+function drawShipToCanvas(canvas, shipId, colors) {
+  const W = canvas.width, H = canvas.height;
+  const cx = canvas.getContext('2d');
+  const w = 30, h = 34;
+  const t = Date.now() * 0.002; // slow oscillation
+
+  cx.clearRect(0, 0, W, H);
+
+  // engine glow
+  cx.save(); cx.translate(W/2, H/2);
+  const eg = cx.createRadialGradient(0, h/2+4, 0, 0, h/2+4, 30);
+  eg.addColorStop(0, 'rgba(200,80,255,.35)'); eg.addColorStop(1, 'rgba(0,0,0,0)');
+  cx.fillStyle = eg; cx.beginPath(); cx.arc(0, h/2+4, 30, 0, 6.28); cx.fill();
+
+  if (shipId === 'FLYINGV') _drawFlyingV(cx, colors, w, h, t);
+  else if (shipId === 'STRAT') _drawStrat(cx, colors, w, h, t);
+  else if (shipId === 'PSREV') _drawPSRev(cx, colors, w, h, t);
+  else _drawTriangleShip(cx, colors, w, h, t);
+  cx.restore();
+}
+
+function _drawTriangleShip(cx,sc,w,h,t){
+  cx.fillStyle=sc.engine;cx.beginPath();
+  cx.moveTo(-5,h/2);cx.lineTo(5,h/2);cx.lineTo(0,h/2+9+Math.sin(t*6)*4);cx.closePath();cx.fill();
+  cx.fillStyle=sc.fin;
+  cx.beginPath();cx.moveTo(-w/2,h/2);cx.lineTo(-w/2-8,h/2-7);cx.lineTo(-w/2+3,h/4);cx.closePath();cx.fill();
+  cx.beginPath();cx.moveTo(w/2,h/2);cx.lineTo(w/2+8,h/2-7);cx.lineTo(w/2-3,h/4);cx.closePath();cx.fill();
+  cx.fillStyle=sc.hull;cx.beginPath();
+  cx.moveTo(0,-h/2);cx.lineTo(-w/2,h/2);cx.lineTo(w/2,h/2);cx.closePath();cx.fill();
+  cx.fillStyle=sc.cockpit;cx.beginPath();cx.arc(0,-2,6,0,6.28);cx.fill();
+  cx.shadowColor=sc.hull;cx.shadowBlur=14;
+  cx.strokeStyle=sc.hull+'88';cx.lineWidth=1.5;
+  cx.beginPath();cx.moveTo(0,-h/2);cx.lineTo(-w/2,h/2);cx.lineTo(w/2,h/2);cx.closePath();cx.stroke();
+  cx.shadowBlur=0;
+}
+
+function _drawFlyingV(cx,sc,w,h,t){
+  const glow=Math.abs(Math.sin(t))*8+3;
+  cx.save();cx.shadowColor=sc.engine;cx.shadowBlur=glow;
+  cx.fillStyle=sc.engine;
+  cx.beginPath();cx.moveTo(-4,h/2);cx.lineTo(0,h/2+9+Math.sin(t*6)*3);cx.lineTo(4,h/2);cx.closePath();cx.fill();
+  cx.shadowBlur=0;cx.restore();
+  cx.save();cx.shadowColor=sc.hull;cx.shadowBlur=8;
+  cx.fillStyle=sc.hull;
+  cx.beginPath();
+  cx.moveTo(-2,-h/2);cx.lineTo(-w/2-4,-h/4);cx.lineTo(-w/2,h/2);cx.lineTo(-w/4,h/2);cx.lineTo(-4,-h/4+4);cx.lineTo(0,-h/2+8);
+  cx.closePath();cx.fill();
+  cx.beginPath();
+  cx.moveTo(2,-h/2);cx.lineTo(w/2+4,-h/4);cx.lineTo(w/2,h/2);cx.lineTo(w/4,h/2);cx.lineTo(4,-h/4+4);cx.lineTo(0,-h/2+8);
+  cx.closePath();cx.fill();
+  cx.shadowBlur=0;cx.restore();
+  cx.fillStyle=sc.fin;cx.beginPath();cx.moveTo(-5,-h/4+4);cx.lineTo(5,-h/4+4);cx.lineTo(6,h/2);cx.lineTo(-6,h/2);cx.closePath();cx.fill();
+  cx.save();cx.strokeStyle='rgba(255,255,0,.25)';cx.lineWidth=.7;
+  for(let i=0;i<6;i++){const x=-2.5+i;cx.beginPath();cx.moveTo(x,-h/4+6);cx.lineTo(x,h/2-2);cx.stroke();}
+  cx.restore();
+  cx.fillStyle=sc.cockpit;cx.fillRect(-6,-2,12,4);cx.fillRect(-6,6,12,4);
+  cx.save();cx.shadowColor=sc.cockpit;cx.shadowBlur=12;cx.fillStyle=sc.cockpit;
+  cx.beginPath();cx.arc(-2,-h/2,4,0,Math.PI*2);cx.fill();
+  cx.beginPath();cx.arc(2,-h/2,4,0,Math.PI*2);cx.fill();
+  cx.shadowBlur=0;cx.restore();
+}
+
+function _drawStrat(cx,sc,w,h,t){
+  const glow=Math.abs(Math.sin(t))*8+3;
+  cx.save();cx.shadowColor=sc.cockpit;cx.shadowBlur=10;
+  cx.fillStyle=sc.cockpit;cx.fillRect(-6,-h/2,12,8);
+  for(let i=0;i<3;i++){
+    cx.beginPath();cx.arc(-3+i*3,-h/2-1,2,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(-3+i*3,-h/2+4,2,0,Math.PI*2);cx.fill();
+  }
+  cx.shadowBlur=0;cx.restore();
+  cx.fillStyle=sc.fin;cx.fillRect(-4,-h/2+8,8,h*.4);
+  cx.save();cx.shadowColor=sc.hull;cx.shadowBlur=8;cx.fillStyle=sc.hull;
+  cx.beginPath();
+  const by=-h/2+h*.45;
+  cx.moveTo(0,by);
+  cx.bezierCurveTo(w/2+2,by,w/2+4,by+10,w/2,by+20);
+  cx.bezierCurveTo(w/2-4,by+30,w/4,h/2,0,h/2);
+  cx.bezierCurveTo(-w/4,h/2,-w/2+4,by+30,-w/2,by+20);
+  cx.bezierCurveTo(-w/2-4,by+10,-w/2-2,by,0,by);
+  cx.fill();
+  cx.fillStyle='#06060a';
+  cx.beginPath();cx.arc(-w/4,by+2,w/4-2,0,Math.PI);cx.fill();
+  cx.beginPath();cx.arc(w/4,by+2,w/4-2,0,Math.PI);cx.fill();
+  cx.shadowBlur=0;cx.restore();
+  cx.fillStyle=sc.cockpit;cx.fillRect(-8,by+8,16,3);cx.fillRect(-8,by+15,16,3);cx.fillRect(-8,by+22,16,3);
+  cx.save();cx.shadowColor=sc.engine;cx.shadowBlur=glow;cx.fillStyle=sc.engine;
+  cx.beginPath();cx.moveTo(-5,h/2);cx.lineTo(0,h/2+9+Math.sin(t*6)*3);cx.lineTo(5,h/2);cx.closePath();cx.fill();
+  cx.shadowBlur=0;cx.restore();
+}
+
+function _drawPSRev(cx,sc,w,h,t){
+  const glow=Math.abs(Math.sin(t))*10+5;
+  cx.save();cx.shadowColor=sc.hull;cx.shadowBlur=6;cx.fillStyle=sc.hull;
+  cx.beginPath();
+  cx.moveTo(-w/2+2,-h/2+4);cx.lineTo(-w/2-2,-h/4);cx.lineTo(-w/2+2,h/4);cx.lineTo(-w/4+2,h/4);cx.lineTo(-w/4+4,-h/4);cx.lineTo(-w/4,-h/2+4);
+  cx.closePath();cx.fill();
+  cx.beginPath();
+  cx.moveTo(w/2-2,-h/2+4);cx.lineTo(w/2+2,-h/4);cx.lineTo(w/2-2,h/4);cx.lineTo(w/4-2,h/4);cx.lineTo(w/4-4,-h/4);cx.lineTo(w/4,-h/2+4);
+  cx.closePath();cx.fill();
+  cx.beginPath();
+  cx.moveTo(-w/2+2,h/4);cx.lineTo(-w/2,h/2);cx.lineTo(w/2,h/2);cx.lineTo(w/2-2,h/4);
+  cx.bezierCurveTo(w/4,h/4-8,w/4-4,h/4-10,0,h/4-10);
+  cx.bezierCurveTo(-w/4+4,h/4-10,-w/4,h/4-8,-w/2+2,h/4);
+  cx.fill();cx.shadowBlur=0;cx.restore();
+  cx.save();cx.shadowColor=sc.engine;cx.shadowBlur=16;cx.fillStyle=sc.engine;
+  cx.beginPath();cx.arc(-w/2+2,-h/2+4,5,0,Math.PI*2);cx.fill();
+  cx.beginPath();cx.arc(w/2-2,-h/2+4,5,0,Math.PI*2);cx.fill();
+  cx.shadowBlur=0;cx.restore();
+  cx.fillStyle=sc.fin;cx.beginPath();cx.ellipse(0,h/4+2,10,6,0,0,Math.PI*2);cx.fill();
+  cx.fillStyle=sc.cockpit;
+  cx.fillRect(-w/2+6,h/4+10,10,3);cx.fillRect(-w/2+9,h/4+7,3,9);
+  const btns=[[-w/4+10,h/4+9,'#39ff14'],[-w/4+16,h/4+13,'#ff00cc'],[-w/4+10,h/4+17,'#00f0ff'],[-w/4+4,h/4+13,'#ffd700']];
+  btns.forEach(([bx,by,bc])=>{cx.fillStyle=bc;cx.beginPath();cx.arc(bx,by,2.5,0,Math.PI*2);cx.fill();});
+  cx.save();cx.shadowColor=sc.engine;cx.shadowBlur=glow;cx.fillStyle=sc.engine;
+  cx.beginPath();cx.moveTo(-5,h/2);cx.lineTo(0,h/2+9+Math.sin(t*6)*3);cx.lineTo(5,h/2);cx.closePath();cx.fill();
+  cx.shadowBlur=0;cx.restore();
+}
+
+// ── STAT BAR COLOR ─────────────────────────────────────────────────────────
+function statColor(v) {
+  if (v >= 90) return '#39ff14';
+  if (v >= 70) return '#00f0ff';
+  if (v >= 50) return '#ffb800';
+  if (v >= 30) return '#ff6600';
+  return '#ff2222';
+}
+
+// ── BUILD CARDS ───────────────────────────────────────────────────────────
+const grid = document.getElementById('grid');
+const canvases = []; // for animation
+
+CARDS.forEach((card, idx) => {
+  const scene = document.createElement('div');
+  scene.className = 'scene';
+
+  // --- FRONT ---
+  const front = document.createElement('div');
+  front.className = 'card-front';
+
+  // holographic shimmer follows mouse
+  scene.addEventListener('mousemove', e => {
+    const r = scene.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    const angle = Math.atan2(y - 0.5, x - 0.5) * (180 / Math.PI);
+    front.style.setProperty('--angle', angle + 'deg');
+  });
+
+  // canvas wrap
+  const wrap = document.createElement('div');
+  wrap.className = 'card-canvas-wrap';
+  const cv = document.createElement('canvas');
+  cv.width = 120; cv.height = 140;
+  cv.style.width = '90px'; cv.style.height = '105px';
+  wrap.appendChild(cv);
+  canvases.push({ canvas: cv, id: card.ship, colors: card.colors });
+  front.appendChild(wrap);
+
+  // band info
+  const band = document.createElement('div');
+  band.className = 'card-band';
+  band.innerHTML = `
+    <div class="card-number">${card.num}</div>
+    <div class="card-name">${card.name}</div>
+    <div class="card-role">${card.role}</div>
+  `;
+  front.appendChild(band);
+
+  // stats
+  const statsEl = document.createElement('div');
+  statsEl.className = 'card-stats';
+  card.stats.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'stat-row';
+    const fill = document.createElement('div');
+    fill.className = 'stat-bar-fill';
+    fill.style.background = statColor(s.v);
+    fill.style.boxShadow = `0 0 6px ${statColor(s.v)}`;
+    row.innerHTML = `
+      <div class="stat-label">${s.l}</div>
+      <div class="stat-bar-bg"></div>
+      <div class="stat-val">${s.v}</div>
+    `;
+    row.querySelector('.stat-bar-bg').appendChild(fill);
+    statsEl.appendChild(row);
+    // animate fill after paint
+    setTimeout(() => { fill.style.width = s.v + '%'; }, 100 + idx * 80);
+  });
+  front.appendChild(statsEl);
+
+  // --- BACK ---
+  const back = document.createElement('div');
+  back.className = 'card-back';
+  back.innerHTML = `
+    <div class="back-header">
+      <span>nonrocker records</span>
+      <span style="color:var(--pink)">${card.num}</span>
+    </div>
+    <div class="back-name">${card.name}</div>
+    <div class="back-alias">${card.role}</div>
+    <div class="back-lore">${card.lore}</div>
+    <div class="back-catalog">
+      <span>NRK-2024</span>
+      <span>NRK-666</span>
+      <span style="color:var(--cyan)">nonrockerrecords.github.io</span>
+    </div>
+  `;
+
+  // flip on click
+  scene.addEventListener('click', () => {
+    scene.classList.toggle('flipped');
+  });
+
+  const inner = document.createElement('div');
+  inner.className = 'card-inner';
+  inner.appendChild(front);
+  inner.appendChild(back);
+  scene.appendChild(inner);
+  grid.appendChild(scene);
+});
+
+// ── ANIMATION LOOP ─────────────────────────────────────────────────────────
+function animate() {
+  for (const { canvas, id, colors } of canvases) {
+    drawShipToCanvas(canvas, id, colors);
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

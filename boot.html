@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NRK-BIOS v2.4.1</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    width:100%;height:100%;
+    background:#000;
+    color:#c8c8c8;
+    font-family:'VT323',monospace;
+    font-size:clamp(15px,2vw,20px);
+    overflow:hidden;
+    cursor:default;
+    user-select:none;
+  }
+
+  /* CRT scanlines */
+  body::after{
+    content:'';
+    position:fixed;inset:0;
+    background:repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.16) 3px,
+      transparent 4px
+    );
+    pointer-events:none;z-index:999;
+  }
+
+  #screen{
+    width:100%;height:100%;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* ─── PHASE 0: POST ──────────────────────────────────────────────── */
+  #post{
+    position:absolute;inset:0;
+    padding:clamp(1rem,3vw,2.5rem) clamp(1.5rem,4vw,4rem);
+    display:flex;flex-direction:column;
+    gap:.1em;
+    overflow:hidden;
+  }
+  .post-line{
+    display:block;
+    white-space:pre;
+    opacity:0;
+    transition:opacity .08s;
+  }
+  .post-line.show{opacity:1;}
+  .amber{color:#ffb800;}
+  .green{color:#39ff14;}
+  .cyan{color:#00f0ff;}
+  .pink{color:#ff00cc;}
+  .white{color:#fff;}
+  .dim{color:#666;}
+  .hl{background:#c8c8c8;color:#000;padding:0 4px;}
+
+  /* ─── PHASE 1: BIOS MENU ─────────────────────────────────────────── */
+  #bios-menu{
+    position:absolute;inset:0;
+    display:none;flex-direction:column;
+  }
+  #bios-header{
+    background:#00aaaa;color:#000;
+    padding:.3em 1em;
+    font-size:clamp(14px,1.8vw,18px);
+    display:flex;justify-content:space-between;
+    font-weight:bold;
+  }
+  #bios-body{
+    flex:1;display:flex;
+    padding:clamp(1rem,2.5vw,2rem) clamp(1.5rem,3vw,3rem);
+    gap:3rem;
+    background:#000;
+  }
+  #bios-menu-left{
+    flex:1;display:flex;flex-direction:column;gap:.5em;
+  }
+  .menu-item{
+    display:block;
+    padding:.18em 1em;
+    cursor:default;
+    color:#c8c8c8;
+    letter-spacing:.05em;
+  }
+  .menu-item.active{
+    background:#00aaaa;color:#000;
+  }
+  #bios-menu-right{
+    width:clamp(180px,28vw,280px);
+    font-size:clamp(12px,1.4vw,15px);
+    color:#888;
+    line-height:1.7;
+  }
+  #bios-footer{
+    background:#00aaaa;color:#000;
+    padding:.3em 1em;
+    font-size:clamp(11px,1.4vw,14px);
+    display:flex;gap:2rem;
+  }
+
+  /* ─── PHASE 2: BOOT ORDER ────────────────────────────────────────── */
+  #boot-menu{
+    position:absolute;inset:0;
+    display:none;flex-direction:column;
+    background:#000;
+  }
+  #boot-header{
+    background:#00aaaa;color:#000;
+    padding:.3em 1em;
+    display:flex;justify-content:space-between;
+    font-size:clamp(14px,1.8vw,18px);
+  }
+  #boot-body{
+    flex:1;padding:clamp(1.5rem,3vw,2.5rem) clamp(1.5rem,3vw,3rem);
+  }
+  #boot-body h2{
+    color:#ffb800;
+    font-size:clamp(16px,2.2vw,22px);
+    margin-bottom:1em;
+    letter-spacing:.08em;
+  }
+  .boot-row{
+    display:flex;align-items:center;
+    padding:.22em 0;
+    font-size:clamp(15px,1.9vw,20px);
+    letter-spacing:.04em;
+  }
+  .boot-row .label{
+    width:clamp(200px,32vw,320px);
+    color:#c8c8c8;
+  }
+  .boot-row .val{
+    color:#39ff14;
+    padding:0 .5em;
+    border:1px solid transparent;
+  }
+  .boot-row.selected .val{
+    border-color:#00aaaa;
+    background:rgba(0,170,170,.18);
+  }
+
+  /* dropdown */
+  #dropdown{
+    display:none;
+    position:absolute;
+    background:#000;
+    border:1px solid #00aaaa;
+    margin-top:.2em;
+    z-index:10;
+  }
+  .dd-item{
+    display:block;
+    padding:.18em 1.2em;
+    color:#c8c8c8;
+    white-space:nowrap;
+  }
+  .dd-item.dd-active{background:#00aaaa;color:#000;}
+
+  #boot-footer{
+    background:#00aaaa;color:#000;
+    padding:.3em 1em;
+    font-size:clamp(11px,1.4vw,14px);
+    display:flex;gap:2rem;
+  }
+
+  /* ─── PHASE 3: CONFIRM DIALOG ────────────────────────────────────── */
+  #confirm{
+    display:none;
+    position:fixed;inset:0;
+    align-items:center;justify-content:center;
+    background:rgba(0,0,0,.7);
+    z-index:50;
+  }
+  #confirm-box{
+    background:#000080;
+    border:2px solid #fff;
+    padding:1.5em 2.5em;
+    text-align:center;
+    font-size:clamp(15px,2vw,20px);
+    min-width:280px;
+  }
+  #confirm-box p{margin-bottom:1.2em;color:#fff;}
+  #confirm-box .btns{display:flex;justify-content:center;gap:2em;}
+  .cfm-btn{
+    background:#c8c8c8;color:#000;
+    border:none;padding:.2em 1.2em;
+    font-family:'VT323',monospace;
+    font-size:inherit;
+    cursor:pointer;
+  }
+  .cfm-btn.focused{background:#00aaaa;outline:2px solid #fff;}
+
+  /* ─── PHASE 4: BOOT LOADER ───────────────────────────────────────── */
+  #bootloader{
+    display:none;
+    position:absolute;inset:0;
+    background:#000;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1.2em;
+  }
+  #bl-logo{
+    font-size:clamp(28px,5vw,48px);
+    color:#ff00cc;
+    text-shadow:0 0 24px #ff00cc,0 0 60px rgba(255,0,204,.35);
+    letter-spacing:.2em;
+    text-align:center;
+  }
+  #bl-sub{
+    color:#888;
+    font-size:clamp(13px,1.6vw,17px);
+    letter-spacing:.1em;
+    text-align:center;
+  }
+  #bl-bar-wrap{
+    width:clamp(260px,50vw,420px);
+    height:20px;
+    border:1px solid #444;
+    position:relative;
+    overflow:hidden;
+  }
+  #bl-bar{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#7a00ff,#ff00cc,#00f0ff);
+    transition:width .12s linear;
+  }
+  #bl-pct{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;color:#fff;letter-spacing:.08em;
+  }
+  #bl-log{
+    font-size:clamp(11px,1.3vw,14px);
+    color:#444;
+    letter-spacing:.06em;
+    height:3.2em;
+    overflow:hidden;
+    text-align:center;
+  }
+  #bl-log span{display:block;}
+
+  #bl-skull{
+    color:#7a00ff;
+    font-size:clamp(40px,8vw,80px);
+    text-shadow:0 0 30px rgba(122,0,255,.6);
+    line-height:1;
+  }
+
+  /* skip hint */
+  #skip{
+    position:fixed;bottom:1rem;right:1.5rem;
+    font-size:clamp(11px,1.4vw,14px);
+    color:#333;
+    letter-spacing:.06em;
+    z-index:200;
+  }
+</style>
+</head>
+<body>
+<div id="screen">
+
+  <!-- PHASE 0: POST -->
+  <div id="post"></div>
+
+  <!-- PHASE 1: BIOS MENU -->
+  <div id="bios-menu">
+    <div id="bios-header">
+      <span>Phoenix Technologies — NRK-BIOS v2.4.1</span>
+      <span>Copyright 1999 Nonrocker Semiconductor Corp.</span>
+    </div>
+    <div id="bios-body">
+      <div id="bios-menu-left">
+        <span class="menu-item">Standard CMOS Features</span>
+        <span class="menu-item">Advanced BIOS Features</span>
+        <span class="menu-item">Integrated Peripherals</span>
+        <span class="menu-item active">&#9658; Boot Sequence</span>
+        <span class="menu-item">Power Management</span>
+        <span class="menu-item">PnP / PCI Configuration</span>
+        <span class="menu-item">PC Health Status</span>
+        <span class="menu-item">Frequency / Voltage Control</span>
+        <span class="menu-item dim" style="margin-top:1em;">Load Fail-Safe Defaults</span>
+        <span class="menu-item dim">Load Optimized Defaults</span>
+        <span class="menu-item dim">Save &amp; Exit Setup</span>
+        <span class="menu-item dim">Exit Without Saving</span>
+      </div>
+      <div id="bios-menu-right">
+        <p class="cyan" style="margin-bottom:.8em;">&#9658; Boot Sequence</p>
+        <p>Configure boot device priority. NRK-OS requires USB boot media.</p>
+        <br/>
+        <p class="dim">Detected USB Device:</p>
+        <p class="green" style="margin-top:.2em;">NRK-OS v0.1 ISO</p>
+        <br/>
+        <p class="dim">WARNING: Improper boot order may result in SKULL.SYS load failure.</p>
+      </div>
+    </div>
+    <div id="bios-footer">
+      <span>&#8593;&#8595;: Select Item</span>
+      <span>Enter: Open</span>
+      <span>ESC: Exit</span>
+      <span>F10: Save &amp; Exit</span>
+    </div>
+  </div>
+
+  <!-- PHASE 2: BOOT ORDER -->
+  <div id="boot-menu">
+    <div id="boot-header">
+      <span>Boot Sequence</span>
+      <span style="color:#000080;background:#c8c8c8;padding:0 .5em;">NRK-BIOS v2.4.1</span>
+    </div>
+    <div id="boot-body">
+      <h2>Boot Device Priority</h2>
+      <div style="border-bottom:1px solid #333;margin-bottom:1em;padding-bottom:.4em;font-size:clamp(12px,1.4vw,15px);color:#555;letter-spacing:.05em;">
+        Use &lt;+&gt; / &lt;-&gt; keys or ENTER to change the boot device.
+      </div>
+      <div class="boot-row selected" id="row1">
+        <span class="label">1st Boot Device</span>
+        <span class="val" id="dev1">[Hard Drive]</span>
+        <div id="dropdown">
+          <span class="dd-item">Hard Drive</span>
+          <span class="dd-item">CD-ROM</span>
+          <span class="dd-item">Network (PXE)</span>
+          <span class="dd-item dd-active">USB: NRK-OS v0.1 ISO</span>
+        </div>
+      </div>
+      <div class="boot-row" id="row2">
+        <span class="label">2nd Boot Device</span>
+        <span class="val">[Disabled]</span>
+      </div>
+      <div class="boot-row" id="row3">
+        <span class="label">3rd Boot Device</span>
+        <span class="val">[Disabled]</span>
+      </div>
+
+      <div style="margin-top:2em;font-size:clamp(12px,1.4vw,15px);color:#555;line-height:1.8;">
+        <div>&#9632; NRK-USB detected on port USB2.0_REAR_A</div>
+        <div class="green">&#9632; NRK-OS v0.1 ISO — verified (SHA: NRK666DEADBEEF)</div>
+      </div>
+    </div>
+    <div id="boot-footer">
+      <span>Enter: Select</span>
+      <span>ESC: Back</span>
+      <span>F10: Save &amp; Exit</span>
+      <span>+/-: Change Value</span>
+    </div>
+  </div>
+
+  <!-- PHASE 3: CONFIRM -->
+  <div id="confirm">
+    <div id="confirm-box">
+      <p>Save configuration and exit?</p>
+      <div class="btns">
+        <button class="cfm-btn focused" id="cfm-yes">[ Yes ]</button>
+        <button class="cfm-btn" id="cfm-no">[ No  ]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4: BOOTLOADER -->
+  <div id="bootloader">
+    <div id="bl-skull">&#9760;</div>
+    <div id="bl-logo">NRK-OS v0.1</div>
+    <div id="bl-sub">Loading kernel... SKULL.SYS initializing</div>
+    <div id="bl-bar-wrap">
+      <div id="bl-bar"></div>
+      <div id="bl-pct">0%</div>
+    </div>
+    <div id="bl-log">
+      <span id="bl-log-line">Mounting NRK-OS v0.1 ISO...</span>
+    </div>
+  </div>
+
+</div>
+
+<div id="skip">[ SPACE / CLICK = skip ]</div>
+
+<script>
+// ─── POST LINES ─────────────────────────────────────────────────────────────
+const POST_LINES = [
+  {t:'white', s:'NRK-BIOS v2.4.1  (C) 1999 Nonrocker Semiconductor Corp.'},
+  {t:'dim',   s:'All Rights Reserved'},
+  {t:'',      s:''},
+  {t:'amber', s:'NONROCKER SKULL-450 PROCESSOR at 450 MHz'},
+  {t:'',      s:'Memory Test :'},
+  {t:'green', s:'  Testing RAM ......... 65536K OK'},
+  {t:'',      s:''},
+  {t:'dim',   s:'Detecting Primary Master ........ NRK-HDD 40.0GB'},
+  {t:'dim',   s:'Detecting Primary Slave  ........ None'},
+  {t:'dim',   s:'Detecting Secondary Master ...... NRK-CDROM 52x'},
+  {t:'dim',   s:'Detecting Secondary Slave  ...... None'},
+  {t:'',      s:''},
+  {t:'green', s:'USB Device Detected:'},
+  {t:'cyan',  s:'  Port USB2.0_REAR_A  [NRK-OS v0.1 ISO]  512MB'},
+  {t:'',      s:''},
+  {t:'dim',   s:'PCI Device Listing:'},
+  {t:'dim',   s:'  Bus 0, Dev 0, Fun 0: NRK Skull Bridge  (NRK666)'},
+  {t:'dim',   s:'  Bus 0, Dev 1, Fun 0: NRK ISA Bridge    (NRK420)'},
+  {t:'dim',   s:'  Bus 0, Dev 2, Fun 0: NRK USB 2.0 Host  (NRK001)'},
+  {t:'dim',   s:'  Bus 1, Dev 0, Fun 0: KAZOO Sound Card  SB16-NRK'},
+  {t:'',      s:''},
+  {t:'amber', s:'Initializing Sound Blaster SB16-NRK .............. OK'},
+  {t:'amber', s:'Initializing KAZOO Audio Engine v1.1 .............. OK'},
+  {t:'',      s:''},
+  {t:'white', s:'Press DEL to enter SETUP  |  Press F8 for Boot Menu'},
+  {t:'',      s:''},
+  {t:'dim',   s:'Boot from: Hard Drive ...'},
+];
+
+// ─── SEQUENCER ──────────────────────────────────────────────────────────────
+let phase = 0;
+let skipped = false;
+
+function skip() {
+  if (skipped) return;
+  skipped = true;
+  // jump straight to bootloader
+  showPhase('none');
+  startBootloader();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') skip();
+});
+document.addEventListener('click', skip);
+
+// ─── PHASE 0: POST ──────────────────────────────────────────────────────────
+(function runPost() {
+  const container = document.getElementById('post');
+  const lines = POST_LINES;
+  let i = 0;
+
+  function nextLine() {
+    if (skipped) return;
+    if (i >= lines.length) {
+      // POST done — enter BIOS after short pause
+      setTimeout(enterBios, 400);
+      return;
+    }
+    const ln = lines[i++];
+    const el = document.createElement('span');
+    el.className = 'post-line ' + (ln.t || '');
+    el.textContent = ln.s || ' ';
+    container.appendChild(el);
+    // trigger show
+    requestAnimationFrame(() => { el.classList.add('show'); });
+    const delay = ln.s === '' ? 40 : (ln.t === 'dim' ? 55 : 80);
+    setTimeout(nextLine, delay);
+  }
+
+  nextLine();
+})();
+
+// ─── PHASE 1: BIOS MENU ─────────────────────────────────────────────────────
+function showPhase(id) {
+  for (const el of document.querySelectorAll('#post,#bios-menu,#boot-menu,#bootloader')) {
+    el.style.display = 'none';
+  }
+  if (id !== 'none') {
+    const t = document.getElementById(id);
+    if (t) t.style.display = 'flex';
+  }
+}
+
+function enterBios() {
+  if (skipped) return;
+  showPhase('bios-menu');
+  // Wait, then auto-highlight Boot and press Enter
+  setTimeout(enterBootMenu, 1200);
+}
+
+// ─── PHASE 2: BOOT ORDER ─────────────────────────────────────────────────────
+function enterBootMenu() {
+  if (skipped) return;
+  showPhase('boot-menu');
+  // After a beat, open the dropdown on row1
+  setTimeout(openDropdown, 900);
+}
+
+function openDropdown() {
+  if (skipped) return;
+  const dd = document.getElementById('dropdown');
+  const row1 = document.getElementById('row1');
+  // Position dropdown below dev1
+  const dev1 = document.getElementById('dev1');
+  const rect = dev1.getBoundingClientRect();
+  dd.style.display = 'block';
+  dd.style.left = rect.left + 'px';
+  dd.style.top  = (rect.bottom + 2) + 'px';
+
+  // After a pause, update the value
+  setTimeout(selectUSB, 1200);
+}
+
+function selectUSB() {
+  if (skipped) return;
+  const dd = document.getElementById('dropdown');
+  const dev1 = document.getElementById('dev1');
+  dd.style.display = 'none';
+  dev1.textContent = '[USB: NRK-OS v0.1 ISO]';
+  dev1.style.color = '#39ff14';
+  // After a pause, open save dialog
+  setTimeout(openConfirm, 900);
+}
+
+// ─── PHASE 3: CONFIRM ───────────────────────────────────────────────────────
+function openConfirm() {
+  if (skipped) return;
+  document.getElementById('confirm').style.display = 'flex';
+  // Auto-select Yes after 1.5s
+  setTimeout(confirmSave, 1500);
+}
+
+function confirmSave() {
+  if (skipped) return;
+  document.getElementById('confirm').style.display = 'none';
+  showPhase('none');
+  // Flash "restarting" text briefly
+  flashRestart();
+}
+
+function flashRestart() {
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;color:#c8c8c8;font-family:VT323,monospace;font-size:clamp(18px,2.5vw,26px);letter-spacing:.1em;';
+  el.textContent = 'Saving configuration... System is restarting.';
+  document.body.appendChild(el);
+  setTimeout(() => {
+    document.body.removeChild(el);
+    startBootloader();
+  }, 1200);
+}
+
+// ─── PHASE 4: BOOTLOADER ────────────────────────────────────────────────────
+const BL_LOGS = [
+  'Mounting NRK-OS v0.1 ISO...',
+  'Initializing SKULL.SYS...',
+  'Loading METALDATA kernel module...',
+  'Mounting /dev/nrk/soju as /boot...',
+  'Starting KAZOO audio subsystem...',
+  'Decompressing NRK-666.tar.gz...',
+  'Executing init process (STATUE.EXE)...',
+  'NRK-OS ready. Launching EPK...',
+];
+
+function startBootloader() {
+  showPhase('bootloader');
+  const bar  = document.getElementById('bl-bar');
+  const pct  = document.getElementById('bl-pct');
+  const log  = document.getElementById('bl-log-line');
+  const sub  = document.getElementById('bl-sub');
+
+  let progress = 0;
+  let logIdx   = 0;
+
+  const iv = setInterval(() => {
+    progress += Math.random() * 4 + 2;
+    if (progress >= 100) {
+      progress = 100;
+      clearInterval(iv);
+      setTimeout(() => { window.location.href = 'epk-arcade.html'; }, 800);
+    }
+    bar.style.width = progress + '%';
+    pct.textContent = Math.round(progress) + '%';
+
+    // advance log lines
+    const expectedLog = Math.floor((progress / 100) * BL_LOGS.length);
+    if (expectedLog > logIdx && logIdx < BL_LOGS.length - 1) {
+      logIdx = expectedLog;
+      log.textContent = BL_LOGS[Math.min(logIdx, BL_LOGS.length - 1)];
+    }
+  }, 120);
+
+  // pulse the skull
+  let skullPhase = 0;
+  const skullEl = document.getElementById('bl-skull');
+  setInterval(() => {
+    skullPhase += 0.08;
+    const glow = 20 + Math.sin(skullPhase) * 14;
+    skullEl.style.textShadow = `0 0 ${glow}px rgba(122,0,255,.7), 0 0 ${glow*2}px rgba(255,0,204,.3)`;
+  }, 40);
+}
+</script>
+</body>
+</html>

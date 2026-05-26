@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FATAL EXCEPTION — nonrocker records</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    width:100%;height:100%;
+    background:#000080;
+    color:#fff;
+    font-family:'VT323',monospace;
+    font-size:clamp(16px,2.2vw,22px);
+    overflow:hidden;
+    cursor:default;
+    user-select:none;
+  }
+
+  /* CRT scanlines */
+  body::after{
+    content:'';
+    position:fixed;inset:0;
+    background:repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.18) 3px,
+      transparent 4px
+    );
+    pointer-events:none;
+    z-index:999;
+  }
+
+  .screen{
+    width:100%;height:100%;
+    display:flex;flex-direction:column;
+    justify-content:center;align-items:flex-start;
+    padding:clamp(2rem,6vw,5rem) clamp(1.5rem,7vw,7rem);
+  }
+
+  .block{
+    max-width:74ch;
+    line-height:1.55;
+  }
+
+  .line{display:block;white-space:pre-wrap;}
+
+  .gap{display:block;height:1.55em;}
+
+  .highlight{
+    background:#fff;color:#000080;
+    padding:0 4px;
+    display:inline-block;
+    font-size:inherit;
+  }
+
+  .dim{opacity:.75;}
+
+  .blink{animation:blink .9s step-end infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  /* countdown bar */
+  #cbar{
+    position:fixed;bottom:0;left:0;
+    height:3px;background:#fff;
+    transition:width 1s linear;
+  }
+
+  #msg{
+    position:fixed;bottom:1rem;right:1.5rem;
+    font-size:clamp(13px,1.6vw,17px);
+    opacity:.6;
+    letter-spacing:.08em;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="block">
+    <span class="line highlight">  NRK-OS v0.1 — FATAL EXCEPTION  </span>
+    <span class="gap"></span>
+    <span class="line">A fatal exception 0E has occurred at</span>
+    <span class="line">NRK:DEMON-STRATION+0666h in VXD SKULL(01)+</span>
+    <span class="line">000AB44Fh. The current session will be terminated.</span>
+    <span class="gap"></span>
+    <span class="line">*  Press any key to retry booting NRK-OS.</span>
+    <span class="line">*  Press ESC to return to the void (index.html).</span>
+    <span class="gap"></span>
+    <span class="line dim">Error code:  BOOT_MEDIA_NOT_FOUND</span>
+    <span class="line dim">Device:      [USB: NRK-OS v0.1 ISO]</span>
+    <span class="line dim">Status:      0xDEAD666F</span>
+    <span class="line dim">Catalog:     NRK-2024 / NRK-666</span>
+    <span class="gap"></span>
+    <span class="line dim">SKULL.SYS    — NRK_METALDATA+000AB44F at 0028:C00E3FFF</span>
+    <span class="line dim">DEMON.DLL    — NRK_KAZOO+00000042 at 0028:C00E3FFE</span>
+    <span class="line dim">SOJU.VXD     — NRK_MAKKU+0000666D at 0028:C00E3FFD</span>
+    <span class="gap"></span>
+    <span class="line">Press any key to continue <span class="blink">_</span></span>
+    <span class="gap"></span>
+    <span class="line dim" id="countdown"></span>
+  </div>
+</div>
+
+<div id="cbar" style="width:100%"></div>
+<div id="msg">AUTO-RETRY IN <span id="ctxt">10</span>s</div>
+
+<script>
+  const RETRY = 'boot.html';
+  const VOID  = 'index.html';
+  const DELAY = 10; // seconds before auto-retry
+
+  let remaining = DELAY;
+  const bar  = document.getElementById('cbar');
+  const ctxt = document.getElementById('ctxt');
+  const msg  = document.getElementById('msg');
+
+  // Start countdown
+  bar.style.width = '100%';
+  // Trigger CSS transition on next frame
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      bar.style.transitionDuration = DELAY + 's';
+      bar.style.width = '0%';
+    });
+  });
+
+  const tick = setInterval(() => {
+    remaining--;
+    ctxt.textContent = remaining;
+    if (remaining <= 0) {
+      clearInterval(tick);
+      window.location.href = RETRY;
+    }
+  }, 1000);
+
+  document.addEventListener('keydown', e => {
+    clearInterval(tick);
+    if (e.key === 'Escape') {
+      window.location.href = VOID;
+    } else {
+      window.location.href = RETRY;
+    }
+  });
+
+  // Touch support
+  document.addEventListener('touchend', () => {
+    clearInterval(tick);
+    window.location.href = RETRY;
+  });
+</script>
+</body>
+</html>
