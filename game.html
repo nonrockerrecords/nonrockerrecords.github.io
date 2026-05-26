@@ -37,6 +37,19 @@ const C={
   red:'#ff2222', purple:'#cc00ff',
 };
 
+// ── SHIP SELECTION ─────────────────────────────────────────────────────────
+const SHIP_ID=localStorage.getItem('nrk_ship')||'STATUE';
+const SHIP_LABELS={STATUE:'STATUE.EXE',SOJU:'YUNG_SOJU',MAKKU:'DJ막걸리',KAZOO:'KAZOO_HAWK',FLYINGV:'FLYING-V',STRAT:'STRAT',PSREV:'PS-REV'};
+const SHIP_COLORS={
+  STATUE:{hull:'#00f0ff',cockpit:'#ff00cc',engine:'#cc00ff',fin:'#0088aa'},
+  SOJU:  {hull:'#39ff14',cockpit:'#00f0ff',engine:'#00f0ff',fin:'#1a7a30'},
+  MAKKU: {hull:'#ffd700',cockpit:'#ff6600',engine:'#ff2200',fin:'#886600'},
+  KAZOO: {hull:'#cc00ff',cockpit:'#ff00cc',engine:'#ff00cc',fin:'#660088'},
+  FLYINGV:{hull:'#ff00cc',cockpit:'#ffd700',engine:'#ff6600',fin:'#880044'},
+  STRAT: {hull:'#39ff14',cockpit:'#ffb800',engine:'#00f0ff',fin:'#1a5a00'},
+  PSREV: {hull:'#7a00ff',cockpit:'#00f0ff',engine:'#ff00cc',fin:'#3a0088'},
+};
+
 // ── STATE ──────────────────────────────────────────────────────────────────
 let gs='TITLE'; // TITLE PLAYING BOSS DYING GAMEOVER WIN
 let score=0,hi=0,lives=3,wave=0,frame=0,dyeT=0,shootCD=0;
@@ -266,35 +279,148 @@ function miniShip(x,y){
 }
 
 function drawPlayer(){
-  const{x,y,w,h}=player;cx.save();cx.translate(x,y);
-  // engine glow
-  const eg=cx.createRadialGradient(0,h/2+3,0,0,h/2+3,22);
-  eg.addColorStop(0,'rgba(0,240,255,.45)');eg.addColorStop(1,'rgba(0,0,0,0)');
-  cx.fillStyle=eg;cx.beginPath();cx.arc(0,h/2+3,22,0,6.28);cx.fill();
+  const{x,y,w,h}=player;
+  cx.save();cx.translate(x,y);
+  const sc=SHIP_COLORS[SHIP_ID]||SHIP_COLORS.STATUE;
+  const t=frame*.05;
+  // shared engine glow
+  const eg=cx.createRadialGradient(0,h/2+4,0,0,h/2+4,24);
+  eg.addColorStop(0,'rgba(200,80,255,.35)');eg.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=eg;cx.beginPath();cx.arc(0,h/2+4,24,0,6.28);cx.fill();
+  // dispatch to ship-specific hull
+  if(SHIP_ID==='FLYINGV') _drawFlyingV(cx,sc,w,h,t);
+  else if(SHIP_ID==='STRAT') _drawStrat(cx,sc,w,h,t);
+  else if(SHIP_ID==='PSREV') _drawPSRev(cx,sc,w,h,t);
+  else _drawTriangleShip(cx,sc,w,h,t);
+  // shared label
+  cx.font='5px "Press Start 2P",monospace';cx.fillStyle=C.white;cx.textAlign='center';
+  cx.fillText(SHIP_LABELS[SHIP_ID]||'NRK',0,h/2+16);
+  cx.restore();
+}
+
+function _drawTriangleShip(cx,sc,w,h,t){
   // flame
-  cx.fillStyle=C.pink;cx.beginPath();
-  cx.moveTo(-5,h/2);cx.lineTo(5,h/2);
-  cx.lineTo(0,h/2+9+Math.sin(frame*.3)*4);
-  cx.closePath();cx.fill();
+  cx.fillStyle=sc.engine;cx.beginPath();
+  cx.moveTo(-5,h/2);cx.lineTo(5,h/2);cx.lineTo(0,h/2+9+Math.sin(t*6)*4);cx.closePath();cx.fill();
   // fins
-  cx.fillStyle=C.cyan;
+  cx.fillStyle=sc.fin;
   cx.beginPath();cx.moveTo(-w/2,h/2);cx.lineTo(-w/2-8,h/2-7);cx.lineTo(-w/2+3,h/4);cx.closePath();cx.fill();
   cx.beginPath();cx.moveTo(w/2,h/2);cx.lineTo(w/2+8,h/2-7);cx.lineTo(w/2-3,h/4);cx.closePath();cx.fill();
   // hull
-  cx.fillStyle=C.cyan;cx.beginPath();
-  cx.moveTo(0,-h/2);cx.lineTo(-w/2,h/2);cx.lineTo(w/2,h/2);
-  cx.closePath();cx.fill();
+  cx.fillStyle=sc.hull;cx.beginPath();
+  cx.moveTo(0,-h/2);cx.lineTo(-w/2,h/2);cx.lineTo(w/2,h/2);cx.closePath();cx.fill();
   // cockpit
-  cx.fillStyle=C.pink;cx.beginPath();cx.arc(0,-2,6,0,6.28);cx.fill();
-  // glow stroke
-  cx.shadowColor=C.cyan;cx.shadowBlur=14;
-  cx.strokeStyle='rgba(0,240,255,.5)';cx.lineWidth=1.5;
+  cx.fillStyle=sc.cockpit;cx.beginPath();cx.arc(0,-2,6,0,6.28);cx.fill();
+  cx.shadowColor=sc.hull;cx.shadowBlur=14;
+  cx.strokeStyle=sc.hull+'88';cx.lineWidth=1.5;
   cx.beginPath();cx.moveTo(0,-h/2);cx.lineTo(-w/2,h/2);cx.lineTo(w/2,h/2);cx.closePath();cx.stroke();
   cx.shadowBlur=0;
-  // label
-  cx.font='5px "Press Start 2P",monospace';cx.fillStyle=C.white;cx.textAlign='center';
-  cx.fillText('STATUE.EXE',0,h/2+15);
+}
+
+function _drawFlyingV(cx,sc,w,h,t){
+  const glow=Math.abs(Math.sin(t))*8+3;
+  // flame
+  cx.save();cx.shadowColor=sc.engine;cx.shadowBlur=glow;
+  cx.fillStyle=sc.engine;
+  cx.beginPath();cx.moveTo(-4,h/2);cx.lineTo(0,h/2+9+Math.sin(t*6)*3);cx.lineTo(4,h/2);cx.closePath();cx.fill();
+  cx.shadowBlur=0;cx.restore();
+  // left prong
+  cx.save();cx.shadowColor=sc.hull;cx.shadowBlur=8;
+  cx.fillStyle=sc.hull;
+  cx.beginPath();
+  cx.moveTo(-2,-h/2);cx.lineTo(-w/2-4,-h/4);cx.lineTo(-w/2,h/2);cx.lineTo(-w/4,h/2);cx.lineTo(-4,-h/4+4);cx.lineTo(0,-h/2+8);
+  cx.closePath();cx.fill();
+  // right prong
+  cx.beginPath();
+  cx.moveTo(2,-h/2);cx.lineTo(w/2+4,-h/4);cx.lineTo(w/2,h/2);cx.lineTo(w/4,h/2);cx.lineTo(4,-h/4+4);cx.lineTo(0,-h/2+8);
+  cx.closePath();cx.fill();
+  cx.shadowBlur=0;cx.restore();
+  // neck center
+  cx.fillStyle=sc.fin;cx.beginPath();cx.moveTo(-5,-h/4+4);cx.lineTo(5,-h/4+4);cx.lineTo(6,h/2);cx.lineTo(-6,h/2);cx.closePath();cx.fill();
+  // strings
+  cx.save();cx.strokeStyle='rgba(255,255,0,.25)';cx.lineWidth=.7;
+  for(let i=0;i<6;i++){const x=-2.5+i;cx.beginPath();cx.moveTo(x,-h/4+6);cx.lineTo(x,h/2-2);cx.stroke();}
   cx.restore();
+  // pickups
+  cx.fillStyle=sc.cockpit;cx.fillRect(-6,-2,12,4);cx.fillRect(-6,6,12,4);
+  // muzzle glows at V tips
+  cx.save();cx.shadowColor=sc.cockpit;cx.shadowBlur=12;
+  cx.fillStyle=sc.cockpit;
+  cx.beginPath();cx.arc(-2,-h/2,4,0,Math.PI*2);cx.fill();
+  cx.beginPath();cx.arc(2,-h/2,4,0,Math.PI*2);cx.fill();
+  cx.shadowBlur=0;cx.restore();
+}
+
+function _drawStrat(cx,sc,w,h,t){
+  const glow=Math.abs(Math.sin(t))*8+3;
+  // headstock/cannon top
+  cx.save();cx.shadowColor=sc.cockpit;cx.shadowBlur=10;
+  cx.fillStyle=sc.cockpit;cx.fillRect(-6,-h/2,12,8);
+  for(let i=0;i<3;i++){
+    cx.beginPath();cx.arc(-3+i*3,-h/2-1,2,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(-3+i*3,-h/2+4,2,0,Math.PI*2);cx.fill();
+  }
+  cx.shadowBlur=0;cx.restore();
+  // neck
+  cx.fillStyle=sc.fin;cx.fillRect(-4,-h/2+8,8,h*.4);
+  // body — contoured strat silhouette
+  cx.save();cx.shadowColor=sc.hull;cx.shadowBlur=8;cx.fillStyle=sc.hull;
+  cx.beginPath();
+  const by=-h/2+h*.45;
+  cx.moveTo(0,by);
+  cx.bezierCurveTo(w/2+2,by,w/2+4,by+10,w/2,by+20);
+  cx.bezierCurveTo(w/2-4,by+30,w/4,h/2,0,h/2);
+  cx.bezierCurveTo(-w/4,h/2,-w/2+4,by+30,-w/2,by+20);
+  cx.bezierCurveTo(-w/2-4,by+10,-w/2-2,by,0,by);
+  cx.fill();
+  // cutaways
+  cx.fillStyle='#06060a';
+  cx.beginPath();cx.arc(-w/4,by+2,w/4-2,0,Math.PI);cx.fill();
+  cx.beginPath();cx.arc(w/4,by+2,w/4-2,0,Math.PI);cx.fill();
+  cx.shadowBlur=0;cx.restore();
+  // pickups
+  cx.fillStyle=sc.cockpit;cx.fillRect(-8,by+8,16,3);cx.fillRect(-8,by+15,16,3);cx.fillRect(-8,by+22,16,3);
+  // flame
+  cx.save();cx.shadowColor=sc.engine;cx.shadowBlur=glow;cx.fillStyle=sc.engine;
+  cx.beginPath();cx.moveTo(-5,h/2);cx.lineTo(0,h/2+9+Math.sin(t*6)*3);cx.lineTo(5,h/2);cx.closePath();cx.fill();
+  cx.shadowBlur=0;cx.restore();
+}
+
+function _drawPSRev(cx,sc,w,h,t){
+  const glow=Math.abs(Math.sin(t))*10+5;
+  // grips pointing UP (forward cannons)
+  cx.save();cx.shadowColor=sc.hull;cx.shadowBlur=6;cx.fillStyle=sc.hull;
+  // left grip
+  cx.beginPath();
+  cx.moveTo(-w/2+2,-h/2+4);cx.lineTo(-w/2-2,-h/4);cx.lineTo(-w/2+2,h/4);cx.lineTo(-w/4+2,h/4);cx.lineTo(-w/4+4,-h/4);cx.lineTo(-w/4,-h/2+4);
+  cx.closePath();cx.fill();
+  // right grip
+  cx.beginPath();
+  cx.moveTo(w/2-2,-h/2+4);cx.lineTo(w/2+2,-h/4);cx.lineTo(w/2-2,h/4);cx.lineTo(w/4-2,h/4);cx.lineTo(w/4-4,-h/4);cx.lineTo(w/4,-h/2+4);
+  cx.closePath();cx.fill();
+  // controller body
+  cx.beginPath();
+  cx.moveTo(-w/2+2,h/4);cx.lineTo(-w/2,h/2);cx.lineTo(w/2,h/2);cx.lineTo(w/2-2,h/4);
+  cx.bezierCurveTo(w/4,h/4-8,w/4-4,h/4-10,0,h/4-10);
+  cx.bezierCurveTo(-w/4+4,h/4-10,-w/4,h/4-8,-w/2+2,h/4);
+  cx.fill();cx.shadowBlur=0;cx.restore();
+  // muzzle glows at grip tips
+  cx.save();cx.shadowColor=sc.engine;cx.shadowBlur=16;cx.fillStyle=sc.engine;
+  cx.beginPath();cx.arc(-w/2+2,-h/2+4,5,0,Math.PI*2);cx.fill();
+  cx.beginPath();cx.arc(w/2-2,-h/2+4,5,0,Math.PI*2);cx.fill();
+  cx.shadowBlur=0;cx.restore();
+  // center bump
+  cx.fillStyle=sc.fin;cx.beginPath();cx.ellipse(0,h/4+2,10,6,0,0,Math.PI*2);cx.fill();
+  // D-pad
+  cx.fillStyle=sc.cockpit;
+  cx.fillRect(-w/2+6,h/4+10,10,3);cx.fillRect(-w/2+9,h/4+7,3,9);
+  // face buttons
+  const btns=[[-w/4+10,h/4+9,'#39ff14'],[-w/4+16,h/4+13,'#ff00cc'],[-w/4+10,h/4+17,'#00f0ff'],[-w/4+4,h/4+13,'#ffd700']];
+  btns.forEach(([bx,by,bc])=>{cx.fillStyle=bc;cx.beginPath();cx.arc(bx,by,2.5,0,Math.PI*2);cx.fill();});
+  // exhaust
+  cx.save();cx.shadowColor=sc.engine;cx.shadowBlur=glow;cx.fillStyle=sc.engine;
+  cx.beginPath();cx.moveTo(-5,h/2);cx.lineTo(0,h/2+9+Math.sin(t*6)*3);cx.lineTo(5,h/2);cx.closePath();cx.fill();
+  cx.shadowBlur=0;cx.restore();
 }
 
 function drawPB(b){
@@ -479,7 +605,7 @@ function drawWin(){
 }
 
 // ── LOOP ───────────────────────────────────────────────────────────────────
-initStars();initFloaters();
+initStars();
 (function loop(){requestAnimationFrame(loop);update();draw();})();
 </script>
 </body>

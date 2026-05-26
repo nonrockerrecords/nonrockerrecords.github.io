@@ -14,53 +14,55 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 canvas{position:fixed;inset:0;width:100%;height:100%}
 
-.ui{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.ui{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:.5rem}
 
-.hdr{text-align:center;margin-bottom:clamp(1rem,3vh,2.5rem)}
-.hdr-top{font-size:clamp(6px,1.1vw,10px);color:#ffd700;letter-spacing:.25em;margin-bottom:.8rem;text-shadow:0 0 8px #ffd700}
-.hdr-title{font-size:clamp(12px,3vw,26px);color:#ff00cc;text-shadow:0 0 22px #ff00cc,0 0 50px rgba(255,0,204,.25);letter-spacing:.08em}
-.hdr-sub{font-size:clamp(5px,.9vw,8px);color:rgba(0,240,255,.45);letter-spacing:.28em;margin-top:.6rem}
+.hdr{text-align:center;margin-bottom:clamp(.5rem,2vh,1.5rem)}
+.hdr-top{font-size:clamp(6px,1.1vw,10px);color:#ffd700;letter-spacing:.25em;margin-bottom:.5rem;text-shadow:0 0 8px #ffd700}
+.hdr-title{font-size:clamp(10px,2.5vw,22px);color:#ff00cc;text-shadow:0 0 22px #ff00cc;letter-spacing:.08em}
+.hdr-sub{font-size:clamp(5px,.9vw,8px);color:rgba(0,240,255,.45);letter-spacing:.28em;margin-top:.4rem}
 
-/* ship grid */
-.ships{display:flex;gap:clamp(12px,3vw,36px);align-items:flex-start;justify-content:center;margin-bottom:clamp(1rem,2.5vh,2rem)}
+/* ship grid — 7 ships, wraps */
+.ships{display:flex;gap:clamp(6px,1.5vw,18px);align-items:flex-start;justify-content:center;flex-wrap:wrap;margin-bottom:clamp(.6rem,1.5vh,1.2rem);max-width:900px}
 
-.ship-card{display:flex;flex-direction:column;align-items:center;gap:.55rem;cursor:pointer;padding:clamp(8px,1.5vw,16px) clamp(10px,2vw,20px);border:1px solid rgba(255,0,204,.15);background:rgba(255,0,204,.02);transition:border-color .15s,background .15s,box-shadow .15s;position:relative}
+.ship-card{display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer;padding:clamp(6px,1vw,12px) clamp(8px,1.2vw,14px);border:1px solid rgba(255,0,204,.15);background:rgba(255,0,204,.02);transition:border-color .15s,background .15s,box-shadow .15s;position:relative;min-width:90px}
 .ship-card:hover,.ship-card.active{border-color:rgba(255,0,204,.6);background:rgba(255,0,204,.07);box-shadow:0 0 20px rgba(255,0,204,.2) inset}
-.ship-card.active::before{content:'▶';position:absolute;left:-14px;top:50%;transform:translateY(-50%);color:#ff00cc;font-size:clamp(7px,1.1vw,10px);animation:blink .7s step-end infinite}
+.ship-card.active::before{content:'▶';position:absolute;left:-12px;top:50%;transform:translateY(-50%);color:#ff00cc;font-size:clamp(6px,.9vw,9px);animation:blink .7s step-end infinite}
 
 .ship-canvas{image-rendering:pixelated;display:block}
-.ship-name{font-size:clamp(6px,1vw,9px);color:#00f0ff;letter-spacing:.08em;text-align:center}
-.ship-alias{font-size:clamp(5px,.8vw,7px);color:rgba(255,255,255,.3);letter-spacing:.12em;margin-top:.1rem}
+.ship-name{font-size:clamp(5px,.75vw,7px);color:#00f0ff;letter-spacing:.06em;text-align:center}
+.ship-alias{font-size:clamp(4px,.65vw,6px);color:rgba(255,255,255,.3);letter-spacing:.1em;margin-top:.05rem}
 
-/* stat bars */
-.stats{width:100%;display:flex;flex-direction:column;gap:.35rem;margin-top:.3rem}
-.stat-row{display:flex;align-items:center;gap:.4rem}
-.stat-label{font-size:clamp(4px,.65vw,6px);color:#555;letter-spacing:.1em;width:26px;flex-shrink:0}
-.bar-track{flex:1;height:5px;background:rgba(255,255,255,.06);position:relative}
-.bar-fill{height:100%;transition:width .3s}
+.stats{width:100%;display:flex;flex-direction:column;gap:.25rem;margin-top:.2rem}
+.stat-row{display:flex;align-items:center;gap:.3rem}
+.stat-label{font-size:clamp(4px,.6vw,5px);color:#555;letter-spacing:.08em;width:22px;flex-shrink:0}
+.bar-track{flex:1;height:4px;background:rgba(255,255,255,.06)}
+.bar-fill{height:100%}
 .bar-spd{background:#00f0ff;box-shadow:0 0 4px #00f0ff}
 .bar-pow{background:#ff00cc;box-shadow:0 0 4px #ff00cc}
 .bar-shd{background:#39ff14;box-shadow:0 0 4px #39ff14}
 
-/* detail panel */
-.detail{text-align:center;min-height:4.5rem;margin-bottom:clamp(.8rem,2vh,1.5rem)}
-.detail-name{font-size:clamp(10px,2vw,18px);color:#fff;letter-spacing:.1em;margin-bottom:.5rem}
-.detail-desc{font-size:clamp(5px,.85vw,8px);color:rgba(255,255,255,.4);letter-spacing:.1em;line-height:1.9;max-width:520px;margin:0 auto}
-.detail-tag{display:inline-block;font-size:clamp(4px,.65vw,7px);padding:.1rem .4rem;border:1px solid;letter-spacing:.1em;margin:.3rem .2rem 0}
+.detail{text-align:center;min-height:3.5rem;margin-bottom:clamp(.5rem,1.5vh,1rem)}
+.detail-name{font-size:clamp(9px,1.6vw,16px);color:#fff;letter-spacing:.1em;margin-bottom:.4rem}
+.detail-desc{font-size:clamp(5px,.8vw,7px);color:rgba(255,255,255,.4);letter-spacing:.1em;line-height:1.8;max-width:500px;margin:0 auto}
+.detail-tag{display:inline-block;font-size:clamp(4px,.6vw,6px);padding:.1rem .35rem;border:1px solid;letter-spacing:.1em;margin:.25rem .15rem 0}
 .tag-c{color:#00f0ff;border-color:#00f0ff}
 .tag-p{color:#ff00cc;border-color:#ff00cc}
 .tag-g{color:#39ff14;border-color:#39ff14}
 .tag-y{color:#ffd700;border-color:#ffd700}
+.tag-v{color:#cc00ff;border-color:#cc00ff}
 
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-.insert{font-size:clamp(8px,1.3vw,12px);color:#fff;letter-spacing:.2em;animation:blink .9s step-end infinite;margin-bottom:.6rem}
+.launch-row{display:flex;align-items:center;gap:1.5rem;margin-bottom:.6rem}
+.insert{font-size:clamp(7px,1.2vw,11px);color:#fff;letter-spacing:.2em;animation:blink .9s step-end infinite}
+.launch-btn{font-family:'Press Start 2P',monospace;font-size:clamp(6px,1vw,9px);color:#ff00cc;background:transparent;border:1px solid rgba(255,0,204,.5);padding:.4rem .9rem;cursor:pointer;letter-spacing:.12em;transition:all .15s}
+.launch-btn:hover{background:rgba(255,0,204,.12);box-shadow:0 0 12px rgba(255,0,204,.4)}
 
-.nav{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
-.nav a{font-size:clamp(5px,.9vw,8px);color:#444;text-decoration:none;letter-spacing:.15em;padding:.35rem .7rem;border:1px solid #222;transition:all .15s}
+.nav{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
+.nav a{font-size:clamp(5px,.85vw,7px);color:#444;text-decoration:none;letter-spacing:.15em;padding:.3rem .6rem;border:1px solid #222;transition:all .15s}
 .nav a:hover{color:#ff00cc;border-color:rgba(255,0,204,.4);box-shadow:0 0 8px rgba(255,0,204,.2)}
 
-.footer{position:fixed;bottom:1.2rem;left:0;right:0;text-align:center;font-size:clamp(5px,.75vw,7px);color:#2a2a2a;letter-spacing:.2em;z-index:100;pointer-events:none}
+.footer{position:fixed;bottom:1rem;left:0;right:0;text-align:center;font-size:clamp(5px,.7vw,6px);color:#2a2a2a;letter-spacing:.2em;z-index:100;pointer-events:none}
 </style>
 </head>
 <body>
@@ -73,63 +75,18 @@ canvas{position:fixed;inset:0;width:100%;height:100%}
     <div class="hdr-sub">N R K &nbsp;·&nbsp; S O J U &nbsp; N A T I O N &nbsp; F L E E T</div>
   </header>
 
-  <div class="ships" id="ships">
-    <div class="ship-card active" data-id="0" onclick="select(0)">
-      <canvas class="ship-canvas" id="s0" width="64" height="80"></canvas>
-      <div class="ship-name">STATUE.EXE</div>
-      <div class="ship-alias">LEAD SIGNAL</div>
-      <div class="stats">
-        <div class="stat-row"><div class="stat-label">SPD</div><div class="bar-track"><div class="bar-fill bar-spd" style="width:65%"></div></div></div>
-        <div class="stat-row"><div class="stat-label">POW</div><div class="bar-track"><div class="bar-fill bar-pow" style="width:80%"></div></div></div>
-        <div class="stat-row"><div class="stat-label">SHD</div><div class="bar-track"><div class="bar-fill bar-shd" style="width:50%"></div></div></div>
-      </div>
-    </div>
-
-    <div class="ship-card" data-id="1" onclick="select(1)">
-      <canvas class="ship-canvas" id="s1" width="64" height="80"></canvas>
-      <div class="ship-name">YUNG_SOJU</div>
-      <div class="ship-alias">BASS PROTOCOL</div>
-      <div class="stats">
-        <div class="stat-row"><div class="stat-label">SPD</div><div class="bar-track"><div class="bar-fill bar-spd" style="width:90%"></div></div></div>
-        <div class="stat-row"><div class="stat-label">POW</div><div class="bar-track"><div class="bar-fill bar-pow" style="width:45%"></div></div></div>
-        <div class="stat-row"><div class="stat-label">SHD</div><div class="bar-track"><div class="bar-fill bar-shd" style="width:70%"></div></div></div>
-      </div>
-    </div>
-
-    <div class="ship-card" data-id="2" onclick="select(2)">
-      <canvas class="ship-canvas" id="s2" width="64" height="80"></canvas>
-      <div class="ship-name">DJ막걸리</div>
-      <div class="ship-alias">HEAVY DISTORTION</div>
-      <div class="stats">
-        <div class="stat-row"><div class="stat-label">SPD</div><div class="bar-track"><div class="bar-fill bar-spd" style="width:40%"></div></div></div>
-        <div class="stat-row"><div class="stat-label">POW</div><div class="bar-track"><div class="bar-fill bar-pow" style="width:100%"></div></div></div>
-        <div class="stat-row"><div class="stat-label">SHD</div><div class="bar-track"><div class="bar-fill bar-shd" style="width:90%"></div></div></div>
-      </div>
-    </div>
-
-    <div class="ship-card" data-id="3" onclick="select(3)">
-      <canvas class="ship-canvas" id="s3" width="64" height="80"></canvas>
-      <div class="ship-name">KAZOO_HAWK</div>
-      <div class="ship-alias">CHAOS VECTOR</div>
-      <div class="stats">
-        <div class="stat-row"><div class="stat-label">SPD</div><div class="bar-track"><div class="bar-fill bar-spd" style="width:100%"></div></div></div>
-        <div class="stat-row"><div class="stat-label">POW</div><div class="bar-track"><div class="bar-fill bar-pow" style="width:60%"></div></div></div>
-        <div class="stat-row"><div class="stat-label">SHD</div><div class="bar-track"><div class="bar-fill bar-shd" style="width:30%"></div></div></div>
-      </div>
-    </div>
-  </div>
+  <div class="ships" id="ships"></div>
 
   <div class="detail" id="detail">
-    <div class="detail-name" id="det-name">STATUE.EXE</div>
-    <div class="detail-desc" id="det-desc">BALANCED BUILD. PINK BEAM CANNON. MEDIUM SPREAD.<br>ORIGINAL SIGNAL FROM THE NRK MAINFRAME.</div>
-    <div id="det-tags">
-      <span class="detail-tag tag-p">BALANCED</span>
-      <span class="detail-tag tag-c">BEAM</span>
-      <span class="detail-tag tag-g">NRK-CORE</span>
-    </div>
+    <div class="detail-name" id="det-name"></div>
+    <div class="detail-desc" id="det-desc"></div>
+    <div id="det-tags"></div>
   </div>
 
-  <div class="insert">PRESS ENTER TO LAUNCH</div>
+  <div class="launch-row">
+    <div class="insert">PRESS ENTER TO LAUNCH</div>
+    <button class="launch-btn" onclick="launch()">▶ LAUNCH</button>
+  </div>
 
   <nav class="nav">
     <a href="game.html">▶ PLAY</a>
@@ -142,137 +99,271 @@ canvas{position:fixed;inset:0;width:100%;height:100%}
 <div class="footer">© NRK · 소주 NATION · SOJU KAZOOS DIDGERIDOOS</div>
 
 <script>
-// ── ship data ──────────────────────────────────────────────────────────────
+// ── ship data ─────────────────────────────────────────────────────────────
 const SHIPS=[
   {
-    name:'STATUE.EXE',
-    alias:'LEAD SIGNAL',
+    id:'STATUE',name:'STATUE.EXE',alias:'LEAD SIGNAL',
     desc:'BALANCED BUILD. PINK BEAM CANNON. MEDIUM SPREAD.\nORIGINAL SIGNAL FROM THE NRK MAINFRAME.',
     tags:[['BALANCED','p'],['BEAM','c'],['NRK-CORE','g']],
+    spd:65,pow:80,shd:50,
     hull:'#00f0ff',cockpit:'#ff00cc',engine:'#cc00ff',fin:'#0088aa'
   },
   {
-    name:'YUNG_SOJU',
-    alias:'BASS PROTOCOL',
+    id:'SOJU',name:'YUNG_SOJU',alias:'BASS PROTOCOL',
     desc:'SPEED BUILD. TWIN SIDE GUNS. LOW DAMAGE HIGH RATE.\nROUTE 막걸리 VETERAN. RUNS HOT.',
     tags:[['SPEED','c'],['TWIN SHOT','p'],['RUNNER','y']],
+    spd:90,pow:45,shd:70,
     hull:'#39ff14',cockpit:'#00f0ff',engine:'#00f0ff',fin:'#1a7a30'
   },
   {
-    name:'DJ막걸리',
-    alias:'HEAVY DISTORTION',
+    id:'MAKKU',name:'DJ막걸리',alias:'HEAVY DISTORTION',
     desc:'TANK BUILD. SPREAD CANNON. HIGH DAMAGE LOW SPEED.\nFERMENTED IN THE SOJU PROTOCOL. HEAVY METAL PLATING.',
     tags:[['HEAVY','p'],['SPREAD','y'],['TANK','g']],
+    spd:40,pow:100,shd:90,
     hull:'#ffd700',cockpit:'#ff6600',engine:'#ff2200',fin:'#886600'
   },
   {
-    name:'KAZOO_HAWK',
-    alias:'CHAOS VECTOR',
+    id:'KAZOO',name:'KAZOO_HAWK',alias:'CHAOS VECTOR',
     desc:'CHAOS BUILD. BOUNCING SHOTS. RANDOM FIRE ANGLE.\nUNSTABLE. DO NOT STARE DIRECTLY AT THE ENGINE.',
     tags:[['CHAOS','p'],['BOUNCE','c'],['??STABLE','g']],
+    spd:100,pow:60,shd:30,
     hull:'#cc00ff',cockpit:'#ff00cc',engine:'#ff00cc',fin:'#660088'
+  },
+  {
+    id:'FLYINGV',name:'FLYING-V',alias:'THE AXE',
+    desc:'HIGH POWER AXE-FORM FIGHTER. DUAL-PRONG CANNON.\nFORGED IN THE TRADITION OF HEAVY RIFFS.',
+    tags:[['AXE FORM','p'],['DUAL PRONG','y'],['HEAVY RIFF','g']],
+    spd:72,pow:88,shd:60,
+    hull:'#ff00cc',cockpit:'#ffd700',engine:'#ff6600',fin:'#880044'
+  },
+  {
+    id:'STRAT',name:'STRAT',alias:'THE STRAT',
+    desc:'FAST CONTOURED BODY. TRIPLE PICKUP ARRAY.\nBORN FOR THE WHAMMY. HEADSTOCK = FORWARD CANNON.',
+    tags:[['CONTOURED','c'],['TRIPLE PU','y'],['WHAMMY','g']],
+    spd:85,pow:65,shd:55,
+    hull:'#39ff14',cockpit:'#ffb800',engine:'#00f0ff',fin:'#1a5a00'
+  },
+  {
+    id:'PSREV',name:'PS-REV',alias:'TWIN-GRIP',
+    desc:'CONTROLLER FLIPPED 180°. HANDLES = FORWARD CANNONS.\nTWIN MUZZLE GLOW. D-PAD FOR NAVIGATION.',
+    tags:[['TWIN CANNON','v'],['CONTROLLER','c'],['REVERSED','p']],
+    spd:78,pow:75,shd:75,
+    hull:'#7a00ff',cockpit:'#00f0ff',engine:'#ff00cc',fin:'#3a0088'
   }
 ];
 
-let cur=0;
+const CW=64,CH=80;
+let cur=0,frame=0;
+
+// ── build ship cards ───────────────────────────────────────────────────────
+const container=document.getElementById('ships');
+SHIPS.forEach((s,i)=>{
+  const card=document.createElement('div');
+  card.className='ship-card'+(i===0?' active':'');
+  card.dataset.id=i;
+  card.onclick=()=>selectShip(i);
+  card.innerHTML=`
+    <canvas class="ship-canvas" id="s${i}" width="${CW}" height="${CH}"></canvas>
+    <div class="ship-name">${s.name}</div>
+    <div class="ship-alias">${s.alias}</div>
+    <div class="stats">
+      <div class="stat-row"><div class="stat-label">SPD</div><div class="bar-track"><div class="bar-fill bar-spd" style="width:${s.spd}%"></div></div></div>
+      <div class="stat-row"><div class="stat-label">POW</div><div class="bar-track"><div class="bar-fill bar-pow" style="width:${s.pow}%"></div></div></div>
+      <div class="stat-row"><div class="stat-label">SHD</div><div class="bar-track"><div class="bar-fill bar-shd" style="width:${s.shd}%"></div></div></div>
+    </div>`;
+  container.appendChild(card);
+});
+
+const ctxs=SHIPS.map((_,i)=>document.getElementById('s'+i).getContext('2d'));
 
 // ── detail panel ──────────────────────────────────────────────────────────
-function select(i){
+function selectShip(i){
   cur=i;
-  document.querySelectorAll('.ship-card').forEach((el,j)=>{
-    el.classList.toggle('active',j===i);
-  });
+  document.querySelectorAll('.ship-card').forEach((el,j)=>el.classList.toggle('active',j===i));
   const s=SHIPS[i];
   document.getElementById('det-name').textContent=s.name;
   document.getElementById('det-desc').innerHTML=s.desc.replace('\n','<br>');
   const dt=document.getElementById('det-tags');
-  dt.innerHTML='';
-  s.tags.forEach(([t,c])=>{
-    dt.innerHTML+=`<span class="detail-tag tag-${c}">${t}</span>`;
-  });
+  dt.innerHTML=s.tags.map(([t,c])=>`<span class="detail-tag tag-${c}">${t}</span>`).join('');
+  localStorage.setItem('nrk_ship',s.id);
 }
+selectShip(0);
 
+function launch(){location.href='game.html';}
 document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') select((cur+3)%4);
-  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') select((cur+1)%4);
-  if(e.key==='Enter') location.href='game.html';
+  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){e.preventDefault();selectShip((cur+SHIPS.length-1)%SHIPS.length);}
+  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){e.preventDefault();selectShip((cur+1)%SHIPS.length);}
+  if(e.key==='Enter')launch();
 });
 
-// ── ship canvas drawing ────────────────────────────────────────────────────
-const CW=64,CH=80;
-
-function drawShip(ctx,s,flicker){
+// ── ship canvas drawing ───────────────────────────────────────────────────
+function drawShipCanvas(ctx,s,f){
   ctx.clearRect(0,0,CW,CH);
-  ctx.save();
-  ctx.translate(CW/2,CH/2);
-
-  const {hull,cockpit,engine,fin}=s;
-
-  // engine glow pulse
-  const glow=Math.abs(Math.sin(flicker*.08))*10+4;
-  ctx.save();
-  ctx.shadowColor=engine;ctx.shadowBlur=glow;
-  ctx.fillStyle=engine;
-  // engine nozzle
-  ctx.beginPath();ctx.moveTo(-10,28);ctx.lineTo(0,36+Math.sin(flicker*.12)*2);ctx.lineTo(10,28);ctx.closePath();ctx.fill();
-  ctx.shadowBlur=0;ctx.restore();
-
-  // fins
-  ctx.fillStyle=fin;
-  ctx.beginPath();ctx.moveTo(-20,10);ctx.lineTo(-32,28);ctx.lineTo(-12,22);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.moveTo(20,10);ctx.lineTo(32,28);ctx.lineTo(12,22);ctx.closePath();ctx.fill();
-
-  // hull body
-  ctx.save();
-  ctx.shadowColor=hull;ctx.shadowBlur=8;
-  ctx.fillStyle=hull;
-  ctx.beginPath();
-  ctx.moveTo(0,-38);
-  ctx.lineTo(18,10);
-  ctx.lineTo(14,28);
-  ctx.lineTo(-14,28);
-  ctx.lineTo(-18,10);
-  ctx.closePath();
-  ctx.fill();
-  ctx.shadowBlur=0;ctx.restore();
-
-  // hull outline
-  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=1;
-  ctx.beginPath();
-  ctx.moveTo(0,-38);ctx.lineTo(18,10);ctx.lineTo(14,28);ctx.lineTo(-14,28);ctx.lineTo(-18,10);
-  ctx.closePath();ctx.stroke();
-
-  // cockpit
-  ctx.save();
-  ctx.shadowColor=cockpit;ctx.shadowBlur=12;
-  ctx.fillStyle=cockpit;
-  ctx.beginPath();ctx.ellipse(0,-12,7,11,0,0,Math.PI*2);ctx.fill();
-  ctx.shadowBlur=0;ctx.restore();
-
-  // cockpit glare
-  ctx.fillStyle='rgba(255,255,255,.3)';
-  ctx.beginPath();ctx.ellipse(-2,-14,3,5,-.3,0,Math.PI*2);ctx.fill();
-
+  ctx.save();ctx.translate(CW/2,CH/2);
+  const t=f*.05;
+  if(s.id==='FLYINGV') drawFlyingV(ctx,s,t);
+  else if(s.id==='STRAT') drawStrat(ctx,s,t);
+  else if(s.id==='PSREV') drawPSRev(ctx,s,t);
+  else drawTriangleShip(ctx,s,t);
   ctx.restore();
 }
 
-// ── animate all four mini canvases ─────────────────────────────────────────
-let frame=0;
-const ctxs=SHIPS.map((_,i)=>document.getElementById('s'+i).getContext('2d'));
-
-function animateShips(){
-  frame++;
-  ctxs.forEach((ctx,i)=>drawShip(ctx,SHIPS[i],frame));
+function drawTriangleShip(ctx,s,t){
+  const{hull,cockpit,engine,fin}=s;
+  const glow=Math.abs(Math.sin(t))*10+4;
+  // engine nozzle glow
+  ctx.save();ctx.shadowColor=engine;ctx.shadowBlur=glow;
+  ctx.fillStyle=engine;
+  ctx.beginPath();ctx.moveTo(-8,28);ctx.lineTo(0,36+Math.sin(t*1.2)*2);ctx.lineTo(8,28);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+  // fins
+  ctx.fillStyle=fin;
+  ctx.beginPath();ctx.moveTo(-18,10);ctx.lineTo(-28,26);ctx.lineTo(-10,20);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(18,10);ctx.lineTo(28,26);ctx.lineTo(10,20);ctx.closePath();ctx.fill();
+  // hull
+  ctx.save();ctx.shadowColor=hull;ctx.shadowBlur=8;
+  ctx.fillStyle=hull;
+  ctx.beginPath();ctx.moveTo(0,-36);ctx.lineTo(16,10);ctx.lineTo(12,26);ctx.lineTo(-12,26);ctx.lineTo(-16,10);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+  // cockpit
+  ctx.save();ctx.shadowColor=cockpit;ctx.shadowBlur=10;
+  ctx.fillStyle=cockpit;ctx.beginPath();ctx.ellipse(0,-10,6,9,0,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
 }
 
-// ── starfield ──────────────────────────────────────────────────────────────
-const cv=document.getElementById('bg');
-const cx=cv.getContext('2d');
+function drawFlyingV(ctx,s,t){
+  const{hull,cockpit,engine}=s;
+  const glow=Math.abs(Math.sin(t))*8+3;
+  // engine flame between prongs
+  ctx.save();ctx.shadowColor=engine;ctx.shadowBlur=glow;
+  ctx.fillStyle=engine;
+  ctx.beginPath();ctx.moveTo(-4,30);ctx.lineTo(0,36+Math.sin(t*1.3)*2);ctx.lineTo(4,30);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+  // left prong of V (points forward/up-left)
+  ctx.save();ctx.shadowColor=hull;ctx.shadowBlur=7;
+  ctx.fillStyle=hull;
+  ctx.beginPath();
+  ctx.moveTo(-2,-34);ctx.lineTo(-22,-10);ctx.lineTo(-28,28);ctx.lineTo(-16,28);ctx.lineTo(-8,4);ctx.lineTo(0,-20);
+  ctx.closePath();ctx.fill();
+  // right prong
+  ctx.beginPath();
+  ctx.moveTo(2,-34);ctx.lineTo(22,-10);ctx.lineTo(28,28);ctx.lineTo(16,28);ctx.lineTo(8,4);ctx.lineTo(0,-20);
+  ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+  // neck/body center
+  ctx.fillStyle=s.fin;
+  ctx.beginPath();ctx.moveTo(-6,-20);ctx.lineTo(6,-20);ctx.lineTo(8,28);ctx.lineTo(-8,28);ctx.closePath();ctx.fill();
+  // strings glow lines
+  ctx.save();ctx.strokeStyle='rgba(255,255,0,.3)';ctx.lineWidth=.8;
+  for(let i=0;i<6;i++){const x=-2.5+i*1.0;ctx.beginPath();ctx.moveTo(x,-18);ctx.lineTo(x,24);ctx.stroke();}
+  ctx.restore();
+  // pickup blobs
+  ctx.fillStyle=cockpit;
+  ctx.fillRect(-5,2,10,4);ctx.fillRect(-5,10,10,4);
+  // headstock muzzle glow
+  ctx.save();ctx.shadowColor=cockpit;ctx.shadowBlur=12;
+  ctx.fillStyle=cockpit;ctx.beginPath();ctx.arc(-2,-36,4,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(2,-36,4,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+}
+
+function drawStrat(ctx,s,t){
+  const{hull,cockpit,engine,fin}=s;
+  const glow=Math.abs(Math.sin(t))*8+3;
+  // headstock end (nose/cannon)
+  ctx.save();ctx.shadowColor=cockpit;ctx.shadowBlur=12;
+  ctx.fillStyle=cockpit;
+  // headstock bar with tuners
+  ctx.fillRect(-6,-38,12,10);
+  for(let i=0;i<3;i++){
+    ctx.beginPath();ctx.arc(-4+i*4,-40,2,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(-4+i*4,-35,2,0,Math.PI*2);ctx.fill();
+  }
+  ctx.shadowBlur=0;ctx.restore();
+  // neck
+  ctx.fillStyle=fin;ctx.fillRect(-4,-30,8,28);
+  // body — strat contoured double cutaway
+  ctx.save();ctx.shadowColor=hull;ctx.shadowBlur=8;
+  ctx.fillStyle=hull;
+  ctx.beginPath();
+  ctx.moveTo(0,-4);
+  ctx.bezierCurveTo(26,-4,28,6,24,14);
+  ctx.bezierCurveTo(22,20,14,28,8,32);
+  ctx.bezierCurveTo(4,36,-4,36,-8,32);
+  ctx.bezierCurveTo(-14,28,-22,20,-24,14);
+  ctx.bezierCurveTo(-28,6,-26,-4,0,-4);
+  ctx.fill();
+  // upper cutaways
+  ctx.fillStyle='#06060a';
+  ctx.beginPath();ctx.arc(-10,-2,8,0,Math.PI);ctx.fill();
+  ctx.beginPath();ctx.arc(10,-2,8,0,Math.PI);ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+  // 3 pickups
+  ctx.fillStyle=cockpit;
+  ctx.fillRect(-9,6,18,3);ctx.fillRect(-9,13,18,3);ctx.fillRect(-9,20,18,3);
+  // strings
+  ctx.save();ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=.7;
+  for(let i=0;i<6;i++){const x=-2.5+i*1;ctx.beginPath();ctx.moveTo(x,-30);ctx.lineTo(x,28);ctx.stroke();}
+  ctx.restore();
+  // engine flame
+  ctx.save();ctx.shadowColor=engine;ctx.shadowBlur=glow;
+  ctx.fillStyle=engine;
+  ctx.beginPath();ctx.moveTo(-5,30);ctx.lineTo(0,36+Math.sin(t*1.2)*2);ctx.lineTo(5,30);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+}
+
+function drawPSRev(ctx,s,t){
+  const{hull,cockpit,engine}=s;
+  const glow=Math.abs(Math.sin(t))*10+5;
+  // controller flipped — grips point UP (toward top = forward)
+  // left grip/cannon
+  ctx.save();ctx.shadowColor=engine;ctx.shadowBlur=glow;
+  ctx.fillStyle=hull;
+  ctx.beginPath();
+  ctx.moveTo(-20,-38);ctx.lineTo(-14,-14);ctx.lineTo(-12,10);ctx.lineTo(-20,10);ctx.lineTo(-22,-14);
+  ctx.closePath();ctx.fill();
+  // right grip/cannon
+  ctx.beginPath();
+  ctx.moveTo(20,-38);ctx.lineTo(14,-14);ctx.lineTo(12,10);ctx.lineTo(20,10);ctx.lineTo(22,-14);
+  ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+  // muzzle glow at grip tips (top)
+  ctx.save();ctx.shadowColor=engine;ctx.shadowBlur=14;
+  ctx.fillStyle=engine;
+  ctx.beginPath();ctx.arc(-20,-38,4,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(20,-38,4,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+  // controller body
+  ctx.save();ctx.shadowColor=hull;ctx.shadowBlur=6;
+  ctx.fillStyle=hull;
+  ctx.beginPath();
+  ctx.moveTo(-22,10);ctx.lineTo(-28,30);ctx.lineTo(28,30);ctx.lineTo(22,10);
+  ctx.bezierCurveTo(18,4,12,0,0,0);ctx.bezierCurveTo(-12,0,-18,4,-22,10);
+  ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+  // center bump
+  ctx.fillStyle='#3a0088';ctx.beginPath();ctx.ellipse(0,16,12,8,0,0,Math.PI*2);ctx.fill();
+  // D-pad (left side of body)
+  ctx.fillStyle=cockpit;
+  ctx.fillRect(-26,14,14,4);ctx.fillRect(-21,9,4,14);
+  // face buttons (right side)
+  const btns=[[10,12,'#39ff14'],[18,16,'#ff00cc'],[14,20,'#00f0ff'],[6,16,'#ffd700']];
+  btns.forEach(([bx,by,bc])=>{ctx.fillStyle=bc;ctx.beginPath();ctx.arc(bx,by,2.5,0,Math.PI*2);ctx.fill();});
+  // exhaust nozzle (bottom center)
+  ctx.save();ctx.shadowColor=engine;ctx.shadowBlur=glow;
+  ctx.fillStyle=engine;
+  ctx.beginPath();ctx.moveTo(-5,30);ctx.lineTo(0,36+Math.sin(t*1.1)*2);ctx.lineTo(5,30);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+}
+
+// ── main animation loop ───────────────────────────────────────────────────
+const bgCv=document.getElementById('bg');
+const bgCx=bgCv.getContext('2d');
 let W=0,H=0,stars=[],floaters=[];
 const FTXT=['소주','NRK','막걸리','666','SOJU','카주','ERROR','참이슬'];
 
 function resize(){
-  W=cv.width=innerWidth;H=cv.height=innerHeight;
+  W=bgCv.width=innerWidth;H=bgCv.height=innerHeight;
   stars=[];
   for(let i=0;i<110;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,s:Math.random()*.65+.15,a:Math.random()*.85+.1});
 }
@@ -280,35 +371,28 @@ addEventListener('resize',resize);resize();
 
 (function loop(){
   requestAnimationFrame(loop);
-  animateShips();
-
-  cx.fillStyle='#06060a';cx.fillRect(0,0,W,H);
-  const g=cx.createLinearGradient(0,0,0,H*.42);
+  frame++;
+  // draw ships
+  ctxs.forEach((ctx,i)=>drawShipCanvas(ctx,SHIPS[i],frame));
+  // bg
+  bgCx.fillStyle='#06060a';bgCx.fillRect(0,0,W,H);
+  const g=bgCx.createLinearGradient(0,0,0,H*.42);
   g.addColorStop(0,'rgba(140,0,140,.09)');g.addColorStop(1,'rgba(0,0,0,0)');
-  cx.fillStyle=g;cx.fillRect(0,0,W,H);
-
+  bgCx.fillStyle=g;bgCx.fillRect(0,0,W,H);
   for(const s of stars){
     s.y+=s.s;if(s.y>H){s.y=0;s.x=Math.random()*W;}
-    cx.globalAlpha=s.a;cx.fillStyle='#fff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.28);cx.fill();
+    bgCx.globalAlpha=s.a;bgCx.fillStyle='#fff';bgCx.beginPath();bgCx.arc(s.x,s.y,s.r,0,6.28);bgCx.fill();
   }
-  cx.globalAlpha=1;
-
-  if(Math.random()<.003) floaters.push({
-    x:Math.random()*(W-80)+40,y:H+10,
-    txt:FTXT[0|Math.random()*FTXT.length],
-    a:0,sp:Math.random()*.25+.12,
-    sz:(0|Math.random()*2)*4+8,
-    col:Math.random()<.5?'#ff00cc':'#00f0ff'
-  });
+  bgCx.globalAlpha=1;
+  if(Math.random()<.003)floaters.push({x:Math.random()*(W-80)+40,y:H+10,txt:FTXT[0|Math.random()*FTXT.length],a:0,sp:Math.random()*.25+.12,sz:(0|Math.random()*2)*4+8,col:Math.random()<.5?'#ff00cc':'#00f0ff'});
   for(let i=floaters.length-1;i>=0;i--){
     const f=floaters[i];f.y-=f.sp;
     f.a=f.y>H*.55?Math.min(.12,f.a+.004):Math.max(0,f.a-.005);
     if(f.a<=0&&f.y<H*.4){floaters.splice(i,1);continue;}
-    cx.globalAlpha=f.a;cx.fillStyle=f.col;
-    cx.font=`${f.sz}px 'Press Start 2P',monospace`;cx.textAlign='center';
-    cx.fillText(f.txt,f.x,f.y);
+    bgCx.globalAlpha=f.a;bgCx.fillStyle=f.col;
+    bgCx.font=`${f.sz}px 'Press Start 2P',monospace`;bgCx.textAlign='center';bgCx.fillText(f.txt,f.x,f.y);
   }
-  cx.globalAlpha=1;
+  bgCx.globalAlpha=1;
 })();
 </script>
 </body>

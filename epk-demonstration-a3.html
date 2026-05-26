@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>nonrocker records — DEMON-STRATION // ACID · GAIN 3 · FUZZ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--acid:#d8d848;--orange:#ff5a00;--red:#ff1430;--lime:#39ff14;--cyan:#00f0ff;--amber:#ffb800;--violet:#7a00ff;--ink:#0a0600;}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);font-family:'VT323',monospace;color:#fff;cursor:crosshair;}
+
+    @media(prefers-reduced-motion:reduce){#glitchLayer{display:none!important;}#strobe{display:none!important;}.shake{animation:none!important;}}
+
+    #stageBg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 46%,#6a4400 0%,#3a1a00 46%,#0a0600 78%);}
+    #burst{position:fixed;inset:0;z-index:1;width:100%;height:100%;}
+    #glitchLayer{position:fixed;inset:0;z-index:88;pointer-events:none;canvas{width:100%;height:100%;}}
+
+    /* heavy scanlines */
+    .crt::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:90;
+      background:repeating-linear-gradient(180deg,transparent 0,transparent 2px,rgba(0,0,0,.40) 3px,transparent 4px);}
+    .crt::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:91;
+      background:radial-gradient(ellipse at 50% 50%,transparent 28%,rgba(0,0,0,.88) 100%);}
+
+    /* rolling scanline pulse */
+    #scanRoll{position:fixed;inset:0;z-index:92;pointer-events:none;
+      background:linear-gradient(180deg,transparent 48%,rgba(255,90,0,.05) 50%,transparent 52%);
+      animation:rollScan 2s linear infinite;}
+    @keyframes rollScan{from{background-position:0 -100vh}to{background-position:0 100vh}}
+
+    #grain{position:fixed;inset:0;z-index:89;pointer-events:none;opacity:.18;mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+
+    /* strobe + invert flicker */
+    #strobe{position:fixed;inset:0;z-index:200;pointer-events:none;background:#fff;opacity:0;}
+    #invertFlicker{position:fixed;inset:0;z-index:199;pointer-events:none;background:#fff;opacity:0;mix-blend-mode:difference;}
+
+    /* fastest tickers — FUZZ */
+    #hdr{position:fixed;top:0;left:0;right:0;height:38px;z-index:60;
+      background:rgba(10,6,0,.72);border-bottom:2px solid var(--acid);overflow:hidden;display:flex;flex-direction:column;justify-content:center;}
+    .tick{white-space:nowrap;font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:6px;}
+    .tick.a{color:var(--acid);animation:scrollL 4s linear infinite;text-shadow:0 0 18px var(--acid),0 0 40px var(--orange);}
+    .tick.b{color:var(--red);animation:scrollR 5s linear infinite;font-size:7px;margin-top:2px;text-shadow:0 0 8px var(--red);}
+    @keyframes scrollL{from{transform:translateX(0)}to{transform:translateX(-33.33%)}}
+    @keyframes scrollR{from{transform:translateX(-33.33%)}to{transform:translateX(0)}}
+
+    /* status col — constant jitter */
+    #statusCol{position:fixed;left:14px;top:58px;z-index:55;width:190px;pointer-events:none;animation:jitterF 0.5s infinite;}
+    @keyframes jitterF{0%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(2px)}60%{transform:translateX(-1px)}80%{transform:translateX(3px)}100%{transform:translateX(0)}}
+    .st-h{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--acid);letter-spacing:2px;margin-bottom:10px;text-shadow:0 0 18px var(--acid);}
+    .st-row{font-size:19px;letter-spacing:1px;line-height:1.5;color:var(--red);text-shadow:0 0 10px rgba(255,20,48,1);}
+    .st-row b{color:var(--acid);text-shadow:0 0 10px var(--acid);}
+    .st-data{margin-top:14px;font-size:14px;color:rgba(255,90,0,.9);line-height:1.55;}
+
+    #dataCol{position:fixed;right:10px;top:58px;bottom:54px;z-index:55;width:138px;overflow:hidden;pointer-events:none;
+      -webkit-mask-image:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent);}
+    #dataScroll{font-family:'VT323',monospace;font-size:11px;line-height:1.32;color:rgba(255,90,0,.9);letter-spacing:.5px;animation:dataUp 12s linear infinite;}
+    #dataScroll .k{color:var(--acid);} #dataScroll .v{color:var(--red);}
+    @keyframes dataUp{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+
+    #stage{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:64px 170px 70px;}
+    .scene{position:absolute;inset:64px 170px 70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;opacity:0;visibility:hidden;transition:opacity .15s;}
+    .scene.on{opacity:1;visibility:visible;}
+
+    /* max chromatic split */
+    .intertitle{font-family:'Press Start 2P',monospace;font-size:clamp(13px,2.3vw,26px);color:#fff;line-height:1.7;letter-spacing:2px;
+      text-shadow:0 0 20px var(--orange),8px 2px var(--red),-8px -2px var(--acid),0 4px rgba(0,240,255,.7),0 -4px rgba(255,0,204,.5);}
+    .demon{font-family:'Press Start 2P',monospace;font-size:clamp(22px,5.5vw,62px);line-height:1.1;letter-spacing:.04em;}
+    .demon .d{color:var(--red);text-shadow:0 0 30px var(--red),8px 0 var(--acid),-3px 3px rgba(0,240,255,.8);}
+    .demon .s{color:var(--acid);text-shadow:0 0 30px var(--acid),-8px 0 var(--orange),3px -3px rgba(255,0,204,.7);}
+    .demon-sub{font-family:'VT323',monospace;font-size:clamp(15px,2vw,24px);color:var(--orange);letter-spacing:6px;}
+
+    .genre-line{font-family:'VT323',monospace;font-size:clamp(16px,2.4vw,30px);color:var(--acid);letter-spacing:3px;line-height:1.9;
+      text-shadow:0 0 20px var(--acid),0 0 40px var(--orange);}
+    .genre-tag{color:var(--red);}
+
+    /* double skull layers + glitch filter */
+    .skull-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .skull{width:clamp(150px,24vw,260px);filter:drop-shadow(0 0 50px rgba(255,90,0,1)) saturate(2.5) contrast(1.5) hue-rotate(0deg);
+      animation:skullFuzz 1.6s ease-in-out infinite;}
+    @keyframes skullFuzz{
+      0%{transform:translateY(0) rotate(-3deg) scaleX(1);}
+      48%{transform:translateY(-18px) rotate(3deg) scaleX(1.03);}
+      50%{transform:translateY(-18px) rotate(3deg) scaleX(.97) skewX(-2deg);}
+      100%{transform:translateY(0) rotate(-3deg) scaleX(1);}
+    }
+    .skull-echo{position:absolute;width:clamp(150px,24vw,260px);opacity:.18;filter:hue-rotate(180deg) saturate(3);
+      animation:skullEcho 1.6s ease-in-out infinite reverse;}
+    @keyframes skullEcho{0%,100%{transform:translate(8px,4px) rotate(2deg)}50%{transform:translate(-8px,-4px) rotate(-2deg)}}
+
+    .data-big{font-family:'Press Start 2P',monospace;font-size:clamp(30px,7vw,76px);color:var(--acid);letter-spacing:6px;
+      text-shadow:0 0 40px var(--acid),0 0 80px var(--orange),8px 2px var(--red),-8px -2px rgba(0,240,255,.8);}
+    .data-lbl{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--red);letter-spacing:5px;}
+
+    .scores{display:flex;flex-direction:column;gap:9px;width:min(64%,520px);}
+    .score{border:2px solid;padding:9px 16px;display:flex;align-items:center;gap:14px;font-family:'Press Start 2P',monospace;background:rgba(10,6,0,.35);}
+    .score .rk{font-size:9px;} .score .nm{font-size:9px;color:#fff;flex:1;text-align:left;letter-spacing:1px;} .score .pt{font-size:11px;}
+    .score.c0{border-color:var(--acid);} .score.c0 .rk,.score.c0 .pt{color:var(--acid);}
+    .score.c1{border-color:var(--orange);} .score.c1 .rk,.score.c1 .pt{color:var(--orange);}
+    .score.c2{border-color:var(--red);} .score.c2 .rk,.score.c2 .pt{color:var(--red);}
+    .score.c3{border-color:var(--cyan);} .score.c3 .rk,.score.c3 .pt{color:var(--cyan);}
+    .score.c4{border-color:var(--violet);} .score.c4 .rk,.score.c4 .pt{color:var(--violet);}
+    .score.c5{border-color:var(--lime);} .score.c5 .rk,.score.c5 .pt{color:var(--lime);}
+
+    .creds{width:min(70%,640px);text-align:left;font-family:'VT323',monospace;font-size:clamp(15px,1.9vw,21px);line-height:1.6;color:#eee;letter-spacing:1px;column-count:2;column-gap:34px;}
+    .creds .ck{color:var(--acid);}
+    .scene-h{font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.3vw,12px);color:var(--red);letter-spacing:4px;text-shadow:0 0 16px var(--red);}
+    .book-email{font-family:'Press Start 2P',monospace;font-size:clamp(9px,1.5vw,15px);color:var(--acid);text-decoration:none;letter-spacing:2px;text-shadow:0 0 20px var(--acid);}
+    .book-email:hover{color:#fff;}
+
+    #gainBadge{position:fixed;top:46px;right:12px;z-index:70;font-family:'Press Start 2P',monospace;font-size:7px;
+      color:var(--red);border:1px solid var(--red);padding:3px 7px;background:rgba(10,6,0,.8);text-shadow:0 0 10px var(--red);
+      letter-spacing:2px;animation:badgePulse .8s step-end infinite;}
+    @keyframes badgePulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+    #ftr{position:fixed;bottom:0;left:0;right:0;height:46px;z-index:60;
+      background:rgba(10,6,0,.78);border-top:2px solid var(--red);display:flex;align-items:center;gap:12px;padding:0 14px;}
+    .ft-btn{font-family:'Press Start 2P',monospace;font-size:6px;color:rgba(255,255,255,.5);background:none;border:1px solid rgba(255,20,48,.6);padding:6px 10px;cursor:pointer;letter-spacing:1px;transition:all .12s;}
+    .ft-btn:hover{color:var(--red);border-color:var(--red);box-shadow:0 0 12px rgba(255,20,48,.6);}
+    #insertCoin{flex:1;text-align:center;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--acid);letter-spacing:4px;animation:blink .4s step-end infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.05}}
+    #secDots{display:flex;gap:6px;}
+    .dot{width:8px;height:8px;border:1px solid var(--red);}
+    .dot.on{background:var(--red);border-color:var(--red);box-shadow:0 0 12px var(--red);}
+    #autoLbl{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--red);letter-spacing:1px;}
+  </style>
+</head>
+<body class="crt">
+
+<div id="stageBg"></div>
+<canvas id="burst"></canvas>
+<div id="grain"></div>
+<div id="scanRoll"></div>
+<div id="strobe"></div>
+<div id="invertFlicker"></div>
+<canvas id="glitchLayer" style="position:fixed;inset:0;z-index:88;pointer-events:none;width:100%;height:100%;"></canvas>
+<div id="gainBadge">GAIN.3 · FUZZ</div>
+
+<div id="hdr">
+  <div class="tick a">NONROCKER · FUZZ · SOJU · NRK · FULL MELT · DEMON-STRATION · NONROCKER · FUZZ · SOJU · NRK · FULL MELT · DEMON-STRATION · NONROCKER · FUZZ · SOJU · NRK · FULL MELT · DEMON-STRATION · </div>
+  <div class="tick b">BOMB · 막걸리 · OVERLOAD · KAZOO · 막걸리 · OVERLOAD · KAZOO · 막걸리 · OVERLOAD · KAZOO · 막걸리 · OVERLOAD · KAZOO · 막걸리 · OVERLOAD · </div>
+</div>
+
+<div id="statusCol">
+  <div class="st-h">// SIGNAL STATUS</div>
+  <div class="st-row">SIGNAL: <b>CLIPPING</b></div>
+  <div class="st-row">MELT: <b>TOTAL</b></div>
+  <div class="st-row">RE-FORM: <b>UNKNOWN</b></div>
+  <div class="st-row">KAZOO: <b>DESTROYED</b></div>
+  <div class="st-row">GAIN: <b>+∞dB</b></div>
+  <div class="st-data" id="stData"></div>
+</div>
+
+<div id="dataCol"><div id="dataScroll"></div></div>
+
+<div id="stage">
+  <section class="scene">
+    <div class="intertitle">LISTEN TO THE NOISE<br>THAT OUTLIVED<br>THE MELODY</div>
+  </section>
+  <section class="scene">
+    <div class="demon"><span class="d">DEMON</span>-<span class="s">STRATION</span></div>
+    <div class="demon-sub">nonrocker records · NRK-2024 · GAIN.3</div>
+  </section>
+  <section class="scene">
+    <div class="scene-h">// FUZZ MAX DEMO</div>
+    <div class="genre-line">
+      <span class="genre-tag">NIHILIST</span> SOJU-CORE<br>
+      <span class="genre-tag">ANTI-MELODY</span> MUSIC<br>
+      VAPORWAVE · DIGITAL HARDCORE<br>
+      NU-KAZOO · DIDGERI-DOOM · SEOUL-FI
+    </div>
+  </section>
+  <section class="scene">
+    <div class="skull-wrap">
+      <img class="skull-echo" src="Facemelt-endmelt.png" alt="echo" style="position:absolute;top:0;"/>
+      <img class="skull" src="Facemelt-endmelt.png" alt="the melt"/>
+      <div class="data-lbl">DATA</div>
+      <div class="data-big" id="dataBig">76 70 26</div>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="scene-h">// HALL OF MELT</div>
+    <div class="scores">
+      <div class="score c0"><span class="rk">1ST</span><span class="nm">YUNG SOJU</span><span class="pt">999666</span></div>
+      <div class="score c1"><span class="rk">2ND</span><span class="nm">DJ 막걸리</span><span class="pt">930739</span></div>
+      <div class="score c2"><span class="rk">3RD</span><span class="nm">STATUE.EXE</span><span class="pt">814580</span></div>
+      <div class="score c3"><span class="rk">4TH</span><span class="nm">NULLSOFT</span><span class="pt">070707</span></div>
+      <div class="score c4"><span class="rk">5TH</span><span class="nm">??? (DRUMMER)</span><span class="pt">006660</span></div>
+      <div class="score c5"><span class="rk">6TH</span><span class="nm">NRK HOUSE</span><span class="pt">005000</span></div>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="scene-h">// PERSONNEL &amp; MATERIALS</div>
+    <div class="creds">
+      <div><span class="ck">vox/shaman</span> — Yung Soju</div>
+      <div><span class="ck">turntable</span> — DJ 막걸리</div>
+      <div><span class="ck">bass/construct</span> — STATUE.EXE</div>
+      <div><span class="ck">keys/hacker</span> — NULLSOFT</div>
+      <div><span class="ck">drums</span> — ??? (the drummer)</div>
+      <div><span class="ck">album</span> — Soju, Kazoos &amp; Didgeridoos</div>
+      <div><span class="ck">catalog</span> — NRK-2024 · NRK-666</div>
+      <div><span class="ck">track 01</span> — METALDATA</div>
+      <div style="break-before:column;"><span class="ck">materials</span>:</div>
+      <div>soju · gold kazoo</div><div>cracked didgeridoo</div>
+      <div>CRT phosphor · melting marble</div>
+      <div>polycarbonate · plastic bust</div>
+      <div>electricity · MIDI · cassette</div>
+      <div>LCD · LED · vaporwave</div>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="intertitle" style="font-size:clamp(11px,1.8vw,19px);">REWARD: ONE (1) BOOKING<br>— CLAIM BELOW —</div>
+    <a class="book-email" href="mailto:nonrockerrecords@proton.me">nonrockerrecords@proton.me</a>
+    <div class="demon-sub" style="font-size:clamp(13px,1.6vw,18px);color:rgba(255,255,255,.45);">BOOKING · PRESS · COLLABS</div>
+  </section>
+</div>
+
+<div id="ftr">
+  <button class="ft-btn" onclick="step(-1)">◄ BACK</button>
+  <span id="autoLbl">AUTO ▶</span>
+  <button class="ft-btn" onclick="toggleAuto()">PAUSE</button>
+  <div id="insertCoin">— FULL MELT —</div>
+  <div id="secDots"></div>
+  <button class="ft-btn" onclick="step(1)">SKIP ►</button>
+</div>
+
+<script>
+'use strict';
+const cv=document.getElementById('burst'),cx=cv.getContext('2d');
+const gc=document.getElementById('glitchLayer'),gx=gc.getContext('2d');
+let W,H;
+function rs(){W=cv.width=gc.width=innerWidth;H=cv.height=gc.height=innerHeight;}
+rs();addEventListener('resize',rs);
+
+/* max-density burst */
+const SPIKES=240;
+function burst(t){
+  cx.clearRect(0,0,W,H);
+  const ox=W/2,oy=H*0.46,maxR=Math.min(W,H)*0.7;
+  cx.globalCompositeOperation='lighter';
+  for(let i=0;i<SPIKES;i++){
+    const a=(i/SPIKES)*Math.PI*2+t*0.09;
+    const len=maxR*(0.52+0.48*Math.abs(Math.sin(i*1.7+t)));
+    const g=cx.createLinearGradient(ox,oy,ox+Math.cos(a)*len,oy+Math.sin(a)*len);
+    g.addColorStop(0,'rgba(255,90,0,0)');g.addColorStop(0.1,'rgba(255,90,0,0.8)');
+    g.addColorStop(0.45,'rgba(255,20,48,0.55)');g.addColorStop(1,'rgba(216,216,72,0.06)');
+    cx.strokeStyle=g;cx.lineWidth=1.5;
+    cx.beginPath();cx.moveTo(ox,oy);cx.lineTo(ox+Math.cos(a)*len,oy+Math.sin(a)*len);cx.stroke();
+  }
+  const core=cx.createRadialGradient(ox,oy,0,ox,oy,maxR*0.33);
+  core.addColorStop(0,'rgba(255,240,140,1)');core.addColorStop(0.35,'rgba(255,120,0,0.65)');core.addColorStop(1,'rgba(255,90,0,0)');
+  cx.fillStyle=core;cx.beginPath();cx.arc(ox,oy,maxR*0.33,0,Math.PI*2);cx.fill();
+  cx.globalCompositeOperation='source-over';
+}
+
+/* datamosh / glitch canvas overlay */
+let glitchT=0;
+function drawGlitch(){
+  gx.clearRect(0,0,W,H);
+  if(Math.random()<0.55){
+    const n=2+Math.floor(Math.random()*4);
+    for(let i=0;i<n;i++){
+      const y=Math.floor(Math.random()*H);
+      const h2=2+Math.floor(Math.random()*18);
+      const dx=(Math.random()-.5)*60;
+      try{
+        const id=cx.getImageData(0,y,W,h2);
+        gx.putImageData(id,dx,y);
+      }catch(e){}
+      // color slice
+      gx.fillStyle=Math.random()<.5?'rgba(255,20,48,.12)':'rgba(0,240,255,.08)';
+      gx.fillRect(0,y,W,h2);
+    }
+  }
+}
+
+/* invert flicker */
+const inv=document.getElementById('invertFlicker');
+function maybeInvert(){if(Math.random()<.015){inv.style.opacity='.06';setTimeout(()=>{inv.style.opacity='0';},80);}}
+
+/* strobe */
+const strobe=document.getElementById('strobe');
+function flashStrobe(){
+  strobe.style.opacity='.25';setTimeout(()=>{strobe.style.opacity='0';},40);
+  setTimeout(()=>{strobe.style.opacity='.12';setTimeout(()=>{strobe.style.opacity='0';},30);},80);
+  setTimeout(()=>{strobe.style.opacity='.06';setTimeout(()=>{strobe.style.opacity='0';},20);},130);
+}
+
+let bt=0;
+(function loop(ts){requestAnimationFrame(loop);bt=ts*0.001;burst(bt);drawGlitch();maybeInvert();})(0);
+
+/* data */
+const DATA_LINES=[['ALBUM','SOJU KAZOOS DIDGERIDOOS'],['CAT','NRK-2024'],['CAT','NRK-666'],
+  ['TRK01','METALDATA 3:11'],['TRK02','SOJU SUNRISE'],['TRK03','SEOUL SLEEPOVER'],['TRK04','DIDGERI-DOOM'],
+  ['TRK05','KAZOO.EXE'],['GENRE','NIHILIST SOJU-CORE'],['GENRE','ANTI-MELODY'],['GENRE','VAPORWAVE'],
+  ['GENRE','SEOUL-FI'],['MAT','POLYCARBONATE'],['MAT','MELTING MARBLE'],['MAT','GOLD KAZOO'],
+  ['MAT','CRT PHOSPHOR'],['MAT','LCD LED PLA'],['MAT','SOJU 360ML'],['MEM','YUNG SOJU'],['MEM','DJ 막걸리'],
+  ['MEM','STATUE.EXE'],['MEM','NULLSOFT'],['MEM','??? DRUMMER'],['SYS','!CLIPPING!'],['SYS','FUZZ MAX'],['SYS','BPM ??????']];
+let block='';DATA_LINES.forEach(([k,v])=>{block+=`<div><span class="k">${k}</span> <span class="v">${v}</span></div>`;});
+document.getElementById('dataScroll').innerHTML=block+block;
+let sd='';['!!!FUZZ!!!','CLIP ∞∞∞','DIST 930739','SAT 999999','GAIN MAX','MELT-∞','SOJU-???','KZO-DEAD','DDG-∞','OVERLOAD'].forEach(x=>{sd+=`<div>${x}</div>`;});
+document.getElementById('stData').innerHTML=sd;
+
+/* scene reel — fast */
+const scenes=[...document.querySelectorAll('.scene')];
+const dots=document.getElementById('secDots');
+scenes.forEach(()=>{const d=document.createElement('div');d.className='dot';dots.appendChild(d);});
+const dotEls=[...dots.children];
+let cur=0,auto=true,timer=0;const HOLD=3000;
+
+function show(i){
+  scenes[cur].classList.remove('on');dotEls[cur].classList.remove('on');
+  cur=((i%scenes.length)+scenes.length)%scenes.length;
+  scenes[cur].classList.add('on');dotEls[cur].classList.add('on');
+  flashStrobe();timer=0;
+}
+function step(d){show(cur+d);}
+function toggleAuto(){auto=!auto;document.getElementById('autoLbl').textContent=auto?'AUTO ▶':'PAUSED';}
+show(0);
+let last=0;(function reel(ts){requestAnimationFrame(reel);const dt=ts-last;last=ts;if(auto){timer+=dt;if(timer>HOLD)step(1);}})(0);
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();step(1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();step(-1);}
+});
+document.getElementById('stage').addEventListener('click',()=>step(1));
+
+/* fastest data numbers */
+const dataBig=document.getElementById('dataBig');
+setInterval(()=>{const n=()=>String(Math.floor(Math.random()*99)).padStart(2,'0');if(dataBig)dataBig.textContent=`${n()} ${n()} ${n()}`;},150);
+</script>
+</body>
+</html>

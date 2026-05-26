@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>nonrocker records — DEMON-STRATION // VOID · GAIN 2 · OVERDRIVE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#050008;--cyan:#00f0ff;--lime:#39ff14;--pink:#ff00cc;--violet:#7a00ff;--amber:#ffb800;--orange:#ff5a00;--red:#ff1430;}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:'VT323',monospace;color:#dfe;cursor:crosshair;}
+
+    @media(prefers-reduced-motion:reduce){.shake{animation:none!important;}.strobe{display:none!important;}}
+
+    #void{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 44%,#1a0635 0%,#0d0220 55%,#050008 100%);}
+    #burst{position:fixed;inset:0;z-index:1;width:100%;height:100%;}
+    .crt::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:90;background:repeating-linear-gradient(180deg,transparent 0,transparent 2px,rgba(0,0,0,.32) 3px,transparent 4px);}
+    .crt::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:91;background:radial-gradient(ellipse at 50% 50%,transparent 34%,rgba(0,0,0,.84) 100%);}
+    #grain{position:fixed;inset:0;z-index:89;pointer-events:none;opacity:.12;mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+    #strobe{position:fixed;inset:0;z-index:200;pointer-events:none;background:var(--cyan);opacity:0;}
+
+    #hdr{position:fixed;top:0;left:0;right:0;height:38px;z-index:60;background:rgba(5,0,8,.82);border-bottom:2px solid rgba(0,240,255,.6);overflow:hidden;display:flex;flex-direction:column;justify-content:center;}
+    .tick{white-space:nowrap;font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:6px;}
+    .tick.a{color:var(--cyan);animation:scL 8s linear infinite;text-shadow:0 0 14px var(--cyan);}
+    .tick.b{color:var(--pink);animation:scR 10s linear infinite;font-size:7px;margin-top:2px;}
+    @keyframes scL{from{transform:translateX(0)}to{transform:translateX(-33.33%)}}
+    @keyframes scR{from{transform:translateX(-33.33%)}to{transform:translateX(0)}}
+
+    #statusCol{position:fixed;left:14px;top:58px;z-index:55;width:190px;pointer-events:none;animation:jitter 3.5s infinite;}
+    @keyframes jitter{0%,100%{transform:translateX(0)}91%{transform:translateX(0)}93%{transform:translateX(-2px)}95%{transform:translateX(2px)}97%{transform:translateX(0)}}
+    .st-h{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;text-shadow:0 0 14px var(--cyan);}
+    .st-row{font-size:19px;letter-spacing:1px;line-height:1.5;color:var(--lime);text-shadow:0 0 8px rgba(57,255,20,.7);}
+    .st-row b{color:var(--cyan);}
+    .st-data{margin-top:14px;font-size:14px;color:rgba(0,240,255,.7);line-height:1.55;}
+
+    #dataCol{position:fixed;right:10px;top:58px;bottom:54px;z-index:55;width:138px;overflow:hidden;pointer-events:none;
+      -webkit-mask-image:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent);}
+    #dataScroll{font-family:'VT323',monospace;font-size:11px;line-height:1.32;color:rgba(122,0,255,.9);letter-spacing:.5px;animation:dUp 22s linear infinite;}
+    #dataScroll .k{color:var(--cyan);} #dataScroll .v{color:var(--pink);}
+    @keyframes dUp{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+
+    #stage{position:fixed;inset:0;z-index:40;}
+    .scene{position:absolute;inset:64px 170px 64px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;opacity:0;visibility:hidden;transition:opacity .2s;}
+    .scene.on{opacity:1;visibility:visible;}
+    .slide-chip{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--pink);letter-spacing:3px;border:1px solid rgba(255,0,204,.5);padding:5px 10px;text-shadow:0 0 10px var(--pink);}
+
+    .intertitle{font-family:'Press Start 2P',monospace;font-size:clamp(13px,2.3vw,26px);color:#fff;line-height:1.7;letter-spacing:2px;
+      text-shadow:0 0 20px var(--cyan),5px 0 var(--pink),-5px 0 var(--lime),0 3px rgba(122,0,255,.6);}
+    .demon{font-family:'Press Start 2P',monospace;font-size:clamp(22px,5.5vw,62px);line-height:1.1;letter-spacing:.04em;}
+    .demon .d{color:var(--pink);text-shadow:0 0 30px var(--pink),6px 0 var(--cyan),-2px 2px rgba(57,255,20,.5);}
+    .demon .s{color:var(--cyan);text-shadow:0 0 30px var(--cyan),-6px 0 var(--lime),2px -2px rgba(255,0,204,.5);}
+    .demon-sub{font-family:'VT323',monospace;font-size:clamp(15px,2vw,24px);color:var(--lime);letter-spacing:6px;}
+    .genre-line{font-family:'VT323',monospace;font-size:clamp(16px,2.4vw,30px);color:var(--cyan);letter-spacing:3px;line-height:1.9;}
+    .genre-tag{color:var(--pink);}
+    .skull{width:clamp(150px,24vw,260px);filter:drop-shadow(0 0 40px rgba(0,240,255,.9)) saturate(2) contrast(1.2) hue-rotate(180deg);animation:flo 2.4s ease-in-out infinite;}
+    @keyframes flo{0%,100%{transform:translateY(0) rotate(-2.5deg)}50%{transform:translateY(-16px) rotate(2.5deg)}}
+    .data-big{font-family:'Press Start 2P',monospace;font-size:clamp(30px,7vw,76px);color:var(--cyan);letter-spacing:6px;
+      text-shadow:0 0 30px var(--cyan),0 0 60px var(--pink),5px 0 var(--violet),-5px 0 rgba(57,255,20,.5);}
+    .data-lbl{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--pink);letter-spacing:5px;}
+    .scores{display:flex;flex-direction:column;gap:9px;width:min(64%,520px);}
+    .score{border:2px solid;padding:9px 16px;display:flex;align-items:center;gap:14px;font-family:'Press Start 2P',monospace;background:rgba(0,0,0,.4);}
+    .score .rk{font-size:9px;} .score .nm{font-size:9px;color:#fff;flex:1;text-align:left;letter-spacing:1px;} .score .pt{font-size:11px;}
+    .score.c0{border-color:var(--cyan);} .score.c0 .rk,.score.c0 .pt{color:var(--cyan);}
+    .score.c1{border-color:var(--pink);} .score.c1 .rk,.score.c1 .pt{color:var(--pink);}
+    .score.c2{border-color:var(--lime);} .score.c2 .rk,.score.c2 .pt{color:var(--lime);}
+    .score.c3{border-color:var(--violet);} .score.c3 .rk,.score.c3 .pt{color:var(--violet);}
+    .score.c4{border-color:var(--amber);} .score.c4 .rk,.score.c4 .pt{color:var(--amber);}
+    .score.c5{border-color:var(--orange);} .score.c5 .rk,.score.c5 .pt{color:var(--orange);}
+    .creds{width:min(70%,640px);text-align:left;font-family:'VT323',monospace;font-size:clamp(15px,1.9vw,21px);line-height:1.6;color:#dfe;letter-spacing:1px;column-count:2;column-gap:34px;}
+    .creds .ck{color:var(--cyan);}
+    .scene-h{font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.3vw,12px);color:var(--pink);letter-spacing:4px;text-shadow:0 0 14px var(--pink);}
+    .book-email{font-family:'Press Start 2P',monospace;font-size:clamp(9px,1.5vw,15px);color:var(--cyan);text-decoration:none;letter-spacing:2px;text-shadow:0 0 18px var(--cyan);}
+    .book-email:hover{color:#fff;}
+    #gainBadge{position:fixed;top:46px;right:12px;z-index:70;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--cyan);border:1px solid var(--cyan);padding:3px 7px;background:rgba(5,0,8,.8);text-shadow:0 0 8px var(--cyan);letter-spacing:2px;}
+    #ftr{position:fixed;bottom:0;left:0;right:0;height:46px;z-index:60;background:rgba(5,0,8,.85);border-top:2px solid rgba(0,240,255,.5);display:flex;align-items:center;gap:12px;padding:0 14px;}
+    .ft-btn{font-family:'Press Start 2P',monospace;font-size:6px;color:rgba(255,255,255,.4);background:none;border:1px solid rgba(0,240,255,.5);padding:6px 12px;cursor:pointer;letter-spacing:1px;transition:all .12s;}
+    .ft-btn:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 12px rgba(0,240,255,.5);}
+    #prog{flex:1;height:3px;background:rgba(0,240,255,.15);}
+    #progFill{height:100%;width:0;background:var(--cyan);box-shadow:0 0 10px var(--cyan);transition:width .2s;}
+    #count{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pink);letter-spacing:2px;}
+  </style>
+</head>
+<body class="crt">
+<div id="void"></div><canvas id="burst"></canvas><div id="grain"></div><div id="strobe"></div>
+<div id="gainBadge">GAIN.2 · OVERDRIVE</div>
+<div id="hdr">
+  <div class="tick a">NONROCKER · VOID · SOJU · NRK · OVERDRIVE · DEMON-STRATION · NONROCKER · VOID · SOJU · NRK · OVERDRIVE · DEMON-STRATION · NONROCKER · VOID · SOJU · NRK · OVERDRIVE · DEMON-STRATION · </div>
+  <div class="tick b">BOMB · KAZOO · BOMB · 막걸리 · DISTORTION · DIDGERIDOO · BOMB · KAZOO · BOMB · 막걸리 · DISTORTION · DIDGERIDOO · BOMB · KAZOO · BOMB · 막걸리 · DISTORTION · DIDGERIDOO · </div>
+</div>
+<div id="statusCol">
+  <div class="st-h">// SIGNAL STATUS</div>
+  <div class="st-row">SIGNAL: <b>HOT</b></div>
+  <div class="st-row">MELT: <b>ACTIVE</b></div>
+  <div class="st-row">RE-FORM: <b>OVERDRIVE</b></div>
+  <div class="st-row">KAZOO: <b>DISTORTED</b></div>
+  <div class="st-row">GAIN: <b>+12dB</b></div>
+  <div class="st-data" id="stData"></div>
+</div>
+<div id="dataCol"><div id="dataScroll"></div></div>
+<div id="stage">
+  <section class="scene"><div class="slide-chip">00 / INTRO</div><div class="intertitle">LISTEN TO THE NOISE<br>THAT OUTLIVED<br>THE MELODY</div></section>
+  <section class="scene"><div class="slide-chip">01 / TITLE</div><div class="demon"><span class="d">DEMON</span>-<span class="s">STRATION</span></div><div class="demon-sub">nonrocker records · NRK-2024 · GAIN.2</div></section>
+  <section class="scene"><div class="slide-chip">02 / SOUND</div><div class="scene-h">// OVERDRIVE DEMO</div>
+    <div class="genre-line"><span class="genre-tag">NIHILIST</span> SOJU-CORE<br><span class="genre-tag">ANTI-MELODY</span> MUSIC<br>VAPORWAVE · DIGITAL HARDCORE<br>NU-KAZOO · DIDGERI-DOOM · SEOUL-FI</div>
+  </section>
+  <section class="scene" data-burst="hot"><div class="slide-chip">03 / THE MELT</div>
+    <img class="skull" src="Facemelt-endmelt.png" alt="the melt"/>
+    <div class="data-lbl">DATA</div><div class="data-big" id="dataBig">76 70 26</div>
+  </section>
+  <section class="scene"><div class="slide-chip">04 / HALL OF MELT</div>
+    <div class="scores">
+      <div class="score c0"><span class="rk">1ST</span><span class="nm">YUNG SOJU</span><span class="pt">999666</span></div>
+      <div class="score c1"><span class="rk">2ND</span><span class="nm">DJ 막걸리</span><span class="pt">930739</span></div>
+      <div class="score c2"><span class="rk">3RD</span><span class="nm">STATUE.EXE</span><span class="pt">814580</span></div>
+      <div class="score c3"><span class="rk">4TH</span><span class="nm">NULLSOFT</span><span class="pt">070707</span></div>
+      <div class="score c4"><span class="rk">5TH</span><span class="nm">??? (DRUMMER)</span><span class="pt">006660</span></div>
+      <div class="score c5"><span class="rk">6TH</span><span class="nm">NRK HOUSE</span><span class="pt">005000</span></div>
+    </div>
+  </section>
+  <section class="scene"><div class="slide-chip">05 / PERSONNEL</div><div class="scene-h">// PERSONNEL &amp; MATERIALS</div>
+    <div class="creds">
+      <div><span class="ck">vox/shaman</span> — Yung Soju</div><div><span class="ck">turntable</span> — DJ 막걸리</div>
+      <div><span class="ck">bass/construct</span> — STATUE.EXE</div><div><span class="ck">keys/hacker</span> — NULLSOFT</div>
+      <div><span class="ck">drums</span> — ??? (the drummer)</div><div><span class="ck">album</span> — Soju, Kazoos &amp; Didgeridoos</div>
+      <div><span class="ck">catalog</span> — NRK-2024 · NRK-666</div><div><span class="ck">track 01</span> — METALDATA</div>
+      <div style="break-before:column;"><span class="ck">materials</span>:</div><div>soju · gold kazoo</div>
+      <div>cracked didgeridoo</div><div>CRT phosphor · melting marble</div>
+      <div>polycarbonate · plastic bust</div><div>electricity · MIDI · cassette</div><div>LCD · LED · vaporwave</div>
+    </div>
+  </section>
+  <section class="scene"><div class="slide-chip">06 / BOOKING</div>
+    <div class="intertitle" style="font-size:clamp(11px,1.8vw,19px);">REWARD: ONE (1) BOOKING<br>— CLAIM BELOW —</div>
+    <a class="book-email" href="mailto:nonrockerrecords@proton.me">nonrockerrecords@proton.me</a>
+    <div class="demon-sub" style="font-size:clamp(13px,1.6vw,18px);color:rgba(255,255,255,.45);">BOOKING · PRESS · COLLABS</div>
+  </section>
+</div>
+<div id="ftr">
+  <button class="ft-btn" onclick="step(-1)">◄ PREV</button>
+  <span id="count">01 / 07</span>
+  <div id="prog"><div id="progFill"></div></div>
+  <button class="ft-btn" onclick="step(1)">NEXT ►</button>
+</div>
+<script>
+'use strict';
+const cv=document.getElementById('burst'),cx=cv.getContext('2d');
+let W,H;function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;}rs();addEventListener('resize',rs);
+const strobe=document.getElementById('strobe');
+function flashStrobe(){strobe.style.opacity='.15';setTimeout(()=>{strobe.style.opacity='0';},60);setTimeout(()=>{strobe.style.opacity='.07';setTimeout(()=>{strobe.style.opacity='0';},40);},110);}
+const SPIKES=180;let hot=false;
+function burst(t){
+  cx.clearRect(0,0,W,H);const ox=W/2,oy=H*0.46,maxR=Math.min(W,H)*0.64;
+  cx.globalCompositeOperation='lighter';
+  for(let i=0;i<SPIKES;i++){
+    const a=(i/SPIKES)*Math.PI*2+t*0.07;const len=maxR*(0.44+0.56*Math.abs(Math.sin(i*1.7+t*0.8)));
+    const g=cx.createLinearGradient(ox,oy,ox+Math.cos(a)*len,oy+Math.sin(a)*len);
+    if(hot){g.addColorStop(0,'rgba(255,90,0,0)');g.addColorStop(0.12,'rgba(255,90,0,0.6)');g.addColorStop(0.5,'rgba(255,20,48,0.4)');g.addColorStop(1,'rgba(255,184,0,0.03)');}
+    else{g.addColorStop(0,'rgba(0,240,255,0)');g.addColorStop(0.12,'rgba(0,240,255,0.45)');g.addColorStop(0.5,'rgba(122,0,255,0.36)');g.addColorStop(1,'rgba(255,0,204,0.03)');}
+    cx.strokeStyle=g;cx.lineWidth=1.4;cx.beginPath();cx.moveTo(ox,oy);cx.lineTo(ox+Math.cos(a)*len,oy+Math.sin(a)*len);cx.stroke();
+  }
+  const core=cx.createRadialGradient(ox,oy,0,ox,oy,maxR*0.28);
+  if(hot){core.addColorStop(0,'rgba(255,220,120,0.9)');core.addColorStop(0.4,'rgba(255,120,0,0.5)');core.addColorStop(1,'rgba(255,90,0,0)');}
+  else{core.addColorStop(0,'rgba(200,255,255,0.65)');core.addColorStop(0.4,'rgba(0,240,255,0.28)');core.addColorStop(1,'rgba(0,240,255,0)');}
+  cx.fillStyle=core;cx.beginPath();cx.arc(ox,oy,maxR*0.28,0,Math.PI*2);cx.fill();
+  cx.globalCompositeOperation='source-over';
+}
+(function loop(ts){requestAnimationFrame(loop);burst(ts*0.001);})(0);
+const DATA_LINES=[['ALBUM','SOJU KAZOOS DIDGERIDOOS'],['CAT','NRK-2024'],['CAT','NRK-666'],['TRK01','METALDATA 3:11'],['TRK02','SOJU SUNRISE'],['TRK03','SEOUL SLEEPOVER'],['TRK04','DIDGERI-DOOM'],['TRK05','KAZOO.EXE'],['GENRE','NIHILIST SOJU-CORE'],['GENRE','ANTI-MELODY'],['GENRE','VAPORWAVE'],['GENRE','SEOUL-FI'],['MAT','POLYCARBONATE'],['MAT','MELTING MARBLE'],['MAT','GOLD KAZOO'],['MAT','CRT PHOSPHOR'],['MAT','LCD LED PLA'],['MAT','SOJU 360ML'],['MEM','YUNG SOJU'],['MEM','DJ 막걸리'],['MEM','STATUE.EXE'],['MEM','NULLSOFT'],['MEM','??? DRUMMER'],['SYS','GAIN ACTIVE'],['SYS','OVERDRIVE'],['SYS','BPM CLIPPING']];
+let block='';DATA_LINES.forEach(([k,v])=>{block+=`<div><span class="k">${k}</span> <span class="v">${v}</span></div>`;});
+document.getElementById('dataScroll').innerHTML=block+block;
+let sd='';['OD +12dB','CLIP 99145','DIST 930739','SAT 814580','GAIN ON','VOID-OD','SOJU-360','KZO-FUZZ','DDG-OD','!!GAIN!!'].forEach(x=>{sd+=`<div>${x}</div>`;});
+document.getElementById('stData').innerHTML=sd;
+const scenes=[...document.querySelectorAll('.scene')];
+let cur=0;
+function show(i){
+  scenes[cur].classList.remove('on');cur=((i%scenes.length)+scenes.length)%scenes.length;
+  scenes[cur].classList.add('on');hot=scenes[cur].dataset.burst==='hot';
+  flashStrobe();
+  document.getElementById('count').textContent=String(cur+1).padStart(2,'0')+' / '+String(scenes.length).padStart(2,'0');
+  document.getElementById('progFill').style.width=((cur+1)/scenes.length*100)+'%';
+}
+function step(d){show(cur+d);}
+show(0);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();step(1);}if(e.key==='ArrowLeft'){e.preventDefault();step(-1);}});
+document.getElementById('stage').addEventListener('click',()=>step(1));
+const dataBig=document.getElementById('dataBig');
+setInterval(()=>{const n=()=>String(Math.floor(Math.random()*99)).padStart(2,'0');if(dataBig)dataBig.textContent=`${n()} ${n()} ${n()}`;},350);
+</script>
+</body>
+</html>
