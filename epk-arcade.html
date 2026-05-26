@@ -1,0 +1,1302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>nonrocker records — EPK ARCADE MODE</title>
+
+  <!-- Spectrum Web Components -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg:     #050008;
+      --pink:   #ff00cc;
+      --cyan:   #00f0ff;
+      --lime:   #39ff14;
+      --amber:  #ffb800;
+      --violet: #7a00ff;
+      --red:    #ff2200;
+      --white:  #eeeeff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'VT323', monospace;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    /* ── CRT scanlines ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent 0, transparent 2px,
+        rgba(0,0,0,.16) 3px, transparent 4px
+      );
+      pointer-events: none;
+      z-index: 9000;
+    }
+    /* ── Vignette ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(0,0,0,.72) 100%);
+      pointer-events: none;
+      z-index: 8999;
+    }
+
+    /* ===================================================
+       BACKGROUND CANVAS
+    =================================================== */
+    #bgCanvas {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    /* ===================================================
+       SLIDE DECK
+    =================================================== */
+    .deck {
+      position: fixed; inset: 0;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute; inset: 0;
+      padding: 50px 36px 58px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+    }
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+
+    /* ===================================================
+       TRANSITION FLASH
+    =================================================== */
+    #flash {
+      position: fixed; inset: 0;
+      background: #fff;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 9500;
+    }
+
+    /* ===================================================
+       PERSISTENT HUD — TOP
+    =================================================== */
+    #hud-top {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 42px;
+      background: rgba(5,0,8,.93);
+      border-bottom: 2px solid var(--pink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      letter-spacing: 1px;
+      z-index: 500;
+      gap: 10px;
+    }
+    .hud-label { color: rgba(255,184,0,.4); font-size: 5px; display: block; margin-bottom: 2px; }
+    .hud-score { color: var(--amber); text-shadow: 0 0 8px var(--amber); }
+    .hud-lives  { color: var(--pink); letter-spacing: 3px; text-shadow: 0 0 6px var(--pink); }
+    .hud-title  { color: var(--pink); letter-spacing: 2px; text-shadow: 0 0 10px var(--pink); font-size: 6px; }
+    .hud-slide  { color: var(--cyan); text-align: right; }
+    .hud-combo  { color: var(--lime); text-shadow: 0 0 8px var(--lime); min-width: 80px; }
+
+    /* ===================================================
+       PERSISTENT HUD — BOTTOM (nav + ticker)
+    =================================================== */
+    #hud-bot {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 50px;
+      background: rgba(5,0,8,.93);
+      border-top: 2px solid var(--violet);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      z-index: 500;
+    }
+    .nav-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px;
+      color: rgba(255,255,255,.3);
+      background: transparent;
+      border: 1px solid rgba(255,0,204,.28);
+      padding: 6px 10px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all .1s;
+      flex-shrink: 0;
+    }
+    .nav-btn:hover {
+      color: var(--pink);
+      border-color: var(--pink);
+      box-shadow: 0 0 10px rgba(255,0,204,.4);
+    }
+    #ticker-wrap {
+      flex: 1;
+      overflow: hidden;
+      height: 18px;
+      position: relative;
+    }
+    #ticker {
+      white-space: nowrap;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px;
+      color: var(--lime);
+      letter-spacing: 2px;
+      position: absolute;
+      animation: marquee 35s linear infinite;
+    }
+    @keyframes marquee {
+      from { transform: translateX(100vw); }
+      to   { transform: translateX(-100%); }
+    }
+
+    /* ===================================================
+       COMBO POPUP
+    =================================================== */
+    .combo-pop {
+      position: fixed;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(11px, 1.8vw, 17px);
+      color: var(--amber);
+      text-shadow: 0 0 20px var(--amber), 2px 0 var(--pink), -2px 0 var(--cyan);
+      pointer-events: none;
+      z-index: 8000;
+      animation: comboPop 1.6s ease-out forwards;
+    }
+    @keyframes comboPop {
+      0%   { opacity: 0; transform: scale(.5) translateY(0); }
+      18%  { opacity: 1; transform: scale(1.4) translateY(-8px); }
+      55%  { opacity: 1; transform: scale(1) translateY(-32px); }
+      100% { opacity: 0; transform: scale(.8) translateY(-90px); }
+    }
+
+    /* ===================================================
+       GLITCH BARS
+    =================================================== */
+    #glitch {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 9200;
+      opacity: 0;
+    }
+    .glitch-bar {
+      position: absolute;
+      mix-blend-mode: screen;
+    }
+
+    /* ===================================================
+       KEYFRAMES
+    =================================================== */
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    @keyframes titleGlitch {
+      0%,82%,100% { text-shadow: 0 0 30px var(--pink),0 0 60px rgba(255,0,204,.3),4px 0 var(--cyan),-4px 0 var(--lime); transform: none; }
+      84% { text-shadow: 8px 0 var(--cyan),-8px 0 var(--pink); transform: translateX(4px) skewX(4deg); }
+      86% { text-shadow: -6px 0 var(--lime),6px 0 var(--violet); transform: translateX(-3px) skewX(-3deg); }
+      88% { text-shadow: 0 0 30px var(--pink); transform: none; }
+    }
+    @keyframes bossPulse {
+      0%,100% { filter: saturate(1.4) drop-shadow(0 0 18px rgba(0,240,255,.5)); }
+      50%      { filter: saturate(2) drop-shadow(0 0 36px rgba(255,0,204,.7)); }
+    }
+    @keyframes bossFloat {
+      0%,100% { transform: translateY(0) rotate(-1.5deg); }
+      50%      { transform: translateY(-14px) rotate(1.5deg); }
+    }
+    @keyframes bossWarning {
+      from { text-shadow: 0 0 22px var(--red); }
+      to   { text-shadow: 0 0 44px var(--red),4px 0 var(--pink),-4px 0 var(--amber); }
+    }
+    @keyframes hpPulse {
+      from { box-shadow: 0 0 8px rgba(255,34,0,.6); }
+      to   { box-shadow: 0 0 22px rgba(255,34,0,.95); }
+    }
+    @keyframes overGlitch {
+      0%,78%,100% { transform: none; color: var(--red); }
+      80% { transform: skewX(10deg) translateX(5px); color: var(--cyan); }
+      82% { transform: skewX(-8deg) translateX(-5px); color: var(--pink); }
+      84% { transform: none; color: var(--red); }
+    }
+    @keyframes unknownStat {
+      0%  { width: 10%; background: var(--violet); }
+      25% { width: 95%; background: var(--pink); }
+      50% { width: 30%; background: var(--cyan); }
+      75% { width: 80%; background: var(--amber); }
+      100%{ width: 10%; background: var(--violet); }
+    }
+    @keyframes scanroll {
+      to { background-position: 0 60px; }
+    }
+
+    /* ===================================================
+       SLIDE 1: TITLE SCREEN
+    =================================================== */
+    #slide-title {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 0;
+    }
+    .title-eyebrow {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(6px,.9vw,9px);
+      color: var(--amber);
+      letter-spacing: 5px;
+      margin-bottom: 1.8rem;
+      text-shadow: 0 0 10px var(--amber);
+    }
+    .title-main {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(20px,5.5vw,54px);
+      color: var(--pink);
+      text-shadow: 0 0 30px var(--pink),0 0 60px rgba(255,0,204,.3),4px 0 var(--cyan),-4px 0 var(--lime);
+      letter-spacing: .05em;
+      line-height: 1.3;
+      animation: titleGlitch 5s ease-in-out infinite;
+    }
+    .title-sub {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px,2vw,18px);
+      color: var(--cyan);
+      text-shadow: 0 0 20px var(--cyan);
+      letter-spacing: .16em;
+      margin: .8rem 0 1.6rem;
+    }
+    .title-catalog {
+      font-family: 'VT323', monospace;
+      font-size: clamp(16px,2.5vw,28px);
+      color: rgba(122,0,255,.75);
+      letter-spacing: 5px;
+      margin-bottom: 2.4rem;
+    }
+    .insert-coin {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px,1.5vw,14px);
+      color: var(--white);
+      letter-spacing: 3px;
+      animation: blink 1s step-end infinite;
+      margin-bottom: 2.2rem;
+    }
+    .title-scores {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(5px,.8vw,8px);
+      color: rgba(255,255,255,.25);
+      letter-spacing: 2px;
+    }
+
+    /* ===================================================
+       SLIDE 2: CHARACTER SELECT
+    =================================================== */
+    .char-header {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px,1.3vw,11px);
+      color: var(--amber);
+      text-shadow: 0 0 14px var(--amber);
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(5,1fr);
+      gap: 10px;
+      flex: 1;
+    }
+    .char-card {
+      border: 1px solid rgba(255,0,204,.22);
+      background: rgba(255,0,204,.03);
+      padding: 10px 8px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      position: relative;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .char-card:hover, .char-card.selected {
+      border-color: var(--pink);
+      background: rgba(255,0,204,.08);
+      box-shadow: 0 0 22px rgba(255,0,204,.22);
+    }
+    .char-card.selected::before {
+      content: '►';
+      position: absolute;
+      top: 7px; left: 7px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px;
+      color: var(--amber);
+    }
+    .char-sprite { image-rendering: pixelated; }
+    .char-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(4px,.7vw,6px);
+      color: var(--cyan);
+      text-align: center;
+      letter-spacing: 1px;
+      line-height: 1.6;
+    }
+    .char-class {
+      font-family: 'VT323', monospace;
+      font-size: clamp(12px,1.4vw,16px);
+      color: rgba(255,184,0,.55);
+      letter-spacing: 2px;
+      text-align: center;
+    }
+    .char-stats { width: 100%; }
+    .stat-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .stat-lbl {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 4px;
+      color: rgba(255,255,255,.35);
+      width: 18px;
+      flex-shrink: 0;
+    }
+    .stat-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,.07);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-fill {
+      position: absolute; top: 0; left: 0; bottom: 0;
+      transition: width 1.8s ease;
+    }
+    .stat-fill.unknown { animation: unknownStat 2s ease-in-out infinite; }
+
+    /* ===================================================
+       SLIDE 3: ALBUM (RPG INVENTORY)
+    =================================================== */
+    #slide-album {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 2rem;
+      align-items: start;
+      overflow: hidden;
+    }
+    .album-frame {
+      border: 2px solid rgba(0,240,255,.3);
+      padding: 14px;
+      background: rgba(0,240,255,.03);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .album-img {
+      width: 100%;
+      max-width: 280px;
+      animation: bossPulse 3.5s ease-in-out infinite;
+    }
+    .album-title-txt {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(6px,1vw,9px);
+      color: var(--pink);
+      letter-spacing: 2px;
+      line-height: 1.7;
+      text-align: center;
+    }
+    .album-cat {
+      font-family: 'VT323', monospace;
+      font-size: clamp(16px,2vw,22px);
+      color: var(--amber);
+      letter-spacing: 4px;
+    }
+    .tracklist-hdr {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(6px,.9vw,8px);
+      color: var(--lime);
+      letter-spacing: 3px;
+      margin-bottom: .8rem;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(57,255,20,.2);
+    }
+    .tracklist {
+      list-style: none;
+      overflow-y: auto;
+      max-height: calc(100vh - 220px);
+    }
+    .track {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      font-family: 'VT323', monospace;
+      font-size: clamp(14px,2vw,20px);
+      color: rgba(200,200,200,.65);
+      letter-spacing: 2px;
+      transition: color .1s;
+    }
+    .track:hover { color: var(--cyan); }
+    .track.feat  { color: var(--white); }
+    .track-num  { font-family:'Press Start 2P',monospace;font-size:6px;color:rgba(255,255,255,.2);width:18px; }
+    .track.feat .track-num { color: var(--amber); }
+    .track-play { color:rgba(255,0,204,.4);cursor:pointer;font-size:18px; }
+    .track-play:hover { color: var(--pink); }
+    .track-tag  { font-family:'Press Start 2P',monospace;font-size:4px;padding:2px 5px;border:1px solid var(--pink);color:var(--pink); }
+    .track-time { margin-left:auto;font-size:14px;color:rgba(255,255,255,.28); }
+    .track-feat { color:rgba(255,255,255,.28);font-size:14px; }
+
+    /* ===================================================
+       SLIDE 4: GALLERY (CHAOS GRID)
+    =================================================== */
+    #slide-gallery { overflow: hidden; }
+    .slide-hdr {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(6px,1vw,9px);
+      color: var(--cyan);
+      text-shadow: 0 0 14px var(--cyan);
+      letter-spacing: 4px;
+      margin-bottom: .8rem;
+    }
+    .gallery-field {
+      position: relative;
+      flex: 1;
+    }
+    .g-item {
+      position: absolute;
+      border: 1px solid rgba(255,0,204,.2);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, z-index 0s;
+    }
+    .g-item:hover {
+      z-index: 200 !important;
+      box-shadow: 0 0 32px rgba(255,0,204,.55);
+      transform: scale(1.08) rotate(0deg) !important;
+      filter: brightness(1.3) saturate(1.6);
+    }
+    .g-item img { display:block;width:100%;height:100%;object-fit:cover; }
+    .g-lbl {
+      position:absolute;bottom:0;left:0;right:0;
+      background:rgba(5,0,8,.88);
+      font-family:'Press Start 2P',monospace;font-size:4px;
+      color:var(--pink);padding:3px 5px;letter-spacing:1px;
+    }
+
+    /* ===================================================
+       SLIDE 5: ACHIEVEMENTS / PRESS
+    =================================================== */
+    .achieve-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+      gap: 12px;
+      margin-top: .6rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .achieve-card {
+      border: 1px solid rgba(255,184,0,.22);
+      background: rgba(255,184,0,.03);
+      padding: 13px 12px;
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      transition: border-color .15s;
+    }
+    .achieve-card:hover { border-color: var(--amber); box-shadow: 0 0 18px rgba(255,184,0,.2); }
+    .achieve-icon { font-size: 26px; flex-shrink: 0; }
+    .achieve-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(5px,.8vw,7px);
+      color: var(--amber);
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+    }
+    .achieve-desc {
+      font-family: 'VT323', monospace;
+      font-size: clamp(14px,1.7vw,18px);
+      color: rgba(255,255,255,.6);
+      letter-spacing: 1px;
+      line-height: 1.4;
+    }
+    .achieve-xp {
+      margin-top: 5px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 5px;
+      color: var(--lime);
+    }
+
+    /* ===================================================
+       SLIDE 6: FINAL BOSS
+    =================================================== */
+    #slide-boss {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: .4rem;
+    }
+    .boss-warn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px,1.3vw,11px);
+      color: var(--red);
+      letter-spacing: 3px;
+      text-shadow: 0 0 22px var(--red);
+      animation: bossWarning .9s ease-in-out infinite alternate;
+    }
+    .boss-sprite {
+      width: clamp(100px,18vw,190px);
+      filter: drop-shadow(0 0 24px rgba(255,34,0,.65)) saturate(1.4);
+      animation: bossFloat 2.2s ease-in-out infinite;
+    }
+    .boss-hp-wrap { width: min(60%, 440px); margin: 0 auto; }
+    .boss-hp-lbl {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px;
+      color: var(--red);
+      letter-spacing: 2px;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+    .boss-hp-bar {
+      height: 14px;
+      background: rgba(255,34,0,.12);
+      border: 1px solid rgba(255,34,0,.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .boss-hp-fill {
+      position: absolute; top: 0; left: 0; bottom: 0;
+      width: 72%;
+      background: linear-gradient(90deg, var(--red), #ff7700);
+      box-shadow: 0 0 10px rgba(255,34,0,.6);
+      animation: hpPulse 1s ease-in-out infinite alternate;
+      transition: width .4s ease;
+    }
+    .boss-phase {
+      font-family: 'VT323', monospace;
+      font-size: clamp(14px,2vw,22px);
+      color: rgba(255,255,255,.55);
+      letter-spacing: 3px;
+      line-height: 1.9;
+    }
+    .boss-email {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(6px,1.1vw,10px);
+      color: var(--pink);
+      text-shadow: 0 0 16px var(--pink);
+      text-decoration: none;
+      letter-spacing: 2px;
+      display: block;
+    }
+    .boss-email:hover { color: var(--amber); text-shadow: 0 0 16px var(--amber); }
+    .boss-sub {
+      font-family: 'VT323', monospace;
+      font-size: clamp(13px,1.6vw,18px);
+      color: rgba(255,255,255,.3);
+      letter-spacing: 4px;
+    }
+
+    /* ===================================================
+       SLIDE 7: GAME OVER
+    =================================================== */
+    #slide-over {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: .6rem;
+    }
+    .over-big {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(22px,5.5vw,56px);
+      color: var(--red);
+      text-shadow: 0 0 40px var(--red),0 0 80px rgba(255,34,0,.3);
+      letter-spacing: .07em;
+      animation: overGlitch 4s ease-in-out infinite;
+    }
+    .continue-txt {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(8px,1.4vw,12px);
+      color: var(--amber);
+      letter-spacing: 3px;
+    }
+    .countdown-n {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(34px,7vw,70px);
+      color: var(--white);
+      text-shadow: 0 0 28px var(--white);
+    }
+    .tally {
+      font-family: 'VT323', monospace;
+      font-size: clamp(16px,2.2vw,26px);
+      color: rgba(255,255,255,.48);
+      letter-spacing: 4px;
+      line-height: 2;
+    }
+    .tally-total {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px,1.2vw,11px);
+      color: var(--amber);
+      text-shadow: 0 0 16px var(--amber);
+      letter-spacing: 2px;
+    }
+    .links-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: .8rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background canvas -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- Glitch overlay -->
+<div id="glitch"></div>
+
+<!-- Transition flash -->
+<div id="flash"></div>
+
+<!-- ── Persistent HUD top ── -->
+<div id="hud-top">
+  <div>
+    <span class="hud-label">1UP SCORE</span>
+    <span class="hud-score" id="scoreDisp">00000000</span>
+  </div>
+  <div>
+    <span class="hud-label">COMBO</span>
+    <span class="hud-combo" id="comboDisp">---</span>
+  </div>
+  <div class="hud-title">nonrocker records · NRK</div>
+  <div>
+    <span class="hud-label">LIVES</span>
+    <span class="hud-lives">♥ ♥ ♥</span>
+  </div>
+  <div>
+    <span class="hud-label">SLIDE</span>
+    <span class="hud-slide" id="slideDisp">01 / 07</span>
+  </div>
+</div>
+
+<sp-theme color="dark" scale="medium" theme="spectrum-two">
+<div class="deck" id="deck">
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 1: TITLE SCREEN
+  ═══════════════════════════════════════════════════ -->
+  <section class="slide" id="slide-title">
+    <div class="title-eyebrow">NRK &nbsp;·&nbsp; CATALOG #NRK-2024 &nbsp;·&nbsp; PRESENTS</div>
+    <div class="title-main">nonrocker<br>records</div>
+    <div class="title-sub">EPK : ARCADE MODE</div>
+    <div class="title-catalog">SOJU, KAZOOS AND DIDGERIDOOS</div>
+    <div class="insert-coin">— INSERT COIN TO BEGIN —</div>
+    <div class="title-scores">
+      <span>HI-SCORE &nbsp; 0066600</span>
+      <span>PLAYER 1 &nbsp; <span id="titleScore">0000000</span></span>
+      <span>NRK-666 &nbsp; ▓▓▓▓▓▓▓</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 2: CHARACTER SELECT
+  ═══════════════════════════════════════════════════ -->
+  <section class="slide">
+    <div class="char-header">► SELECT YOUR CHARACTER &nbsp;·&nbsp; PLAYER 1 ◄</div>
+    <div class="char-grid">
+
+      <div class="char-card selected" onclick="selectChar(this)">
+        <canvas class="char-sprite" id="sp0" width="56" height="56"></canvas>
+        <div class="char-name">YUNG<br>SOJU</div>
+        <div class="char-class">VOCALIST / SHAMAN</div>
+        <div class="char-stats">
+          <div class="stat-row"><span class="stat-lbl">HP</span><div class="stat-bar"><div class="stat-fill" style="width:88%;background:var(--lime);box-shadow:0 0 4px var(--lime)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">STR</span><div class="stat-bar"><div class="stat-fill" style="width:95%;background:var(--pink);box-shadow:0 0 4px var(--pink)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">SPD</span><div class="stat-bar"><div class="stat-fill" style="width:72%;background:var(--cyan);box-shadow:0 0 4px var(--cyan)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">MAG</span><div class="stat-bar"><div class="stat-fill" style="width:99%;background:var(--violet);box-shadow:0 0 4px var(--violet)"></div></div></div>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="selectChar(this)">
+        <canvas class="char-sprite" id="sp1" width="56" height="56"></canvas>
+        <div class="char-name">DJ<br>막걸리</div>
+        <div class="char-class">TURNTABLIST / WIZARD</div>
+        <div class="char-stats">
+          <div class="stat-row"><span class="stat-lbl">HP</span><div class="stat-bar"><div class="stat-fill" style="width:65%;background:var(--lime);box-shadow:0 0 4px var(--lime)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">STR</span><div class="stat-bar"><div class="stat-fill" style="width:78%;background:var(--pink);box-shadow:0 0 4px var(--pink)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">SPD</span><div class="stat-bar"><div class="stat-fill" style="width:92%;background:var(--cyan);box-shadow:0 0 4px var(--cyan)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">MAG</span><div class="stat-bar"><div class="stat-fill" style="width:77%;background:var(--violet);box-shadow:0 0 4px var(--violet)"></div></div></div>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="selectChar(this)">
+        <canvas class="char-sprite" id="sp2" width="56" height="56"></canvas>
+        <div class="char-name">STATUE<br>.EXE</div>
+        <div class="char-class">BASSIST / CONSTRUCT</div>
+        <div class="char-stats">
+          <div class="stat-row"><span class="stat-lbl">HP</span><div class="stat-bar"><div class="stat-fill" style="width:100%;background:var(--lime);box-shadow:0 0 4px var(--lime)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">STR</span><div class="stat-bar"><div class="stat-fill" style="width:100%;background:var(--pink);box-shadow:0 0 4px var(--pink)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">SPD</span><div class="stat-bar"><div class="stat-fill" style="width:38%;background:var(--cyan);box-shadow:0 0 4px var(--cyan)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">MAG</span><div class="stat-bar"><div class="stat-fill" style="width:55%;background:var(--violet);box-shadow:0 0 4px var(--violet)"></div></div></div>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="selectChar(this)">
+        <canvas class="char-sprite" id="sp3" width="56" height="56"></canvas>
+        <div class="char-name">NULL<br>SOFT</div>
+        <div class="char-class">KEYS / HACKER</div>
+        <div class="char-stats">
+          <div class="stat-row"><span class="stat-lbl">HP</span><div class="stat-bar"><div class="stat-fill" style="width:48%;background:var(--lime);box-shadow:0 0 4px var(--lime)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">STR</span><div class="stat-bar"><div class="stat-fill" style="width:68%;background:var(--pink);box-shadow:0 0 4px var(--pink)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">SPD</span><div class="stat-bar"><div class="stat-fill" style="width:88%;background:var(--cyan);box-shadow:0 0 4px var(--cyan)"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">MAG</span><div class="stat-bar"><div class="stat-fill" style="width:100%;background:var(--violet);box-shadow:0 0 4px var(--violet)"></div></div></div>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="selectChar(this)">
+        <canvas class="char-sprite" id="sp4" width="56" height="56"></canvas>
+        <div class="char-name">???<br>(DRMR)</div>
+        <div class="char-class">PERCUSSIONIST / ???</div>
+        <div class="char-stats">
+          <div class="stat-row"><span class="stat-lbl">HP</span><div class="stat-bar"><div class="stat-fill unknown" style="height:100%"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">STR</span><div class="stat-bar"><div class="stat-fill unknown" style="height:100%;animation-delay:.4s"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">SPD</span><div class="stat-bar"><div class="stat-fill unknown" style="height:100%;animation-delay:.8s"></div></div></div>
+          <div class="stat-row"><span class="stat-lbl">MAG</span><div class="stat-bar"><div class="stat-fill unknown" style="height:100%;animation-delay:1.2s"></div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 3: THE ALBUM (RPG INVENTORY)
+  ═══════════════════════════════════════════════════ -->
+  <section class="slide" id="slide-album">
+    <div class="album-frame">
+      <img class="album-img" src="Facemelt.png" alt="Soju, Kazoos and Didgeridoos — NRK-2024"/>
+      <div class="album-title-txt">SOJU, KAZOOS AND<br>DIDGERIDOOS</div>
+      <div class="album-cat">NRK-2024 &nbsp;·&nbsp; 33⅓ RPM &nbsp;·&nbsp; STEREO</div>
+    </div>
+    <div>
+      <div class="tracklist-hdr">// ITEM: TRACK LISTING (EQUIP TO LISTEN)</div>
+      <ul class="tracklist">
+        <li class="track feat">
+          <span class="track-num">01</span>
+          <span class="track-play" onclick="kazoo()">▶</span>
+          METALDATA
+          <span class="track-tag">OPENER</span>
+          <span class="track-time">3:11</span>
+        </li>
+        <li class="track"><span class="track-num">02</span><span class="track-play" onclick="kazoo()">▶</span> SOJU SUNRISE<span class="track-time">4:02</span></li>
+        <li class="track"><span class="track-num">03</span><span class="track-play" onclick="kazoo()">▶</span> SEOUL SLEEPOVER <span class="track-feat">feat. YUNG SOJU</span><span class="track-time">3:47</span></li>
+        <li class="track"><span class="track-num">04</span><span class="track-play" onclick="kazoo()">▶</span> DIDGERI-DOOM<span class="track-time">5:29</span></li>
+        <li class="track"><span class="track-num">05</span><span class="track-play" onclick="kazoo()">▶</span> KAZOO.EXE<span class="track-time">2:58</span></li>
+        <li class="track"><span class="track-num">06</span><span class="track-play" onclick="kazoo()">▶</span> VAPORWAVE RAMPAGE<span class="track-time">6:14</span></li>
+        <li class="track"><span class="track-num">07</span><span class="track-play" onclick="kazoo()">▶</span> DJ 막걸리 CANNOT BE STOPPED<span class="track-time">4:44</span></li>
+        <li class="track"><span class="track-num">08</span><span class="track-play" onclick="kazoo()">▶</span> NULLSOFT OVERRIDE<span class="track-time">3:33</span></li>
+        <li class="track"><span class="track-num">09</span><span class="track-play" onclick="kazoo()">▶</span> STATUE.EXE WILL NOT BLINK<span class="track-time">7:07</span></li>
+        <li class="track"><span class="track-num">10</span><span class="track-play" onclick="kazoo()">▶</span> THE DRUMMER IS STILL GOING<span class="track-time">∞</span></li>
+        <li class="track"><span class="track-num">11</span><span class="track-play" onclick="kazoo()">▶</span> ERROR 404: 인생 없음 <span class="track-feat">(BONUS)</span><span class="track-time">6:06</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 4: GALLERY (CHAOS GRID)
+  ═══════════════════════════════════════════════════ -->
+  <section class="slide" id="slide-gallery">
+    <div class="slide-hdr">// GALLERY &nbsp;·&nbsp; CANONICAL NRK ASSETS &nbsp;·&nbsp; HOVER TO MAGNIFY</div>
+    <div class="gallery-field" id="galleryField"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 5: ACHIEVEMENTS / PRESS
+  ═══════════════════════════════════════════════════ -->
+  <section class="slide">
+    <div class="slide-hdr">// ACHIEVEMENT UNLOCKED &nbsp;·&nbsp; PRESS &amp; RECOGNITION</div>
+    <div class="achieve-grid">
+      <div class="achieve-card">
+        <div class="achieve-icon">🏆</div>
+        <div>
+          <div class="achieve-title">SOLD OUT (almost)</div>
+          <div class="achieve-desc">"An avalanche of kazoo solos and soju-fueled existential panic ... we cannot recommend it highly enough." — The Pixel Gazette</div>
+          <div class="achieve-xp">+500 XP · RARE UNLOCK</div>
+        </div>
+      </div>
+      <div class="achieve-card">
+        <div class="achieve-icon">🔩</div>
+        <div>
+          <div class="achieve-title">UNBLINKING</div>
+          <div class="achieve-desc">"STATUE.EXE played the entire second set without blinking. We checked. We were afraid." — Seoul Noise Monthly</div>
+          <div class="achieve-xp">+750 XP · LEGENDARY</div>
+        </div>
+      </div>
+      <div class="achieve-card">
+        <div class="achieve-icon">🔥</div>
+        <div>
+          <div class="achieve-title">FIRE HAZARD CLEARED</div>
+          <div class="achieve-desc">"The didgeridoo set off three smoke alarms. All three were correct." — DIY Inferno Zine</div>
+          <div class="achieve-xp">+999 XP · MYTHIC ITEM</div>
+        </div>
+      </div>
+      <div class="achieve-card">
+        <div class="achieve-icon">📡</div>
+        <div>
+          <div class="achieve-title">SIGNAL ACQUIRED</div>
+          <div class="achieve-desc">"Genre: unclassifiable. Vibe: yes. Booking: please don't call us back." — Vaporwave Weekly</div>
+          <div class="achieve-xp">+250 XP · UNCOMMON</div>
+        </div>
+      </div>
+      <div class="achieve-card">
+        <div class="achieve-icon">🎮</div>
+        <div>
+          <div class="achieve-title">ARCADE HIGH SCORE</div>
+          <div class="achieve-desc">"Nonrocker Invaders has no win condition. The music just keeps going." — BBS Dispatch</div>
+          <div class="achieve-xp">+1337 XP · SECRET BADGE</div>
+        </div>
+      </div>
+      <div class="achieve-card">
+        <div class="achieve-icon">🦘</div>
+        <div>
+          <div class="achieve-title">DIDGERIDOO UNLOCKED</div>
+          <div class="achieve-desc">"We still don't know how they got it through customs. It rattled the entire venue down to the bones." — Cyberspace Correspondent</div>
+          <div class="achieve-xp">+2000 XP · ONE-OF-A-KIND</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 6: FINAL BOSS (BOOKING)
+  ═══════════════════════════════════════════════════ -->
+  <section class="slide" id="slide-boss">
+    <div class="boss-warn">⚠&nbsp; WARNING: FINAL BOSS ENCOUNTER &nbsp;⚠</div>
+    <img class="boss-sprite" src="Facemelt-endmelt.png" alt="THE BOOKING AGENT"/>
+    <div class="boss-hp-wrap">
+      <div class="boss-hp-lbl">BOOKING AGENT &nbsp; HP</div>
+      <div class="boss-hp-bar"><div class="boss-hp-fill" id="bossHp"></div></div>
+    </div>
+    <div class="boss-phase">
+      DEFEAT CONDITIONS:<br>
+      SEND EMAIL → SURVIVE CALLBACK → ACHIEVE BOOKING
+    </div>
+    <a class="boss-email" href="mailto:nonrockerrecords@proton.me">nonrockerrecords@proton.me</a>
+    <div class="boss-sub">BOOKING &nbsp;·&nbsp; PRESS &nbsp;·&nbsp; COLLABS &nbsp;·&nbsp; KAZOO RENTALS</div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 7: GAME OVER
+  ═══════════════════════════════════════════════════ -->
+  <section class="slide" id="slide-over">
+    <div class="over-big">GAME OVER</div>
+    <div class="continue-txt">CONTINUE?</div>
+    <div class="countdown-n" id="cdNum">9</div>
+    <div class="tally">
+      SCORE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span id="finalScore">00000000</span><br>
+      KAZOO BONUS &nbsp; +006660<br>
+      DIDGERIDOO &nbsp;&nbsp; ×1 (cracked)<br>
+      SOJU LEVEL &nbsp;&nbsp;&nbsp; CRITICAL
+    </div>
+    <div class="tally-total">TOTAL: <span id="totalScore">00666660</span></div>
+    <div class="links-row">
+      <sp-button variant="secondary" size="S" onclick="goTo(0)">► PLAY AGAIN</sp-button>
+      <sp-button variant="secondary" size="S" href="mailto:nonrockerrecords@proton.me">► CONTACT NRK</sp-button>
+      <sp-button variant="secondary" size="S" href="variations.html">► ALL VARIATIONS</sp-button>
+    </div>
+  </section>
+
+</div><!-- /deck -->
+</sp-theme>
+
+<!-- ── Persistent HUD bottom ── -->
+<div id="hud-bot">
+  <button class="nav-btn" onclick="prev()">◄ PREV</button>
+  <div id="ticker-wrap">
+    <div id="ticker">
+      ▓ NONROCKER RECORDS ▓ NRK-2024 ▓ SOJU, KAZOOS AND DIDGERIDOOS ▓ METALDATA: TRACK 01 ▓ YUNG SOJU · DJ 막걸리 · STATUE.EXE · NULLSOFT · ??? (THE DRUMMER) ▓ VAPORWAVE · DIGITAL HARDCORE · NU-KAZOO · DIDGERI-DOOM · SEOUL-FI ▓ ALL WRONGS RESERVED ▓ NRK-666 ▓ ERROR 404: 인생 없음 ▓ NO BPM NO GOD ▓ BOOKING: nonrockerrecords@proton.me ▓ INSERT COIN ▓ ARCADE MODE ACTIVE ▓ REBRAND STATUS: 13% ▓ SOJU LEVEL: CRITICAL ▓
+    </div>
+  </div>
+  <button class="nav-btn" onclick="next()">NEXT ►</button>
+</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════
+// BACKGROUND CANVAS — starfield + enemy sprites
+// ═══════════════════════════════════════════════════
+const bgC = document.getElementById('bgCanvas');
+const bgX = bgC.getContext('2d');
+
+function resizeBg() { bgC.width = innerWidth; bgC.height = innerHeight; }
+resizeBg(); addEventListener('resize', resizeBg);
+
+// Stars
+const STARS = Array.from({length:220}, () => ({
+  x: Math.random(), y: Math.random(),
+  s: Math.random() * 1.6 + 0.3,
+  sp: Math.random() * 0.0003 + 0.00006,
+  ph: Math.random() * Math.PI * 2,
+}));
+
+// Enemy pixel bitmaps (5×5)
+const ENEMY_MAPS = [
+  [[0,1,1,1,0],[1,1,1,1,1],[0,1,1,1,0],[1,0,1,0,1],[0,1,0,1,0]],
+  [[1,0,1,0,1],[0,1,1,1,0],[1,1,1,1,1],[0,1,0,1,0],[1,0,0,0,1]],
+  [[0,1,1,1,0],[1,1,1,1,1],[1,0,1,0,1],[0,1,1,1,0],[1,0,0,0,1]],
+];
+const ENEMY_COLORS = ['#ff00cc','#00f0ff','#39ff14','#ffb800'];
+
+const sprites = [];
+let lastSpawn = 0;
+function spawnEnemy(ts) {
+  sprites.push({
+    x: bgC.width + 24,
+    y: 55 + Math.random() * (bgC.height - 120),
+    vx: -(0.5 + Math.random() * 1.8),
+    type: Math.floor(Math.random() * 3),
+    color: ENEMY_COLORS[Math.floor(Math.random() * 4)],
+    sz: 16 + Math.random() * 22,
+    t: 0,
+  });
+}
+
+function drawEnemy(x, y, type, color, sz) {
+  const m = ENEMY_MAPS[type], cell = sz / 5;
+  bgX.fillStyle = color;
+  bgX.shadowColor = color;
+  bgX.shadowBlur = 8;
+  m.forEach((row, ri) => row.forEach((v, ci) => {
+    if (v) bgX.fillRect(x + ci*cell, y + ri*cell, cell-1, cell-1);
+  }));
+  bgX.shadowBlur = 0;
+}
+
+let bgT = 0;
+function bgLoop(ts) {
+  requestAnimationFrame(bgLoop);
+  const W = bgC.width, H = bgC.height;
+  bgT = ts * 0.001;
+
+  bgX.fillStyle = '#050008';
+  bgX.fillRect(0, 0, W, H);
+
+  // Stars
+  STARS.forEach(s => {
+    s.y -= s.sp * H;
+    if (s.y < 0) { s.y = 1; s.x = Math.random(); }
+    const alpha = 0.25 + 0.5 * Math.abs(Math.sin(bgT * 0.4 + s.ph));
+    bgX.fillStyle = `rgba(190,190,255,${alpha.toFixed(2)})`;
+    bgX.fillRect(s.x * W, s.y * H, s.s, s.s);
+  });
+
+  // Enemy sprites
+  if (ts - lastSpawn > 1800) { spawnEnemy(ts); lastSpawn = ts; }
+  for (let i = sprites.length - 1; i >= 0; i--) {
+    const sp = sprites[i];
+    sp.x += sp.vx; sp.t++;
+    if (sp.x < -60) { sprites.splice(i, 1); continue; }
+    drawEnemy(sp.x, sp.y + Math.sin(sp.t * 0.06) * 7, sp.type, sp.color, sp.sz);
+  }
+}
+requestAnimationFrame(bgLoop);
+
+// ═══════════════════════════════════════════════════
+// CHARACTER PIXEL SPRITES
+// ═══════════════════════════════════════════════════
+const CHAR_BITMAPS = [
+  // Yung Soju — wide stance, big presence
+  [[0,1,1,1,1,1,0],[1,1,1,1,1,1,1],[1,1,0,1,0,1,1],[0,1,1,1,1,1,0],[0,0,1,1,1,0,0],[0,1,1,1,1,1,0],[1,1,0,0,0,1,1],[1,0,0,0,0,0,1],[1,0,0,0,0,0,1],[0,1,0,0,0,1,0]],
+  // DJ 막걸리 — leaning, asymmetric
+  [[0,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,0,1,0,1,0],[0,1,1,1,1,1,0],[0,0,1,1,1,0,0],[0,1,1,0,1,1,1],[1,1,0,0,0,0,1],[1,0,0,0,0,1,1],[0,1,0,0,0,1,0],[0,1,0,0,1,0,0]],
+  // STATUE.EXE — rigid, symmetric columns
+  [[0,1,1,1,1,1,0],[0,1,1,1,1,1,0],[0,1,0,0,0,1,0],[0,1,1,1,1,1,0],[0,0,1,1,1,0,0],[0,1,1,1,1,1,0],[0,1,0,1,0,1,0],[0,1,0,1,0,1,0],[0,1,0,1,0,1,0],[0,1,0,1,0,1,0]],
+  // NULLSOFT — slouched hacker
+  [[0,1,1,1,1,1,0],[1,1,1,1,1,1,1],[1,0,0,1,0,0,1],[0,1,1,1,1,1,0],[0,0,1,1,1,0,0],[1,1,1,0,1,1,1],[1,0,0,0,0,0,1],[1,1,0,0,0,1,1],[0,1,1,0,1,1,0],[0,0,1,0,1,0,0]],
+  // ??? drummer — chaotic, no rules
+  [[0,0,1,1,1,0,0],[0,1,1,1,1,1,0],[1,0,0,1,0,0,1],[0,1,1,1,1,1,0],[0,0,1,1,1,0,0],[1,1,1,0,1,0,1],[0,1,0,0,0,1,1],[1,1,0,0,0,1,0],[1,0,0,0,0,0,1],[0,1,1,0,0,1,0]],
+];
+const CHAR_PALS = [
+  { body:'#ff00cc', leg:'#ffb800' },
+  { body:'#00f0ff', leg:'#7a00ff' },
+  { body:'#ccccdd', leg:'#7a00ff' },
+  { body:'#39ff14', leg:'#00f0ff' },
+  { body:'#ffb800', leg:'#ff00cc' },
+];
+
+function renderCharSprite(id, idx) {
+  const c = document.getElementById(id);
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const bm = CHAR_BITMAPS[idx], pal = CHAR_PALS[idx];
+  const rows = bm.length, cols = bm[0].length;
+  const cw = c.width / cols, ch = c.height / rows;
+  ctx.clearRect(0, 0, c.width, c.height);
+  bm.forEach((row, ri) => row.forEach((v, ci) => {
+    if (!v) return;
+    ctx.fillStyle = ri < 4 ? pal.body : pal.leg;
+    ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 5;
+    ctx.fillRect(ci*cw, ri*ch, cw-1, ch-1);
+  }));
+}
+[0,1,2,3,4].forEach(i => renderCharSprite('sp'+i, i));
+
+// ═══════════════════════════════════════════════════
+// GALLERY CHAOS LAYOUT
+// ═══════════════════════════════════════════════════
+const GALLERY_ASSETS = [
+  {src:'2D50CEEE-D2F0-4732-A252-5D48171F0CAD.png', lbl:'NRK-ART-01'},
+  {src:'2DAFBE0E-39B2-4FF8-9992-0AA3CE9C7623.png', lbl:'NRK-ART-02'},
+  {src:'8F75C3AB-B236-42F3-BB35-2BB2F5D0B79A.png', lbl:'NRK-ART-03'},
+  {src:'8F82E415-53A6-46B7-AFDE-FC8C5472B282.png', lbl:'NRK-ART-04'},
+  {src:'A9C2AC0B-A0C6-471F-BDA5-1205DC56B31B.png', lbl:'NRK-ART-05'},
+  {src:'BD3D75D0-98E8-45FC-86B2-894AB3064A32.png', lbl:'NRK-ART-06'},
+  {src:'C5983B52-D2D2-4679-9459-74E635C6DC60.png', lbl:'NRK-ART-07'},
+  {src:'CABED3F4-1567-45B8-8B84-15D96F664CA5.png', lbl:'NRK-ART-08'},
+  {src:'D36C7D8E-2EC2-404C-8F39-C1C0759E2CF0.png', lbl:'NRK-ART-09'},
+  {src:'ECFCB7E5-CA55-4D86-832B-4D83CA05E511.png', lbl:'NRK-ART-10'},
+  {src:'F16541D8-C37B-407A-B51C-219AF29BB62A.png', lbl:'NRK-ART-11'},
+  {src:'facemelt-premelt.png',    lbl:'PREMELT'},
+  {src:'Facemelt.png',            lbl:'FACEMELT'},
+  {src:'Facemelt-endmelt.png',    lbl:'ENDMELT / SKULL'},
+  {src:'logo-draft-01-pixel-merch.jpg', lbl:'LOGO-01'},
+  {src:'logo-draft-02-win95-titlebar.jpg', lbl:'LOGO-02'},
+];
+
+function buildGallery() {
+  const field = document.getElementById('galleryField');
+  if (!field) return;
+  const W = field.clientWidth  || innerWidth - 72;
+  const H = field.clientHeight || innerHeight - 130;
+
+  GALLERY_ASSETS.forEach((asset, i) => {
+    const el = document.createElement('div');
+    el.className = 'g-item';
+
+    // Deterministic chaotic placement using golden angle spread
+    const angle = i * 2.399; // golden angle rad
+    const radius = 0.18 + (i / GALLERY_ASSETS.length) * 0.55;
+    const cx = 0.5 + radius * Math.cos(angle) * 0.85;
+    const cy = 0.5 + radius * Math.sin(angle) * 0.7;
+    const w = 90 + (i % 5) * 22;
+    const h = 72 + (i % 4) * 18;
+    const rot = (i % 9 - 4) * 3.8;
+
+    el.style.left   = Math.max(0, Math.min(W - w, cx * W - w/2)) + 'px';
+    el.style.top    = Math.max(0, Math.min(H - h, cy * H - h/2)) + 'px';
+    el.style.width  = w + 'px';
+    el.style.height = h + 'px';
+    el.style.transform = `rotate(${rot}deg)`;
+    el.style.zIndex = i + 1;
+
+    const img = document.createElement('img');
+    img.src = asset.src; img.alt = asset.lbl;
+
+    const lbl = document.createElement('div');
+    lbl.className = 'g-lbl';
+    lbl.textContent = asset.lbl;
+
+    el.appendChild(img); el.appendChild(lbl);
+    field.appendChild(el);
+  });
+}
+buildGallery();
+
+// ═══════════════════════════════════════════════════
+// SLIDE NAVIGATION
+// ═══════════════════════════════════════════════════
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total  = slides.length;
+let cur = 0;
+
+function goTo(idx) {
+  slides[cur].classList.remove('active');
+  cur = ((idx % total) + total) % total;
+  slides[cur].classList.add('active');
+  document.getElementById('slideDisp').textContent =
+    String(cur+1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+
+  // CRT flash
+  const f = document.getElementById('flash');
+  f.style.opacity = '1';
+  setTimeout(() => { f.style.transition = 'opacity .35s'; f.style.opacity = '0'; }, 60);
+  setTimeout(() => { f.style.transition = ''; }, 420);
+
+  // Spawn combo on nav
+  spawnCombo();
+  score += 500;
+}
+function next() { goTo(cur + 1); }
+function prev() { goTo(cur - 1); }
+goTo(0);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft')                    { e.preventDefault(); prev(); }
+});
+
+// ═══════════════════════════════════════════════════
+// CHARACTER SELECT
+// ═══════════════════════════════════════════════════
+function selectChar(card) {
+  document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  spawnCombo();
+}
+
+// ═══════════════════════════════════════════════════
+// SCORE COUNTER
+// ═══════════════════════════════════════════════════
+let score = 0;
+const scoreEl    = document.getElementById('scoreDisp');
+const finalEl    = document.getElementById('finalScore');
+const totalEl    = document.getElementById('totalScore');
+const titleScore = document.getElementById('titleScore');
+
+setInterval(() => {
+  score += Math.floor(Math.random() * 130 + 8);
+  const s = String(Math.min(score, 99999999)).padStart(8, '0');
+  if (scoreEl)    scoreEl.textContent    = s;
+  if (finalEl)    finalEl.textContent    = s;
+  if (titleScore) titleScore.textContent = s.slice(1);
+  if (totalEl)    totalEl.textContent    = String(Math.min(score + 666660, 99999999)).padStart(8,'0');
+}, 110);
+
+// ═══════════════════════════════════════════════════
+// COMBO POPUP
+// ═══════════════════════════════════════════════════
+const COMBO_LINES = [
+  'COMBO x2!','SICK MOVE!','KAZOO HIT!','SOJU BOOST!','NRK POWER!',
+  '막걸리 BONUS!','STATUE.EXE!','PERFECT!','RADICAL!','NULLSOFT HACK!',
+  'NO BPM NO GOD!','DIDGERI-DOOM!',
+];
+let comboN = 0;
+const comboDisp = document.getElementById('comboDisp');
+
+function spawnCombo() {
+  comboN++;
+  const txt = COMBO_LINES[comboN % COMBO_LINES.length];
+  if (comboDisp) { comboDisp.textContent = 'x' + comboN; }
+
+  const el = document.createElement('div');
+  el.className = 'combo-pop';
+  el.textContent = txt;
+  el.style.left = (25 + Math.random() * 55) + 'vw';
+  el.style.top  = (25 + Math.random() * 45) + 'vh';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1700);
+}
+
+// Spontaneous combos
+setInterval(() => { if (Math.random() < 0.35) spawnCombo(); }, 4500);
+
+// ═══════════════════════════════════════════════════
+// GLITCH BURST
+// ═══════════════════════════════════════════════════
+const glitchEl = document.getElementById('glitch');
+function triggerGlitch() {
+  glitchEl.innerHTML = '';
+  const n = 4 + Math.floor(Math.random() * 10);
+  for (let i = 0; i < n; i++) {
+    const b = document.createElement('div');
+    b.className = 'glitch-bar';
+    b.style.top    = (Math.random() * 100) + 'vh';
+    b.style.left   = '0';
+    b.style.width  = (15 + Math.random() * 85) + 'vw';
+    b.style.height = (1 + Math.random() * 7) + 'px';
+    b.style.background = ['#ff00cc','#00f0ff','#39ff14'][Math.floor(Math.random()*3)];
+    b.style.opacity = String(0.4 + Math.random() * 0.5);
+    glitchEl.appendChild(b);
+  }
+  glitchEl.style.opacity = '1';
+  setTimeout(() => { glitchEl.style.opacity = '0'; glitchEl.innerHTML = ''; }, 100);
+}
+const scheduleGlitch = () => {
+  setTimeout(() => { triggerGlitch(); scheduleGlitch(); }, 6000 + Math.random() * 9000);
+};
+scheduleGlitch();
+
+// ═══════════════════════════════════════════════════
+// BOSS HP DRAIN (slide 6)
+// ═══════════════════════════════════════════════════
+let bossHp = 72;
+setInterval(() => {
+  if (cur === 5) {
+    bossHp = Math.max(3, bossHp - 0.25);
+    const el = document.getElementById('bossHp');
+    if (el) el.style.width = bossHp + '%';
+    if (bossHp <= 3) spawnCombo();
+  }
+}, 250);
+
+// ═══════════════════════════════════════════════════
+// GAME OVER COUNTDOWN (slide 7)
+// ═══════════════════════════════════════════════════
+let cdVal = 9, cdLast = 0;
+function cdTick(ts) {
+  requestAnimationFrame(cdTick);
+  if (cur !== 6) { cdVal = 9; cdLast = ts; return; }
+  if (ts - cdLast > 1000) {
+    cdVal--; cdLast = ts;
+    const el = document.getElementById('cdNum');
+    if (el) el.textContent = Math.max(0, cdVal);
+    if (cdVal <= 0) { goTo(0); cdVal = 9; }
+  }
+}
+requestAnimationFrame(cdTick);
+
+// ═══════════════════════════════════════════════════
+// KAZOO — Web Audio buzzer
+// ═══════════════════════════════════════════════════
+let aCtx = null;
+function kazoo() {
+  try {
+    if (!aCtx) aCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = aCtx.createOscillator();
+    const gain = aCtx.createGain();
+    osc.connect(gain); gain.connect(aCtx.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, aCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(900, aCtx.currentTime + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(440, aCtx.currentTime + 0.28);
+    gain.gain.setValueAtTime(0.28, aCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, aCtx.currentTime + 0.38);
+    osc.start(aCtx.currentTime);
+    osc.stop(aCtx.currentTime + 0.4);
+  } catch(e) {}
+  spawnCombo();
+}
+</script>
+</body>
+</html>
