@@ -9,376 +9,218 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;height:100%;background:#06060a;color:#fff;font-family:'VT323',monospace;overflow:hidden;}
 
-/* CRT scanlines */
 body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 2px,rgba(0,0,0,.15) 3px,transparent 4px);pointer-events:none;z-index:100;}
-
-/* vignette */
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.75) 100%);pointer-events:none;z-index:99;}
 
-/* ── PHASE 0: boot noise ── */
-#boot{position:fixed;inset:0;background:#000;z-index:90;display:flex;align-items:center;justify-content:center;}
-#boot canvas{display:block;}
-
-/* ── PHASE 1: scene ── */
-#scene{position:fixed;inset:0;opacity:0;transition:opacity 1.2s ease;z-index:10;}
+/* scene */
+#scene{position:fixed;inset:0;opacity:0;transition:opacity 1.4s ease;z-index:10;}
 #scene.visible{opacity:1;}
+#scene-img{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block;image-rendering:pixelated;}
 
-#scene-img{
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:center 20%;
-  display:block;
-}
-
-/* pixel art sharpness */
-#scene-img{image-rendering:pixelated;image-rendering:crisp-edges;}
-
-/* pulsing neon border */
-@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg;}
-@keyframes spin{to{--ang:360deg;}}
-#scene-border{
-  position:fixed;inset:0;
-  background:conic-gradient(from var(--ang),#ff00cc,#00f0ff,#7a00ff,#39ff14,#ff00cc);
-  animation:spin 4s linear infinite;
-  -webkit-mask:linear-gradient(#fff 0,#fff 0) content-box,linear-gradient(#fff 0,#fff 0);
-  -webkit-mask-composite:destination-out;
-  mask-composite:exclude;
-  padding:4px;
-  border-radius:0;
-  pointer-events:none;
-  z-index:11;
-  opacity:0;
-  transition:opacity 1s;
-}
+/* neon border */
+#scene-border{position:fixed;inset:0;border:4px solid transparent;background:linear-gradient(#000,#000) padding-box,linear-gradient(90deg,#ff00cc,#00f0ff,#7a00ff,#39ff14,#ff00cc) border-box;pointer-events:none;z-index:11;opacity:0;transition:opacity 1s;animation:borderShift 3s linear infinite;}
 #scene-border.visible{opacity:1;}
-
-/* chromatic aberration overlay */
-#scene-glitch{
-  position:fixed;inset:0;
-  background:linear-gradient(90deg,rgba(255,0,204,.04) 0%,transparent 30%,transparent 70%,rgba(0,240,255,.04) 100%);
-  pointer-events:none;z-index:12;
-}
+@keyframes borderShift{0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(360deg);}}
 
 /* pixel rain */
-#rain{position:fixed;inset:0;pointer-events:none;z-index:13;overflow:hidden;opacity:.35;}
-.rain-col{position:absolute;top:-100%;font-family:'VT323',monospace;font-size:14px;line-height:1.1;white-space:pre;animation:fall linear infinite;}
+#rain{position:fixed;inset:0;pointer-events:none;z-index:13;overflow:hidden;opacity:.3;}
+.rain-col{position:absolute;top:-110%;font-family:'VT323',monospace;font-size:14px;line-height:1.1;white-space:pre;animation:fall linear infinite;}
 @keyframes fall{to{top:110%;}}
 
-/* ── speech bubble !! overlays ── */
-.bubble{
-  position:absolute;
-  background:#fff;
-  color:#000;
-  font-family:'Press Start 2P',monospace;
-  font-size:clamp(11px,1.6vw,18px);
-  padding:.35em .55em;
-  border:3px solid #000;
-  border-radius:4px 4px 4px 0;
-  box-shadow:3px 3px 0 #000;
-  animation:bubblePop .5s cubic-bezier(.34,1.56,.64,1) both;
-  z-index:20;
-}
-.bubble::after{
-  content:'';position:absolute;bottom:-12px;left:10px;
-  border:6px solid transparent;border-top-color:#000;
-}
+/* speech bubbles */
+.bubble{position:absolute;background:#fff;color:#000;font-family:'Press Start 2P',monospace;font-size:clamp(11px,1.6vw,18px);padding:.35em .55em;border:3px solid #000;border-radius:4px 4px 4px 0;box-shadow:3px 3px 0 #000;animation:bubblePop .5s cubic-bezier(.34,1.56,.64,1) both;z-index:20;display:none;}
+.bubble::after{content:'';position:absolute;bottom:-12px;left:10px;border:6px solid transparent;border-top-color:#000;}
 @keyframes bubblePop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
 
-/* character name labels */
-.char-label{
-  position:absolute;
-  font-family:'VT323',monospace;
-  font-size:clamp(11px,1.5vw,16px);
-  letter-spacing:.08em;
-  opacity:.8;
-  z-index:21;
-  text-shadow:0 0 6px currentColor;
-}
+/* character labels */
+.char-label{position:absolute;font-family:'VT323',monospace;font-size:clamp(11px,1.5vw,16px);letter-spacing:.08em;opacity:.8;z-index:21;text-shadow:0 0 6px currentColor;}
 
-/* ── NRK dialog box ── */
-#caption{
-  position:fixed;
-  bottom:2.5rem;left:50%;
-  transform:translateX(-50%);
-  width:min(680px,90vw);
-  background:#000;
-  border:2px solid #ff00cc;
-  box-shadow:0 0 18px #ff00cc88,inset 0 0 8px #ff00cc22;
-  padding:1rem 1.4rem 1.2rem;
-  z-index:50;
-  display:none;
-}
-#cap-spk{
-  font-family:'Press Start 2P',monospace;
-  font-size:clamp(8px,1.1vw,12px);
-  color:#ff00cc;
-  margin-bottom:.6rem;
-  letter-spacing:.08em;
-}
-#cap-txt{
-  font-family:'VT323',monospace;
-  font-size:clamp(18px,2.2vw,26px);
-  color:#fff;
-  line-height:1.4;
-}
-#cap-next{
-  font-family:'VT323',monospace;
-  font-size:clamp(12px,1.4vw,16px);
-  color:#00f0ff;
-  text-align:right;
-  margin-top:.5rem;
-  opacity:.7;
-  animation:blink 1s step-end infinite;
-}
+/* NRK dialog box */
+#caption{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);width:min(700px,92vw);background:#000;border:2px solid #ff00cc;box-shadow:0 0 18px #ff00cc88,inset 0 0 8px #ff00cc22;padding:1rem 1.4rem 1.2rem;z-index:50;display:none;}
+#cap-spk{font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.1vw,12px);color:#ff00cc;margin-bottom:.6rem;letter-spacing:.08em;}
+#cap-txt{font-family:'VT323',monospace;font-size:clamp(18px,2.5vw,28px);color:#fff;line-height:1.4;}
+#cap-next{font-family:'VT323',monospace;font-size:clamp(12px,1.4vw,16px);color:#00f0ff;text-align:right;margin-top:.5rem;opacity:.7;animation:blink 1s step-end infinite;}
 @keyframes blink{0%,100%{opacity:.7}50%{opacity:0}}
 
-/* ── vision text inside ball ── */
-#ball-text{
-  position:absolute;
-  font-family:'VT323',monospace;
-  font-size:clamp(12px,1.8vw,20px);
-  color:#00f0ff;
-  text-align:center;
-  line-height:1.3;
-  text-shadow:0 0 10px #00f0ff;
-  z-index:22;
-  opacity:0;
-  transition:opacity .5s;
-  pointer-events:none;
-  /* positioned over the crystal ball in the image — center-ish, slightly left */
-  left:28%;top:38%;
-  width:22%;
-}
+/* vision text */
+#ball-text{position:absolute;font-family:'VT323',monospace;font-size:clamp(11px,1.6vw,18px);color:#00f0ff;text-align:center;line-height:1.3;text-shadow:0 0 10px #00f0ff;z-index:22;opacity:0;transition:opacity .5s;pointer-events:none;left:28%;top:35%;width:22%;}
 
-/* ── Act II title card ── */
-#act2{
-  position:fixed;inset:0;
-  background:#000;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:80;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .8s;
-}
-#act2.visible{opacity:1;pointer-events:all;}
-#act2 .act-label{font-family:'VT323',monospace;font-size:clamp(14px,2vw,22px);color:#ff00cc;letter-spacing:.2em;margin-bottom:.5rem;}
-#act2 .act-title{font-family:'Metal Mania',cursive;font-size:clamp(28px,6vw,72px);color:#fff;text-shadow:0 0 20px #ff00cc,0 0 40px #7a00ff;text-align:center;}
-#act2 .act-sub{font-family:'VT323',monospace;font-size:clamp(14px,2vw,24px);color:#00f0ff;margin-top:.8rem;letter-spacing:.1em;}
+/* Act II title */
+#act2{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80;opacity:0;pointer-events:none;transition:opacity .8s;}
+#act2.show{opacity:1;pointer-events:all;}
+.act-label{font-family:'VT323',monospace;font-size:clamp(14px,2vw,22px);color:#ff00cc;letter-spacing:.2em;margin-bottom:.5rem;}
+.act-title{font-family:'Metal Mania',cursive;font-size:clamp(28px,6vw,72px);color:#fff;text-shadow:0 0 20px #ff00cc,0 0 40px #7a00ff;text-align:center;}
+.act-sub{font-family:'VT323',monospace;font-size:clamp(14px,2vw,24px);color:#00f0ff;margin-top:.8rem;letter-spacing:.1em;}
 
-/* ── title slam ── */
-#title-slam{
-  position:fixed;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.82);
-  z-index:70;
-  opacity:0;pointer-events:none;
-  transition:opacity .6s;
-}
-#title-slam.visible{opacity:1;pointer-events:all;}
-.slam-nrk{font-family:'Metal Mania',cursive;font-size:clamp(48px,12vw,140px);color:#ff00cc;text-shadow:0 0 30px #ff00cc,0 0 60px #7a00ff;animation:slam .5s cubic-bezier(.34,1.56,.64,1) both;}
-.slam-sub{font-family:'VT323',monospace;font-size:clamp(16px,2.5vw,32px);color:#00f0ff;letter-spacing:.15em;margin-top:.3rem;}
-.slam-cat{font-family:'Press Start 2P',monospace;font-size:clamp(8px,1vw,13px);color:#39ff14;margin-top:1rem;letter-spacing:.1em;}
+/* title slam */
+#title-slam{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.85);z-index:70;opacity:0;pointer-events:none;transition:opacity .6s;}
+#title-slam.show{opacity:1;pointer-events:all;}
+.slam-nrk{font-family:'Metal Mania',cursive;font-size:clamp(40px,10vw,120px);color:#ff00cc;text-shadow:0 0 30px #ff00cc,0 0 60px #7a00ff;animation:slam .5s cubic-bezier(.34,1.56,.64,1) both;}
+.slam-sub{font-family:'VT323',monospace;font-size:clamp(16px,2.5vw,30px);color:#00f0ff;letter-spacing:.12em;margin-top:.3rem;}
+.slam-cat{font-family:'Press Start 2P',monospace;font-size:clamp(7px,.9vw,12px);color:#39ff14;margin-top:1rem;letter-spacing:.1em;}
 .slam-cta{font-family:'VT323',monospace;font-size:clamp(14px,1.8vw,22px);color:#fff;margin-top:2rem;opacity:.7;animation:blink 1s step-end infinite;}
 @keyframes slam{from{transform:scale(2.5);opacity:0;}to{transform:scale(1);opacity:1;}}
 </style>
 </head>
 <body>
 
-<!-- Phase 0: boot static -->
-<div id="boot"><canvas id="static-cv" width="320" height="240"></canvas></div>
-
-<!-- Phase 1: scene -->
 <div id="scene">
   <img id="scene-img" src="sierra-crystal.png" alt="THE VISION"/>
-  <div id="scene-glitch"></div>
-
-  <!-- speech bubbles -->
-  <div class="bubble" id="bub1" style="left:4%;top:4%;display:none;">!!</div>
-  <div class="bubble" id="bub2" style="left:38%;top:3%;display:none;">!!</div>
-  <div class="bubble" id="bub3" style="left:71%;top:4%;display:none;">!!</div>
-
-  <!-- character name labels -->
-  <div class="char-label" style="left:2%;bottom:10%;color:#ff00cc;" id="lbl1">YUNG SOJU</div>
-  <div class="char-label" style="left:35%;bottom:10%;color:#00f0ff;" id="lbl2">NULLSOFT</div>
-  <div class="char-label" style="left:68%;bottom:10%;color:#39ff14;" id="lbl3">KAZOO_HAWK</div>
-
-  <!-- vision text over crystal ball -->
+  <div class="bubble" id="bub1" style="left:4%;top:4%;">!!</div>
+  <div class="bubble" id="bub2" style="left:38%;top:3%;">!!</div>
+  <div class="bubble" id="bub3" style="left:71%;top:4%;">!!</div>
+  <div class="char-label" style="left:2%;bottom:10%;color:#ff00cc;">YUNG SOJU</div>
+  <div class="char-label" style="left:35%;bottom:10%;color:#00f0ff;">NULLSOFT</div>
+  <div class="char-label" style="left:68%;bottom:10%;color:#39ff14;">KAZOO_HAWK</div>
   <div id="ball-text"></div>
 </div>
 <div id="scene-border"></div>
-
-<!-- rain layer -->
 <div id="rain"></div>
 
-<!-- Act II title card -->
 <div id="act2">
   <div class="act-label">// ACT II</div>
   <div class="act-title">THE VISION</div>
-  <div class="act-sub">NRK SYNTHWAVE PROPHECY &nbsp;·&nbsp; NRK-ADV-VISION</div>
+  <div class="act-sub">NRK SYNTHWAVE PROPHECY &nbsp;&middot;&nbsp; NRK-ADV-VISION</div>
 </div>
 
-<!-- NRK dialog captions -->
 <div id="caption">
   <div id="cap-spk"></div>
   <div id="cap-txt"></div>
   <div id="cap-next">&#9654; click / any key</div>
 </div>
 
-<!-- Title slam -->
 <div id="title-slam">
   <div class="slam-nrk">NRK-ADV-VISION</div>
-  <div class="slam-sub">THE VISION &nbsp;·&nbsp; NRK SYNTHWAVE PROPHECY</div>
-  <div class="slam-cat">NRK-2024 &nbsp;·&nbsp; SOJU, KAZOOS AND DIDGERIDOOS</div>
-  <div class="slam-cta">press any key to enter the EPK &nbsp;&#9654;</div>
+  <div class="slam-sub">THE VISION &nbsp;&middot;&nbsp; NRK SYNTHWAVE PROPHECY</div>
+  <div class="slam-cat">NRK-2024 &nbsp;&middot;&nbsp; SOJU, KAZOOS AND DIDGERIDOOS</div>
+  <div class="slam-cta">press any key to enter the EPK &#9654;</div>
 </div>
 
 <script>
+// All dialog text uses double quotes to avoid apostrophe escaping issues
 const DIALOGS=[
-  {spk:'YUNG SOJU',    col:'#ff00cc', txt:'"...is that... us? In the ball?"'},
-  {spk:'NULLSOFT',     col:'#00f0ff', txt:'"The crystal ball is showing a synthwave city. NRK-2024 is on the marquee. We're headlining."'},
-  {spk:'KAZOO_HAWK',   col:'#39ff14', txt:'"The crystal ball never lies. The goose was always a metaphor. NRK goes to number one."'},
-  {spk:'YUNG SOJU',    col:'#ff00cc', txt:'"That kazoo in the vision — it's the size of a didgeridoo. We're going to need a bigger soju bottle."'},
-  {spk:'NULLSOFT',     col:'#00f0ff', txt:'"...the gem in my hat is glowing. KAZOO_HAWK, did you KNOW about the gem?"'},
-  {spk:'KAZOO_HAWK',   col:'#39ff14', txt:'"Yes."'},
+  {spk:"YUNG SOJU",    col:"#ff00cc", txt:'"...is that us? In the ball?"'},
+  {spk:"NULLSOFT",     col:"#00f0ff", txt:'"The crystal ball is showing a synthwave city. NRK-2024 is on the marquee. We are headlining."'},
+  {spk:"KAZOO_HAWK",   col:"#39ff14", txt:'"The crystal ball never lies. The goose was always a metaphor. NRK goes to number one."'},
+  {spk:"YUNG SOJU",    col:"#ff00cc", txt:'"That kazoo in the vision - it is the size of a didgeridoo. We need a bigger soju bottle."'},
+  {spk:"NULLSOFT",     col:"#00f0ff", txt:'"The gem in my hat is glowing. KAZOO_HAWK, did you KNOW about the gem?"'},
+  {spk:"KAZOO_HAWK",   col:"#39ff14", txt:'"Yes."'},
 ];
 
 const VISIONS=[
-  ['PRIMAVERA 2025','SOLD OUT','NRK HEADLINE'],
-  ['KAZOO OVERDRIVE','IS THE FUTURE','OF MUSIC'],
-  ['SOJU PROTOCOL','ACTIVATED','NRK-666'],
-  ['THE GOOSE','WAS ALWAYS','THE ANSWER'],
+  ["PRIMAVERA 2025","SOLD OUT","NRK HEADLINE"],
+  ["KAZOO OVERDRIVE","IS THE FUTURE","OF MUSIC"],
+  ["SOJU PROTOCOL","ACTIVATED","NRK-666"],
+  ["THE GOOSE","WAS ALWAYS","THE ANSWER"],
 ];
 
 let dlgIdx=0, visionIdx=0, phase=0, ended=false;
 
-// ── Audio ──
-const AC=new (window.AudioContext||window.webkitAudioContext)();
-function tone(freq,dur,type='sine',vol=.12){
-  const o=AC.createOscillator(),g=AC.createGain();
-  o.type=type;o.frequency.value=freq;
-  g.gain.setValueAtTime(vol,AC.currentTime);
-  g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+dur);
-  o.connect(g);g.connect(AC.destination);
-  o.start();o.stop(AC.currentTime+dur);
+// Audio - lazy init on first interaction
+let AC=null;
+function getAC(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();return AC;}
+function tone(freq,dur,type,vol){
+  try{
+    const ac=getAC(),o=ac.createOscillator(),g=ac.createGain();
+    o.type=type||"sine";o.frequency.value=freq;
+    g.gain.setValueAtTime(vol||.1,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);
+    o.connect(g);g.connect(ac.destination);
+    o.start();o.stop(ac.currentTime+dur);
+  }catch(e){}
 }
-function fanfare(){
-  [261,329,392,523].forEach((f,i)=>setTimeout(()=>tone(f,.35,'square',.08),i*130));
-}
-function chime(){tone(660,.2,'triangle',.1);setTimeout(()=>tone(880,.3,'triangle',.08),120);}
+function fanfare(){[261,329,392,523].forEach(function(f,i){setTimeout(function(){tone(f,.35,"square",.08);},i*130);});}
+function chime(){tone(660,.2,"triangle",.1);setTimeout(function(){tone(880,.3,"triangle",.08);},120);}
 
-// ── Static boot ──
-(function(){
-  const cv=document.getElementById('static-cv');
-  const ctx=cv.getContext('2d');
-  let frame=0;
-  function drawStatic(){
-    const img=ctx.createImageData(320,240);
-    for(let i=0;i<img.data.length;i+=4){
-      const v=Math.random()*255|0;
-      img.data[i]=v;img.data[i+1]=v;img.data[i+2]=v;img.data[i+3]=255;
-    }
-    ctx.putImageData(img,0,0);
-    frame++;
-    if(frame<18)requestAnimationFrame(drawStatic);
-    else startScene();
-  }
-  drawStatic();
-})();
-
-// ── Pixel rain ──
+// Pixel rain
 function buildRain(){
-  const rain=document.getElementById('rain');
-  const chars='01NRK소주막걸리666!!';
+  const rain=document.getElementById("rain");
+  const chars="01NRK소주막걸리666!!";
   const cols=Math.ceil(window.innerWidth/16);
   for(let i=0;i<cols;i++){
-    const d=document.createElement('div');
-    d.className='rain-col';
-    let txt='';
-    for(let j=0;j<60;j++)txt+=chars[0|Math.random()*chars.length]+'
-';
+    const d=document.createElement("div");
+    d.className="rain-col";
+    let txt="";
+    for(let j=0;j<60;j++)txt+=chars[0|Math.random()*chars.length]+"\n";
     d.textContent=txt;
-    d.style.left=(i*16)+'px';
-    d.style.color=i%3===0?'#ff00cc':i%3===1?'#00f0ff':'#39ff14';
-    d.style.animationDuration=(6+Math.random()*8)+'s';
-    d.style.animationDelay=(-Math.random()*8)+'s';
+    d.style.left=(i*16)+"px";
+    d.style.color=i%3===0?"#ff00cc":i%3===1?"#00f0ff":"#39ff14";
+    d.style.animationDuration=(6+Math.random()*8)+"s";
+    d.style.animationDelay=(-Math.random()*8)+"s";
     rain.appendChild(d);
   }
 }
 
-// ── Vision text cycling ──
+// Vision text
 function cycleVision(){
-  const el=document.getElementById('ball-text');
-  const v=VISIONS[visionIdx%VISIONS.length]; visionIdx++;
-  el.style.opacity=0;
-  setTimeout(()=>{
-    el.innerHTML=v.map(l=>`<div>${l}</div>`).join('');
-    el.style.opacity=1;
+  const el=document.getElementById("ball-text");
+  const v=VISIONS[visionIdx%VISIONS.length];visionIdx++;
+  el.style.opacity="0";
+  setTimeout(function(){
+    el.innerHTML=v.map(function(l){return "<div>"+l+"</div>";}).join("");
+    el.style.opacity="1";
   },300);
 }
 
-// ── Show dialog ──
+// Dialog
 function showCaption(){
   if(dlgIdx>=DIALOGS.length){showTitleSlam();return;}
   const d=DIALOGS[dlgIdx++];
-  const cap=document.getElementById('caption');
-  document.getElementById('cap-spk').innerHTML=`<span style="color:${d.col}">${d.spk}</span>`;
-  document.getElementById('cap-txt').textContent=d.txt;
-  cap.style.display='block';
+  document.getElementById("cap-spk").innerHTML='<span style="color:'+d.col+'">'+d.spk+"</span>";
+  document.getElementById("cap-txt").textContent=d.txt;
+  document.getElementById("caption").style.display="block";
   chime();
   if(dlgIdx%2===0)cycleVision();
 }
 
 function showTitleSlam(){
-  document.getElementById('caption').style.display='none';
-  document.getElementById('title-slam').classList.add('visible');
+  document.getElementById("caption").style.display="none";
+  document.getElementById("title-slam").classList.add("show");
   ended=true;
   fanfare();
 }
 
-// ── Advance ──
+// Advance
 function advance(){
-  if(AC.state==='suspended')AC.resume();
-  if(phase===0)return; // wait for scene
-  if(ended){window.location.href='epk-arcade.html';return;}
+  if(ended){window.location.href="epk-arcade.html";return;}
+  if(phase===0)return;
   showCaption();
 }
 
-// ── Start scene ──
+// Start: show Act II card, then fade in scene
 function startScene(){
-  // Show act II title card briefly
-  const act2=document.getElementById('act2');
-  act2.classList.add('visible');
-  fanfare();
-  setTimeout(()=>{
-    act2.classList.remove('visible');
-    // Fade in scene
-    setTimeout(()=>{
-      document.getElementById('boot').style.display='none';
-      document.getElementById('scene').classList.add('visible');
-      document.getElementById('scene-border').classList.add('visible');
+  const act2=document.getElementById("act2");
+  act2.classList.add("show");
+  setTimeout(function(){
+    act2.classList.remove("show");
+    setTimeout(function(){
+      document.getElementById("scene").classList.add("visible");
+      document.getElementById("scene-border").classList.add("visible");
       buildRain();
       phase=1;
-      // Pop speech bubbles staggered
-      setTimeout(()=>{
-        ['bub1','bub2','bub3'].forEach((id,i)=>{
-          setTimeout(()=>{
-            document.getElementById(id).style.display='block';
-            tone(440+i*80,.15,'square',.07);
-          },i*300);
-        });
-        // Start first dialog after bubbles settle
-        setTimeout(()=>{
-          cycleVision();
-          showCaption();
-        },1200);
-      },600);
-    },300);
-  },2200);
+      // Pop bubbles
+      ["bub1","bub2","bub3"].forEach(function(id,i){
+        setTimeout(function(){
+          const b=document.getElementById(id);
+          b.style.display="block";
+          tone(440+i*80,.15,"square",.07);
+        },600+i*300);
+      });
+      // First dialog after bubbles
+      setTimeout(function(){
+        cycleVision();
+        showCaption();
+      },1800);
+    },400);
+  },2000);
 }
 
-document.addEventListener('keydown',e=>{if(e.key!=='Tab')advance();});
-document.addEventListener('click',advance);
-document.addEventListener('touchend',e=>{e.preventDefault();advance();});
+document.addEventListener("keydown",function(e){if(e.key!=="Tab")advance();});
+document.addEventListener("click",advance);
+document.addEventListener("touchend",function(e){e.preventDefault();advance();});
+
+// Start immediately on load
+window.addEventListener("load",function(){startScene();});
 </script>
 </body>
 </html>
