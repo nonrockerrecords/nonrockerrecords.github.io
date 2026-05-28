@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>METALDATA: THE ADVENTURE — NRK-ADV-002</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:none;font-family:Arial,sans-serif;}
+  body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.1) 0px,rgba(0,0,0,0.1) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9000;}
+
+  #screen{
+    position:relative;
+    width:min(100vw,calc(100vh*1.333));
+    aspect-ratio:4/3;
+    background:#000;overflow:hidden;
+  }
+
+  /* ── PHASE: LOGO ── */
+  #ph-logo{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:#000;z-index:20;
+  }
+  #mountain-canvas{display:block;width:100%;height:100%;position:absolute;inset:0;}
+  .logo-overlay{position:relative;z-index:2;text-align:center;}
+  .logo-label{
+    font-family:'VT323',monospace;font-size:clamp(14px,2.5vw,28px);
+    color:#fff;letter-spacing:.3em;
+    text-shadow:0 0 20px #fff;
+    opacity:0;animation:glow-in .8s .6s forwards;
+  }
+  .logo-tagline{
+    font-family:Arial,sans-serif;font-size:clamp(8px,1.2vw,13px);
+    color:#aaa;letter-spacing:.15em;margin-top:.4em;
+    opacity:0;animation:glow-in .5s 1.4s forwards;
+  }
+  @keyframes glow-in{to{opacity:1}}
+
+  /* ── PHASE: CRAWL ── */
+  #ph-crawl{
+    position:absolute;inset:0;display:none;align-items:flex-end;justify-content:center;
+    background:#000;z-index:20;overflow:hidden;
+  }
+  .crawl-text{
+    font-family:Arial,sans-serif;font-size:clamp(11px,1.8vw,18px);
+    color:#aaa;text-align:center;max-width:70%;
+    padding-bottom:0;
+    animation:scrollUp 5s linear forwards;
+    line-height:1.8;letter-spacing:.04em;
+  }
+  .crawl-text em{color:#fff;font-style:normal;}
+  @keyframes scrollUp{0%{transform:translateY(0%)}100%{transform:translateY(-300%)}}
+
+  /* ── PHASE: GAME ── */
+  #ph-game{position:absolute;inset:0;display:none;flex-direction:column;background:#000;z-index:20;}
+
+  /* Top bar */
+  #topbar{
+    background:#c8c8c8;
+    border-bottom:2px solid #999;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:.2em .8em;flex-shrink:0;
+    font-family:Arial,sans-serif;font-size:clamp(9px,1.4vw,13px);color:#000;
+  }
+  .tb-room{font-weight:bold;letter-spacing:.04em;}
+  .tb-score{color:#000;}
+
+  /* Scene */
+  #scene{
+    flex:1;position:relative;overflow:hidden;cursor:crosshair;
+  }
+  #scene-img{
+    width:100%;height:100%;
+    object-fit:cover;object-position:center top;
+  }
+
+  /* Hotspot cursor label */
+  #hotlabel{
+    position:absolute;
+    background:rgba(0,0,0,.82);
+    color:#fff;
+    font-family:Arial,sans-serif;font-size:clamp(9px,1.3vw,13px);
+    padding:.2em .6em;
+    pointer-events:none;
+    display:none;
+    white-space:nowrap;
+    border:1px solid #666;
+    z-index:50;
+  }
+
+  /* Verb coin */
+  #verbcoin{
+    position:absolute;
+    display:none;
+    width:clamp(100px,14vw,160px);
+    height:clamp(100px,14vw,160px);
+    z-index:60;
+    pointer-events:auto;
+  }
+  .vc-btn{
+    position:absolute;
+    font-family:Arial,sans-serif;font-size:clamp(7px,1vw,11px);
+    background:rgba(0,0,128,.88);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.3);
+    padding:.15em .4em;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .1s;
+  }
+  .vc-btn:hover{background:rgba(255,0,204,.8);}
+
+  /* Dialog box — classic Sierra VGA style */
+  #dialog{
+    position:absolute;bottom:0;left:0;right:0;
+    background:#fff;
+    border-top:4px solid #000;
+    padding:.6em .9em .5em;
+    display:none;z-index:40;
+  }
+  .dlg-inner{display:flex;gap:.8em;align-items:flex-start;}
+  .dlg-portrait{
+    width:clamp(36px,6vw,56px);height:clamp(36px,6vw,56px);
+    background:#000;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(18px,3vw,32px);border:2px solid #666;
+  }
+  .dlg-body{flex:1;}
+  .dlg-name{
+    font-family:Arial,sans-serif;font-size:clamp(9px,1.3vw,13px);
+    font-weight:bold;color:#000080;margin-bottom:.2em;letter-spacing:.04em;
+  }
+  .dlg-text{
+    font-family:Arial,sans-serif;font-size:clamp(9px,1.3vw,13px);
+    color:#000;line-height:1.5;
+  }
+  .dlg-advance{
+    font-family:Arial,sans-serif;font-size:clamp(7px,1vw,11px);
+    color:#888;text-align:right;margin-top:.3em;
+    animation:blink .8s step-end infinite;
+  }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  /* Inventory bar */
+  #invbar{
+    background:#c8c8c8;
+    border-top:2px solid #999;
+    padding:.2em .8em;
+    display:flex;align-items:center;gap:.6em;flex-shrink:0;
+  }
+  .inv-label{font-family:Arial,sans-serif;font-size:clamp(8px,1.2vw,12px);color:#555;letter-spacing:.06em;}
+  .inv-item{
+    font-family:Arial,sans-serif;font-size:clamp(8px,1.1vw,11px);
+    background:#fff;border:1px solid #999;
+    padding:.1em .5em;color:#000;letter-spacing:.04em;
+  }
+  .inv-item.new{border-color:#ff00cc;color:#cc0099;}
+
+  /* CONTINUE overlay */
+  #continue{
+    position:absolute;inset:0;
+    display:none;align-items:center;justify-content:center;
+    z-index:80;
+    background:rgba(0,0,0,.7);
+    font-family:'VT323',monospace;
+    font-size:clamp(16px,3vw,32px);
+    color:#fff;letter-spacing:.15em;
+    cursor:pointer;
+    animation:blink 1s step-end infinite;
+  }
+</style>
+</head>
+<body>
+<div id="screen">
+
+  <!-- PHASE 1: MOUNTAIN LOGO -->
+  <div id="ph-logo">
+    <canvas id="mountain-canvas"></canvas>
+    <div class="logo-overlay">
+      <div class="logo-label">NONROCKER ON-LINE</div>
+      <div class="logo-tagline">Est. 2024 &nbsp;·&nbsp; NRK</div>
+    </div>
+  </div>
+
+  <!-- PHASE 2: TEXT CRAWL -->
+  <div id="ph-crawl">
+    <div class="crawl-text">
+      In a world where <em>soju flows freely</em><br/>
+      and kazoos are the primary currency...<br/><br/>
+      One band dared to make an album<br/>
+      nobody asked for.<br/><br/>
+      <em>METALDATA.</em><br/><br/>
+      Now, before they can headline Primavera,<br/>
+      they must retrieve the<br/>
+      <em>Didgeridoo of Doom.</em><br/><br/>
+      This is their story.
+    </div>
+  </div>
+
+  <!-- PHASE 3: GAME SCENE -->
+  <div id="ph-game">
+    <div id="topbar">
+      <span class="tb-room">LONDON PARK &mdash; DAY 1 &mdash; MORNING</span>
+      <span class="tb-score">Score: <span id="score">0</span> of 999</span>
+    </div>
+    <div id="scene">
+      <img id="scene-img" src="sierra-scene.png" alt="London Park Scene"/>
+      <div id="hotlabel"></div>
+      <div id="verbcoin"></div>
+      <div id="dialog">
+        <div class="dlg-inner">
+          <div class="dlg-portrait" id="dlg-portrait">&#128054;</div>
+          <div class="dlg-body">
+            <div class="dlg-name" id="dlg-name"></div>
+            <div class="dlg-text" id="dlg-text"></div>
+          </div>
+        </div>
+        <div class="dlg-advance">click or press any key to continue</div>
+      </div>
+    </div>
+    <div id="invbar">
+      <span class="inv-label">INVENTORY:</span>
+      <div class="inv-item" id="inv-soju">1x SOJU (empty)</div>
+    </div>
+  </div>
+
+  <div id="continue" onclick="advance()">[ CLICK TO CONTINUE ]</div>
+
+</div>
+
+<script>
+// AUDIO
+let ctx=null;
+function initA(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();}
+function tone(f,d,type='sine',v=0.12,t=0){initA();const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+d);o.connect(g);g.connect(ctx.destination);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+d+.01);}
+function chime(){[523,659,784,1047].forEach((f,i)=>tone(f,.22,'sine',.14,i*.15));}
+
+// MOUNTAIN LOGO CANVAS
+const mc=document.getElementById('mountain-canvas');
+function drawMountain(){
+  const W=mc.width=mc.offsetWidth,H=mc.height=mc.offsetHeight;
+  const cx=mc.getContext('2d');
+  // Night sky
+  cx.fillStyle='#020820';cx.fillRect(0,0,W,H);
+  // Stars
+  for(let i=0;i<120;i++){cx.fillStyle='rgba(255,255,255,'+(Math.random()*.8+.2)+')';cx.beginPath();cx.arc(Math.random()*W,Math.random()*H*.6,Math.random()*1.2+.3,0,6.28);cx.fill();}
+  // Silhouette mountains
+  cx.fillStyle='#000';cx.beginPath();cx.moveTo(0,H);
+  const peaks=[[.1,H*.45],[.2,H*.65],[.35,H*.3],[.5,H*.55],[.65,H*.35],[.8,H*.5],[.9,H*.62],[1,H*.7],[1,H]];
+  peaks.forEach(([x,y])=>cx.lineTo(x*W,y));
+  cx.closePath();cx.fill();
+  // Glow above peaks
+  const g=cx.createLinearGradient(0,H*.25,0,H*.65);
+  g.addColorStop(0,'rgba(255,0,204,.22)');g.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=g;cx.fillRect(0,H*.25,W,H*.4);
+}
+addEventListener('resize',drawMountain);setTimeout(drawMountain,50);
+
+// PHASE SYSTEM
+let phase=0;
+const DIALOGS=[
+  {portrait:'&#128054;',name:'KAZOO_HAWK',text:'"Before you can headline Primavera, you must retrieve the Didgeridoo of Doom from the bottom of the Thames."'},
+  {portrait:'&#129346;',name:'YUNG SOJU',text:'"...I just came here for the goose. There was supposed to be a goose."'},
+  {portrait:'&#128054;',name:'KAZOO_HAWK',text:'"The goose IS the clue. Everything is the goose. Now go. NRK-ADV-002 has begun."'},
+  {portrait:'&#128241;',name:'STATUE.EXE',text:'"[process: quest_for_kazoo.exe initialized] [score: 0/999] [inventory: 1 empty soju bottle]"'},
+];
+let dlgIdx=0,inventory=['1x SOJU (empty)'],score=0;
+const HOTSPOTS=[
+  {label:'Feathered Hat',look:'A magnificent hat. Gold brim, three peacock feathers. You sense destiny.',talk:'The hat says nothing. Hats rarely do.',take:'You take the feathered hat. +50 points.',pts:50,taken:false},
+  {label:'KAZOO_HAWK',look:'A shiba inu in full samurai armor. The gold kazoo at their belt is engraved "NRK-666".',talk:'KAZOO_HAWK: "The goose. Find it. The didgeridoo depends on it."',take:'You cannot pick up KAZOO_HAWK. You have considered it.'},
+  {label:'London Scene',look:'A lush park. Big Ben visible through the trees. Something smells like soju.',talk:'No one in particular responds.',take:'You cannot take the entire London park. Though you\'ve tried.'},
+];
+let activeHotspot=null,vcOpen=false;
+
+function showPhase(id){['ph-logo','ph-crawl','ph-game'].forEach(p=>document.getElementById(p).style.display='none');document.getElementById(id).style.display='flex';}
+
+function advance(){
+  initA();
+  if(phase===0){phase=1;showPhase('ph-crawl');chime();setTimeout(()=>{if(phase===1)advance();},5200);}
+  else if(phase===1){phase=2;showPhase('ph-game');setTimeout(()=>showNextDialog(),500);}
+  else if(phase===2){showNextDialog();}
+  else if(phase===3){document.getElementById('continue').style.display='flex';}
+}
+function showNextDialog(){
+  if(dlgIdx>=DIALOGS.length){endScene();return;}
+  const d=DIALOGS[dlgIdx++];
+  document.getElementById('dlg-portrait').innerHTML=d.portrait;
+  document.getElementById('dlg-name').textContent=d.name;
+  document.getElementById('dlg-text').textContent=d.text;
+  document.getElementById('dialog').style.display='block';
+  tone(440,.06,'triangle',.1);
+}
+function endScene(){
+  document.getElementById('dialog').style.display='none';
+  setupHotspots();
+  document.getElementById('continue').style.display='flex';
+}
+
+function setupHotspots(){
+  const scene=document.getElementById('scene');
+  const zones=[
+    {x:35,y:55,w:20,h:22},   // hat area (center, being held)
+    {x:55,y:25,w:30,h:65},   // KAZOO_HAWK (right)
+    {x:0,y:0,w:40,h:100},    // background left
+  ];
+  zones.forEach((z,i)=>{
+    const d=document.createElement('div');
+    d.style.cssText=`position:absolute;left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;cursor:pointer;`;
+    d.addEventListener('mousemove',e=>{showHotLabel(HOTSPOTS[i].label,e);});
+    d.addEventListener('mouseleave',()=>{document.getElementById('hotlabel').style.display='none';});
+    d.addEventListener('click',e=>{e.stopPropagation();showVerbCoin(i,e);});
+    scene.appendChild(d);
+  });
+}
+
+function showHotLabel(label,e){
+  const hl=document.getElementById('hotlabel');
+  const r=document.getElementById('screen').getBoundingClientRect();
+  hl.textContent=label;hl.style.display='block';
+  hl.style.left=(e.clientX-r.left+10)+'px';hl.style.top=(e.clientY-r.top-28)+'px';
+}
+
+function showVerbCoin(idx,e){
+  closeVerbCoin();
+  const vc=document.getElementById('verbcoin');
+  const r=document.getElementById('screen').getBoundingClientRect();
+  const cx=e.clientX-r.left,cy=e.clientY-r.top;
+  const sz=parseFloat(getComputedStyle(vc).width)||130;
+  vc.style.left=Math.min(cx-sz/2,r.width-sz-4)+'px';
+  vc.style.top=Math.min(cy-sz/2,r.height-sz-4)+'px';
+  vc.style.display='block';vcOpen=true;
+  const hs=HOTSPOTS[idx];
+  const btns=[
+    {label:'Look At',action:()=>showMsg(hs.look)},
+    {label:'Talk To', action:()=>showMsg(hs.talk)},
+    {label:'Pick Up', action:()=>{if(hs.pts&&!hs.taken){hs.taken=true;addScore(hs.pts);addInv('Feathered Hat');}showMsg(hs.take);}},
+  ];
+  const rad=sz*.38;
+  btns.forEach((b,i)=>{
+    const a=(6.28/btns.length)*i-Math.PI/2;
+    const bx=sz/2+Math.cos(a)*rad-32,by=sz/2+Math.sin(a)*rad-12;
+    const el=document.createElement('div');el.className='vc-btn';el.textContent=b.label;
+    el.style.left=bx+'px';el.style.top=by+'px';
+    el.onclick=(ev)=>{ev.stopPropagation();b.action();closeVerbCoin();};
+    vc.appendChild(el);
+  });
+}
+function closeVerbCoin(){const vc=document.getElementById('verbcoin');vc.innerHTML='';vc.style.display='none';vcOpen=false;}
+function showMsg(txt){document.getElementById('dlg-name').textContent='';document.getElementById('dlg-portrait').textContent='&#128065;';document.getElementById('dlg-text').textContent=txt;document.getElementById('dialog').style.display='block';tone(330,.05,'triangle',.08);}
+function addScore(n){score+=n;document.getElementById('score').textContent=score;}
+function addInv(item){inventory.push(item);const bar=document.getElementById('invbar');const d=document.createElement('div');d.className='inv-item new';d.textContent='1x '+item;bar.appendChild(d);tone(659,.12,'sine',.15);}
+
+document.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(vcOpen)closeVerbCoin();else advance();}if(e.key==='Escape')closeVerbCoin();});
+document.addEventListener('click',()=>{if(!vcOpen&&phase<=2)advance();});
+document.getElementById('continue').addEventListener('click',e=>{e.stopPropagation();document.getElementById('continue').style.display='none';setTimeout(()=>{window.location.href='index.html';},400);});
+
+setTimeout(()=>{if(phase===0)advance();},3200);
+</script>
+</body>
+</html>
