@@ -380,10 +380,9 @@ function showParser(){
 function runNextCmd(){
   if(parserLocked)return;
   if(cmdIdx>=CMD_SEQUENCE.length){
-    // Done — prompt to enter EPK
-    document.getElementById('parser-resp').textContent='Press ENTER to begin your quest... [launching EPK]';
+    document.getElementById('parser-resp').textContent='QUEST ACCEPTED. NRK-ADV-001 COMPLETE. LOADING ACT II...';
     parserLocked=true;
-    setTimeout(()=>{window.location.href='index.html';},2200);
+    setTimeout(()=>launchActII(),2000);
     return;
   }
   parserLocked=true;
@@ -425,6 +424,21 @@ document.addEventListener('click',()=>advance());
 
 // Auto-advance from logo after 2.5s
 setTimeout(()=>{if(phase===0)advance();},2500);
+
+function launchActII(){
+  // Fade out game scene, show Act II card, then go to sierra-vision
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:#000;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:VT323,monospace;opacity:0;transition:opacity .8s;';
+  overlay.innerHTML=`
+    <div style="color:#ff00cc;letter-spacing:.2em;font-size:clamp(12px,2vw,20px);margin-bottom:.5rem;">// ACT II</div>
+    <div style="font-family:'Metal Mania',cursive;font-size:clamp(32px,8vw,96px);color:#fff;text-shadow:0 0 20px #ff00cc,0 0 40px #7a00ff;text-align:center;">THE VISION</div>
+    <div style="color:#00f0ff;font-size:clamp(14px,2vw,22px);margin-top:.8rem;letter-spacing:.1em;">NRK SYNTHWAVE PROPHECY</div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{overlay.style.opacity='1';});});
+  setTimeout(()=>{window.location.href='sierra-vision.html';},2500);
+}
+
 </script>
 </body>
 </html>

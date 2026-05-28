@@ -286,8 +286,8 @@ function advance(){
   } else if(phase===2){
     // win95 is showing — handled by buttons
   } else if(phase===3){
-    // title screen — go to EPK
-    window.location.href='epk-arcade.html';
+    // title screen — launch Act II: The Vision
+    launchActII();
   }
 }
 
@@ -326,6 +326,20 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'||e.key===' '){e.preventDefault();if(phase!==2)advance();}
 });
 document.addEventListener('click',()=>{if(phase!==2)advance();});
+
+
+function launchActII(){
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:#000;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:VT323,monospace;opacity:0;transition:opacity .8s;';
+  overlay.innerHTML=`
+    <div style="color:#ff00cc;letter-spacing:.2em;font-size:clamp(12px,2vw,20px);margin-bottom:.5rem;">// ACT II</div>
+    <div style="font-family:'Metal Mania',cursive;font-size:clamp(32px,8vw,96px);color:#fff;text-shadow:0 0 20px #ff00cc,0 0 40px #7a00ff;text-align:center;">THE VISION</div>
+    <div style="color:#00f0ff;font-size:clamp(14px,2vw,22px);margin-top:.8rem;letter-spacing:.1em;">NRK SYNTHWAVE PROPHECY</div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{overlay.style.opacity='1';});});
+  setTimeout(()=>{window.location.href='sierra-vision.html';},2500);
+}
 
 // Auto-advance from static after 1.8s
 setTimeout(()=>{if(phase===0)advance();},1800);
