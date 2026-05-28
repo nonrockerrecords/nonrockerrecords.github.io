@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NRK — PLAYER</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;min-height:100%;background:#06060a;color:#f4eaff;font-family:'VT323',monospace;overflow-x:hidden;}
+  body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,0.11) 3px,transparent 4px);pointer-events:none;z-index:999;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(6,6,10,.7) 100%);pointer-events:none;z-index:998;}
+  #bg{position:fixed;inset:0;z-index:0;}
+
+  /* page layout */
+  #desktop{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem 4rem;}
+  .page-label{font-family:'Press Start 2P',monospace;font-size:clamp(7px,1.2vw,10px);color:rgba(255,0,204,.4);letter-spacing:.2em;margin-bottom:1.5rem;text-align:center;}
+
+  /* winamp window base */
+  .win{
+    position:relative;
+    background:#1a1a2e;
+    border:1px solid rgba(255,0,204,.5);
+    box-shadow:0 0 18px rgba(255,0,204,.15),inset 0 0 8px rgba(0,0,0,.5);
+    user-select:none;
+    margin-bottom:4px;
+    width:280px;
+  }
+  .win.dragging{opacity:.92;box-shadow:0 0 32px rgba(255,0,204,.35);}
+
+  /* title bar */
+  .titlebar{
+    display:flex;align-items:center;
+    background:linear-gradient(90deg,#7a00ff,#ff00cc);
+    padding:3px 5px;
+    cursor:move;
+    height:20px;
+  }
+  .titlebar-name{font-family:'Press Start 2P',monospace;font-size:6px;color:#fff;letter-spacing:.1em;flex:1;text-shadow:0 1px 2px rgba(0,0,0,.5);}
+  .win-btns{display:flex;gap:2px;}
+  .win-btn{width:12px;height:12px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);cursor:pointer;font-family:'Press Start 2P',monospace;font-size:5px;color:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;}
+  .win-btn:hover{background:rgba(255,0,204,.4);color:#fff;}
+
+  /* main player */
+  #main-win{width:280px;}
+  #main-body{padding:6px 8px 8px;}
+
+  /* VU / track display */
+  .track-display{
+    background:#000;
+    border:1px solid rgba(255,0,204,.25);
+    padding:5px 7px 4px;
+    margin-bottom:6px;
+    position:relative;
+    overflow:hidden;
+  }
+  .track-display::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 1px,rgba(0,0,0,.3) 2px,transparent 3px);pointer-events:none;}
+  .td-time{font-family:'VT323',monospace;font-size:28px;color:#39ff14;text-shadow:0 0 10px #39ff14,0 0 20px rgba(57,255,20,.4);letter-spacing:.08em;line-height:1;}
+  .td-meta{display:flex;gap:.5rem;margin-top:2px;}
+  .td-kbps,.td-khz{font-family:'Press Start 2P',monospace;font-size:5px;color:#39ff14;opacity:.6;letter-spacing:.06em;}
+  .td-status{font-family:'Press Start 2P',monospace;font-size:5px;color:#ff00cc;opacity:.7;letter-spacing:.06em;margin-left:auto;}
+
+  /* track marquee */
+  .marquee-wrap{background:#000;border:1px solid rgba(255,0,204,.2);overflow:hidden;height:18px;margin-bottom:6px;position:relative;}
+  .marquee-inner{white-space:nowrap;font-family:'Press Start 2P',monospace;font-size:7px;color:#ffb800;letter-spacing:.05em;line-height:18px;padding-left:280px;display:inline-block;animation:marquee 14s linear infinite;}
+  @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+  .marquee-inner.playing{color:#ff00cc;text-shadow:0 0 8px rgba(255,0,204,.5);}
+
+  /* viz canvas */
+  #viz{display:block;width:100%;height:36px;background:#000;border:1px solid rgba(255,0,204,.2);margin-bottom:6px;}
+
+  /* transport */
+  .transport{display:flex;gap:3px;margin-bottom:6px;}
+  .tb{
+    flex:1;height:22px;
+    background:linear-gradient(180deg,#2a0044,#1a0030);
+    border:1px solid rgba(255,0,204,.35);
+    color:rgba(255,0,204,.8);
+    font-family:'Press Start 2P',monospace;
+    font-size:8px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .1s;
+  }
+  .tb:hover{background:linear-gradient(180deg,#44006a,#2a0050);border-color:#ff00cc;color:#ff00cc;box-shadow:0 0 8px rgba(255,0,204,.3);}
+  .tb.active{background:linear-gradient(180deg,#ff00cc,#aa0088);color:#fff;border-color:#ff00cc;}
+  .tb-stop:hover{color:#00f0ff;border-color:#00f0ff;box-shadow:0 0 8px rgba(0,240,255,.3);}
+
+  /* sliders */
+  .sliders{display:flex;gap:8px;align-items:center;margin-bottom:4px;}
+  .slider-wrap{flex:1;display:flex;flex-direction:column;gap:2px;}
+  .slider-label{font-family:'Press Start 2P',monospace;font-size:5px;color:#555;letter-spacing:.1em;}
+  input[type=range]{
+    width:100%;height:6px;
+    -webkit-appearance:none;appearance:none;
+    background:linear-gradient(90deg,#ff00cc var(--pct,60%),rgba(255,0,204,.15) var(--pct,60%));
+    border-radius:0;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:8px;height:12px;background:#ff00cc;border:none;box-shadow:0 0 6px rgba(255,0,204,.5);}
+
+  /* eq window */
+  #eq-win{width:280px;}
+  #eq-body{padding:6px 8px 8px;}
+  .eq-title{font-family:'Press Start 2P',monospace;font-size:6px;color:#00f0ff;letter-spacing:.15em;margin-bottom:6px;}
+  .eq-bands{display:flex;gap:4px;align-items:flex-end;height:60px;}
+  .eq-band{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+  .eq-slider-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;}
+  input[type=range].eq-s{
+    writing-mode:vertical-lr;direction:rtl;
+    width:6px;height:100%;
+    -webkit-appearance:none;appearance:none;
+    background:linear-gradient(0deg,#ff00cc var(--pct,50%),rgba(255,0,204,.15) var(--pct,50%));
+    cursor:pointer;
+  }
+  input[type=range].eq-s::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:6px;background:#ff00cc;box-shadow:0 0 4px rgba(255,0,204,.5);}
+  .eq-band-label{font-family:'Press Start 2P',monospace;font-size:4px;color:#444;letter-spacing:.06em;text-align:center;}
+  .eq-presets{display:flex;gap:3px;margin-top:5px;flex-wrap:wrap;}
+  .preset-btn{font-family:'Press Start 2P',monospace;font-size:5px;color:#555;border:1px solid #222;padding:2px 5px;cursor:pointer;letter-spacing:.08em;transition:all .12s;}
+  .preset-btn:hover{color:#ff00cc;border-color:rgba(255,0,204,.4);}
+  .preset-btn.active{color:#00f0ff;border-color:rgba(0,240,255,.4);}
+
+  /* playlist */
+  #pl-win{width:280px;}
+  #pl-body{padding:0;}
+  .pl-header{font-family:'Press Start 2P',monospace;font-size:6px;color:#ffb800;letter-spacing:.12em;padding:4px 8px;border-bottom:1px solid rgba(255,0,204,.15);background:rgba(255,0,204,.05);}
+  .pl-track{
+    display:flex;align-items:center;gap:.4rem;
+    padding:4px 8px;
+    font-family:'Press Start 2P',monospace;
+    font-size:6px;
+    color:#555;
+    letter-spacing:.06em;
+    cursor:pointer;
+    border-bottom:1px solid rgba(255,0,204,.06);
+    transition:all .1s;
+  }
+  .pl-track:hover{background:rgba(255,0,204,.07);color:#aaa;}
+  .pl-track.active{background:rgba(255,0,204,.12);color:#ff00cc;}
+  .pl-num{color:#333;width:1.2rem;flex-shrink:0;}
+  .pl-track.active .pl-num{color:#ff00cc;}
+  .pl-dur{color:#333;margin-left:auto;flex-shrink:0;}
+  .pl-track.active .pl-dur{color:rgba(255,0,204,.5);}
+
+  /* footer */
+  .page-footer{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:6px;color:#222;letter-spacing:.12em;z-index:20;}
+  .page-footer a{color:#333;text-decoration:none;}
+  .page-footer a:hover{color:#ff00cc;}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div id="desktop">
+  <div class="page-label">NRK MEDIA PLAYER v1.0 &nbsp;&#183;&nbsp; WINAMP SKIN: VAPORWAVE</div>
+
+  <!-- MAIN WINDOW -->
+  <div class="win" id="main-win">
+    <div class="titlebar" id="main-tb">
+      <span class="titlebar-name">NRK PLAYER v1.0</span>
+      <div class="win-btns">
+        <div class="win-btn" title="EQ" onclick="toggleWin('eq-win')">EQ</div>
+        <div class="win-btn" title="Playlist" onclick="toggleWin('pl-win')">PL</div>
+      </div>
+    </div>
+    <div id="main-body">
+      <div class="track-display">
+        <div class="td-time" id="td-time">0:00</div>
+        <div class="td-meta">
+          <span class="td-kbps">128kbps</span>
+          <span class="td-khz">44kHz</span>
+          <span class="td-status" id="td-status">STOPPED</span>
+        </div>
+      </div>
+      <div class="marquee-wrap"><div class="marquee-inner" id="marquee">NRK-2024 &nbsp;&#183;&nbsp; SOJU, KAZOOS AND DIDGERIDOOS &nbsp;&#183;&nbsp; nonrocker records &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></div>
+      <canvas id="viz" width="264" height="36"></canvas>
+      <div class="transport">
+        <div class="tb" id="btn-prev" onclick="prevTrack()" title="Previous">|&lt;</div>
+        <div class="tb" id="btn-rew" onclick="seek(-5)" title="Rewind">&lt;&lt;</div>
+        <div class="tb" id="btn-play" onclick="togglePlay()" title="Play">&#9654;</div>
+        <div class="tb tb-stop" id="btn-stop" onclick="stopPlay()" title="Stop">&#9632;</div>
+        <div class="tb" id="btn-fwd" onclick="seek(5)" title="Fast Forward">&gt;&gt;</div>
+        <div class="tb" id="btn-next" onclick="nextTrack()" title="Next">&gt;|</div>
+      </div>
+      <div class="sliders">
+        <div class="slider-wrap">
+          <div class="slider-label">VOL</div>
+          <input type="range" id="vol-s" min="0" max="100" value="72" oninput="setVol(this)"/>
+        </div>
+        <div class="slider-wrap">
+          <div class="slider-label">BAL</div>
+          <input type="range" id="bal-s" min="-50" max="50" value="0" oninput="setBal(this)"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EQ WINDOW -->
+  <div class="win" id="eq-win">
+    <div class="titlebar" id="eq-tb">
+      <span class="titlebar-name">EQUALIZER</span>
+      <div class="win-btns"><div class="win-btn" onclick="toggleWin('eq-win')">X</div></div>
+    </div>
+    <div id="eq-body">
+      <div class="eq-title">GRAPHIC EQ &nbsp;&#183;&nbsp; 10-BAND</div>
+      <div class="eq-bands" id="eq-bands"></div>
+      <div class="eq-presets" id="eq-presets"></div>
+    </div>
+  </div>
+
+  <!-- PLAYLIST -->
+  <div class="win" id="pl-win">
+    <div class="titlebar" id="pl-tb">
+      <span class="titlebar-name">PLAYLIST EDITOR</span>
+      <div class="win-btns"><div class="win-btn" onclick="toggleWin('pl-win')">X</div></div>
+    </div>
+    <div id="pl-body">
+      <div class="pl-header">NRK-2024 &nbsp;&#183;&nbsp; 7 TRACKS</div>
+      <div id="pl-tracks"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="page-footer"><a href="variations.html">&larr; directory</a></div>
+
+<script>
+// TRACKS
+const TRACKS = [
+  {num:'01', title:'METALDATA',             dur:'3:12'},
+  {num:'02', title:'SOJU PROTOCOL',         dur:'4:07'},
+  {num:'03', title:'WIN95.EXE',             dur:'2:55'},
+  {num:'04', title:'KAZOO OVERDRIVE',       dur:'3:44'},
+  {num:'05', title:'NRK-666 (VARIANT)',     dur:'5:16'},
+  {num:'06', title:'DIDGERI-DOOM REPRISE',  dur:'2:38'},
+  {num:'07', title:'SEOUL-FI OUTRO',        dur:'4:01'},
+];
+const TOTAL_SECS = TRACKS.map(t=>{const[m,s]=t.dur.split(':').map(Number);return m*60+s;});
+
+// EQ
+const EQ_BANDS = ['60','170','310','600','1K','3K','6K','12K','14K','16K'];
+const EQ_PRESETS = [
+  {name:'NORMAL',    vals:[0,0,0,0,0,0,0,0,0,0]},
+  {name:'NRK-BOOST', vals:[6,4,0,-2,-4,-4,-2,0,4,6]},
+  {name:'KAZOO MODE',vals:[0,0,0,8,8,6,4,0,0,0]},
+  {name:'VOID DECK', vals:[8,6,4,0,-6,-6,-4,0,4,8]},
+];
+
+// STATE
+let curTrack=0, playing=false, elapsed=0, elapsedTimer=null;
+let audioCtx=null, gainNode=null, oscNode=null;
+let volVal=0.72, balVal=0;
+let eqVals=[0,0,0,0,0,0,0,0,0,0];
+
+// STARFIELD BG
+const bgCv=document.getElementById('bg'),bgCx=bgCv.getContext('2d');
+let BW=0,BH=0,bStars=[];
+function resizeBG(){BW=bgCv.width=innerWidth;BH=bgCv.height=innerHeight;bStars=[];for(let i=0;i<90;i++)bStars.push({x:Math.random()*BW,y:Math.random()*BH,r:Math.random()*1.2+.2,s:Math.random()*.5+.1,a:Math.random()*.7+.1});}
+addEventListener('resize',resizeBG);resizeBG();
+function drawBG(){bgCx.fillStyle='#06060a';bgCx.fillRect(0,0,BW,BH);for(const s of bStars){s.y+=s.s;if(s.y>BH){s.y=0;s.x=Math.random()*BW;}bgCx.globalAlpha=s.a;bgCx.fillStyle='#fff';bgCx.beginPath();bgCx.arc(s.x,s.y,s.r,0,6.28);bgCx.fill();}bgCx.globalAlpha=1;}
+
+// VIZ
+const vizCv=document.getElementById('viz'),vizCx=vizCv.getContext('2d');
+const VIZ_BARS=22;let vizPhase=0;
+function drawViz(){
+  vizCx.fillStyle='#000';vizCx.fillRect(0,0,vizCv.width,vizCv.height);
+  const bw=Math.floor(vizCv.width/VIZ_BARS)-1;
+  for(let i=0;i<VIZ_BARS;i++){
+    const base=playing?0.15:0.04;
+    const env=playing?(1+Math.sin(vizPhase+i*.6)*.6):1;
+    const h=Math.max(2,Math.floor((base+Math.sin(vizPhase*.7+i*.4)*.08+Math.sin(vizPhase*.3+i*.9)*.06)*vizCv.height*env));
+    const y=vizCv.height-h;
+    const t=h/vizCv.height;
+    const r=Math.round(t*255),g=Math.round((1-t)*255);
+    vizCx.fillStyle=`rgb(${r},${g},204)`;
+    vizCx.fillRect(i*(bw+1),y,bw,h);
+    if(playing&&h>4){vizCx.fillStyle='rgba(255,255,255,.5)';vizCx.fillRect(i*(bw+1),y,bw,2);}
+  }
+  if(playing)vizPhase+=.08;
+}
+
+// TIME DISPLAY
+function fmtTime(sec){const m=Math.floor(sec/60),s=Math.floor(sec%60);return m+':'+(s<10?'0':'')+s;}
+function updateTime(){document.getElementById('td-time').textContent=fmtTime(elapsed);}
+
+// MARQUEE
+function setMarquee(t){
+  const m=document.getElementById('marquee');
+  m.textContent=t.num+'. '+t.title+' · NRK-2024 · nonrocker records      ';
+  m.classList.toggle('playing',playing);
+}
+
+// PLAYLIST
+function buildPlaylist(){
+  const c=document.getElementById('pl-tracks');c.innerHTML='';
+  TRACKS.forEach((t,i)=>{
+    const d=document.createElement('div');d.className='pl-track'+(i===curTrack?' active':'');
+    d.innerHTML='<span class="pl-num">'+t.num+'</span><span>'+t.title+'</span><span class="pl-dur">'+t.dur+'</span>';
+    d.onclick=()=>{curTrack=i;elapsed=0;buildPlaylist();setMarquee(TRACKS[i]);if(playing)restartAudio();};
+    c.appendChild(d);
+  });
+}
+
+// AUDIO
+function startAudio(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(oscNode){oscNode.stop();oscNode=null;}
+  gainNode=audioCtx.createGain();gainNode.gain.value=volVal*0.08;gainNode.connect(audioCtx.destination);
+  oscNode=audioCtx.createOscillator();oscNode.type='sawtooth';
+  // pitch based on track number
+  const freqs=[110,130,98,146,82,123,104];
+  oscNode.frequency.value=freqs[curTrack]||110;
+  oscNode.connect(gainNode);oscNode.start();
+}
+function stopAudio(){if(oscNode){oscNode.stop();oscNode=null;}if(gainNode){gainNode.disconnect();gainNode=null;}}
+function restartAudio(){stopAudio();if(playing)startAudio();}
+
+function togglePlay(){
+  if(playing){
+    playing=false;clearInterval(elapsedTimer);stopAudio();
+    document.getElementById('btn-play').innerHTML='&#9654;';document.getElementById('btn-play').classList.remove('active');
+    document.getElementById('td-status').textContent='PAUSED';
+    document.getElementById('marquee').style.animationPlayState='paused';
+  }else{
+    playing=true;startAudio();
+    elapsedTimer=setInterval(()=>{elapsed++;if(elapsed>=TOTAL_SECS[curTrack]){nextTrack();}updateTime();},1000);
+    document.getElementById('btn-play').innerHTML='&#9646;&#9646;';document.getElementById('btn-play').classList.add('active');
+    document.getElementById('td-status').textContent='PLAYING';
+    document.getElementById('marquee').style.animationPlayState='running';
+  }
+  setMarquee(TRACKS[curTrack]);
+}
+function stopPlay(){playing=false;clearInterval(elapsedTimer);elapsed=0;stopAudio();updateTime();document.getElementById('btn-play').innerHTML='&#9654;';document.getElementById('btn-play').classList.remove('active');document.getElementById('td-status').textContent='STOPPED';document.getElementById('marquee').style.animationPlayState='paused';}
+function nextTrack(){elapsed=0;curTrack=(curTrack+1)%TRACKS.length;buildPlaylist();setMarquee(TRACKS[curTrack]);if(playing)restartAudio();}
+function prevTrack(){elapsed=0;curTrack=(curTrack-1+TRACKS.length)%TRACKS.length;buildPlaylist();setMarquee(TRACKS[curTrack]);if(playing)restartAudio();}
+function seek(delta){elapsed=Math.max(0,Math.min(elapsed+delta,TOTAL_SECS[curTrack]-1));updateTime();}
+
+// SLIDERS
+function setVol(el){volVal=el.value/100;el.style.setProperty('--pct',el.value+'%');if(gainNode)gainNode.gain.value=volVal*0.08;}
+function setBal(el){balVal=el.value;el.style.setProperty('--pct',(parseInt(el.value)+50)+'%');}
+document.getElementById('vol-s').style.setProperty('--pct','72%');
+document.getElementById('bal-s').style.setProperty('--pct','50%');
+
+// EQ BUILD
+function buildEQ(){
+  const c=document.getElementById('eq-bands');c.innerHTML='';
+  EQ_BANDS.forEach((b,i)=>{
+    const div=document.createElement('div');div.className='eq-band';
+    const sw=document.createElement('div');sw.className='eq-slider-wrap';
+    const sl=document.createElement('input');sl.type='range';sl.className='eq-s';sl.min=-12;sl.max=12;sl.value=eqVals[i];
+    sl.style.setProperty('--pct',((12-eqVals[i])/24*100)+'%');
+    sl.oninput=function(){eqVals[i]=parseInt(this.value);this.style.setProperty('--pct',((12-eqVals[i])/24*100)+'%');};
+    sw.appendChild(sl);
+    const lbl=document.createElement('div');lbl.className='eq-band-label';lbl.textContent=b;
+    div.appendChild(sw);div.appendChild(lbl);c.appendChild(div);
+  });
+  const pc=document.getElementById('eq-presets');pc.innerHTML='';
+  EQ_PRESETS.forEach((p,pi)=>{
+    const btn=document.createElement('div');btn.className='preset-btn'+(pi===0?' active':'');btn.textContent=p.name;
+    btn.onclick=function(){eqVals=[...p.vals];document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');buildEQ();};
+    pc.appendChild(btn);
+  });
+}
+
+// WINDOW TOGGLE
+function toggleWin(id){const w=document.getElementById(id);w.style.display=w.style.display==='none'?'':'none';}
+
+// DRAG
+function makeDraggable(win,handle){
+  let dx=0,dy=0,x=0,y=0,dragging=false;
+  handle.addEventListener('mousedown',e=>{dragging=true;dx=e.clientX-win.offsetLeft;dy=e.clientY-win.offsetTop;win.classList.add('dragging');e.preventDefault();});
+  document.addEventListener('mousemove',e=>{if(!dragging)return;win.style.left=(e.clientX-dx)+'px';win.style.top=(e.clientY-dy)+'px';win.style.position='fixed';win.style.margin='0';});
+  document.addEventListener('mouseup',()=>{dragging=false;win.classList.remove('dragging');});
+}
+makeDraggable(document.getElementById('main-win'),document.getElementById('main-tb'));
+makeDraggable(document.getElementById('eq-win'),document.getElementById('eq-tb'));
+makeDraggable(document.getElementById('pl-win'),document.getElementById('pl-tb'));
+
+// INIT
+buildPlaylist();buildEQ();setMarquee(TRACKS[0]);updateTime();
+
+// LOOP
+(function loop(){
+  requestAnimationFrame(loop);
+  drawBG();drawViz();
+})();
+</script>
+</body>
+</html>
