@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>mIRC - #nonrocker</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+  :root{
+    --win-bg:#d4d0c8;
+    --win-border-light:#ffffff;
+    --win-border-dark:#808080;
+    --win-border-darker:#404040;
+    --titlebar-active:linear-gradient(90deg,#000080,#1084d0);
+    --titlebar-inactive:#808080;
+    --chat-bg:#ffffff;
+    --input-bg:#ffffff;
+    --status-bg:#d4d0c8;
+    --nick-pufflebump:#ff2222;
+    --nick-metadiva:#0000cc;
+    --nick-system:#808080;
+    --action-color:#8800aa;
+    --font:'Fixedsys','Courier New',monospace;
+    --font-ui:Tahoma,Arial,sans-serif;
+  }
+
+  html,body{
+    width:100%;height:100%;
+    background:#008080;
+    overflow:hidden;
+    font-family:var(--font-ui);
+    font-size:11px;
+  }
+
+  /* ── WIN95 DESKTOP ── */
+  #desktop{
+    width:100%;height:100%;
+    position:relative;
+    background:#008080 url("data:image/png;base64,") repeat;
+  }
+
+  /* ── WINDOW CHROME ── */
+  .win95{
+    position:absolute;
+    background:var(--win-bg);
+    border-top:2px solid var(--win-border-light);
+    border-left:2px solid var(--win-border-light);
+    border-right:2px solid var(--win-border-darker);
+    border-bottom:2px solid var(--win-border-darker);
+    display:flex;flex-direction:column;
+    box-shadow:2px 2px 0 rgba(0,0,0,.4);
+    min-width:200px;
+    min-height:100px;
+  }
+
+  /* title bar */
+  .titlebar{
+    background:var(--titlebar-active);
+    color:#fff;
+    display:flex;align-items:center;
+    padding:3px 4px 3px 6px;
+    height:22px;
+    flex-shrink:0;
+    cursor:default;
+    user-select:none;
+    gap:4px;
+  }
+  .titlebar-icon{
+    width:14px;height:14px;
+    background:#ffcc00;
+    border:1px solid #888;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:8px;
+  }
+  .titlebar-text{
+    flex:1;
+    font-family:var(--font-ui);
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.01em;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .win-btns{display:flex;gap:2px;}
+  .win-btn{
+    width:16px;height:14px;
+    background:var(--win-bg);
+    border-top:1px solid #fff;
+    border-left:1px solid #fff;
+    border-right:1px solid var(--win-border-darker);
+    border-bottom:1px solid var(--win-border-darker);
+    font-family:var(--font-ui);
+    font-size:9px;
+    font-weight:bold;
+    display:flex;align-items:center;justify-content:center;
+    cursor:default;
+    color:#000;
+    line-height:1;
+  }
+  .win-btn:active{border-top:1px solid var(--win-border-darker);border-left:1px solid var(--win-border-darker);border-right:1px solid #fff;border-bottom:1px solid #fff;}
+
+  /* menu bar */
+  .menubar{
+    background:var(--win-bg);
+    border-bottom:1px solid var(--win-border-dark);
+    display:flex;
+    padding:2px 0 1px;
+    flex-shrink:0;
+  }
+  .menu-item{
+    padding:2px 8px;
+    font-family:var(--font-ui);
+    font-size:11px;
+    cursor:default;
+    color:#000;
+  }
+  .menu-item:hover{background:#000080;color:#fff;}
+
+  /* toolbar */
+  .toolbar{
+    background:var(--win-bg);
+    border-bottom:1px solid var(--win-border-dark);
+    padding:3px 4px;
+    display:flex;align-items:center;gap:4px;
+    flex-shrink:0;
+  }
+  .tb-btn{
+    width:22px;height:20px;
+    background:var(--win-bg);
+    border-top:1px solid #fff;border-left:1px solid #fff;
+    border-right:1px solid var(--win-border-darker);border-bottom:1px solid var(--win-border-darker);
+    font-size:9px;display:flex;align-items:center;justify-content:center;cursor:default;
+  }
+  .tb-sep{width:1px;background:var(--win-border-dark);height:18px;margin:0 2px;}
+
+  /* ── MAIN MIRC WINDOW ── */
+  #mirc-win{
+    top:20px;left:20px;
+    width:calc(100vw - 40px);
+    height:calc(100vh - 60px);
+    max-width:900px;
+    max-height:680px;
+  }
+
+  .mirc-body{
+    flex:1;
+    display:flex;
+    overflow:hidden;
+  }
+
+  /* channel tree / server pane */
+  .server-pane{
+    width:130px;
+    flex-shrink:0;
+    border-right:2px solid var(--win-border-dark);
+    background:var(--win-bg);
+    overflow-y:auto;
+    font-family:var(--font-ui);
+    font-size:11px;
+  }
+  .tree-server{
+    padding:3px 4px;
+    font-weight:bold;
+    color:#000;
+    background:rgba(0,0,128,.06);
+    border-bottom:1px solid #bbb;
+  }
+  .tree-chan{
+    padding:2px 4px 2px 14px;
+    cursor:default;
+    color:#000080;
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  .tree-chan.active{background:#000080;color:#fff;}
+  .tree-chan:hover:not(.active){background:rgba(0,0,128,.1);}
+  .tree-status{padding:2px 4px 2px 14px;color:#555;cursor:default;}
+
+  /* chat area + user list */
+  .chat-area{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  /* channel tabs */
+  .chan-tabs{
+    display:flex;
+    background:var(--win-bg);
+    border-bottom:1px solid var(--win-border-dark);
+    flex-shrink:0;
+  }
+  .chan-tab{
+    padding:3px 10px;
+    font-family:var(--font-ui);
+    font-size:11px;
+    border-right:1px solid var(--win-border-dark);
+    cursor:default;
+    color:#555;
+    background:var(--win-bg);
+    border-top:2px solid transparent;
+  }
+  .chan-tab.active{
+    color:#000;font-weight:bold;
+    border-top:2px solid #000080;
+    background:#fff;
+    margin-bottom:-1px;
+    border-bottom:1px solid #fff;
+  }
+  .chan-tab.notif{color:#ff0000;font-weight:bold;}
+
+  /* the actual chat log */
+  .chat-log{
+    flex:1;
+    background:var(--chat-bg);
+    overflow-y:auto;
+    padding:2px 4px;
+    font-family:var(--font);
+    font-size:12px;
+    line-height:1.45;
+    border-bottom:1px solid var(--win-border-dark);
+  }
+  .chat-log::-webkit-scrollbar{width:16px;background:var(--win-bg);}
+  .chat-log::-webkit-scrollbar-thumb{background:var(--win-bg);border-top:1px solid #fff;border-left:1px solid #fff;border-right:1px solid var(--win-border-darker);border-bottom:1px solid var(--win-border-darker);}
+  .chat-log::-webkit-scrollbar-button{background:var(--win-bg);height:16px;border-top:1px solid #fff;border-left:1px solid #fff;border-right:1px solid var(--win-border-darker);border-bottom:1px solid var(--win-border-darker);}
+
+  .log-line{display:flex;gap:4px;flex-wrap:nowrap;}
+  .log-ts{color:#808080;flex-shrink:0;font-size:11px;}
+  .log-nick{flex-shrink:0;}
+  .log-nick.pufflebump{color:var(--nick-pufflebump);}
+  .log-nick.metadiva{color:var(--nick-metadiva);}
+  .log-nick.system{color:var(--nick-system);}
+  .log-text{word-break:break-word;color:#000;}
+  .log-text.action{color:var(--action-color);font-style:italic;}
+  .log-text.system{color:#808080;}
+  .log-text.join{color:#006600;}
+  .log-text.topic{color:#000080;font-weight:bold;}
+  .log-nick-bracket{color:#808080;}
+
+  /* user list */
+  .user-list{
+    width:110px;
+    flex-shrink:0;
+    border-left:2px solid var(--win-border-dark);
+    background:var(--win-bg);
+    overflow-y:auto;
+    font-family:var(--font-ui);
+    font-size:11px;
+  }
+  .ul-header{
+    padding:2px 4px;
+    background:rgba(0,0,128,.08);
+    border-bottom:1px solid #bbb;
+    font-size:10px;
+    color:#555;
+    text-align:center;
+  }
+  .ul-entry{
+    padding:1px 4px;
+    cursor:default;
+    display:flex;align-items:center;gap:3px;
+    border-bottom:1px solid rgba(0,0,0,.04);
+  }
+  .ul-entry:hover{background:rgba(0,0,128,.1);}
+  .ul-op{color:#ff2222;font-weight:bold;}
+  .ul-voice{color:#009900;}
+  .ul-name{color:#000;}
+  .ul-name.pufflebump{color:var(--nick-pufflebump);}
+  .ul-name.metadiva{color:var(--nick-metadiva);}
+
+  /* input row */
+  .input-row{
+    display:flex;align-items:center;gap:4px;
+    padding:3px 4px;
+    background:var(--win-bg);
+    border-top:1px solid var(--win-border-dark);
+    flex-shrink:0;
+  }
+  .input-nick-label{
+    color:#000080;font-weight:bold;
+    font-family:var(--font-ui);font-size:11px;
+    white-space:nowrap;flex-shrink:0;
+  }
+  .chat-input{
+    flex:1;
+    border-top:1px solid var(--win-border-dark);
+    border-left:1px solid var(--win-border-dark);
+    border-right:1px solid #fff;
+    border-bottom:1px solid #fff;
+    padding:2px 4px;
+    font-family:var(--font);
+    font-size:12px;
+    background:var(--input-bg);
+    color:#000;
+    outline:none;
+  }
+
+  /* status bar */
+  .statusbar{
+    background:var(--win-bg);
+    border-top:1px solid var(--win-border-dark);
+    padding:2px 6px;
+    font-family:var(--font-ui);
+    font-size:10px;
+    color:#555;
+    display:flex;gap:1rem;
+    flex-shrink:0;
+  }
+  .sb-pane{
+    border-top:1px solid var(--win-border-dark);
+    border-left:1px solid var(--win-border-dark);
+    border-right:1px solid #fff;
+    border-bottom:1px solid #fff;
+    padding:1px 6px;
+  }
+
+  /* ── TASKBAR ── */
+  #taskbar{
+    position:fixed;bottom:0;left:0;right:0;height:30px;
+    background:var(--win-bg);
+    border-top:2px solid #fff;
+    display:flex;align-items:center;padding:0 4px;gap:4px;
+    z-index:9999;
+  }
+  .start-btn{
+    padding:2px 8px;height:22px;
+    background:var(--win-bg);
+    border-top:1px solid #fff;border-left:1px solid #fff;
+    border-right:1px solid var(--win-border-darker);border-bottom:1px solid var(--win-border-darker);
+    font-family:var(--font-ui);font-size:11px;font-weight:bold;
+    display:flex;align-items:center;gap:4px;cursor:default;
+  }
+  .taskbar-item{
+    padding:2px 10px;height:22px;
+    background:#bbb;
+    border-top:1px solid var(--win-border-dark);border-left:1px solid var(--win-border-dark);
+    border-right:1px solid #fff;border-bottom:1px solid #fff;
+    font-family:var(--font-ui);font-size:11px;
+    display:flex;align-items:center;cursor:default;
+    min-width:120px;
+    color:#000;
+  }
+  .taskbar-clock{
+    margin-left:auto;
+    padding:2px 8px;
+    border-top:1px solid var(--win-border-dark);border-left:1px solid var(--win-border-dark);
+    border-right:1px solid #fff;border-bottom:1px solid #fff;
+    font-family:var(--font-ui);font-size:11px;
+  }
+</style>
+</head>
+<body>
+
+<div id="desktop">
+
+  <!-- MAIN MIRC WINDOW -->
+  <div class="win95" id="mirc-win">
+
+    <!-- title bar -->
+    <div class="titlebar">
+      <div class="titlebar-icon">m</div>
+      <span class="titlebar-text">mIRC - [#nonrocker @irc.nonrocker.net]</span>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">&#9633;</div>
+        <div class="win-btn">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- menu bar -->
+    <div class="menubar">
+      <div class="menu-item">File</div>
+      <div class="menu-item">View</div>
+      <div class="menu-item">Favorites</div>
+      <div class="menu-item">Tools</div>
+      <div class="menu-item">DCC</div>
+      <div class="menu-item">Window</div>
+      <div class="menu-item">Help</div>
+    </div>
+
+    <!-- toolbar -->
+    <div class="toolbar">
+      <div class="tb-btn" title="Connect">&#128279;</div>
+      <div class="tb-btn" title="Options">&#9881;</div>
+      <div class="tb-sep"></div>
+      <div class="tb-btn" title="Channel List">#</div>
+      <div class="tb-btn" title="Query">@</div>
+      <div class="tb-sep"></div>
+      <div class="tb-btn" title="Notify">!</div>
+      <div class="tb-btn" title="DCC">D</div>
+    </div>
+
+    <!-- body: server tree + chat + userlist -->
+    <div class="mirc-body">
+
+      <!-- server/channel tree -->
+      <div class="server-pane">
+        <div class="tree-server">irc.nonrocker.net</div>
+        <div class="tree-status">Status</div>
+        <div class="tree-chan active">#nonrocker</div>
+        <div class="tree-chan">#vaporwave</div>
+        <div class="tree-chan">#nu-kazoo</div>
+        <div class="tree-chan">#seoul-fi</div>
+        <div class="tree-chan notif">#didgeri-doom</div>
+      </div>
+
+      <!-- chat area -->
+      <div class="chat-area">
+
+        <!-- channel tabs -->
+        <div class="chan-tabs">
+          <div class="chan-tab">Status</div>
+          <div class="chan-tab active">#nonrocker</div>
+          <div class="chan-tab">#vaporwave</div>
+          <div class="chan-tab notif">#didgeri-doom</div>
+        </div>
+
+        <!-- chat log -->
+        <div class="chat-log" id="chat-log"></div>
+
+        <!-- input -->
+        <div class="input-row">
+          <span class="input-nick-label">&lt;pufflebump&gt;</span>
+          <input class="chat-input" type="text" id="chat-input" value=""/>
+        </div>
+
+      </div>
+
+      <!-- user list -->
+      <div class="user-list">
+        <div class="ul-header">2 users</div>
+        <div class="ul-entry"><span class="ul-op">@</span><span class="ul-name metadiva">metadiva</span></div>
+        <div class="ul-entry"><span class="ul-voice">+</span><span class="ul-name pufflebump">pufflebump</span></div>
+      </div>
+
+    </div>
+
+    <!-- status bar -->
+    <div class="statusbar">
+      <span class="sb-pane">Connected: irc.nonrocker.net:6667</span>
+      <span class="sb-pane">#nonrocker [+nrt] 2 ops</span>
+      <span class="sb-pane">Lag: 0.04s</span>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- taskbar -->
+<div id="taskbar">
+  <div class="start-btn"><b>&#9658;</b> Start</div>
+  <div class="taskbar-item">mIRC - [#nonrocker]</div>
+  <div class="taskbar-clock" id="clock">00:00</div>
+</div>
+
+<script>
+// CHAT SCRIPT
+const LOG = document.getElementById('chat-log');
+
+function ts() {
+  const n = new Date();
+  return '[' + String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0') + ']';
+}
+
+function addLine(type, nick, nickClass, text, textClass) {
+  const div = document.createElement('div');
+  div.className = 'log-line';
+  if (type === 'action') {
+    div.innerHTML =
+      '<span class="log-ts">' + ts() + '</span>' +
+      '<span class="log-text action">* ' + nick + ' ' + text + '</span>';
+  } else if (type === 'system') {
+    div.innerHTML =
+      '<span class="log-ts">' + ts() + '</span>' +
+      '<span class="log-text ' + (textClass||'system') + '">' + text + '</span>';
+  } else {
+    div.innerHTML =
+      '<span class="log-ts">' + ts() + '</span>' +
+      '<span class="log-nick-bracket">&lt;</span>' +
+      '<span class="log-nick ' + nickClass + '">' + nick + '</span>' +
+      '<span class="log-nick-bracket">&gt;</span>' +
+      '&nbsp;<span class="log-text">' + text + '</span>';
+  }
+  LOG.appendChild(div);
+  LOG.scrollTop = LOG.scrollHeight;
+}
+
+// PRE-LOADED CONVERSATION
+const CONVO = [
+  {delay:0,    fn:()=>addLine('system','','','*** Now talking in #nonrocker','join')},
+  {delay:100,  fn:()=>addLine('system','','','*** Topic is: NRK-2024 | soju, kazoos and didgeridoos | no didgeri-doom in #vaporwave | https://nonrockerrecords.github.io','topic')},
+  {delay:200,  fn:()=>addLine('system','','','*** Set by metadiva on Mon May 26 03:14:22','system')},
+  {delay:400,  fn:()=>addLine('system','','','*** metadiva sets mode: +o pufflebump','system')},
+  {delay:800,  fn:()=>addLine('chat','metadiva','metadiva','ok so i finally listened to METALDATA all the way through')},
+  {delay:2200, fn:()=>addLine('chat','pufflebump','pufflebump','and????')},
+  {delay:3800, fn:()=>addLine('chat','metadiva','metadiva','the kazoo solo starts at 2:07 and i was NOT prepared')},
+  {delay:5200, fn:()=>addLine('action','pufflebump','pufflebump','nods solemnly')},
+  {delay:6600, fn:()=>addLine('chat','pufflebump','pufflebump','nobody ever is. that\'s the point')},
+  {delay:8000, fn:()=>addLine('chat','metadiva','metadiva','is the didgeridoo tuned to the kazoo or is that just how it sounds')},
+  {delay:9600, fn:()=>addLine('chat','pufflebump','pufflebump','yes')},
+  {delay:10800,fn:()=>addLine('chat','metadiva','metadiva','ok')},
+  {delay:12000,fn:()=>addLine('chat','metadiva','metadiva','the arcade thing on the site is genuinely unhinged btw')},
+  {delay:13400,fn:()=>addLine('chat','pufflebump','pufflebump','which one, there are like 40 pages now')},
+  {delay:15000,fn:()=>addLine('chat','metadiva','metadiva','the one where you pick your ship and it\'s just... guitar shapes')},
+  {delay:16400,fn:()=>addLine('chat','pufflebump','pufflebump','the flying-v is actually the strongest ship statistically')},
+  {delay:17800,fn:()=>addLine('chat','metadiva','metadiva','that tracks')},
+  {delay:19200,fn:()=>addLine('action','metadiva','metadiva','opens variations.html for the 8th time today')},
+  {delay:20600,fn:()=>addLine('chat','pufflebump','pufflebump','have you done the boot sequence yet')},
+  {delay:22200,fn:()=>addLine('chat','metadiva','metadiva','the fake bios one?? i watched it like 6 times')},
+  {delay:23600,fn:()=>addLine('chat','pufflebump','pufflebump','it selects the USB drive by itself. very cinematic')},
+  {delay:25000,fn:()=>addLine('chat','metadiva','metadiva','NRK-OS v0.1 ISO. they really committed to the bit')},
+  {delay:26400,fn:()=>addLine('chat','pufflebump','pufflebump','the bit IS the label')},
+  {delay:28000,fn:()=>addLine('chat','metadiva','metadiva','fair')},
+  {delay:29400,fn:()=>addLine('chat','metadiva','metadiva','what\'s the kazoo player called again')},
+  {delay:30800,fn:()=>addLine('chat','pufflebump','pufflebump','KAZOO_HAWK')},
+  {delay:32200,fn:()=>addLine('chat','metadiva','metadiva','right. their trading card says restraint: 3 out of 99')},
+  {delay:33800,fn:()=>addLine('chat','pufflebump','pufflebump','accurate')},
+  {delay:35200,fn:()=>addLine('action','pufflebump','pufflebump','loads the winamp player and puts kazoo overdrive on')},
+  {delay:36600,fn:()=>addLine('chat','metadiva','metadiva','is the winamp thing actually playing audio')},
+  {delay:38000,fn:()=>addLine('chat','pufflebump','pufflebump','it plays a sawtooth drone. close enough')},
+  {delay:39400,fn:()=>addLine('chat','metadiva','metadiva','lmaooo')},
+  {delay:41000,fn:()=>addLine('chat','metadiva','metadiva','ok when are they playing live')},
+  {delay:42400,fn:()=>addLine('chat','pufflebump','pufflebump','check the EPK')},
+  {delay:43800,fn:()=>addLine('chat','metadiva','metadiva','i\'ve read the EPK 4 times')},
+  {delay:45200,fn:()=>addLine('chat','pufflebump','pufflebump','then you know as much as anyone does')},
+  {delay:46600,fn:()=>addLine('action','metadiva','metadiva','nods')},
+  {delay:48000,fn:()=>addLine('chat','metadiva','metadiva','do you think the 3rd band has a name yet')},
+  {delay:49600,fn:()=>addLine('chat','pufflebump','pufflebump','anarcho-punk one? still TBD last i heard')},
+  {delay:51000,fn:()=>addLine('chat','metadiva','metadiva','i vote NULLPUNK')},
+  {delay:52400,fn:()=>addLine('chat','pufflebump','pufflebump','submitting that officially')},
+  {delay:53800,fn:()=>addLine('system','','','*** ChanServ sets mode: +v pufflebump','system')},
+  {delay:55200,fn:()=>addLine('chat','metadiva','metadiva','lol what did you just do')},
+  {delay:56600,fn:()=>addLine('chat','pufflebump','pufflebump','no idea. it just happened')},
+  {delay:58000,fn:()=>addLine('action','metadiva','metadiva','checks the 404 page again on purpose just to watch the countdown')},
+  {delay:59400,fn:()=>addLine('chat','pufflebump','pufflebump','that\'s valid')},
+  {delay:61000,fn:()=>addLine('chat','metadiva','metadiva','NRK for life')},
+  {delay:62400,fn:()=>addLine('chat','pufflebump','pufflebump','NRK for life')},
+];
+
+let running = false;
+function playConvo() {
+  if (running) return;
+  running = true;
+  CONVO.forEach(({delay, fn}) => setTimeout(fn, delay));
+}
+
+// Start after a short pause
+setTimeout(playConvo, 600);
+
+// Taskbar clock
+function updateClock() {
+  const n = new Date();
+  document.getElementById('clock').textContent =
+    String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+}
+updateClock();
+setInterval(updateClock, 10000);
+
+// Allow typing in the input box (cosmetic)
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.value.trim()) {
+    addLine('chat','pufflebump','pufflebump', e.target.value.trim());
+    e.target.value = '';
+  }
+});
+</script>
+</body>
+</html>
