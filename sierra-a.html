@@ -317,16 +317,18 @@ function fanfare(){
 let phase=0;
 const DIALOGS=[
   {name:'KAZOO_HAWK',text:'"Here, go wear this and fetch me the biggest goose in all of London."'},
-  {name:'YUNG SOJU',text:'"...why does the hat have feathers in it? Is this for the goose or from the goose?"'},
+  {name:'NULLSOFT',text:'"...this hat has a blue gem. KAZOO_HAWK, who wore this before us?"'},
   {name:'KAZOO_HAWK',text:'"Yes."'},
+  {name:'YUNG SOJU',text:'[YUNG SOJU says nothing. The beanie stays on.]'},
 ];
 let dlgIdx=0;
 
 const PARSER_CMDS={
-  'LOOK AT HAT':   'The hat is extravagant. Gold trim. Three peacock feathers. Smells faintly of soju.',
-  'TAKE HAT':      'You take the hat. +10 POINTS. Your quest has begun.',
-  'ASK ABOUT GOOSE':'KAZOO_HAWK just stares at you. The samurai armor makes it hard to read their expression.',
-  'LOOK AT KAZOO_HAWK':'A shiba inu in full samurai armor. Their kazoo is solid gold. NRK-666 edition.',
+  'LOOK AT HAT':   'NULLSOFT holds the hat carefully. Gold trim, three peacock feathers, one blue gem. Smells faintly of soju.',
+  'TAKE HAT':      'NULLSOFT passes the hat to YUNG SOJU. +10 POINTS. The goose quest has begun.',
+  'ASK ABOUT GOOSE':'KAZOO_HAWK just stares. NULLSOFT whispers: "I think the goose is a metaphor." KAZOO_HAWK stares harder.',
+  'LOOK AT KAZOO_HAWK':'A Shiba Inu in full red-and-gold samurai armor. Gold kazoo at the belt. Engraved: NRK-666.',
+  'LOOK AT NULLSOFT':'Pink hair, purple hoodie, glasses. NULLSOFT holds the feathered hat like it might bite. Keys player, NRK-2024.',
   'SMELL HAT':     'It smells like a park and ambition.',
   'INVENTORY':     'You have: 1 feathered hat, 0 geese, 1 bottle of soju (empty).',
 };

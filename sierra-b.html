@@ -261,14 +261,17 @@ addEventListener('resize',drawMountain);setTimeout(drawMountain,50);
 let phase=0;
 const DIALOGS=[
   {portrait:'&#128054;',name:'KAZOO_HAWK',text:'"Before you can headline Primavera, you must retrieve the Didgeridoo of Doom from the bottom of the Thames."'},
-  {portrait:'&#129346;',name:'YUNG SOJU',text:'"...I just came here for the goose. There was supposed to be a goose."'},
-  {portrait:'&#128054;',name:'KAZOO_HAWK',text:'"The goose IS the clue. Everything is the goose. Now go. NRK-ADV-002 has begun."'},
+  {portrait:'&#127929;',name:'NULLSOFT',text:'"KAZOO_HAWK — why does this hat have a blue gem? Should I put it on? Is that part of the quest?"'},
+  {portrait:'&#128054;',name:'KAZOO_HAWK',text:'"The goose IS the clue. The gem IS the goose. Everything is the goose. NRK-ADV-002 has begun."'},
+  {portrait:'&#129346;',name:'YUNG SOJU',text:'"...I just came here for the goose."'},
   {portrait:'&#128241;',name:'STATUE.EXE',text:'"[process: quest_for_kazoo.exe initialized] [score: 0/999] [inventory: 1 empty soju bottle]"'},
 ];
 let dlgIdx=0,inventory=['1x SOJU (empty)'],score=0;
 const HOTSPOTS=[
   {label:'Feathered Hat',look:'A magnificent hat. Gold brim, three peacock feathers. You sense destiny.',talk:'The hat says nothing. Hats rarely do.',take:'You take the feathered hat. +50 points.',pts:50,taken:false},
-  {label:'KAZOO_HAWK',look:'A shiba inu in full samurai armor. The gold kazoo at their belt is engraved "NRK-666".',talk:'KAZOO_HAWK: "The goose. Find it. The didgeridoo depends on it."',take:'You cannot pick up KAZOO_HAWK. You have considered it.'},
+  {label:'YUNG SOJU',look:'Beanie, dark jacket, says nothing. Watches everything. This is the player character.',talk:'YUNG SOJU: "..."',take:'You cannot pick up yourself.'},
+  {label:'NULLSOFT',look:'Pink hair, glasses, purple hoodie. Holding the feathered hat carefully. Keys player, NRK-2024.',talk:'NULLSOFT: "The gem in this hat is definitely magic. Or a prop. Probably a prop."',take:'NULLSOFT passes you the hat. +50 POINTS.'},
+  {label:'KAZOO_HAWK',look:'Shiba Inu in full red-and-gold samurai armor. The gold kazoo at the belt is engraved NRK-666.',talk:'KAZOO_HAWK: "The goose. Find it. The Didgeridoo of Doom depends on it."',take:'You cannot pick up KAZOO_HAWK. You have considered it.'},
   {label:'London Scene',look:'A lush park. Big Ben visible through the trees. Something smells like soju.',talk:'No one in particular responds.',take:'You cannot take the entire London park. Though you\'ve tried.'},
 ];
 let activeHotspot=null,vcOpen=false;
@@ -300,9 +303,9 @@ function endScene(){
 function setupHotspots(){
   const scene=document.getElementById('scene');
   const zones=[
-    {x:35,y:55,w:20,h:22},   // hat area (center, being held)
-    {x:55,y:25,w:30,h:65},   // KAZOO_HAWK (right)
-    {x:0,y:0,w:40,h:100},    // background left
+    {x:0,y:10,w:22,h:85},    // YUNG SOJU (left, beanie, back view)
+    {x:22,y:10,w:33,h:85},   // NULLSOFT (center, pink hair, holding hat)
+    {x:55,y:8,w:38,h:87},    // KAZOO_HAWK (right, samurai Shiba Inu)
   ];
   zones.forEach((z,i)=>{
     const d=document.createElement('div');

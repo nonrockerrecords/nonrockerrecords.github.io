@@ -185,9 +185,12 @@
       <div id="vision-text"></div>
     </div>
     <!-- exclamation marks over characters -->
-    <div class="exclaim" id="ex1" style="left:8%;top:8%;">!</div>
-    <div class="exclaim" id="ex2" style="left:45%;top:5%;animation-delay:1s;">!!</div>
-    <div class="exclaim" id="ex3" style="left:72%;top:10%;animation-delay:1.2s;">!</div>
+    <div class="exclaim" id="ex1" style="left:6%;top:6%;">!</div>
+    <div style="position:absolute;left:3%;top:88%;font-family:'VT323',monospace;font-size:clamp(10px,1.4vw,14px);color:#ff00cc;letter-spacing:.05em;opacity:.7;">YUNG SOJU</div>
+    <div class="exclaim" id="ex2" style="left:40%;top:4%;animation-delay:.7s;">!!</div>
+    <div style="position:absolute;left:33%;top:88%;font-family:'VT323',monospace;font-size:clamp(10px,1.4vw,14px);color:#00f0ff;letter-spacing:.05em;opacity:.7;">NULLSOFT</div>
+    <div class="exclaim" id="ex3" style="left:68%;top:6%;animation-delay:1.1s;">!</div>
+    <div style="position:absolute;left:65%;top:88%;font-family:'VT323',monospace;font-size:clamp(10px,1.4vw,14px);color:#39ff14;letter-spacing:.05em;opacity:.7;">KAZOO_HAWK</div>
     <!-- surprise lines (pixel manga style) -->
   </div>
   <!-- caption dialog -->
@@ -301,10 +304,11 @@ function showVision(){
 
 // DIALOGS
 const DIALOGS=[
-  {spk:'ALL THREE (simultaneously)',txt:'"..."'},
-  {spk:'YUNG SOJU',txt:'"That... that\'s the biggest kazoo I\'ve ever seen. It\'s the size of a didgeridoo."'},
-  {spk:'KAZOO_HAWK',txt:'"The crystal ball shows the truth. NRK-2024 goes to number one. The goose was a metaphor."'},
-  {spk:'STATUE.EXE',txt:'"[VISION_CONFIRMED] [kazoo_size: MAXIMUM] [surprise_level: 99/99] [quest: complete]"'},
+  {spk:'YUNG SOJU',txt:'[stares in silence. The beanie does not move.]'},
+  {spk:'NULLSOFT',txt:'"...the crystal ball is showing NRK-2024 at number one. The hat gem is GLOWING."'},
+  {spk:'KAZOO_HAWK',txt:'"The crystal ball never lies. NRK-2024 goes to number one. The goose was always a metaphor."'},
+  {spk:'KAZOO_HAWK',txt:'"The crystal ball never lies. NRK-2024 goes to number one. The goose was always a metaphor."'},
+  {spk:'YUNG SOJU',txt:'"That kazoo in the vision... it\'s the size of a didgeridoo."'},
   {spk:'ALL THREE',txt:'"...we\'re gonna need a bigger soju bottle."'},
 ];
 let dlgIdx=0,phase=0;
