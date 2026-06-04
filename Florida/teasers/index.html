@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLORIDA MAN — Teaser Concepts</title>
+<meta name="description" content="Five teaser/launch concepts for FLORIDA MAN, a trading-card RPG.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#143f3d; --teal-deep:#0b2524; --cream:#ece0c2; --cream-dim:#aebcb6;
+    --pink:#ff4a8b; --gold:#f2a93b; --sky:#7fd0c9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Archivo",system-ui,sans-serif; color:var(--cream); min-height:100vh; position:relative;
+    background:radial-gradient(140% 80% at 50% 0%, #1a4f4c 0%, var(--teal) 42%, var(--teal-deep) 100%)}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.36;z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");mix-blend-mode:overlay}
+
+  header{position:relative;z-index:2;text-align:center;padding:clamp(2.4rem,6vw,4rem) 1rem 1rem}
+  .kicker{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.46em;
+    font-size:clamp(.58rem,1.5vw,.76rem);color:var(--sky);margin-bottom:.7rem}
+  header h1{font-family:"Anton",sans-serif;text-transform:uppercase;line-height:.86;
+    font-size:clamp(2.6rem,10vw,6rem);color:var(--cream);text-shadow:0 1px 0 rgba(255,255,255,.16),0 14px 34px rgba(0,0,0,.45)}
+  header h1 span{color:var(--gold)}
+  header p{margin-top:1rem;color:var(--cream-dim);font-size:clamp(.92rem,2.2vw,1.12rem);max-width:48ch;margin-inline:auto;line-height:1.5}
+
+  main{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:clamp(1.4rem,4vw,2.6rem) clamp(1rem,4vw,2.4rem) clamp(3rem,7vw,5rem);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(1.1rem,2.4vw,1.8rem)}
+  .tile{position:relative;display:block;border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;
+    aspect-ratio:16/10;border:1px solid rgba(236,224,194,.16);box-shadow:0 16px 34px rgba(0,0,0,.45);
+    transition:transform .3s ease, box-shadow .3s ease, border-color .3s}
+  .tile:first-child{grid-column:1/-1;aspect-ratio:21/8}
+  .tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;
+    filter:saturate(1.05);transition:transform .5s ease}
+  .tile::before{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg, rgba(8,28,27,.25) 0%, rgba(8,28,27,.55) 45%, rgba(8,24,23,.92) 100%)}
+  .tile::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:color-dodge;opacity:0;
+    background:linear-gradient(115deg,transparent 30%, rgba(255,255,255,.5) 47%, rgba(255,74,139,.4) 52%, rgba(127,208,201,.4) 57%, transparent 72%);
+    background-size:250% 250%;transition:opacity .3s}
+  .tile:hover,.tile:focus-visible{transform:translateY(-8px);box-shadow:0 28px 50px rgba(0,0,0,.6);border-color:rgba(255,74,139,.45)}
+  .tile:hover img,.tile:focus-visible img{transform:scale(1.05)}
+  .tile:hover::after,.tile:focus-visible::after{opacity:.55;animation:sheen 1.4s linear}
+  @keyframes sheen{from{background-position:140% 0}to{background-position:-140% 0}}
+
+  .body{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:clamp(1.1rem,2.6vw,1.8rem)}
+  .num{position:absolute;top:clamp(.8rem,2vw,1.2rem);left:clamp(.9rem,2.2vw,1.4rem);
+    font-family:"Anton",sans-serif;font-size:clamp(1.6rem,4vw,2.6rem);color:rgba(236,224,194,.55);line-height:1}
+  .badge{position:absolute;top:clamp(1rem,2.4vw,1.4rem);right:clamp(.9rem,2.2vw,1.4rem);
+    font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.16em;
+    font-size:.62rem;padding:.28rem .6rem;border-radius:3px}
+  .badge.bold{background:var(--pink);color:#220914}
+  .badge.safe{background:var(--sky);color:#08201f}
+  .body h2{font-family:"Anton",sans-serif;text-transform:uppercase;line-height:.92;
+    font-size:clamp(1.5rem,3.4vw,2.4rem);color:var(--cream);text-shadow:0 2px 12px rgba(0,0,0,.6)}
+  .body p{margin-top:.5rem;color:var(--cream);max-width:52ch;font-size:clamp(.84rem,1.7vw,.98rem);line-height:1.45;
+    text-shadow:0 1px 8px rgba(0,0,0,.7)}
+  .open{margin-top:.8rem;display:inline-flex;align-items:center;gap:.45rem;font-family:"Saira Condensed",sans-serif;
+    font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:.74rem;color:var(--gold)}
+  .open .arr{transition:transform .25s} .tile:hover .open .arr{transform:translateX(5px)}
+
+  footer{position:relative;z-index:2;text-align:center;padding:0 1rem clamp(2.4rem,6vw,3.6rem);
+    font-family:"Saira Condensed",sans-serif;text-transform:uppercase;letter-spacing:.24em;font-size:.7rem;color:var(--cream-dim)}
+
+  :focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:14px}
+  @media (max-width:640px){.tile:first-child{aspect-ratio:16/11}}
+  @media (prefers-reduced-motion:reduce){
+    .tile,.tile img,.open .arr{transition:none}
+    .tile:hover,.tile:focus-visible{transform:none}
+    .tile:hover img{transform:none}
+    .tile:hover::after,.tile:focus-visible::after{animation:none;opacity:.25}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <p class="kicker">Teaser / Launch Concepts</p>
+    <h1>Florida Ma<span>n</span></h1>
+    <p>Five directions for the launch splash — three bold, two restrained. Open any one full-screen, then pick your favorite.</p>
+  </header>
+
+  <main>
+    <a class="tile" href="01-holographic-pack.html">
+      <img src="../Cards/gator-ron-card-concept-v1.png" alt="">
+      <span class="num">01</span><span class="badge bold">Bold</span>
+      <div class="body">
+        <h2>Holographic Pack</h2>
+        <p>The whole page is one giant foil card — a fanned hand of real cards with cursor parallax, holo shimmer, and a "Coming Soon" stamp. The signature piece.</p>
+        <span class="open">Open concept <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="tile" href="02-sunbleached-tabloid.html">
+      <img src="../characters/big-cal-mercy-base-v1.png" alt="">
+      <span class="num">02</span><span class="badge bold">Bold</span>
+      <div class="body">
+        <h2>Sun-Bleached Tabloid</h2>
+        <p>"The Florida Man Gazette" front page — halftone newsprint, screaming headline, taped evidence cards.</p>
+        <span class="open">Open concept <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="tile" href="03-neon-swamp-arcade.html">
+      <img src="../Cards/cheryl-vortex-card-concept-v1.png" alt="">
+      <span class="num">03</span><span class="badge bold">Bold</span>
+      <div class="body">
+        <h2>Neon Swamp Arcade</h2>
+        <p>Synthwave sunset, flickering neon sign, CRT scanlines and a VHS-glitch wordmark over an attract-mode card reel.</p>
+        <span class="open">Open concept <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="tile" href="04-clean-splash.html">
+      <img src="../Cards/darlene-bix-card-concept-v2-stats.png" alt="">
+      <span class="num">04</span><span class="badge safe">Safe</span>
+      <div class="body">
+        <h2>Clean Splash</h2>
+        <p>Restrained single-screen hero — wordmark, tagline, "Coming 2026," and a tidy five-card strip. Press &amp; investor friendly.</p>
+        <span class="open">Open concept <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="tile" href="05-card-showcase-grid.html">
+      <img src="../Cards/tammy-gulfstream-card-concept-v1.png" alt="">
+      <span class="num">05</span><span class="badge safe">Safe</span>
+      <div class="body">
+        <h2>Card Showcase Grid</h2>
+        <p>Let the art sell it — the full 14-card roster in a responsive gallery with stat readouts and hover shimmer.</p>
+        <span class="open">Open concept <span class="arr">→</span></span>
+      </div>
+    </a>
+  </main>
+
+  <footer>FLORIDA MAN — a trading-card RPG · Concept teasers · Coming 2026</footer>
+</body>
+</html>

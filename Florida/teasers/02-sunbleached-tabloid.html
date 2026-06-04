@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLORIDA MAN — The Gazette</title>
+<meta name="description" content="THE FLORIDA MAN GAZETTE — local lunatics launch a trading-card RPG. Authorities baffled. Coming 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#efe9da; --paper-dk:#e3dcc8; --ink:#1b1815; --ink-soft:#3a352e;
+    --pink:#d12e6a; --teal:#1d5b54;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"PT Serif",Georgia,serif; color:var(--ink);
+    background:#2a2622 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    padding:clamp(.6rem,3vw,2.4rem); line-height:1.45;
+  }
+  .paper{
+    position:relative; max-width:1040px; margin:0 auto; background:var(--paper);
+    padding:clamp(1rem,3.5vw,2.6rem) clamp(1rem,4vw,3rem) clamp(2.4rem,5vw,3.6rem);
+    box-shadow:0 24px 60px rgba(0,0,0,.6);
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(120,90,40,.06), transparent 30%),
+      radial-gradient(circle at 88% 78%, rgba(120,90,40,.07), transparent 32%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+  /* aged edges + torn bottom */
+  .paper::before{content:"";position:absolute;inset:0;pointer-events:none;
+    box-shadow:inset 0 0 60px rgba(90,70,30,.28), inset 0 0 12px rgba(60,45,20,.4);}
+  .paper::after{content:"";position:absolute;left:0;right:0;bottom:-13px;height:14px;
+    background:var(--paper);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='14'%3E%3Cpath d='M0 0 H80 V5 L74 9 L68 4 L60 10 L52 3 L44 9 L36 4 L28 10 L20 4 L12 9 L6 4 L0 8 Z' fill='black'/%3E%3C/svg%3E") repeat-x;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='14'%3E%3Cpath d='M0 0 H80 V5 L74 9 L68 4 L60 10 L52 3 L44 9 L36 4 L28 10 L20 4 L12 9 L6 4 L0 8 Z' fill='black'/%3E%3C/svg%3E") repeat-x;
+  }
+
+  /* ===== nameplate ===== */
+  .flag{border-bottom:3px double var(--ink); padding-bottom:.5rem; margin-bottom:.4rem}
+  .flag .top{display:flex; justify-content:space-between; align-items:flex-end;
+    font-family:"Oswald",sans-serif; text-transform:uppercase; letter-spacing:.06em;
+    font-size:clamp(.5rem,1.4vw,.7rem); color:var(--ink-soft); border-bottom:1px solid var(--ink); padding-bottom:.35rem; margin-bottom:.5rem;}
+  .flag h1{font-family:"UnifrakturCook",serif; font-weight:700; text-align:center;
+    font-size:clamp(2.4rem,9vw,6rem); line-height:.92; letter-spacing:.01em;}
+  .flag .sub{display:flex; justify-content:space-between; align-items:center;
+    font-family:"Oswald",sans-serif; text-transform:uppercase; letter-spacing:.18em;
+    font-size:clamp(.5rem,1.3vw,.68rem); margin-top:.4rem; color:var(--ink-soft);}
+  .flag .sub .pill{background:var(--pink); color:#fff; padding:.12rem .5rem; letter-spacing:.12em; border-radius:2px}
+
+  /* ===== headline ===== */
+  .lead{margin:1.1rem 0 .3rem}
+  .lead h2{font-family:"Oswald",sans-serif; font-weight:700; text-transform:uppercase;
+    line-height:.96; font-size:clamp(1.9rem,6.6vw,4.3rem); letter-spacing:-.01em;}
+  .lead .dek{font-style:italic; font-size:clamp(.95rem,2.4vw,1.4rem); margin-top:.5rem;
+    color:var(--ink-soft); border-bottom:2px solid var(--ink); padding-bottom:.7rem; max-width:46ch;}
+  .byline{font-family:"Special Elite",monospace; font-size:.74rem; letter-spacing:.04em;
+    margin:.55rem 0 1rem; color:var(--ink-soft);}
+  .byline b{color:var(--pink)}
+
+  /* ===== columns ===== */
+  .body{column-count:3; column-gap:1.8rem; column-rule:1px solid rgba(27,24,21,.35);
+    font-size:.96rem; text-align:justify; hyphens:auto;}
+  .body p{margin:0 0 .7rem}
+  .body p:first-of-type::first-letter{font-family:"Oswald",sans-serif; font-weight:700;
+    float:left; font-size:3.3em; line-height:.72; padding:.06em .12em 0 0; color:var(--pink);}
+  .xhead{font-family:"Oswald",sans-serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:.04em; font-size:1.02rem; margin:.2rem 0 .35rem; break-after:avoid;}
+  .figure{break-inside:avoid; margin:.2rem 0 .9rem; border:1px solid var(--ink); padding:.4rem; background:#0000000a}
+  .figure img{width:100%; display:block; filter:grayscale(.55) contrast(1.18) brightness(1.02);
+    mix-blend-mode:multiply;}
+  .figure figcaption{font-family:"Special Elite",monospace; font-size:.68rem; margin-top:.35rem; color:var(--ink-soft); line-height:1.3}
+
+  /* ===== taped evidence cards ===== */
+  .evidence{position:relative; margin:1.6rem 0 .4rem; padding-top:.6rem; border-top:2px solid var(--ink)}
+  .evidence .eh{font-family:"Special Elite",monospace; text-transform:uppercase; letter-spacing:.18em;
+    font-size:.7rem; color:var(--pink); margin-bottom:1.1rem; text-align:center}
+  .strip{display:flex; gap:clamp(.6rem,3vw,2.4rem); justify-content:center; flex-wrap:wrap}
+  .tape{position:relative; width:clamp(120px,20vw,170px); transition:transform .25s ease}
+  .tape img{width:100%; display:block; border:3px solid #fff; box-shadow:0 8px 18px rgba(0,0,0,.4)}
+  .tape:nth-child(1){transform:rotate(-5deg)} .tape:nth-child(2){transform:rotate(3deg) translateY(-8px)}
+  .tape:nth-child(3){transform:rotate(-2deg)} .tape:nth-child(4){transform:rotate(6deg) translateY(6px)}
+  .tape:hover{transform:rotate(0) translateY(-10px) scale(1.04); z-index:5}
+  .tape::before{content:""; position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotate(-3deg);
+    width:54px; height:24px; background:rgba(214,196,120,.55); box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .tape figcaption{font-family:"Special Elite",monospace; font-size:.62rem; text-align:center;
+    margin-top:.4rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft)}
+
+  /* coffee ring */
+  .ring{position:absolute; width:120px; height:120px; border-radius:50%; pointer-events:none;
+    border:9px solid rgba(96,58,20,.16); top:42%; right:4%; transform:rotate(20deg);
+    box-shadow:inset 0 0 12px rgba(96,58,20,.12);}
+  .ring.b{width:70px;height:70px;border-width:6px;top:8%;left:6%;}
+
+  .endrule{margin-top:1.4rem; border-top:3px double var(--ink); padding-top:.7rem;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.6rem;
+    font-family:"Oswald",sans-serif; text-transform:uppercase; letter-spacing:.1em; font-size:.74rem;}
+  .endrule .cta{background:var(--ink); color:var(--paper); padding:.4rem .8rem; letter-spacing:.16em}
+  .endrule a{color:var(--pink); text-decoration:none; border-bottom:2px solid var(--pink)}
+
+  :focus-visible{outline:3px solid var(--teal); outline-offset:2px}
+  @media (max-width:820px){.body{column-count:2}}
+  @media (max-width:520px){.body{column-count:1}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+  <article class="paper">
+    <header class="flag">
+      <div class="top">
+        <span>Weather: Humid, faintly threatening</span>
+        <span>Final Swamp Edition</span>
+        <span>Price: One (1) Scratch-Off</span>
+      </div>
+      <h1>The&nbsp;Florida&nbsp;Man&nbsp;Gazette</h1>
+      <div class="sub">
+        <span>Coming Soon-ber · MMXXVI · Vol. XIII</span>
+        <span class="pill">Stop Press</span>
+        <span>"All the news that fits, we print"</span>
+      </div>
+    </header>
+
+    <section class="lead">
+      <h2>Local Lunatics Launch Trading-Card RPG; Authorities Baffled</h2>
+      <p class="dek">Fourteen residents — including a sinkhole liaison, a pirate-radio host
+        and one (1) emotionally-supportive raccoon — have reportedly been "statted out" for tabletop play. Officials urge calm.</p>
+      <p class="byline">By <b>STAFF REPTILE</b> · filed from the bait-shop parking lot, somewhere off I-75</p>
+    </section>
+
+    <section class="body">
+      <p>In a development that surprised no one and concerned everyone, the entire cast of
+        local characters has been transcribed onto holographic cards and assigned numerical
+        values for <b>HEAT</b>, <b>CHAOS</b>, <b>CLOUT</b> and <b>LIABILITY</b>. Game, witnesses say, is afoot.</p>
+
+      <figure class="figure">
+        <img src="../characters/big-cal-mercy-base-v1.png" alt="Big Cal Mercy posing with a championship belt and a spatula at a cookout" loading="lazy" decoding="async" width="400" height="600">
+        <figcaption>EXHIBIT A — "Big Cal" Mercy defends his title beside an active sinkhole. Spatula recovered; belt disputed.</figcaption>
+      </figure>
+
+      <p>"He just rolled for <b>POWER</b> and the chair gave out," said a county sinkhole
+        liaison who declined to be named but did provide a clipboard. She is herself a card.
+        "I have a flamingo for an animal and an iced coffee I will not relinquish."</p>
+
+      <p class="xhead">Deck Includes Pastor, Meteorologist</p>
+      <p>Among the so-called "starter cast": a floating-chapel pastor (BYOB service Sundays),
+        a local meteorologist who reportedly stays "weather aware," and a cryptozoology
+        instructor whose felony icon is, alarmingly, a small flying saucer.</p>
+
+      <p>Marine biologists at the research station could not be reached, as one is currently
+        wading toward something glowing. "It's fine," she radioed. "It's probably fine."</p>
+
+      <p class="xhead">'A Deeply Unwell Game'</p>
+      <p>Designers describe the project only as "a tabletop RPG you play until somebody's
+        cousin gets involved." Each character carries an <b>ANIMAL</b>, a <b>FLAW</b>, and a
+        complimentary vintage motel key-tag of indeterminate origin.</p>
+
+      <p>The Waffle House guardian known only as "The Manager" issued the lone official
+        statement: she held up a coffee pot, made eye contact, and said nothing further.
+        It was, observers agreed, sufficient.</p>
+
+      <p>The Gazette will continue covering this story until the swamp reclaims our offices,
+        which our meteorologist confirms is "honestly any day now." <i>Roll for chaos.</i></p>
+    </section>
+
+    <section class="evidence" aria-label="Evidence photographs of cards">
+      <p class="eh">— Recovered Evidence Photographs —</p>
+      <div class="strip">
+        <figure class="tape"><img src="../Cards/reverend-skip-card-concept-v1.png" alt="Reverend Skip, Floating Chapel Pastor — card" loading="lazy" decoding="async" width="400" height="600"><figcaption>Subject: Rev. Skip</figcaption></figure>
+        <figure class="tape"><img src="../Cards/tammy-gulfstream-card-concept-v1.png" alt="Tammy Gulfstream, Local Meteorologist — card" loading="lazy" decoding="async" width="400" height="600"><figcaption>Subject: T. Gulfstream</figcaption></figure>
+        <figure class="tape"><img src="../Cards/lyle-quacken-card-concept-v1.png" alt="Lyle Quacken, Cryptozoology Instructor — card" loading="lazy" decoding="async" width="400" height="600"><figcaption>Subject: L. Quacken</figcaption></figure>
+        <figure class="tape"><img src="../Cards/judgmental-raccoon-support-animal-card-v1.png" alt="Judgmental Raccoon, Support Animal — card" loading="lazy" decoding="async" width="400" height="600"><figcaption>Subject: the raccoon</figcaption></figure>
+      </div>
+    </section>
+
+    <div class="ring" aria-hidden="true"></div>
+    <div class="ring b" aria-hidden="true"></div>
+
+    <footer class="endrule">
+      <span class="cta">Continued on Page 14 ▸</span>
+      <span>FLORIDA MAN — the trading-card RPG · Coming 2026</span>
+      <span><a href="#">floridaman.game</a></span>
+    </footer>
+  </article>
+</body>
+</html>

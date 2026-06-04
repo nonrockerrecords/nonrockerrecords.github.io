@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLORIDA MAN — Holographic Pack</title>
+<meta name="description" content="FLORIDA MAN — a deeply unwell trading-card RPG. Coming 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;700;900&family=Saira+Condensed:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  /* ====== FLORIDA MAN · shared design tokens ====== */
+  :root{
+    --fl-teal:#16403f; --fl-teal-deep:#0c2625; --fl-aqua:#2aa39a; --fl-sky:#6fc9c2;
+    --fl-pink:#ff3f86; --fl-rose:#d94f7d; --fl-gold:#f2a93b; --fl-orange:#d9722c;
+    --fl-cream:#ece0c2; --fl-ink:#181210; --fl-purple:#7d52c0;
+    --mx:50%; --my:40%;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Archivo",system-ui,sans-serif;
+    color:var(--fl-cream);
+    background:
+      radial-gradient(120% 90% at 50% 8%, #1c5450 0%, var(--fl-teal) 38%, var(--fl-teal-deep) 100%);
+    min-height:100vh; overflow-x:hidden; position:relative;
+    display:flex; align-items:center; justify-content:center;
+    padding:clamp(1rem,4vw,3rem);
+  }
+  /* film grain + halftone atmosphere */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+  body::after{ /* vignette */
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:2;
+    background:radial-gradient(120% 100% at 50% 35%, transparent 45%, rgba(0,0,0,.55) 100%);
+  }
+  /* cursor-tracked holographic foil wash */
+  .foil{
+    position:fixed; inset:0; z-index:3; pointer-events:none; mix-blend-mode:color-dodge; opacity:.16;
+    background:
+      radial-gradient(40% 40% at var(--mx) var(--my), rgba(255,255,255,.9), transparent 60%),
+      conic-gradient(from 0deg at var(--mx) var(--my),
+        #ff3f86, #f2a93b, #6fc9c2, #7d52c0, #ff3f86);
+    transition:opacity .4s ease;
+  }
+  .stage{ position:relative; z-index:5; width:min(960px,100%); text-align:center;
+    perspective:1400px; }
+
+  /* ====== card fan ====== */
+  .fan{
+    position:relative; height:clamp(340px,52vh,560px); margin:0 auto clamp(-2.4rem,-3vw,-3rem);
+    transform-style:preserve-3d; transition:transform .25s ease-out; will-change:transform;
+  }
+  .card{
+    position:absolute; left:50%; top:50%; width:clamp(170px,23vw,260px); aspect-ratio:2/3;
+    border-radius:14px; overflow:hidden; transform-origin:bottom center;
+    box-shadow:0 26px 48px rgba(0,0,0,.55), 0 4px 0 rgba(0,0,0,.4);
+    border:2px solid rgba(255,255,255,.14);
+    background:#0c2625; opacity:0; animation:dealIn .8s cubic-bezier(.2,.8,.25,1) forwards;
+  }
+  .card img{width:100%;height:100%;display:block;object-fit:cover}
+  .card::after{ /* per-card holo shimmer */
+    content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:color-dodge; opacity:.45;
+    background:linear-gradient(115deg, transparent 25%, rgba(255,255,255,.55) 47%, rgba(255,63,134,.4) 52%, rgba(111,201,194,.4) 57%, transparent 75%);
+    background-size:280% 280%; animation:sheen 6s linear infinite;
+  }
+  .card.c1{--rot:-21deg; --tx:-300px; --ty:34px; z-index:1; animation-delay:.05s}
+  .card.c2{--rot:-7deg;  --tx:-105px; --ty:-6px; z-index:2; animation-delay:.16s}
+  .card.c3{--rot:7deg;   --tx:105px;  --ty:-6px; z-index:3; animation-delay:.27s}
+  .card.c4{--rot:21deg;  --tx:300px;  --ty:34px; z-index:2; animation-delay:.38s}
+  .card.c1::after{animation-delay:-1s}.card.c2::after{animation-delay:-2.4s}
+  .card.c3::after{animation-delay:-3.8s}.card.c4::after{animation-delay:-5.1s}
+  @keyframes dealIn{
+    from{opacity:0; transform:translate(-50%,40%) rotate(0) scale(.7)}
+    to{opacity:1; transform:translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot))}
+  }
+  .card{transform:translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot))}
+  .card:hover{ z-index:9; transform:translate(calc(-50% + var(--tx)), calc(-50% + var(--ty) - 26px)) rotate(var(--rot)) scale(1.06); transition:transform .25s ease}
+  @keyframes sheen{from{background-position:140% 0}to{background-position:-140% 0}}
+
+  /* ====== wordmark banner ====== */
+  .lockup{position:relative; z-index:6}
+  .kicker{
+    font-family:"Saira Condensed",sans-serif; font-weight:800; letter-spacing:.42em;
+    text-transform:uppercase; font-size:clamp(.62rem,1.5vw,.8rem); color:var(--fl-sky);
+    margin-bottom:.7rem; opacity:0; animation:rise .6s .7s ease forwards;
+  }
+  .banner{
+    display:inline-block; position:relative; padding:.5rem 1.4rem .65rem;
+    background:linear-gradient(180deg,#f3e8cd,#e2d3ad);
+    border:3px solid #20100a; border-radius:10px;
+    box-shadow:inset 0 0 0 3px #c9b98e, inset 0 0 0 5px #20100a, 0 14px 30px rgba(0,0,0,.5);
+    transform:rotate(-1deg); opacity:0; animation:rise .7s .82s cubic-bezier(.2,.9,.2,1) forwards;
+  }
+  .banner h1{
+    font-family:"Anton",sans-serif; color:#1b1410; line-height:.84;
+    font-size:clamp(3.1rem,12vw,8.4rem); letter-spacing:.01em; text-transform:uppercase;
+    text-shadow:0 2px 0 rgba(255,255,255,.5), 0 -1px 0 rgba(0,0,0,.25);
+  }
+  .subtitle{
+    display:inline-block; margin-top:1.1rem; padding:.42rem 1.1rem;
+    background:var(--fl-pink); color:#1b0a14; border-radius:4px;
+    font-family:"Saira Condensed",sans-serif; font-weight:800; letter-spacing:.16em;
+    text-transform:uppercase; font-size:clamp(.72rem,2.1vw,1.05rem);
+    box-shadow:0 6px 16px rgba(255,63,134,.35); transform:rotate(-1deg);
+    opacity:0; animation:rise .6s 1s ease forwards;
+  }
+  .meta{
+    margin-top:1.5rem; font-family:"Saira Condensed",sans-serif; font-weight:600;
+    letter-spacing:.22em; text-transform:uppercase; font-size:clamp(.6rem,1.5vw,.78rem);
+    color:var(--fl-sky); opacity:0; animation:rise .6s 1.15s ease forwards;
+  }
+  .meta b{color:var(--fl-gold)}
+  .dot{color:var(--fl-rose); margin:0 .55em}
+
+  /* ====== coming soon stamp ====== */
+  .stamp{
+    position:fixed; top:clamp(1rem,4vw,2.4rem); right:clamp(1rem,4vw,2.6rem); z-index:7;
+    font-family:"Anton",sans-serif; text-transform:uppercase; color:#e23b5a;
+    border:.34rem solid #e23b5a; border-radius:8px; padding:.35rem .8rem .2rem;
+    font-size:clamp(.9rem,2.4vw,1.5rem); letter-spacing:.04em; line-height:1;
+    transform:rotate(11deg); opacity:.0;
+    box-shadow:0 0 0 .2rem rgba(226,59,90,.0);
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cfilter id='r'%3E%3CfeTurbulence baseFrequency='0.12' numOctaves='2'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+    animation:stampIn .5s 1.35s cubic-bezier(.2,1.6,.4,1) forwards;
+  }
+  .stamp small{display:block; font-size:.5em; letter-spacing:.22em; text-align:center; margin-top:.15em}
+
+  @keyframes rise{from{opacity:0;transform:translateY(22px) rotate(var(--r,0))}to{opacity:1}}
+  @keyframes stampIn{
+    0%{opacity:0;transform:rotate(11deg) scale(2.4)}
+    70%{opacity:.95}
+    100%{opacity:.92;transform:rotate(11deg) scale(1)}
+  }
+  .banner{--r:-1deg}.subtitle{--r:-1deg}
+
+  a.skip{position:absolute;left:-999px}
+  a.skip:focus{left:1rem;top:1rem;z-index:99;background:var(--fl-cream);color:#000;padding:.5rem .8rem;border-radius:6px}
+  :focus-visible{outline:3px solid var(--fl-gold); outline-offset:3px; border-radius:6px}
+
+  @media (max-width:560px){
+    .card.c1{--tx:-150px}.card.c2{--tx:-54px}.card.c3{--tx:54px}.card.c4{--tx:150px}
+    .stamp{font-size:1rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important}
+    .card,.kicker,.banner,.subtitle,.meta{opacity:1}
+    .card{transform:translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot))}
+    .stamp{opacity:.92}
+    .card::after{opacity:.25}
+  }
+</style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="foil" aria-hidden="true"></div>
+
+  <div class="stamp" aria-hidden="true">Coming<br>Soon<small>2026</small></div>
+
+  <main class="stage" id="main">
+    <div class="fan" id="fan" aria-label="A hand of Florida Man character cards">
+      <figure class="card c1"><img src="../Cards/gator-ron-card-concept-v1.png" alt="Gator Ron, Exotic Animal Deputy — Florida Man card" loading="eager" decoding="async" width="400" height="600"></figure>
+      <figure class="card c2"><img src="../Cards/the-manager-card-concept-v1.png" alt="The Manager, Waffle House Guardian — Florida Man card" loading="eager" decoding="async" width="400" height="600"></figure>
+      <figure class="card c3"><img src="../Cards/dj-rip-current-card-concept-v1.png" alt="DJ Rip Current, Pirate Radio Host — Florida Man card" loading="eager" decoding="async" width="400" height="600"></figure>
+      <figure class="card c4"><img src="../Cards/darlene-bix-card-concept-v2-stats.png" alt="Darlene Bix, County Sinkhole Liaison — Florida Man card" loading="eager" decoding="async" width="400" height="600"></figure>
+    </div>
+
+    <div class="lockup">
+      <p class="kicker">A Deeply Unwell Tabletop RPG</p>
+      <div class="banner"><h1>Florida&nbsp;Man</h1></div>
+      <div><span class="subtitle">Collect the Cast · Survive the State</span></div>
+      <p class="meta"><b>14-card</b> starter deck <span class="dot">◆</span> Roll for <b>chaos</b> <span class="dot">◆</span> Coming <b>2026</b></p>
+    </div>
+  </main>
+
+<script>
+  // cursor-tracked foil + gentle fan parallax (disabled under reduced-motion)
+  (function(){
+    const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(rm) return;
+    const root = document.documentElement, fan = document.getElementById('fan');
+    let raf;
+    window.addEventListener('pointermove', (e)=>{
+      const x = e.clientX / window.innerWidth, y = e.clientY / window.innerHeight;
+      root.style.setProperty('--mx', (x*100).toFixed(1)+'%');
+      root.style.setProperty('--my', (y*100).toFixed(1)+'%');
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(()=>{
+        fan.style.transform = `rotateX(${(0.5-y)*9}deg) rotateY(${(x-0.5)*12}deg)`;
+      });
+    }, {passive:true});
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLORIDA MAN — The Cast</title>
+<meta name="description" content="Meet the full cast of FLORIDA MAN, a 14-character trading-card RPG. Coming 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#143f3d; --teal-deep:#0b2524; --panel:#17474500; --cream:#ece0c2; --cream-dim:#aebcb6;
+    --pink:#ff4a8b; --gold:#f2a93b; --sky:#7fd0c9; --purple:#9a6cdf; --red:#ff5a52;
+    --s-2:1rem; --s-3:1.5rem; --s-4:2.5rem;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Archivo",system-ui,sans-serif; color:var(--cream);
+    background:radial-gradient(140% 80% at 50% 0%, #1a4f4c 0%, var(--teal) 40%, var(--teal-deep) 100%);
+    min-height:100vh; position:relative;
+  }
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.38;z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");mix-blend-mode:overlay}
+
+  /* ===== header band ===== */
+  header{position:relative; z-index:2; text-align:center; padding:clamp(2.4rem,6vw,4rem) 1rem clamp(1.6rem,4vw,2.4rem)}
+  .kicker{font-family:"Saira Condensed",sans-serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:.46em; font-size:clamp(.58rem,1.5vw,.76rem); color:var(--sky); margin-bottom:.8rem}
+  header h1{font-family:"Anton",sans-serif; text-transform:uppercase; line-height:.86;
+    font-size:clamp(2.8rem,11vw,6.5rem); letter-spacing:.01em; color:var(--cream);
+    text-shadow:0 1px 0 rgba(255,255,255,.16),0 14px 34px rgba(0,0,0,.45)}
+  header h1 span{color:var(--gold)}
+  .soon{display:inline-block; margin-top:1rem; background:var(--pink); color:#220914;
+    font-family:"Saira Condensed",sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.2em;
+    font-size:clamp(.66rem,1.7vw,.85rem); padding:.4rem 1rem; border-radius:4px; transform:rotate(-1deg);
+    box-shadow:0 8px 18px rgba(255,74,139,.3)}
+  header p.tag{margin-top:1.2rem; color:var(--cream); font-size:clamp(.95rem,2.2vw,1.18rem); max-width:44ch; margin-inline:auto; line-height:1.5}
+
+  /* ===== grid ===== */
+  main{position:relative; z-index:2; max-width:1240px; margin:0 auto;
+    padding:0 clamp(1rem,4vw,2.4rem) var(--s-4);
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:clamp(1rem,2.4vw,1.8rem)}
+  .card{background:linear-gradient(180deg, rgba(20,63,61,.7), rgba(11,37,36,.7));
+    border:1px solid rgba(236,224,194,.16); border-radius:14px; overflow:hidden;
+    box-shadow:0 14px 30px rgba(0,0,0,.4); display:flex; flex-direction:column;
+    opacity:0; transform:translateY(18px); transition:transform .3s ease, box-shadow .3s ease, border-color .3s}
+  .card.in{opacity:1; transform:none}
+  .card:hover{transform:translateY(-8px); box-shadow:0 26px 44px rgba(0,0,0,.55); border-color:rgba(255,74,139,.4)}
+  .frame{position:relative; aspect-ratio:2/3; overflow:hidden}
+  .frame img{width:100%;height:100%;object-fit:cover;display:block; transition:transform .4s ease}
+  .card:hover .frame img{transform:scale(1.05)}
+  .frame::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:color-dodge;opacity:0;
+    background:linear-gradient(115deg,transparent 30%, rgba(255,255,255,.5) 47%, rgba(255,74,139,.4) 52%, rgba(127,208,201,.4) 57%, transparent 72%);
+    background-size:250% 250%; transition:opacity .3s}
+  .card:hover .frame::after{opacity:.6; animation:sheen 1.4s linear}
+  @keyframes sheen{from{background-position:140% 0}to{background-position:-140% 0}}
+
+  .info{padding:.7rem .8rem .85rem}
+  .info h2{font-family:"Anton",sans-serif; text-transform:uppercase; font-size:1.18rem; letter-spacing:.01em; line-height:1; color:var(--cream)}
+  .info .role{font-family:"Saira Condensed",sans-serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:.08em; font-size:.66rem; color:var(--pink); margin-top:.25rem}
+  .stats{display:grid; grid-template-columns:1fr 1fr; gap:.3rem .7rem; margin-top:.6rem}
+  .stat{display:flex; align-items:center; justify-content:space-between; gap:.4rem}
+  .stat .lbl{font-family:"Saira Condensed",sans-serif; font-weight:600; text-transform:uppercase;
+    letter-spacing:.04em; font-size:.56rem; color:var(--cream-dim)}
+  .pips{display:flex; gap:2px}
+  .pip{width:7px;height:7px;border-radius:1px;background:rgba(236,224,194,.16)}
+  .pip.on{background:var(--c)}
+
+  /* ===== footer ===== */
+  footer{position:relative; z-index:2; text-align:center; padding:clamp(2rem,5vw,3.4rem) 1rem clamp(2.4rem,6vw,4rem);
+    border-top:1px solid rgba(236,224,194,.12); margin-top:1rem}
+  footer .fh{font-family:"Saira Condensed",sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.3em;
+    font-size:clamp(.7rem,1.8vw,.9rem); color:var(--sky)}
+  .social{display:flex; gap:1rem; justify-content:center; margin-top:1.2rem}
+  .social a{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;
+    border:1px solid rgba(236,224,194,.25); color:var(--cream); transition:transform .2s, background .2s, color .2s}
+  .social a:hover,.social a:focus-visible{background:var(--pink); color:#220914; transform:translateY(-3px); border-color:transparent}
+  .social svg{width:20px;height:20px;fill:currentColor}
+  footer .note{margin-top:1.4rem; font-family:"Saira Condensed",sans-serif; text-transform:uppercase; letter-spacing:.24em;
+    font-size:.68rem; color:var(--cream-dim)}
+  footer .note b{color:var(--gold)}
+
+  :focus-visible{outline:3px solid var(--gold); outline-offset:3px; border-radius:10px}
+  @media (prefers-reduced-motion:reduce){
+    .card{opacity:1;transform:none;transition:none}
+    .card:hover{transform:none}
+    .card:hover .frame img{transform:none}
+    .card:hover .frame::after{animation:none;opacity:.3}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <p class="kicker">Meet the Cast</p>
+    <h1>Florida Ma<span>n</span></h1>
+    <div><span class="soon">Coming 2026 · Starter Deck</span></div>
+    <p class="tag">Fourteen sun-cooked legends, statted for the table. Pick your menace and roll for chaos.</p>
+  </header>
+
+  <main id="grid" aria-label="Florida Man character cards"></main>
+
+  <footer>
+    <p class="fh">Follow for Launch</p>
+    <nav class="social" aria-label="Social links">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.12 1.38C1.36 2.67.95 3.34.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.12.66.66 1.33 1.07 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.12-1.38.66-.66 1.07-1.33 1.38-2.12.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.79-.72-1.46-1.38-2.12-.66-.66-1.33-1.07-2.12-1.38-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32A6.16 6.16 0 0012 5.84zm0 10.16a4 4 0 110-8 4 4 0 010 8zm7.85-10.4a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg></a>
+      <a href="#" aria-label="Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.32 4.37A19.8 19.8 0 0015.45 2.86a.07.07 0 00-.08.04c-.21.38-.44.87-.6 1.25a18.27 18.27 0 00-5.49 0c-.16-.39-.4-.87-.61-1.25a.08.08 0 00-.08-.04A19.74 19.74 0 003.68 4.37a.07.07 0 00-.03.03C.53 9.05-.32 13.58.1 18.06a.08.08 0 00.03.06 19.9 19.9 0 005.99 3.03.08.08 0 00.09-.03c.46-.63.87-1.29 1.23-1.99a.08.08 0 00-.04-.11c-.65-.25-1.27-.55-1.87-.89a.08.08 0 01-.01-.13c.13-.09.25-.19.37-.29a.08.08 0 01.08-.01c3.93 1.79 8.18 1.79 12.06 0a.08.08 0 01.08.01c.12.1.24.2.37.29a.08.08 0 01-.01.13c-.6.35-1.22.64-1.87.89a.08.08 0 00-.04.11c.36.7.78 1.36 1.23 1.99a.08.08 0 00.09.03 19.84 19.84 0 006-3.03.08.08 0 00.03-.06c.5-5.18-.84-9.67-3.55-13.66a.06.06 0 00-.03-.03zM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.96-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.96 2.42-2.16 2.42zm7.97 0c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.96-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42z"/></svg></a>
+      <a href="#" aria-label="X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.5h3.68l-8.04 9.19L24 22.5h-7.41l-5.8-7.58-6.64 7.58H.46l8.6-9.83L0 1.5h7.6l5.24 6.93L18.9 1.5zm-1.29 18.8h2.04L6.48 3.6H4.3l13.31 16.7z"/></svg></a>
+      <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.82a4.28 4.28 0 01-1.05-2.82h-3.3v13.4a2.6 2.6 0 01-2.6 2.4 2.6 2.6 0 01-2.6-2.6 2.6 2.6 0 013.2-2.53V8.3a5.9 5.9 0 00-6.5 5.86A5.9 5.9 0 009.65 20a5.9 5.9 0 005.9-5.9V8.6a7.5 7.5 0 004.4 1.41V6.7a4.28 4.28 0 01-3.35-.88z"/></svg></a>
+    </nav>
+    <p class="note">FLORIDA MAN — a trading-card RPG <b>·</b> 14 characters <b>·</b> floridaman.game</p>
+  </footer>
+
+<script>
+  const ROSTER = [
+    {n:"Gator Ron", r:"Exotic Animal Deputy", f:"gator-ron-card-concept-v1.png", s:[4,3,3,4]},
+    {n:"Darlene Bix", r:"County Sinkhole Liaison", f:"darlene-bix-card-concept-v2-stats.png", s:[3,5,2,5]},
+    {n:"The Manager", r:"Waffle House Guardian", f:"the-manager-card-concept-v1.png", s:[4,2,4,2]},
+    {n:"DJ Rip Current", r:"Pirate Radio Host", f:"dj-rip-current-card-concept-v1.png", s:[4,5,4,3]},
+    {n:"Cheryl Vortex", r:"Mini Golf Owner", f:"cheryl-vortex-card-concept-v1.png", s:[3,4,3,3]},
+    {n:"Big Cal Mercy", r:"Backyard Champion", f:"big-cal-mercy-card-concept-v1.png", s:[5,4,3,4]},
+    {n:"Mama Earl", r:"All-Night Bait Shop", f:"mama-earl-card-concept-v1.png", s:[2,2,3,2]},
+    {n:"Reverend Skip", r:"Floating Chapel Pastor", f:"reverend-skip-card-concept-v1.png", s:[2,3,3,2]},
+    {n:"Tammy Gulfstream", r:"Local Meteorologist", f:"tammy-gulfstream-card-concept-v1.png", s:[3,4,4,3]},
+    {n:"Vince Bellamy", r:"Timeshare Wizard", f:"vince-bellamy-card-concept-v1.png", s:[3,3,5,5]},
+    {n:"Beatrice Kelp", r:"Marine Biologist", f:"beatrice-kelp-card-concept-v1.png", s:[2,3,2,3]},
+    {n:"Lyle Quacken", r:"Cryptozoology Instructor", f:"lyle-quacken-card-concept-v1.png", s:[2,4,2,4]},
+    {n:"Mara Key", r:"Theme Park Night Tech", f:"mara-key-card-concept-v1.png", s:[3,3,2,3]},
+    {n:"Judgmental Raccoon", r:"Support Animal", f:"judgmental-raccoon-support-animal-card-v1.png", s:[2,5,2,5]},
+  ];
+  const STAT = [
+    {k:"Heat", c:"#ff5a52"}, {k:"Chaos", c:"#ff4a8b"}, {k:"Clout", c:"#f2a93b"}, {k:"Liability", c:"#9a6cdf"}
+  ];
+  const grid = document.getElementById('grid');
+  ROSTER.forEach(c=>{
+    const pips = STAT.map((st,i)=>{
+      const dots = Array.from({length:5},(_,d)=>`<span class="pip ${d<c.s[i]?'on':''}" style="--c:${st.c}"></span>`).join('');
+      return `<div class="stat"><span class="lbl">${st.k}</span><span class="pips" aria-label="${st.k} ${c.s[i]} of 5">${dots}</span></div>`;
+    }).join('');
+    const el = document.createElement('article');
+    el.className = 'card';
+    el.innerHTML = `
+      <div class="frame"><img src="../Cards/${c.f}" alt="${c.n}, ${c.r} — Florida Man card" loading="lazy" decoding="async" width="400" height="600"></div>
+      <div class="info">
+        <h2>${c.n}</h2>
+        <p class="role">${c.r}</p>
+        <div class="stats">${pips}</div>
+      </div>`;
+    grid.appendChild(el);
+  });
+  // reveal on scroll
+  const io = new IntersectionObserver((ents)=>{
+    ents.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+  }, {rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.card').forEach((c,i)=>{ c.style.transitionDelay=(i%5*40)+'ms'; io.observe(c); });
+</script>
+</body>
+</html>

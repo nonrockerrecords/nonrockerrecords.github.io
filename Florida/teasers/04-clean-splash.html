@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLORIDA MAN — Coming 2026</title>
+<meta name="description" content="FLORIDA MAN — a trading-card RPG of sun, swamp, and poor decisions. Coming 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#143f3d; --teal-deep:#0c2a29; --cream:#ece0c2; --cream-dim:#b9c3b9;
+    --pink:#ff4a8b; --gold:#f2a93b; --sky:#7fd0c9;
+    /* spacing scale (S2-style: spacing creates grouping, not dividers) */
+    --s-1:.5rem; --s-2:1rem; --s-3:1.5rem; --s-4:2.5rem; --s-5:4rem;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Archivo",system-ui,sans-serif; color:var(--cream);
+    background:radial-gradient(130% 100% at 50% 0%, #1a4f4c 0%, var(--teal) 45%, var(--teal-deep) 100%);
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:var(--s-4) var(--s-2); position:relative; overflow-x:hidden;
+  }
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");mix-blend-mode:overlay}
+
+  main{position:relative; z-index:2; width:min(940px,100%); text-align:center;
+    display:flex; flex-direction:column; align-items:center; gap:var(--s-3)}
+  .anim{opacity:0; transform:translateY(16px); animation:up .7s cubic-bezier(.2,.8,.2,1) forwards}
+  .anim.d1{animation-delay:.05s}.anim.d2{animation-delay:.18s}.anim.d3{animation-delay:.32s}
+  .anim.d4{animation-delay:.46s}.anim.d5{animation-delay:.6s}
+  @keyframes up{to{opacity:1;transform:none}}
+
+  .kicker{font-family:"Saira Condensed",sans-serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:.5em; font-size:clamp(.6rem,1.5vw,.78rem); color:var(--sky)}
+
+  /* wordmark — clean parchment letterpress, no heavy frame */
+  .wordmark{position:relative; display:inline-block; padding:.1em .12em; overflow:hidden}
+  .wordmark h1{font-family:"Anton",sans-serif; text-transform:uppercase; line-height:.86;
+    font-size:clamp(3.4rem,15vw,9.5rem); letter-spacing:.01em;
+    color:var(--cream); text-shadow:0 1px 0 rgba(255,255,255,.18), 0 -1px 0 rgba(0,0,0,.3), 0 18px 40px rgba(0,0,0,.4)}
+  .wordmark h1 span{color:var(--gold)}
+  /* single gentle foil sweep */
+  .wordmark::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(110deg,transparent 38%, rgba(255,255,255,.55) 50%, rgba(255,74,139,.4) 54%, transparent 64%);
+    transform:translateX(-120%); animation:sweep 3.6s 1s ease-in-out}
+  @keyframes sweep{0%{transform:translateX(-120%)}55%,100%{transform:translateX(120%)}}
+
+  .tagline{font-size:clamp(1rem,2.6vw,1.4rem); max-width:32ch; color:var(--cream); line-height:1.4}
+  .tagline em{color:var(--pink); font-style:normal; font-weight:600}
+
+  .release{display:inline-flex; align-items:center; gap:.6rem; font-family:"Saira Condensed",sans-serif;
+    font-weight:700; text-transform:uppercase; letter-spacing:.28em; font-size:clamp(.7rem,1.7vw,.9rem);
+    color:var(--gold); padding-bottom:.4rem; border-bottom:2px solid rgba(242,169,59,.4)}
+  .release .pulse{width:.55rem;height:.55rem;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(255,74,139,.6); animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,74,139,.55)}70%{box-shadow:0 0 0 12px rgba(255,74,139,0)}100%{box-shadow:0 0 0 0 rgba(255,74,139,0)}}
+
+  /* card strip */
+  .strip{display:flex; gap:clamp(.5rem,1.6vw,1rem); justify-content:center; flex-wrap:wrap; margin-top:var(--s-2)}
+  .thumb{position:relative; width:clamp(96px,13.5vw,150px); aspect-ratio:2/3; border-radius:10px; overflow:hidden;
+    border:1px solid rgba(236,224,194,.22); background:#0c2a29;
+    box-shadow:0 12px 24px rgba(0,0,0,.4); transition:transform .28s ease, box-shadow .28s ease;
+    text-decoration:none; color:inherit; display:block}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb .name{position:absolute; left:0; right:0; bottom:0; padding:1.4rem .5rem .45rem;
+    font-family:"Saira Condensed",sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    font-size:.72rem; text-align:center; color:var(--cream);
+    background:linear-gradient(transparent, rgba(8,24,23,.92)); opacity:0; transform:translateY(8px);
+    transition:opacity .25s, transform .25s}
+  .thumb:hover,.thumb:focus-visible{transform:translateY(-10px); box-shadow:0 22px 38px rgba(0,0,0,.55)}
+  .thumb:hover .name,.thumb:focus-visible .name{opacity:1; transform:none}
+
+  footer{margin-top:var(--s-3); font-family:"Saira Condensed",sans-serif; text-transform:uppercase;
+    letter-spacing:.24em; font-size:.7rem; color:var(--cream-dim)}
+  footer b{color:var(--sky)}
+
+  :focus-visible{outline:3px solid var(--gold); outline-offset:3px; border-radius:10px}
+  @media (prefers-reduced-motion:reduce){
+    .anim{opacity:1;transform:none;animation:none}
+    .wordmark::after,.release .pulse{animation:none}
+    .release .pulse{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+  <main>
+    <p class="kicker anim d1">A Trading-Card RPG</p>
+    <div class="wordmark anim d2"><h1>Florida<br>Ma<span>n</span></h1></div>
+    <p class="tagline anim d3">Fourteen characters. One cursed peninsula. Roll for <em>chaos</em>.</p>
+    <p class="release anim d4"><span class="pulse" aria-hidden="true"></span>Coming 2026</p>
+
+    <nav class="strip anim d5" aria-label="Meet a few of the characters">
+      <a class="thumb" href="#"><img src="../Cards/gator-ron-card-concept-v1.png" alt="Gator Ron, Exotic Animal Deputy" loading="lazy" decoding="async" width="400" height="600"><span class="name">Gator Ron</span></a>
+      <a class="thumb" href="#"><img src="../Cards/cheryl-vortex-card-concept-v1.png" alt="Cheryl Vortex, Mini Golf Owner" loading="lazy" decoding="async" width="400" height="600"><span class="name">Cheryl Vortex</span></a>
+      <a class="thumb" href="#"><img src="../Cards/the-manager-card-concept-v1.png" alt="The Manager, Waffle House Guardian" loading="lazy" decoding="async" width="400" height="600"><span class="name">The Manager</span></a>
+      <a class="thumb" href="#"><img src="../Cards/dj-rip-current-card-concept-v1.png" alt="DJ Rip Current, Pirate Radio Host" loading="lazy" decoding="async" width="400" height="600"><span class="name">DJ Rip Current</span></a>
+      <a class="thumb" href="#"><img src="../Cards/darlene-bix-card-concept-v2-stats.png" alt="Darlene Bix, County Sinkhole Liaison" loading="lazy" decoding="async" width="400" height="600"><span class="name">Darlene Bix</span></a>
+    </nav>
+
+    <footer>14-card starter deck <b>·</b> Tabletop RPG <b>·</b> floridaman.game</footer>
+  </main>
+</body>
+</html>

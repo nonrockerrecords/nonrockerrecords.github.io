@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLORIDA MAN — Neon Swamp Arcade</title>
+<meta name="description" content="FLORIDA MAN — insert coin. A neon-soaked trading-card RPG. Coming 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Press+Start+2P&family=Share+Tech+Mono&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cyan:#3df7e4; --magenta:#ff2e88; --purple:#a24bff; --gold:#ffcf4d;
+    --night:#140a26;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Oswald",sans-serif; color:#eafcff; overflow-x:hidden; position:relative;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    background:
+      radial-gradient(60% 40% at 50% 64%, rgba(255,46,136,.5), transparent 60%),
+      linear-gradient(180deg, #0a0420 0%, #2a0d49 38%, #6b1457 58%, #b3245f 66%, #140a26 67%, #140a26 100%);
+  }
+  /* retro split-sun on the horizon */
+  .sun{position:absolute; top:46%; left:50%; transform:translate(-50%,-50%); width:min(360px,62vw);
+    height:min(360px,62vw); border-radius:50%; z-index:0;
+    background:linear-gradient(180deg,#ffe14d,#ff7a3d 55%,#ff2e88);
+    -webkit-mask:repeating-linear-gradient(180deg,#000 0 14px, transparent 14px 17px, #000 17px 28px,
+      transparent 28px 33px,#000 33px 46px, transparent 46px 53px,#000 53px 70px,transparent 70px 80px,#000 80px 999px);
+    mask:repeating-linear-gradient(180deg,#000 0 14px, transparent 14px 17px, #000 17px 28px,
+      transparent 28px 33px,#000 33px 46px, transparent 46px 53px,#000 53px 70px,transparent 70px 80px,#000 80px 999px);
+    filter:drop-shadow(0 0 40px rgba(255,80,140,.6));
+  }
+  /* perspective grid floor */
+  .grid-floor{position:absolute; left:50%; bottom:0; transform:translateX(-50%); width:280vw; height:34vh; z-index:1;
+    background-image:linear-gradient(rgba(61,247,228,.55) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(61,247,228,.55) 2px, transparent 2px);
+    background-size:64px 64px; transform-origin:50% 0;
+    transform:translateX(-50%) perspective(340px) rotateX(74deg);
+    -webkit-mask:linear-gradient(180deg, transparent 0%, #000 40%); mask:linear-gradient(180deg, transparent 0%, #000 40%);
+    animation:floor 1.2s linear infinite;
+  }
+  @keyframes floor{to{background-position:0 64px}}
+  /* palm silhouettes */
+  .palm{position:absolute; bottom:24vh; z-index:2; font-size:clamp(8rem,22vw,18rem); line-height:1;
+    color:#0a0418; filter:drop-shadow(0 0 1px #2a0d49); user-select:none}
+  .palm.l{left:1%; transform:scaleX(-1)} .palm.r{right:1%}
+
+  /* ===== content ===== */
+  .wrap{position:relative; z-index:6; width:100%; max-width:1100px; padding:clamp(1.4rem,5vw,3rem) 1rem 2rem;
+    display:flex; flex-direction:column; align-items:center; text-align:center}
+  .tag{font-family:"Share Tech Mono",monospace; letter-spacing:.5em; text-transform:uppercase;
+    font-size:clamp(.6rem,1.6vw,.8rem); color:var(--cyan); text-shadow:0 0 8px var(--cyan); margin-bottom:1.1rem}
+
+  .neon{font-family:"Monoton",cursive; line-height:.94; text-transform:uppercase;
+    font-size:clamp(2.8rem,13vw,9rem); color:#ffeaf4; position:relative;
+    text-shadow:
+      0 0 6px #fff, 0 0 14px var(--magenta), 0 0 28px var(--magenta),
+      0 0 50px var(--magenta), 0 0 80px #c4185f;
+    animation:flicker 5.5s infinite;
+  }
+  .neon .l2{display:block; color:#eafcff;
+    text-shadow:0 0 6px #fff,0 0 14px var(--cyan),0 0 30px var(--cyan),0 0 60px #16b3a3;}
+  /* VHS chromatic glitch layers */
+  .neon::before,.neon::after{content:attr(data-text); position:absolute; inset:0; pointer-events:none}
+  .neon::before{color:#00fff0; mix-blend-mode:screen; animation:glitch 6s infinite}
+  .neon::after{color:#ff0066; mix-blend-mode:screen; animation:glitch 6s infinite reverse}
+
+  @keyframes flicker{
+    0%,18%,22%,25%,53%,57%,100%{opacity:1}
+    20%,23%,55%{opacity:.55} 21%,56%{opacity:.85}
+  }
+  @keyframes glitch{
+    0%,92%,100%{transform:translate(0,0); clip-path:inset(0 0 0 0); opacity:0}
+    93%{opacity:.8; transform:translate(-4px,1px); clip-path:inset(18% 0 52% 0)}
+    95%{opacity:.7; transform:translate(5px,-2px); clip-path:inset(60% 0 12% 0)}
+    97%{opacity:.8; transform:translate(-3px,0); clip-path:inset(35% 0 38% 0)}
+    99%{opacity:0; transform:translate(0,0)}
+  }
+
+  .marquee{position:relative; z-index:6; width:100%; margin:clamp(1.4rem,4vw,2.6rem) 0 1.4rem;
+    overflow:hidden; -webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);}
+  .track{display:flex; gap:1.1rem; width:max-content; animation:slide 48s linear infinite}
+  .marquee:hover .track{animation-play-state:paused}
+  .ncard{width:clamp(120px,16vw,176px); aspect-ratio:2/3; flex:0 0 auto; border-radius:10px; overflow:hidden;
+    border:2px solid var(--cyan); box-shadow:0 0 12px var(--cyan), inset 0 0 14px rgba(61,247,228,.25);
+    background:#0a0418; transition:transform .25s, box-shadow .25s}
+  .ncard:nth-child(even){border-color:var(--magenta); box-shadow:0 0 12px var(--magenta), inset 0 0 14px rgba(255,46,136,.25)}
+  .ncard img{width:100%;height:100%;object-fit:cover;display:block}
+  .ncard:hover{transform:translateY(-8px) scale(1.04)}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  .coin{font-family:"Press Start 2P",monospace; z-index:6; text-align:center; line-height:1.7;
+    font-size:clamp(.6rem,2.1vw,1rem); color:var(--gold); text-shadow:0 0 10px rgba(255,207,77,.8);
+    margin-top:.4rem}
+  .coin .blink{animation:blink 1.05s steps(1) infinite}
+  .coin small{display:block; font-size:.62em; color:var(--cyan); text-shadow:0 0 8px var(--cyan); margin-top:.9rem; letter-spacing:.05em}
+  @keyframes blink{50%{opacity:0}}
+
+  /* CRT scanlines + flicker + vignette overlay */
+  .crt{position:fixed; inset:0; z-index:20; pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    mix-blend-mode:multiply}
+  .crt::after{content:""; position:absolute; inset:0; background:radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0,0,0,.7));
+    animation:crtflick .12s steps(2) infinite}
+  @keyframes crtflick{0%{opacity:.92}50%{opacity:1}}
+
+  :focus-visible{outline:3px solid var(--gold); outline-offset:3px; border-radius:8px}
+  @media (max-width:560px){.palm{display:none}}
+  @media (prefers-reduced-motion:reduce){
+    .grid-floor,.neon,.neon::before,.neon::after,.track,.coin .blink,.crt::after{animation:none!important}
+    .neon::before,.neon::after{opacity:0}
+    .marquee{-webkit-mask:none;mask:none; overflow-x:auto}
+    .track{animation:none}
+  }
+</style>
+</head>
+<body>
+  <div class="sun" aria-hidden="true"></div>
+  <div class="grid-floor" aria-hidden="true"></div>
+  <div class="palm l" aria-hidden="true">🌴</div>
+  <div class="palm r" aria-hidden="true">🌴</div>
+
+  <main class="wrap">
+    <p class="tag">▶ Now Loading · Attract Mode</p>
+    <h1 class="neon" data-text="Florida Man" aria-label="Florida Man">Florida<span class="l2" data-text="Man">Man</span></h1>
+
+    <section class="marquee" aria-label="Character cards demo reel">
+      <div class="track">
+        <!-- set A -->
+        <div class="ncard"><img src="../Cards/gator-ron-card-concept-v1.png" alt="Gator Ron" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/cheryl-vortex-card-concept-v1.png" alt="Cheryl Vortex" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/dj-rip-current-card-concept-v1.png" alt="DJ Rip Current" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/mama-earl-card-concept-v1.png" alt="Mama Earl" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/the-manager-card-concept-v1.png" alt="The Manager" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/vince-bellamy-card-concept-v1.png" alt="Vince Bellamy" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/mara-key-card-concept-v1.png" alt="Mara Key" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/darlene-bix-card-concept-v2-stats.png" alt="Darlene Bix" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/beatrice-kelp-card-concept-v1.png" alt="Beatrice Kelp" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard"><img src="../Cards/lyle-quacken-card-concept-v1.png" alt="Lyle Quacken" loading="lazy" decoding="async" width="400" height="600"></div>
+        <!-- set B (duplicate for seamless loop) -->
+        <div class="ncard" aria-hidden="true"><img src="../Cards/gator-ron-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/cheryl-vortex-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/dj-rip-current-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/mama-earl-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/the-manager-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/vince-bellamy-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/mara-key-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/darlene-bix-card-concept-v2-stats.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/beatrice-kelp-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+        <div class="ncard" aria-hidden="true"><img src="../Cards/lyle-quacken-card-concept-v1.png" alt="" loading="lazy" decoding="async" width="400" height="600"></div>
+      </div>
+    </section>
+
+    <p class="coin">INSERT COIN<br><span class="blink">▸ PRESS START · COMING 2026 ◂</span>
+      <small>A deeply unwell trading-card RPG · 14 characters</small></p>
+  </main>
+
+  <div class="crt" aria-hidden="true"></div>
+</body>
+</html>
