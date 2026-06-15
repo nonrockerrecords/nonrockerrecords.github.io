@@ -1,2 +1,5 @@
 # Local Claude Code state / worktrees - never publish
 .claude/
+
+# Local testbed - experiments and iteration files, never published to GitHub Pages
+local/
