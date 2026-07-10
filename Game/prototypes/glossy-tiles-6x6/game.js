@@ -48,6 +48,16 @@ const GIGS = {
     unlockAbility: "nullsoft", // NULLSOFT
     rankUpgrade: "SOJU DEITY",
     confidence: 100,
+  },
+  6: {
+    id: 6,
+    name: "Gig 6: The Reaper's Repo (Locked Archive)",
+    moves: 45,
+    targets: { floppy: 40 },
+    unlockAbility: null, // final boss stage, all abilities already unlocked
+    rankUpgrade: "REMEMBERED",
+    confidence: 100,
+    boss: "repo-reaper", // shows the boss portrait on this gig's map card
   }
 };
 
@@ -61,9 +71,9 @@ const PIECES = {
 };
 const PIECE_KEYS = Object.keys(PIECES);
 
-// "Easy test" prototype: kazoo spawns ~15% more often than the other pieces
-// (weight 1.15 vs 1.0), makes gig 1's kazoo target land faster for quick playtesting.
-const PIECE_WEIGHTS = { statue: 1, kazoo: 1.15, didgeridoo: 1, soju: 1, floppy: 1, pick: 1 };
+// "Easy test" prototype: kazoo spawns ~15% more often (gig 2's target), and
+// guitar pick spawns ~20% more often (gig 1 Aces High's target, was too hard).
+const PIECE_WEIGHTS = { statue: 1, kazoo: 1.15, didgeridoo: 1, soju: 1, floppy: 1, pick: 1.20 };
 const PIECE_WEIGHT_TOTAL = PIECE_KEYS.reduce((sum, k) => sum + PIECE_WEIGHTS[k], 0);
 function pickWeightedPiece() {
   let roll = Math.random() * PIECE_WEIGHT_TOTAL;
@@ -325,7 +335,7 @@ function showScreen(screenId) {
 
 function updateMapScreen() {
   // Update campaign locks/unlocks
-  for (let l = 1; l <= 5; l++) {
+  for (let l = 1; l <= 6; l++) {
     const card = document.getElementById(`gig-${l}`);
     if (unlockedLevels.includes(l)) {
       card.classList.remove('locked');
