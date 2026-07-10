@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>nonrocker — Match-3 (Glossy 3D Tiles, 6x6 easy-test)</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Major+Mono+Display&family=Metal+Mania&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <!-- Glitch CRT Frame Wrapper -->
+  <div class="deck">
+    
+    <!-- Glitch Overlay Effects -->
+    <div class="vhs"></div>
+    <div class="noise"></div>
+    <div class="flash" id="flash"></div>
+
+    <!-- Global sound toggle -->
+    <button class="navbtn btn-sound" id="btn-sound" onclick="toggleMute()">SND ON</button>
+
+    <!-- ==========================================
+         SCREEN 1: BOOT / WELCOME
+         ========================================== -->
+    <section class="slide active" id="screen-welcome">
+      <div class="hero__warning">▓ PARENTAL ADVISORY ▓ EXISTENTIAL MATCH-3 ▓</div>
+      <div class="hero__bg"></div>
+
+      <!-- Horizontal displacement glitch bars (EPK signature) -->
+      <div class="slice slice--1"></div>
+      <div class="slice slice--2"></div>
+      <div class="slice slice--3"></div>
+
+      <span class="corrupt corrupt--1">MATCH_THREE_OR_DIE</span>
+      <span class="corrupt corrupt--2">SOJU.EXE STABLE</span>
+      <span class="corrupt corrupt--3">KAZOO POWER: 100%</span>
+      <span class="corrupt corrupt--4">REBRAND PROGRESS: 13%</span>
+      
+      <div class="hero__content">
+        <h1 class="glitch" id="title-logo" data-text="NONROCKER">NONROCKER</h1>
+        <p class="hero__sub">Soju · Kazoos · Dolphins · Digital Hardcore</p>
+        <p class="hero__tag">
+          Recorded somewhere between match-3 competence and cybernetic chaos. 
+          Match the kazoos, bottles, and vaporwave icons to survive the rebrand.
+        </p>
+        <div class="hero__cta">
+          <button class="navbtn-large" id="btn-start" onclick="showScreen('screen-map')">BEGIN REHEARSAL</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 2: GIG SELECT / CAMPAIGN MAP
+         ========================================= -->
+    <section class="slide" id="screen-map">
+      <div class="pixel">// 02_TOUR_CAMPAIGN.MAP</div>
+      <h2>Select Your Gig</h2>
+      <p class="slide__intro">Every gig matches another band member. Survive the set list to rank up.</p>
+
+      <div class="map-container">
+        <!-- Level Cards -->
+        <div class="gig-card active" id="gig-1" onclick="selectLevel(1)">
+          <div class="gig-status">// UNLOCKED</div>
+          <h3>Gig 1: Kilby Court (Basement)</h3>
+          <p>Goal: Clear 28 Kazoos in 30 moves.</p>
+          <div class="gig-reward">Ability: Unlocks Yung Soju's "Glitched Kazoo" (4-Match)</div>
+        </div>
+
+        <div class="gig-card locked" id="gig-2" onclick="selectLevel(2)">
+          <div class="gig-status">// LOCKED</div>
+          <h3>Gig 2: Dongmyo Soju Bar (Back Room)</h3>
+          <p>Goal: Clear 28 Didgeridoos &amp; 28 Soju Bottles in 35 moves.</p>
+          <div class="gig-reward">Ability: Unlocks DJ 막걸리's "Glitched Didgeridoo" (4-Match)</div>
+        </div>
+
+        <div class="gig-card locked" id="gig-3" onclick="selectLevel(3)">
+          <div class="gig-status">// LOCKED</div>
+          <h3>Gig 3: Gwangalli Underpass (Busan)</h3>
+          <p>Goal: Clear 35 Statue Heads in 38 moves.</p>
+          <div class="gig-reward">Ability: Unlocks STATUE.EXE's "Glitched Statue Head" (5-Match)</div>
+        </div>
+
+        <div class="gig-card locked" id="gig-4" onclick="selectLevel(4)">
+          <div class="gig-status">// LOCKED</div>
+          <h3>Gig 4: The Recycle Bin (Cyberspace)</h3>
+          <p>Goal: Score 12,000 points in 40 moves.</p>
+          <div class="gig-reward">Ability: Unlocks NULLSOFT's "Glitched Floppy Disk" (5-Match)</div>
+        </div>
+      </div>
+
+      <!-- Rank & Band Panel -->
+      <aside class="panel rank-panel">
+        <h4>// BAND_RANK</h4>
+        <div>Current Title: <span id="player-rank" style="color: var(--chaos-green)">ROADIE</span></div>
+        <div style="margin-top: 10px;">Confidence in Rebrand: <span id="confidence-percentage" style="color: var(--chaos-pink)">13%</span></div>
+        <div class="progress-mini"><div id="confidence-bar" style="width: 13%;"></div></div>
+        <div class="nav-back">
+          <button class="navbtn" onclick="showScreen('screen-welcome')">◀ BACK</button>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 3: GAMEPLAY DASHBOARD
+         ========================================== -->
+    <section class="slide" id="screen-game">
+      <div class="game-layout">
+
+        <!-- Slim Top HUD Bar -->
+        <header class="panel game-topbar">
+          <div class="hud-stat">
+            <span class="label">SCORE</span>
+            <span class="value" id="hud-score">00000</span>
+          </div>
+          <div class="hud-stat">
+            <span class="label">MOVES</span>
+            <span class="value" id="hud-moves">00</span>
+          </div>
+          <div class="hud-stat">
+            <span class="label">GIG</span>
+            <span class="value" id="hud-gig-name">GIG 1</span>
+          </div>
+
+          <!-- Level target chips (generated dynamically) -->
+          <div id="hud-targets" class="hud-targets"></div>
+
+          <!-- Band member power-up rail (compact icons) -->
+          <div class="member-rail">
+            <div class="member-card locked" id="member-soju" title="Yung Soju — Kazoo Blast (Row + Col)">
+              <div class="portrait" style="background-image: url('assets/soju_bottle.png');"></div>
+              <span class="status-indicator">LOCKED</span>
+            </div>
+            <div class="member-card locked" id="member-dj" title="DJ 막걸리 — Didgeridoo 3x3 Explosion">
+              <div class="portrait" style="background-image: url('assets/didgeridoo.png');"></div>
+              <span class="status-indicator">LOCKED</span>
+            </div>
+            <div class="member-card locked" id="member-statue" title="STATUE.EXE — Existential Color-Clear">
+              <div class="portrait" style="background-image: url('assets/statue_head.png');"></div>
+              <span class="status-indicator">LOCKED</span>
+            </div>
+            <div class="member-card locked" id="member-nullsoft" title="NULLSOFT — Floppy Disk Glitch Bomb">
+              <div class="portrait" style="background-image: url('assets/floppy_disk.png');"></div>
+              <span class="status-indicator">LOCKED</span>
+            </div>
+          </div>
+
+          <button class="btn-quit" onclick="quitGame()">QUIT</button>
+        </header>
+
+        <!-- Center: Game Board and Matrix Overlay -->
+        <main class="board-wrapper">
+          <!-- Giant Soju Bottle tipping visual -->
+          <div id="soju-bottle-pourier">
+            <img src="assets/soju_bottle.png" id="giant-soju-img" alt="Soju Bottle" />
+          </div>
+
+          <div class="board-container">
+            <!-- Grid goes here -->
+            <div id="game-board" class="board-grid"></div>
+            <!-- Matrix wash canvas overlay -->
+            <canvas id="matrix-canvas"></canvas>
+            <!-- Juice layer: floating score popups + combo callouts -->
+            <div id="fx-layer"></div>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 4: LEVEL OVER OVERLAYS (WIN / LOSE)
+         ========================================== -->
+    <div class="game-overlay" id="overlay-result">
+      <div class="panel result-panel">
+        <h2 id="result-title">GIG COMPLETE</h2>
+        <p class="mono" id="result-message">You survived the set list with minimal legal threats.</p>
+        
+        <table class="result-stats">
+          <tr>
+            <td>FINAL SCORE:</td>
+            <td id="result-score" style="color: var(--chaos-green)">00000</td>
+          </tr>
+          <tr>
+            <td>NEW RANK:</td>
+            <td id="result-rank" style="color: var(--chaos-amber)">BASSIST</td>
+          </tr>
+        </table>
+        
+        <div class="result-buttons">
+          <button class="navbtn-large" id="btn-next-action" onclick="resultNextAction()">CONTINUE TOUR</button>
+          <button class="navbtn-large" onclick="showScreen('screen-map')">BACK TO MAP</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chrome Footer Ticker -->
+    <div class="chrome ticker">
+      <div class="ticker__track" id="main-ticker">
+        ▓ REBRAND IN PROGRESS ▓ NONROCKER → TURBOLAG ▓ STATUS 13% ▓ EST. ARRIVAL: NEVER ▓ SOJU LEVEL: CRITICAL ▓ KAZOOS: 4 ▓ DIDGERIDOOS: 1 (broken) ▓ DOLPHINS SPOTTED: 1 ▓ © 2024 NONROCKER · ALL WRONGS RESERVED ▓
+      </div>
+    </div>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
