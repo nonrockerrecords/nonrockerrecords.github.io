@@ -5,34 +5,43 @@ const GRID_SIZE = 6;
 const GIGS = {
   1: {
     id: 1,
-    name: "Gig 1: Kilby Court (Basement)",
+    name: "Gig 1: Aces High Saloon (Salt Lake City)",
+    moves: 25,
+    targets: { pick: 25 },
+    unlockAbility: null, // warm-up set, no ability unlock yet
+    rankUpgrade: "OPENER",
+    confidence: 10,
+  },
+  2: {
+    id: 2,
+    name: "Gig 2: Kilby Court (Basement)",
     moves: 30,
     targets: { kazoo: 28 },
     unlockAbility: "soju", // Yung Soju
     rankUpgrade: "BASSIST",
     confidence: 25,
   },
-  2: {
-    id: 2,
-    name: "Gig 2: Dongmyo Soju Bar (Back Room)",
+  3: {
+    id: 3,
+    name: "Gig 3: Dongmyo Soju Bar (Back Room)",
     moves: 35,
     targets: { didgeridoo: 28, soju: 28 },
     unlockAbility: "dj", // DJ 막걸리
     rankUpgrade: "ENGINEER",
     confidence: 45,
   },
-  3: {
-    id: 3,
-    name: "Gig 3: Gwangalli Underpass (Busan)",
+  4: {
+    id: 4,
+    name: "Gig 4: Gwangalli Underpass (Busan)",
     moves: 38,
     targets: { statue: 35 },
     unlockAbility: "statue", // STATUE.EXE
     rankUpgrade: "VOCALIST",
     confidence: 75,
   },
-  4: {
-    id: 4,
-    name: "Gig 4: The Recycle Bin (Cyberspace)",
+  5: {
+    id: 5,
+    name: "Gig 5: The Recycle Bin (Cyberspace)",
     moves: 40,
     scoreGoal: 12000,
     targets: {},
@@ -316,7 +325,7 @@ function showScreen(screenId) {
 
 function updateMapScreen() {
   // Update campaign locks/unlocks
-  for (let l = 1; l <= 4; l++) {
+  for (let l = 1; l <= 5; l++) {
     const card = document.getElementById(`gig-${l}`);
     if (unlockedLevels.includes(l)) {
       card.classList.remove('locked');
@@ -352,7 +361,15 @@ function selectLevel(lvlId) {
   isGameOver = false;
   boardDisabled = false;
   clearSelection(); // no stale selection from a previous board
-  
+
+  // Re-hide the soju bottle so it stays a surprise for this fresh attempt.
+  const bottleReset = document.getElementById('soju-bottle-pourier');
+  if (bottleReset) {
+    bottleReset.classList.remove('revealed', 'tilting');
+    const pourVideoReset = document.getElementById('soju-pour-video');
+    if (pourVideoReset) pourVideoReset.pause();
+  }
+
   // Build targets
   levelTargets = {};
   if (GIGS[lvlId].targets) {
@@ -1056,8 +1073,22 @@ function spawnGlitchedPowerups(spawns) {
       setPos(el, spawn.r, spawn.c);
       document.getElementById('game-board').appendChild(el);
       tile.el = el;
+
+      playPowerUpBurst();
     }
   });
+}
+
+// Wan 2.2 generated burst clip, played once over the board whenever a
+// 4+/5-match spawns a power-up tile. Shared across all power-up types by
+// design (keeps the effect rare/special rather than per-piece asset bloat).
+function playPowerUpBurst() {
+  const video = document.getElementById('power-burst-video');
+  if (!video) return;
+  video.classList.add('playing');
+  video.currentTime = 0;
+  video.play().catch(() => {});
+  video.onended = () => video.classList.remove('playing');
 }
 
 // Gravity falls logic — animated. Surviving tiles keep their nodes and slide down
@@ -1253,11 +1284,18 @@ function checkGameStatus() {
 function triggerLevelWinSequence() {
   isGameOver = true;
   boardDisabled = true;
-  
-  // 1. Tilt Soju Bottle
+
+  // 1. Reveal + tilt the Soju Bottle (hidden all level; this is the payoff).
+  //    Play the Wan 2.2 pour clip — CSS swaps it in over the static PNG.
   const bottle = document.getElementById('soju-bottle-pourier');
+  bottle.classList.add('revealed');
   bottle.classList.add('tilting');
-  
+  const pourVideo = document.getElementById('soju-pour-video');
+  if (pourVideo) {
+    pourVideo.currentTime = 0;
+    pourVideo.play().catch(() => {}); // autoplay can be blocked pre-interaction; static img still shows
+  }
+
   // Pouring sound
   playSojuPourSound();
   
