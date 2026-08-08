@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nonrocker — POSTER MACHINE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+  :root{--pink:#ff00cc;--lime:#39ff14;--cyan:#00f0ff;--violet:#7a00ff;--amber:#ffb800;--bg:#06060a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--cyan);font-family:'VT323',monospace;font-size:21px;line-height:1.45;min-height:100vh;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.045) 0 1px,transparent 2px 4px)}
+  body::after{content:"";position:fixed;inset:0;z-index:81;pointer-events:none;box-shadow:inset 0 0 220px rgba(0,0,0,.92)}
+  #horizon{position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:.4;
+    background:linear-gradient(transparent 55%,rgba(122,0,255,.26) 100%),
+      repeating-linear-gradient(90deg,rgba(0,240,255,.15) 0 1px,transparent 1px 64px),
+      repeating-linear-gradient(0deg,rgba(255,0,204,.13) 0 1px,transparent 1px 64px)}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:7vh 22px 12vh;position:relative;z-index:2}
+  .kicker{font-family:'Major Mono Display',monospace;font-size:12px;letter-spacing:5px;color:var(--amber);display:block;margin-bottom:14px}
+  h1{font-family:'Press Start 2P',monospace;font-size:clamp(22px,5.4vw,50px);color:var(--pink);
+     text-shadow:4px 4px 0 var(--violet),-3px -3px 0 var(--cyan);line-height:1.3;margin-bottom:14px}
+  .lede{font-size:23px;color:#c6f0ff;max-width:60ch;margin-bottom:30px}
+
+  .console{border:2px solid var(--violet);background:#0a0a12;padding:20px;margin-bottom:26px}
+  label{font-family:'Major Mono Display',monospace;font-size:11px;letter-spacing:3px;color:var(--lime);display:block;margin-bottom:9px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  input[type=text]{flex:1 1 320px;background:#06060a;border:2px solid var(--cyan);color:var(--cyan);
+    font-family:'VT323',monospace;font-size:24px;padding:12px 14px;outline:none}
+  input[type=text]:focus{border-color:var(--pink);box-shadow:0 0 16px rgba(255,0,204,.4)}
+  button{background:var(--pink);color:#06060a;border:none;font-family:'Press Start 2P',monospace;
+    font-size:13px;padding:16px 24px;cursor:pointer;letter-spacing:1px}
+  button:disabled{background:#3a2a40;color:#7a7a90;cursor:not-allowed}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+  .chip{border:1px solid var(--violet);color:var(--lime);font-family:'Major Mono Display',monospace;
+    font-size:11px;letter-spacing:2px;padding:7px 12px;cursor:pointer}
+  .chip:hover{border-color:var(--pink);color:var(--pink)}
+
+  #status{font-family:'Major Mono Display',monospace;font-size:12px;letter-spacing:2px;color:var(--amber);min-height:1.5em;margin-top:16px}
+  #bar{height:6px;background:#141420;border:1px solid var(--violet);margin-top:10px}
+  #bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--pink),var(--lime))}
+
+  #stage{margin-top:30px;position:relative;min-height:120px}
+  #poster{max-width:100%;border:3px solid var(--pink);box-shadow:0 0 40px rgba(255,0,204,.45);display:none}
+  #meta{font-family:'Major Mono Display',monospace;font-size:11px;color:#6a6a80;letter-spacing:2px;margin-top:12px;display:none}
+  #dl{display:none;margin-top:14px}
+  #dl a{display:inline-block;border:2px solid var(--amber);color:var(--amber);padding:12px 22px;text-decoration:none;font-size:19px}
+
+  /* scanning grid shown while generating */
+  #scan{display:none;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(12,1fr);gap:3px;aspect-ratio:1;max-width:420px}
+  #scan div{background:var(--violet);opacity:.25}
+
+  .foot{margin-top:44px;font-family:'Major Mono Display',monospace;font-size:11px;color:#6a6a80;letter-spacing:2px;line-height:2}
+  a.back{color:var(--cyan)}
+</style>
+</head>
+<body>
+<div id="horizon"></div>
+<div class="wrap">
+  <span class="kicker">NRK // POSTER MACHINE · LIVE GENERATION</span>
+  <h1 data-t>Type a word</h1>
+  <p class="lede">The EPK stops being a document. Give it one word and it builds a nonrocker poster out of it, right now, on a GPU somewhere else.</p>
+
+  <div class="console">
+    <label>INPUT WORD OR PHRASE</label>
+    <div class="row">
+      <input id="word" type="text" placeholder="soju" maxlength="60" autocomplete="off">
+      <button id="go">GENERATE</button>
+    </div>
+    <div class="chips">
+      <span class="chip">soju</span><span class="chip">kazoo</span><span class="chip">dumpster</span>
+      <span class="chip">windows 95</span><span class="chip">didgeridoo</span><span class="chip">rebrand</span>
+      <span class="chip">cold pizza</span><span class="chip">the drummer</span>
+    </div>
+    <div id="status">idle. awaiting input.</div>
+    <div id="bar"><i></i></div>
+  </div>
+
+  <div id="stage">
+    <div id="scan"></div>
+    <img id="poster" alt="generated nonrocker poster">
+    <div id="meta"></div>
+    <div id="dl"><a id="dla" download="nonrocker-poster.webp">DOWNLOAD POSTER</a></div>
+  </div>
+
+  <div class="foot">
+    GENERATED LIVE VIA HUGGING FACE · FLUX.1-SCHNELL ON ZEROGPU<br>
+    FRONT-END: ANIME.JS V4 · NO API KEY IN THIS PAGE, THE SPACE IS PUBLIC<br>
+    <a class="back" href="variations.html">← back to variations</a>
+  </div>
+</div>
+
+<script type="module">
+import { animate, stagger, utils, text, createSpring }
+  from 'https://cdn.jsdelivr.net/npm/animejs@4/+esm';
+import { Client } from 'https://cdn.jsdelivr.net/npm/@gradio/client/+esm';
+
+/* ---------- title entrance ---------- */
+const t = text.splitText('h1[data-t]', { chars:{ wrap:true } });
+animate(t.chars, {
+  opacity:[0,1], translateY:[56,0], scale:[.4,1], rotate:[()=>utils.random(-40,40),0],
+  delay:stagger(38), duration:900, ease:createSpring({ stiffness:145, damping:11 })
+});
+animate('.lede, .console, .foot', { opacity:[0,1], translateY:[26,0], delay:stagger(90,{start:260}), duration:640, ease:'outExpo' });
+
+/* ---------- scanning grid ---------- */
+const scan = document.querySelector('#scan');
+for (let i=0;i<144;i++) scan.appendChild(document.createElement('div'));
+let scanAnim = null;
+function startScan(){
+  scan.style.display='grid';
+  scanAnim = animate('#scan div', {
+    opacity:[{to:1,duration:260},{to:.22,duration:520}],
+    background:[{to:'#ff00cc',duration:260},{to:'#7a00ff',duration:520}],
+    delay: stagger(26,{ grid:[12,12], from:'center' }),
+    loop:true, ease:'inOutQuad'
+  });
+}
+function stopScan(){ if(scanAnim) scanAnim.pause(); scan.style.display='none'; }
+
+/* ---------- status / progress ---------- */
+const statusEl = document.querySelector('#status');
+const barEl    = document.querySelector('#bar i');
+let barAnim = null;
+function say(msg){ statusEl.textContent = msg; }
+function barTo(pct, ms){ if(barAnim) barAnim.pause();
+  barAnim = animate(barEl, { width:pct+'%', duration:ms, ease:'outQuad' }); }
+
+/* ---------- house-style prompt wrapper ---------- */
+function buildPrompt(word){
+  /* Tested against FLUX.1-schnell: telling it "no text" does not work, it
+     renders garbled lettering anyway. Naming the one word we DO want gets
+     clean type and stops the junk. Verified with two live generations. */
+  return `A vaporwave Y2K gig poster for the band nonrocker, themed around "${word}". `
+    + `The ONLY text anywhere on the poster is the single word NONROCKER in bold clean type. `
+    + `No other words or letters. Bold retro 1990s screen-print poster art, `
+    + `neon magenta cyan and lime green on near-black, CRT scanline texture, halftone grain, `
+    + `glitch chromatic aberration, flat graphic, high contrast.`;
+}
+
+/* ---------- generation ---------- */
+const SPACE = 'black-forest-labs/FLUX.1-schnell';
+let app = null, busy = false;
+
+const wordEl = document.querySelector('#word');
+const goEl   = document.querySelector('#go');
+const poster = document.querySelector('#poster');
+const metaEl = document.querySelector('#meta');
+const dlEl   = document.querySelector('#dl');
+const dlA    = document.querySelector('#dla');
+
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click', ()=>{ wordEl.value = c.textContent; generate(); });
+});
+goEl.addEventListener('click', generate);
+wordEl.addEventListener('keydown', e=>{ if(e.key==='Enter') generate(); });
+
+async function generate(){
+  if (busy) return;
+  const word = (wordEl.value || 'soju').trim();
+  busy = true; goEl.disabled = true;
+  poster.style.display='none'; metaEl.style.display='none'; dlEl.style.display='none';
+
+  try{
+    startScan();
+    if (!app){ say('connecting to the gpu...'); barTo(18, 700); app = await Client.connect(SPACE); }
+    say(`generating "${word}". this queues behind strangers, be patient.`);
+    barTo(72, 9000);
+
+    const seed = Math.floor(Math.random()*2147483647);
+    const res = await app.predict('/infer', {
+      prompt: buildPrompt(word),
+      seed, randomize_seed:false,
+      width:1024, height:1024, num_inference_steps:4
+    });
+
+    const out = res.data[0];
+    const url = out?.url || out?.path || out;
+    if (!url) throw new Error('no image came back');
+
+    barTo(100, 400); say('done.');
+    poster.src = url;
+    poster.onload = ()=>{
+      stopScan();
+      poster.style.display='block';
+      animate(poster, { opacity:[0,1], scale:[.9,1], filter:['blur(18px)','blur(0px)'], duration:900, ease:'outExpo' });
+      metaEl.textContent = `WORD: ${word.toUpperCase()}  ·  SEED: ${seed}  ·  FLUX.1-SCHNELL  ·  4 STEPS`;
+      metaEl.style.display='block';
+      dlA.href = url; dlEl.style.display='block';
+      animate('#meta, #dl', { opacity:[0,1], translateY:[16,0], delay:stagger(80), duration:520 });
+    };
+  } catch(err){
+    stopScan(); barTo(0,300);
+    say('failed: ' + (err?.message || err) + ' — the public gpu may be busy. try again.');
+  } finally {
+    busy = false; goEl.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
