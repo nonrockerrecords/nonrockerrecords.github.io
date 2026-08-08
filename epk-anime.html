@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nonrocker — EPK // ANIME.JS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+  :root{--pink:#ff00cc;--lime:#39ff14;--cyan:#00f0ff;--violet:#7a00ff;--amber:#ffb800;--bg:#06060a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--cyan);font-family:'VT323',monospace;font-size:20px;overflow-x:hidden;line-height:1.45}
+  body::before{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.045) 0 1px,transparent 2px 4px)}
+  body::after{content:"";position:fixed;inset:0;z-index:91;pointer-events:none;box-shadow:inset 0 0 220px rgba(0,0,0,.92)}
+
+  /* grid horizon backdrop */
+  #horizon{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background:
+      linear-gradient(transparent 60%, rgba(122,0,255,.22) 100%),
+      repeating-linear-gradient(90deg, rgba(0,240,255,.16) 0 1px, transparent 1px 62px),
+      repeating-linear-gradient(0deg, rgba(255,0,204,.13) 0 1px, transparent 1px 62px);
+    transform-origin:50% 100%}
+
+  #boot{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+  #wordmark{width:min(90vw,820px);overflow:visible}
+  #wordmark text{font-family:'Press Start 2P',monospace;font-size:54px;fill:none;stroke:var(--lime);stroke-width:1.1}
+  #bootbar{width:min(70vw,420px);height:6px;background:#141420;border:1px solid var(--violet)}
+  #bootbar i{display:block;height:100%;width:0;background:var(--lime);box-shadow:0 0 14px var(--lime)}
+  #bootlog{font-family:'Major Mono Display',monospace;font-size:13px;color:var(--pink);letter-spacing:2px;min-height:1.4em}
+
+  #rail{position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,var(--violet),var(--pink),var(--lime));width:0;z-index:95;box-shadow:0 0 14px var(--pink)}
+  #ticker{position:fixed;top:0;left:0;right:0;z-index:80;background:#0b0b14;border-bottom:1px solid var(--violet);font-family:'Major Mono Display',monospace;font-size:12px;color:var(--amber);white-space:nowrap;padding:7px 0;letter-spacing:2px;opacity:0}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px;position:relative;z-index:2}
+  section{padding:16vh 0;position:relative}
+  h2{font-family:'Press Start 2P',monospace;font-size:clamp(15px,3.1vw,28px);color:var(--lime);margin-bottom:32px;line-height:1.55;text-shadow:0 0 12px rgba(57,255,20,.5)}
+  .kicker{font-family:'Major Mono Display',monospace;font-size:12px;letter-spacing:4px;color:var(--amber);margin-bottom:12px;display:block}
+  p{max-width:62ch;margin-bottom:16px;font-size:22px;color:#bfefff}
+  .hl{color:var(--pink)}
+
+  #hero{min-height:100vh;display:flex;align-items:center}
+  .hero-title{font-family:'Press Start 2P',monospace;font-size:clamp(26px,7.6vw,78px);color:var(--pink);text-shadow:4px 4px 0 var(--violet),-3px -3px 0 var(--cyan);line-height:1.28;margin-bottom:20px}
+  .hero-sub{font-size:27px;color:var(--cyan)}
+
+  /* ---- signature stagger grid ---- */
+  #gridwrap{margin-top:10px}
+  #grid{display:grid;grid-template-columns:repeat(22,1fr);gap:6px;max-width:760px}
+  .cell{aspect-ratio:1;background:var(--violet);border-radius:2px;opacity:.28;will-change:transform,opacity}
+  .gridhint{font-family:'Major Mono Display',monospace;font-size:11px;color:var(--pink);letter-spacing:2px;margin:14px 0 8px}
+
+  #members-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:10px}
+  .member{border:2px solid var(--violet);background:#0c0c16;padding:18px;cursor:grab;touch-action:none;will-change:transform}
+  .member:active{cursor:grabbing}
+  .member h3{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--amber);margin-bottom:9px;line-height:1.6}
+  .member .role{font-family:'Major Mono Display',monospace;font-size:10px;color:var(--lime);letter-spacing:2px;margin-bottom:11px}
+  .member p{font-size:19px;margin:0;color:#a9d8e8}
+
+  #morph-wrap{display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+  #morphsvg{width:200px;height:200px;flex:none}
+  #morphsvg #shape{fill:none;stroke:var(--pink);stroke-width:2.6;filter:drop-shadow(0 0 10px var(--pink))}
+  #morph-label{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--lime)}
+  #shapebank{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+
+  #path-stage{position:relative;height:300px;margin-top:14px}
+  #pathsvg{position:absolute;inset:0;width:100%;height:100%}
+  #pathsvg #route{fill:none;stroke:var(--violet);stroke-width:2;stroke-dasharray:5 7;opacity:.8}
+  #cassette{position:absolute;top:0;left:0;width:62px;height:40px;background:#12121f;border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;gap:8px}
+  #cassette i{width:11px;height:11px;border:2px solid var(--amber);border-radius:50%}
+
+  .meter{height:12px;background:#12121f;border:1px solid var(--violet);margin:9px 0 22px}
+  .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--pink),var(--lime))}
+  .stat-row{display:flex;gap:26px;flex-wrap:wrap;margin-top:24px}
+  .stat{flex:1 1 168px}
+  .stat b{font-family:'Press Start 2P',monospace;font-size:27px;color:var(--lime);display:block;margin-bottom:5px}
+  .stat span{font-family:'Major Mono Display',monospace;font-size:11px;color:var(--amber);letter-spacing:2px}
+
+  /* equaliser bars */
+  #eq{display:flex;align-items:flex-end;gap:5px;height:150px;margin-top:12px}
+  #eq i{flex:1;background:linear-gradient(180deg,var(--pink),var(--violet));height:12%;border-radius:2px 2px 0 0}
+
+  .quote{border-left:3px solid var(--pink);padding-left:20px;margin-bottom:26px;font-size:23px;color:#d8f4ff}
+  .quote cite{display:block;font-size:16px;color:var(--amber);font-style:normal;margin-top:7px}
+
+  footer{padding:15vh 0 10vh;text-align:center;border-top:1px solid var(--violet);position:relative;z-index:2}
+  .book{display:inline-block;border:2px solid var(--amber);color:var(--amber);padding:16px 32px;text-decoration:none;font-size:22px;box-shadow:0 0 20px rgba(255,184,0,.3)}
+  .built{margin-top:34px;font-family:'Major Mono Display',monospace;font-size:11px;color:#6a6a80;letter-spacing:2px;line-height:2}
+</style>
+</head>
+<body>
+
+<div id="horizon"></div>
+<div id="rail"></div>
+<div id="ticker"><span>▓ REBRAND IN PROGRESS ▓ NONROCKER → TURBOLAG ▓ STATUS: 13% ▓ EST. ARRIVAL: NEVER ▓ SOJU LEVEL: CRITICAL ▓ KAZOO COUNT: 4 ▓ DIDGERIDOO COUNT: 1 (cracked) ▓ DRUMMER: NOT FOUND ▓</span></div>
+
+<div id="boot">
+  <svg id="wordmark" viewBox="0 0 820 78"><text x="50%" y="56" text-anchor="middle">NONROCKER</text></svg>
+  <div id="bootbar"><i></i></div>
+  <div id="bootlog">initialising</div>
+</div>
+
+<!-- hidden morph targets: morphTo() needs real path elements -->
+<svg id="shapebank" viewBox="0 0 100 100">
+  <path id="m0" d="M20,20 L80,20 L80,80 L20,80 Z"></path>
+  <path id="m1" d="M50,12 C74,12 88,32 88,52 C88,76 70,90 50,90 C30,90 12,76 12,52 C12,32 26,12 50,12 Z"></path>
+  <path id="m2" d="M12,36 L88,36 L88,68 L12,68 Z"></path>
+  <path id="m3" d="M50,8 L62,38 L94,38 L68,58 L78,90 L50,71 L22,90 L32,58 L6,38 L38,38 Z"></path>
+</svg>
+
+<main>
+  <section id="hero"><div class="wrap">
+    <span class="kicker">ELECTRONIC PRESS KIT // NRK</span>
+    <h1 class="hero-title" data-split>nonrocker</h1>
+    <p class="hero-sub" data-split>soju · kazoos · didgeridoos</p>
+    <p style="margin-top:24px">Five-piece (allegedly) cyber-kazoo combo recorded somewhere between <span class="hl">competence and chaos</span>. No rules. Just noise. Please send help.</p>
+  </div></section>
+
+  <section id="gridsec"><div class="wrap">
+    <span class="kicker">00 // SIGNAL TEST</span>
+    <h2 data-split>Touch the grid</h2>
+    <div id="gridwrap">
+      <div class="gridhint">▸ CLICK ANY CELL. THE WAVE PROPAGATES FROM WHERE YOU HIT.</div>
+      <div id="grid"></div>
+    </div>
+  </div></section>
+
+  <section id="who"><div class="wrap">
+    <span class="kicker">01 // WHO, ALLEGEDLY</span>
+    <h2 data-split>Formed in a Salt Lake basement</h2>
+    <p>Somewhere between the second and third soju. The brief was simple: do not make rock. Make whatever the opposite of rock is, but with more kazoos.</p>
+    <p>The band operates at the intersection of vaporwave, digital hardcore, and the Sunday-morning feeling of waking up next to a Windows 95 install disc. Their debut LP <span class="hl">Soju, Kazoos and Didgeridoos</span> (NRK-2024) is engineered to crash whichever app you play it in.</p>
+    <p>Reviews have been swift, brief, and largely sent from legal departments.</p>
+  </div></section>
+
+  <section id="stats"><div class="wrap">
+    <span class="kicker">02 // SCRUBBED TO YOUR SCROLL</span>
+    <h2 data-split>Counting is a strong word</h2>
+    <div class="stat-row">
+      <div class="stat"><b data-count="5">0</b><span>MEMBERS (ALLEGED)</span><div class="meter"><i data-meter="100"></i></div></div>
+      <div class="stat"><b data-count="4">0</b><span>KAZOOS</span><div class="meter"><i data-meter="80"></i></div></div>
+      <div class="stat"><b data-count="1">0</b><span>DIDGERIDOOS (CRACKED)</span><div class="meter"><i data-meter="20"></i></div></div>
+      <div class="stat"><b data-count="13">0</b><span>REBRAND PERCENT</span><div class="meter"><i data-meter="13"></i></div></div>
+    </div>
+    <div id="eq"></div>
+  </div></section>
+
+  <section id="members"><div class="wrap">
+    <span class="kicker">03 // THE ACCUSED</span>
+    <h2 data-split>Five who agreed in writing</h2>
+    <div class="gridhint">▸ DRAG THEM. THROW THEM. THEY SPRING BACK.</div>
+    <div id="members-grid">
+      <div class="member"><h3>Yung Soju</h3><div class="role">KAZOO · SCREAMS · LIABILITY</div><p>Lead kazoo, occasional vocalist. Lives off convenience-store gimbap and three hours of sleep. Once finished a set inside the dumpster on the album cover.</p></div>
+      <div class="member"><h3>DJ 막걸리</h3><div class="role">DIDGERIDOO · DROP-INS</div><p>Sole keeper of the band's one cracked didgeridoo. Doubles as live audio engineer until track 4, after which the audio engineers itself.</p></div>
+      <div class="member"><h3>STATUE.EXE</h3><div class="role">FRONTPERSON · PLASTER</div><p>Made entirely of cracked plaster and unprocessed grief. Does not blink, does not encore. Allegedly weeps a fluid resembling soju on the third verse.</p></div>
+      <div class="member"><h3>NULLSOFT</h3><div class="role">SAMPLES · WIN95 · MS PAINT</div><p>Refuses to use any DAW released after 1998. Has not opened a file dialog since 2003.</p></div>
+      <div class="member"><h3>??? (the drummer)</h3><div class="role">STATUS: UNCONFIRMED</div><p>The bassist insists it is two words. The drummer insists there is no drummer. We are not taking questions at this time.</p></div>
+    </div>
+  </div></section>
+
+  <section id="morph"><div class="wrap">
+    <span class="kicker">04 // VISUAL EVIDENCE</span>
+    <h2 data-split>One object, several lies</h2>
+    <div id="morph-wrap">
+      <svg id="morphsvg" viewBox="0 0 100 100"><path id="shape" d="M20,20 L80,20 L80,80 L20,80 Z"></path></svg>
+      <div id="morph-label">FLOPPY DISK</div>
+    </div>
+  </div></section>
+
+  <section id="path"><div class="wrap">
+    <span class="kicker">05 // DISTRIBUTION</span>
+    <h2 data-split>The tape finds its own way out</h2>
+    <div id="path-stage">
+      <svg id="pathsvg" viewBox="0 0 800 270" preserveAspectRatio="none">
+        <path id="route" d="M20,225 C170,25 330,245 470,115 S700,35 780,180"></path>
+      </svg>
+      <div id="cassette"><i></i><i></i></div>
+    </div>
+  </div></section>
+
+  <section id="press"><div class="wrap">
+    <span class="kicker">06 // UNDER DURESS</span>
+    <h2 data-split>Swift, brief, legal</h2>
+    <blockquote class="quote">soju.exe has stopped responding.<cite>— every playback device, 2024</cite></blockquote>
+    <blockquote class="quote">Would you like to install delirium?<cite>— the album, unprompted</cite></blockquote>
+    <blockquote class="quote">Recorded somewhere between competence and chaos.<cite>— the band, admitting it</cite></blockquote>
+  </div></section>
+
+  <footer><div class="wrap">
+    <h2 data-split>Book us before we rebrand</h2>
+    <p style="margin:0 auto 28px">Alt casing under review: TurboLag · turbolag · TURBOLAG · turbo lag</p>
+    <a class="book" href="mailto:nonrockerrecords@proton.me">nonrockerrecords@proton.me</a>
+    <div class="built">BUILT WITH ANIME.JS V4 · SVG LINE-DRAW · TIMELINE · SPLITTEXT · STAGGER GRID<br>SCROLL OBSERVER · SVG MORPH · MOTION PATH · DRAGGABLE · SPRING PHYSICS</div>
+  </div></footer>
+</main>
+
+<script type="module">
+import { animate, createTimeline, createDraggable, createSpring,
+         stagger, onScroll, utils, svg, text }
+  from 'https://cdn.jsdelivr.net/npm/animejs@4/+esm';
+
+/* ---------- 1. BOOT: SVG line-drawing driven by a timeline ---------- */
+const drawable = svg.createDrawable('#wordmark text');
+const logs = ['initialising','mounting soju.sys','kazoo driver: ok','didgeridoo: cracked','drummer: not found','ready'];
+const logEl = document.querySelector('#bootlog');
+
+createTimeline({ defaults:{ ease:'outQuad' } })
+  .add(drawable, { draw:['0 0','0 1'], duration:1800, ease:'inOutQuad' })
+  .add('#wordmark text', { fill:'#39ff14', strokeWidth:0, duration:520 }, '-=320')
+  .add('#bootbar i', { width:'100%', duration:1600 }, 0)
+  .add('#bootlog', { opacity:[0,1], duration:200, onBegin(){
+      let i=0; const t=setInterval(()=>{ logEl.textContent = logs[i++] || 'ready'; if(i>=logs.length) clearInterval(t); },300);
+  }}, 0)
+  .add('#boot', { opacity:0, duration:620, onComplete(){
+      document.querySelector('#boot').style.display='none'; enter();
+  }}, '+=420');
+
+/* ---------- 2. ENTRANCE ---------- */
+function enter(){
+  animate('#ticker', { opacity:[0,1], translateY:[-26,0], duration:700, ease:'outExpo' });
+  animate('#ticker span', { translateX:['0%','-100%'], duration:28000, ease:'linear', loop:true });
+
+  const t = text.splitText('.hero-title', { chars:{ wrap:true } });
+  animate(t.chars, {
+    opacity:[0,1], translateY:[70,0], scale:[.35,1],
+    rotate:[()=>utils.random(-55,55),0],
+    delay:stagger(44), duration:1000,
+    ease:createSpring({ stiffness:140, damping:11 })
+  });
+
+  const s = text.splitText('.hero-sub', { chars:{ wrap:true } });
+  animate(s.chars, { opacity:[0,1], filter:['blur(10px)','blur(0px)'], delay:stagger(18,{ start:560 }), duration:640 });
+}
+
+/* ---------- 3. SIGNATURE STAGGER GRID ---------- */
+const COLS = 22, ROWS = 10;
+const grid = document.querySelector('#grid');
+for (let i=0; i<COLS*ROWS; i++){ const d=document.createElement('div'); d.className='cell'; grid.appendChild(d); }
+
+function wave(fromIndex){
+  animate('.cell', {
+    scale:[{ to:1.85, duration:200 },{ to:1, duration:640 }],
+    opacity:[{ to:1, duration:200 },{ to:.28, duration:640 }],
+    background:[{ to:'#ff00cc', duration:200 },{ to:'#7a00ff', duration:640 }],
+    delay: stagger(58, { grid:[COLS,ROWS], from:fromIndex }),
+    ease:'inOutQuad'
+  });
+}
+grid.addEventListener('click', e=>{
+  const cells=[...grid.children]; const i=cells.indexOf(e.target);
+  wave(i<0 ? 'center' : i);
+});
+/* idle pulse so it is alive before anyone clicks */
+setInterval(()=>wave('center'), 5200);
+
+/* ---------- 4. SCROLL: headings, copy, parallax ---------- */
+document.querySelectorAll('h2[data-split]').forEach(h=>{
+  const sp = text.splitText(h, { chars:{ wrap:true } });
+  animate(sp.chars, {
+    opacity:[0,1], translateY:[46,0], delay:stagger(24), duration:660, ease:'outExpo',
+    autoplay: onScroll({ target:h, enter:'bottom-=80 top', repeat:false })
+  });
+});
+
+animate('section p, .quote', {
+  opacity:[0,1], translateY:[28,0], duration:700, ease:'outQuad', delay:stagger(70),
+  autoplay: onScroll({ enter:'bottom-=60 top', repeat:false })
+});
+
+/* horizon grid drifts and tilts with scroll */
+animate('#horizon', {
+  translateY:['0%','16%'], scale:[1,1.35], opacity:[.5,.18],
+  ease:'linear', autoplay: onScroll({ sync:true })
+});
+
+/* ---------- 5. SCROLL-SCRUBBED counters, meters, equaliser ---------- */
+document.querySelectorAll('[data-count]').forEach(el=>{
+  animate(el, {
+    innerHTML:[0, +el.dataset.count], modifier: utils.round(0),
+    duration:1300, ease:'outQuad',
+    autoplay: onScroll({ enter:'bottom-=100 top', repeat:false })
+  });
+});
+document.querySelectorAll('[data-meter]').forEach(el=>{
+  animate(el, {
+    width:['0%', el.dataset.meter+'%'], duration:1150, ease:'outExpo',
+    autoplay: onScroll({ enter:'bottom-=100 top', repeat:false })
+  });
+});
+
+const eq = document.querySelector('#eq');
+for(let i=0;i<40;i++) eq.appendChild(document.createElement('i'));
+animate('#eq i', {
+  height:()=> utils.random(14,100)+'%',
+  duration:620, delay:stagger(45,{ from:'center' }),
+  loop:true, alternate:true, ease:'inOutSine'
+});
+
+/* ---------- 6. DRAGGABLE members with spring release ---------- */
+document.querySelectorAll('.member').forEach(card=>{
+  createDraggable(card, {
+    releaseEase: createSpring({ stiffness:105, damping:13 }),
+    onGrab(){ animate(card,{ scale:1.07, borderColor:'#ff00cc', duration:200 }); },
+    onRelease(){ animate(card,{ scale:1, borderColor:'#7a00ff', duration:440 }); }
+  });
+});
+animate('.member', {
+  opacity:[0,1], scale:[.85,1], translateY:[44,0],
+  delay:stagger(85), duration:720, ease:'outBack',
+  autoplay: onScroll({ enter:'bottom-=80 top', repeat:false })
+});
+
+/* ---------- 7. SVG MORPH (targets are real <path> elements) ---------- */
+const bank = ['#m0','#m1','#m2','#m3'];
+const names = ['FLOPPY DISK','SOJU BOTTLE','CASSETTE','NRK-666'];
+let si = 0;
+const label = document.querySelector('#morph-label');
+setInterval(()=>{
+  si = (si+1) % bank.length;
+  animate('#shape', { d: svg.morphTo(bank[si]), duration:950, ease:'inOutQuad' });
+  animate(label, { opacity:[0,1], translateX:[-16,0], duration:440,
+    onBegin(){ label.textContent = names[si]; } });
+}, 2400);
+
+/* ---------- 8. MOTION PATH ---------- */
+const route = svg.createMotionPath('#route');
+animate('#cassette', {
+  translateX: route.translateX,
+  translateY: route.translateY,
+  rotate:     route.rotate,
+  duration:6400, ease:'inOutSine', loop:true, alternate:true
+});
+
+/* ---------- 9. SCROLL PROGRESS RAIL ---------- */
+animate('#rail', { width:['0%','100%'], ease:'linear', autoplay: onScroll({ sync:true }) });
+</script>
+</body>
+</html>
