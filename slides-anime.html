@@ -1134,7 +1134,7 @@
 </div>
 
 <div class="chrome dots" id="dots"></div>
-<div class="chrome hint" id="hint">← / → · space · 1-9 · esc</div>
+<div class="chrome hint" id="hint">scroll · ← / → · space · 1-9 · esc</div>
 
 <div class="flash" id="flash"></div>
 
@@ -1384,6 +1384,39 @@ document.querySelectorAll('.slide h3').forEach(h3=>{
     onRelease(){ animate(card,{ scale:1, duration:420 }); }
   });
 });
+
+/* ---- MOUSE WHEEL / TRACKPAD NAV ----
+   The deck's go() lives inside its own closure, so rather than touch that
+   script we synthesise the arrow keydown its existing handler listens for.
+   One gesture = one slide: accumulate delta, fire once, then lock. ---- */
+let wheelAcc = 0, wheelLock = false, wheelReset = null;
+const WHEEL_THRESHOLD = 42;   // ignore small trackpad jitter
+const WHEEL_LOCK_MS   = 780;  // ~= wipe + entrance, stops runaway scrolling
+
+function navKey(key){
+  document.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles:true, cancelable:true }));
+}
+
+addEventListener('wheel', e=>{
+  /* let the lightbox and any real scrollable area behave normally */
+  const lb = document.querySelector('#lightbox');
+  if (lb && getComputedStyle(lb).display !== 'none' && lb.classList.contains('open')) return;
+  if (e.target.closest('#lightbox')) return;
+
+  e.preventDefault();
+  if (wheelLock) return;
+
+  wheelAcc += e.deltaY;
+  clearTimeout(wheelReset);
+  wheelReset = setTimeout(()=>{ wheelAcc = 0; }, 220);
+
+  if (Math.abs(wheelAcc) < WHEEL_THRESHOLD) return;
+
+  navKey(wheelAcc > 0 ? 'ArrowRight' : 'ArrowLeft');
+  wheelAcc = 0;
+  wheelLock = true;
+  setTimeout(()=>{ wheelLock = false; }, WHEEL_LOCK_MS);
+}, { passive:false });
 
 /* first slide */
 playSlide(slides[last], 1);
