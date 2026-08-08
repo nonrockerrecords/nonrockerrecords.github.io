@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nonrocker — FACEMELT MACHINE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+  :root{--pink:#ff00cc;--lime:#39ff14;--cyan:#00f0ff;--violet:#7a00ff;--amber:#ffb800;--bg:#06060a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--cyan);font-family:'VT323',monospace;font-size:21px;line-height:1.45;min-height:100vh}
+  body::before{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.045) 0 1px,transparent 2px 4px)}
+  body::after{content:"";position:fixed;inset:0;z-index:81;pointer-events:none;box-shadow:inset 0 0 220px rgba(0,0,0,.92)}
+  #horizon{position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:.35;
+    background:linear-gradient(transparent 55%,rgba(122,0,255,.26) 100%),
+      repeating-linear-gradient(90deg,rgba(0,240,255,.14) 0 1px,transparent 1px 64px),
+      repeating-linear-gradient(0deg,rgba(255,0,204,.12) 0 1px,transparent 1px 64px)}
+
+  .wrap{max-width:1060px;margin:0 auto;padding:6vh 22px 12vh;position:relative;z-index:2}
+  .kicker{font-family:'Major Mono Display',monospace;font-size:12px;letter-spacing:5px;color:var(--amber);display:block;margin-bottom:12px}
+  h1{font-family:'Press Start 2P',monospace;font-size:clamp(22px,5.2vw,46px);color:var(--pink);
+     text-shadow:4px 4px 0 var(--violet),-3px -3px 0 var(--cyan);line-height:1.3;margin-bottom:14px}
+  .lede{font-size:23px;color:#c6f0ff;max-width:62ch;margin-bottom:26px}
+
+  .panel{border:2px solid var(--violet);background:#0a0a12;padding:20px;margin-bottom:22px}
+  label{font-family:'Major Mono Display',monospace;font-size:11px;letter-spacing:3px;color:var(--lime);display:block;margin-bottom:9px}
+
+  #drop{border:2px dashed var(--cyan);padding:34px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+  #drop.hot{border-color:var(--pink);background:rgba(255,0,204,.07)}
+  #drop b{color:var(--pink)}
+  input[type=file]{display:none}
+
+  .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:18px}
+  input[type=range]{width:100%;accent-color:var(--pink);background:transparent}
+  .val{font-family:'Major Mono Display',monospace;font-size:11px;color:var(--amber);letter-spacing:2px}
+
+  .btns{display:flex;gap:11px;flex-wrap:wrap;margin-top:18px}
+  button{background:var(--pink);color:#06060a;border:none;font-family:'Press Start 2P',monospace;font-size:12px;padding:15px 20px;cursor:pointer;letter-spacing:1px}
+  button.ghost{background:transparent;color:var(--lime);border:2px solid var(--violet)}
+  button:disabled{background:#3a2a40;color:#7a7a90;cursor:not-allowed}
+
+  #stageWrap{margin-top:26px;position:relative;display:none}
+  #stage{position:relative;display:inline-block;max-width:100%;border:3px solid var(--pink);box-shadow:0 0 40px rgba(255,0,204,.4);overflow:hidden}
+  #shot{display:block;max-width:100%;height:auto;filter:url(#nrkMelt)}
+  #glitch{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:.55;
+    background:repeating-linear-gradient(0deg,rgba(255,0,204,.5) 0 2px,transparent 2px 7px)}
+  #scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.35) 0 1px,transparent 2px 4px)}
+
+  .foot{margin-top:34px;font-family:'Major Mono Display',monospace;font-size:11px;color:#6a6a80;letter-spacing:2px;line-height:2}
+  a{color:var(--cyan)}
+  .hidden-svg{position:absolute;width:0;height:0;overflow:hidden}
+</style>
+</head>
+<body>
+<div id="horizon"></div>
+
+<!-- the melt itself: turbulence displacing the image, plus a pink push -->
+<svg class="hidden-svg">
+  <filter id="nrkMelt" x="-20%" y="-20%" width="140%" height="160%" color-interpolation-filters="sRGB">
+    <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.006 0.021" numOctaves="3" seed="7" result="noise"/>
+    <feDisplacementMap id="disp" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" result="melted"/>
+    <feColorMatrix id="tint" in="melted" type="matrix" result="tinted"
+      values="1 0 0 0 0
+              0 1 0 0 0
+              0 0 1 0 0
+              0 0 0 1 0"/>
+    <feGaussianBlur id="soft" in="tinted" stdDeviation="0" result="soft"/>
+    <feMerge><feMergeNode in="soft"/></feMerge>
+  </filter>
+</svg>
+
+<div class="wrap">
+  <span class="kicker">NRK // FACEMELT MACHINE</span>
+  <h1 data-t>Melt your face</h1>
+  <p class="lede">Same melt as the facemelt collection, pointed at your photo instead of STATUE.EXE. It runs entirely in this tab. Nothing uploads anywhere, no GPU, no queue, no limit.</p>
+
+  <div class="panel">
+    <label>SOURCE IMAGE</label>
+    <div id="drop">
+      <b>DROP AN IMAGE HERE</b> or click to choose<br>
+      <span style="color:#6a6a80;font-size:18px">stays on your machine, never sent anywhere</span>
+      <input type="file" id="file" accept="image/*">
+    </div>
+
+    <div class="controls">
+      <div>
+        <label>MELT <span class="val" id="vMelt">0</span></label>
+        <input type="range" id="melt" min="0" max="220" value="0">
+      </div>
+      <div>
+        <label>DRIP LENGTH <span class="val" id="vDrip">21</span></label>
+        <input type="range" id="drip" min="4" max="60" value="21">
+      </div>
+      <div>
+        <label>SMEAR <span class="val" id="vBlur">0</span></label>
+        <input type="range" id="blur" min="0" max="8" value="0">
+      </div>
+      <div>
+        <label>PINK BURN <span class="val" id="vPink">0</span></label>
+        <input type="range" id="pink" min="0" max="100" value="0">
+      </div>
+    </div>
+
+    <div class="btns">
+      <button id="run">MELT IT</button>
+      <button id="reset" class="ghost">RESET</button>
+      <button id="save" class="ghost" disabled>DOWNLOAD PNG</button>
+    </div>
+  </div>
+
+  <div id="stageWrap">
+    <div id="stage">
+      <img id="shot" alt="your melted image">
+      <div id="glitch"></div>
+      <div id="scan"></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    100% CLIENT-SIDE · SVG TURBULENCE + DISPLACEMENT · NO UPLOAD, NO GPU, NO QUOTA<br>
+    <a href="variations.html">← back to variations</a>
+  </div>
+</div>
+
+<script type="module">
+import { animate, stagger, utils, text, createSpring }
+  from 'https://cdn.jsdelivr.net/npm/animejs@4/+esm';
+
+const t = text.splitText('h1[data-t]', { chars:{ wrap:true } });
+animate(t.chars, { opacity:[0,1], translateY:[54,0], scale:[.4,1],
+  rotate:[()=>utils.random(-38,38),0], delay:stagger(38), duration:880,
+  ease:createSpring({ stiffness:145, damping:11 }) });
+animate('.lede, .panel, .foot', { opacity:[0,1], translateY:[24,0], delay:stagger(85,{start:240}), duration:600, ease:'outExpo' });
+
+const $ = s => document.querySelector(s);
+const turb = $('#turb'), disp = $('#disp'), soft = $('#soft'), tint = $('#tint');
+const shot = $('#shot'), stageWrap = $('#stageWrap');
+const meltR = $('#melt'), dripR = $('#drip'), blurR = $('#blur'), pinkR = $('#pink');
+let srcDataUrl = null;
+
+/* ---- file in ---- */
+const drop = $('#drop'), fileIn = $('#file');
+drop.addEventListener('click', ()=> fileIn.click());
+['dragenter','dragover'].forEach(e=> drop.addEventListener(e, ev=>{ ev.preventDefault(); drop.classList.add('hot'); }));
+['dragleave','drop'].forEach(e=> drop.addEventListener(e, ev=>{ ev.preventDefault(); drop.classList.remove('hot'); }));
+drop.addEventListener('drop', ev=>{ const f = ev.dataTransfer.files[0]; if(f) load(f); });
+fileIn.addEventListener('change', ()=>{ if(fileIn.files[0]) load(fileIn.files[0]); });
+
+function load(file){
+  const r = new FileReader();
+  r.onload = () => {
+    srcDataUrl = r.result;
+    shot.src = srcDataUrl;
+    shot.onload = () => {
+      stageWrap.style.display = 'block';
+      $('#save').disabled = false;
+      animate(stageWrap, { opacity:[0,1], translateY:[26,0], duration:640, ease:'outExpo' });
+    };
+  };
+  r.readAsDataURL(file);
+}
+
+/* ---- filter wiring ---- */
+function apply(){
+  const m = +meltR.value, d = +dripR.value, b = +blurR.value, p = +pinkR.value/100;
+  disp.setAttribute('scale', m);
+  turb.setAttribute('baseFrequency', `0.006 ${(d/1000).toFixed(4)}`);
+  soft.setAttribute('stdDeviation', b);
+  /* push toward hot pink as PINK BURN rises */
+  tint.setAttribute('values',
+    `${1+p*0.6} 0 0 0 0
+     0 ${1-p*0.55} 0 0 0
+     0 0 ${1+p*0.35} 0 0
+     0 0 0 1 0`);
+  $('#vMelt').textContent = m; $('#vDrip').textContent = d;
+  $('#vBlur').textContent = b; $('#vPink').textContent = Math.round(p*100);
+}
+[meltR,dripR,blurR,pinkR].forEach(r=> r.addEventListener('input', apply));
+apply();
+
+/* ---- animate the melt ---- */
+$('#run').addEventListener('click', ()=>{
+  if (!srcDataUrl) { drop.click(); return; }
+  const target = { m:0, p:0 };
+  animate(target, {
+    m:[0,170], p:[0,72], duration:2600, ease:'inOutQuad',
+    onUpdate(){ meltR.value = target.m; pinkR.value = target.p; apply(); }
+  });
+  animate('#stage', { translateX:[0,-7,5,-3,0], duration:420, ease:'outQuad' });
+});
+$('#reset').addEventListener('click', ()=>{
+  meltR.value=0; pinkR.value=0; blurR.value=0; dripR.value=21; apply();
+});
+
+/* ---- download: rebuild the filtered image in an SVG, rasterise to canvas ---- */
+$('#save').addEventListener('click', async ()=>{
+  if (!srcDataUrl) return;
+  const w = shot.naturalWidth, h = shot.naturalHeight;
+  const m = +meltR.value, d = +dripR.value, b = +blurR.value, p = +pinkR.value/100;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <filter id="f" x="-20%" y="-20%" width="140%" height="160%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 ${(d/1000).toFixed(4)}" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="${m}" xChannelSelector="R" yChannelSelector="G" result="melted"/>
+      <feColorMatrix in="melted" type="matrix" values="${1+p*0.6} 0 0 0 0  0 ${1-p*0.55} 0 0 0  0 0 ${1+p*0.35} 0 0  0 0 0 1 0" result="tinted"/>
+      <feGaussianBlur in="tinted" stdDeviation="${b}"/>
+    </filter>
+    <image href="${srcDataUrl}" width="${w}" height="${h}" filter="url(#f)"/>
+  </svg>`;
+  const blob = new Blob([svg], { type:'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = ()=>{
+    const c = document.createElement('canvas'); c.width=w; c.height=h;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#06060a'; ctx.fillRect(0,0,w,h);
+    ctx.drawImage(img,0,0);
+    /* scanlines baked in so the download matches what you see */
+    ctx.globalAlpha = .28; ctx.fillStyle = '#000';
+    for (let y=0;y<h;y+=4) ctx.fillRect(0,y,w,1);
+    ctx.globalAlpha = 1;
+    URL.revokeObjectURL(url);
+    c.toBlob(bl=>{
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(bl);
+      a.download = 'nonrocker-facemelt.png';
+      a.click();
+    }, 'image/png');
+  };
+  img.onerror = ()=> alert('Could not rasterise. Try a smaller image.');
+  img.src = url;
+});
+</script>
+</body>
+</html>
