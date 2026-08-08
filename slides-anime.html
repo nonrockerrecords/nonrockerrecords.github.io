@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nonrocker — DECK // ANIME.JS OVERDRIVE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+  :root{--pink:#ff00cc;--lime:#39ff14;--cyan:#00f0ff;--violet:#7a00ff;--amber:#ffb800;--bg:#06060a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{background:var(--bg);color:var(--cyan);font-family:'VT323',monospace;font-size:21px;line-height:1.45}
+  body::before{content:"";position:fixed;inset:0;z-index:70;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0 1px,transparent 2px 4px)}
+  body::after{content:"";position:fixed;inset:0;z-index:71;pointer-events:none;box-shadow:inset 0 0 240px rgba(0,0,0,.94)}
+
+  #horizon{position:fixed;inset:-20%;z-index:0;pointer-events:none;opacity:.42;
+    background:
+      linear-gradient(transparent 55%, rgba(122,0,255,.28) 100%),
+      repeating-linear-gradient(90deg,rgba(0,240,255,.16) 0 1px,transparent 1px 64px),
+      repeating-linear-gradient(0deg,rgba(255,0,204,.14) 0 1px,transparent 1px 64px)}
+
+  /* full-screen grid wipe used as the transition */
+  #wipe{position:fixed;inset:0;z-index:60;pointer-events:none;display:grid;
+        grid-template-columns:repeat(16,1fr);grid-template-rows:repeat(9,1fr)}
+  #wipe div{background:var(--pink);opacity:0;will-change:transform,opacity}
+
+  #shake{position:fixed;inset:0;z-index:5;will-change:transform}
+  .slide{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:6vh 6vw}
+  .slide.on{display:flex}
+  .inner{max-width:1080px;width:100%}
+
+  .kicker{font-family:'Major Mono Display',monospace;font-size:12px;letter-spacing:5px;color:var(--amber);margin-bottom:16px;display:block}
+  h1{font-family:'Press Start 2P',monospace;font-size:clamp(26px,7.4vw,80px);color:var(--pink);
+     text-shadow:5px 5px 0 var(--violet),-4px -4px 0 var(--cyan);line-height:1.25;margin-bottom:18px}
+  h2{font-family:'Press Start 2P',monospace;font-size:clamp(16px,3.4vw,34px);color:var(--lime);
+     line-height:1.5;margin-bottom:26px;text-shadow:0 0 14px rgba(57,255,20,.5)}
+  p{max-width:60ch;font-size:23px;color:#c6f0ff;margin-bottom:14px}
+  .hl{color:var(--pink)}
+  .sub{font-size:27px;color:var(--cyan)}
+
+  .tags{display:flex;flex-wrap:wrap;gap:11px;margin-top:22px}
+  .tag{border:2px solid var(--violet);padding:9px 15px;font-family:'Major Mono Display',monospace;
+       font-size:12px;letter-spacing:2px;color:var(--lime)}
+
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:12px}
+  .fact{border-left:3px solid var(--pink);padding-left:14px}
+  .fact b{font-family:'Press Start 2P',monospace;font-size:27px;color:var(--lime);display:block;margin-bottom:6px}
+  .fact span{font-family:'Major Mono Display',monospace;font-size:11px;color:var(--amber);letter-spacing:2px}
+
+  .members{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:15px;margin-top:8px}
+  .m{border:2px solid var(--violet);background:#0c0c16;padding:15px;cursor:grab;touch-action:none;will-change:transform}
+  .m:active{cursor:grabbing}
+  .m h3{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--amber);margin-bottom:8px;line-height:1.6}
+  .m .role{font-family:'Major Mono Display',monospace;font-size:10px;color:var(--lime);letter-spacing:2px;margin-bottom:9px}
+  .m p{font-size:18px;margin:0;color:#a9d8e8}
+
+  table{width:100%;border-collapse:collapse;margin-top:6px}
+  td{padding:9px 6px;border-bottom:1px solid #1e1e30;font-size:21px}
+  td:first-child{color:var(--violet);font-family:'Major Mono Display',monospace;font-size:13px;width:52px}
+  td:last-child{text-align:right;color:var(--amber);width:74px}
+  .trk{color:#d8f4ff}
+
+  .quote{border-left:3px solid var(--pink);padding-left:19px;margin-bottom:22px;font-size:24px;color:#d8f4ff}
+  .quote cite{display:block;font-size:16px;color:var(--amber);font-style:normal;margin-top:6px}
+
+  .book{display:inline-block;border:2px solid var(--amber);color:var(--amber);padding:16px 32px;
+        text-decoration:none;font-size:23px;box-shadow:0 0 22px rgba(255,184,0,.32);margin-top:10px}
+
+  /* chrome */
+  #dots{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:65;display:flex;gap:9px}
+  #dots i{width:11px;height:11px;border:2px solid var(--violet);display:block;cursor:pointer}
+  #dots i.on{background:var(--pink);border-color:var(--pink);box-shadow:0 0 12px var(--pink)}
+  #hint{position:fixed;bottom:26px;right:26px;z-index:65;font-family:'Major Mono Display',monospace;
+        font-size:11px;color:#6a6a80;letter-spacing:2px}
+  #counter{position:fixed;top:22px;left:26px;z-index:65;font-family:'Press Start 2P',monospace;
+           font-size:13px;color:var(--lime)}
+  #rail{position:fixed;left:0;top:0;height:3px;width:0;z-index:66;
+        background:linear-gradient(90deg,var(--violet),var(--pink),var(--lime));box-shadow:0 0 14px var(--pink)}
+  #eq{position:fixed;bottom:0;left:0;right:0;height:76px;z-index:4;display:flex;align-items:flex-end;gap:3px;opacity:.5;padding:0 8px}
+  #eq i{flex:1;background:linear-gradient(180deg,var(--pink),var(--violet));height:10%}
+
+  /* motion-path flyer */
+  #flyer{position:fixed;top:0;left:0;z-index:63;width:54px;height:34px;background:#12121f;
+         border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;gap:7px;opacity:.9}
+  #flyer i{width:9px;height:9px;border:2px solid var(--amber);border-radius:50%}
+  #routesvg{position:fixed;inset:0;z-index:3;width:100%;height:100%;pointer-events:none;opacity:.28}
+  #routesvg path{fill:none;stroke:var(--violet);stroke-width:2;stroke-dasharray:4 9}
+
+  #morphsvg{width:110px;height:110px;flex:none}
+  #morphsvg #shape{fill:none;stroke:var(--pink);stroke-width:2.6;filter:drop-shadow(0 0 9px var(--pink))}
+  #shapebank{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+  .rowflex{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div id="horizon"></div>
+<svg id="routesvg" viewBox="0 0 1200 700" preserveAspectRatio="none"><path id="route" d="M-40,600 C240,120 520,660 760,300 S1080,80 1240,420"></path></svg>
+<div id="flyer"><i></i><i></i></div>
+<div id="eq"></div>
+<div id="wipe"></div>
+<div id="rail"></div>
+<div id="counter">01 / 09</div>
+<div id="hint">← → SPACE · CLICK DOTS · DRAG THE BAND</div>
+<div id="dots"></div>
+
+<svg id="shapebank" viewBox="0 0 100 100">
+  <path id="m0" d="M20,20 L80,20 L80,80 L20,80 Z"></path>
+  <path id="m1" d="M50,12 C74,12 88,32 88,52 C88,76 70,90 50,90 C30,90 12,76 12,52 C12,32 26,12 50,12 Z"></path>
+  <path id="m2" d="M12,36 L88,36 L88,68 L12,68 Z"></path>
+  <path id="m3" d="M50,8 L62,38 L94,38 L68,58 L78,90 L50,71 L22,90 L32,58 L6,38 L38,38 Z"></path>
+</svg>
+
+<div id="shake">
+
+  <section class="slide on"><div class="inner">
+    <span class="kicker">▓ PARENTAL ADVISORY ▓ EXISTENTIAL CONTENT ▓</span>
+    <h1 data-t>NONROCKER</h1>
+    <p class="sub" data-t>soju · kazoos · didgeridoos · digital audio</p>
+    <p style="margin-top:22px">Five-piece (allegedly) cyber-kazoo combo. Recorded somewhere between <span class="hl">competence and chaos</span>. The rebrand is in progress.</p>
+  </div></section>
+
+  <section class="slide"><div class="inner">
+    <span class="kicker">// 02_BIO.TXT</span>
+    <h2 data-t>Who, allegedly</h2>
+    <p>Formed in a Salt Lake basement between the second and third soju. The brief was simple: do not make rock. Make whatever the opposite is, but with more kazoos and slightly more remorse.</p>
+    <p>They operate at the intersection of vaporwave, digital hardcore, and the Sunday-morning feeling of waking up next to a Windows 95 install disc. <span class="hl">Soju, Kazoos and Didgeridoos</span> is engineered to crash whichever app you play it in.</p>
+  </div></section>
+
+  <section class="slide"><div class="inner">
+    <span class="kicker">// REBRAND_STATUS</span>
+    <h2 data-t>The rebrand is in arbitration</h2>
+    <div class="rowflex">
+      <svg id="morphsvg" viewBox="0 0 100 100"><path id="shape" d="M20,20 L80,20 L80,80 L20,80 Z"></path></svg>
+      <div>
+        <p style="margin:0">Current: <span class="hl">nonrocker</span></p>
+        <p style="margin:0">Pending: <span class="hl">Turbolag</span></p>
+        <p style="margin:0">Confidence: <span class="hl">moderate, declining</span></p>
+      </div>
+    </div>
+    <div class="facts" style="margin-top:26px">
+      <div class="fact"><b data-c="13">0</b><span>REBRAND PERCENT</span></div>
+    </div>
+  </div></section>
+
+  <section class="slide"><div class="inner">
+    <span class="kicker">// FACTS</span>
+    <h2 data-t>Counting is a strong word</h2>
+    <div class="facts">
+      <div class="fact"><b data-c="2024">0</b><span>FORMED · SALT LAKE CITY</span></div>
+      <div class="fact"><b data-c="5">0</b><span>MEMBERS (DEBATABLE)</span></div>
+      <div class="fact"><b data-c="4">0</b><span>KAZOOS OWNED</span></div>
+      <div class="fact"><b data-c="1">0</b><span>DIDGERIDOOS (CRACKED)</span></div>
+      <div class="fact"><b data-c="412">0</b><span>SOJU SHOTS LOGGED</span></div>
+    </div>
+  </div></section>
+
+  <section class="slide"><div class="inner">
+    <span class="kicker">// 03_MEMBERS.SYS</span>
+    <h2 data-t>The accused</h2>
+    <p style="margin-bottom:16px">Five people who agreed to this in writing. Two now claim they did not. <span class="hl">Drag them.</span></p>
+    <div class="members">
+      <div class="m"><h3>Yung Soju</h3><div class="role">KAZOO · SCREAMS · LIABILITY</div><p>Lives on gimbap and three hours of sleep. Once finished a set inside the dumpster on the album cover.</p></div>
+      <div class="m"><h3>DJ 막걸리</h3><div class="role">DIDGERIDOO · CRASHES</div><p>Keeper of the cracked didgeridoo. Engineer until track 4, after which the audio engineers itself.</p></div>
+      <div class="m"><h3>STATUE.EXE</h3><div class="role">VOX · MARBLE · GOO</div><p>Cracked plaster and unprocessed grief. Does not blink. Weeps fluid resembling soju.</p></div>
+      <div class="m"><h3>NULLSOFT</h3><div class="role">SAMPLES · WIN95</div><p>Refuses any DAW released after 1998. Sole proprietor of the band's Pepe collection.</p></div>
+      <div class="m"><h3>??? (drums)</h3><div class="role">UNCONFIRMED</div><p>Maintains they are not the drummer, and that there is no drummer. We have footage.</p></div>
+    </div>
+  </div></section>
+
+  <section class="slide"><div class="inner">
+    <span class="kicker">// 04_MUSIC.DAT</span>
+    <h2 data-t>Soju, Kazoos and Didgeridoos</h2>
+    <p style="margin-bottom:8px">NRK-2024 · 33⅓ RPM · Stereo · Soju Nation</p>
+    <table>
+      <tr><td>01</td><td class="trk">Metaldata <span style="color:#6a6a80">(opener)</span></td><td>3:11</td></tr>
+      <tr><td>02</td><td class="trk">Daehan Dreamscape</td><td>4:02</td></tr>
+      <tr><td>03</td><td class="trk">Seoul Sleepover</td><td>3:47</td></tr>
+      <tr><td>04</td><td class="trk">Kazoo Dreams</td><td>2:18</td></tr>
+      <tr><td>05</td><td class="trk">Windows 95 Love Theme</td><td>5:04</td></tr>
+    </table>
+  </div></section>
+
+  <section class="slide"><div class="inner">
+    <span class="kicker">// GENRE_TAGS</span>
+    <h2 data-t>Six words for the same mistake</h2>
+    <div class="tags">
+      <span class="tag">VAPORWAVE</span><span class="tag">DIGITAL HARDCORE</span><span class="tag">NU-KAZOO</span>
+      <span class="tag">DIDGERI-DOOM</span><span class="tag">SEOUL-FI</span><span class="tag">EXISTENTIAL LEAKAGE</span>
+    </div>
+  </div></section>
+
+  <section class="slide"><div class="inner">
+    <span class="kicker">// PRESS</span>
+    <h2 data-t>Swift, brief, legal</h2>
+    <blockquote class="quote">soju.exe has stopped responding.<cite>— every playback device, 2024</cite></blockquote>
+    <blockquote class="quote">REALITY.EXE NOT FOUND<cite>— slide 1, unprompted</cite></blockquote>
+    <blockquote class="quote">Recorded somewhere between competence and chaos.<cite>— the band, admitting it</cite></blockquote>
+  </div></section>
+
+  <section class="slide"><div class="inner" style="text-align:center">
+    <span class="kicker">// 09_CONTACT</span>
+    <h1 data-t>Book the band</h1>
+    <p style="margin:0 auto 20px">Book us before we rebrand.</p>
+    <a class="book" href="mailto:nonrockerrecords@proton.me">nonrockerrecords@proton.me</a>
+    <p style="margin:34px auto 0;font-family:'Major Mono Display',monospace;font-size:11px;color:#6a6a80;letter-spacing:2px">
+      ANIME.JS V4 · GRID-WIPE TRANSITIONS · SPLITTEXT · SPRING · MORPH · MOTION PATH · DRAGGABLE · SCREEN SHAKE
+    </p>
+  </div></section>
+
+</div>
+
+<script type="module">
+import { animate, createTimeline, createDraggable, createSpring,
+         stagger, utils, svg, text }
+  from 'https://cdn.jsdelivr.net/npm/animejs@4/+esm';
+
+const slides = [...document.querySelectorAll('.slide')];
+const N = slides.length;
+let cur = 0, busy = false;
+
+/* ---- build wipe grid (16x9) ---- */
+const wipe = document.querySelector('#wipe');
+for (let i=0;i<16*9;i++) wipe.appendChild(document.createElement('div'));
+const cells = [...wipe.children];
+
+/* ---- dots ---- */
+const dots = document.querySelector('#dots');
+slides.forEach((_,i)=>{ const d=document.createElement('i'); if(!i) d.classList.add('on');
+  d.addEventListener('click',()=>go(i)); dots.appendChild(d); });
+
+/* ---- ambient: equaliser, flyer on a motion path, horizon drift ---- */
+const eq = document.querySelector('#eq');
+for(let i=0;i<64;i++) eq.appendChild(document.createElement('i'));
+animate('#eq i', { height:()=>utils.random(8,100)+'%', duration:560,
+  delay:stagger(32,{from:'center'}), loop:true, alternate:true, ease:'inOutSine' });
+
+const route = svg.createMotionPath('#route');
+animate('#flyer', { translateX:route.translateX, translateY:route.translateY, rotate:route.rotate,
+  duration:14000, ease:'inOutSine', loop:true, alternate:true });
+
+animate('#horizon', { translateY:['-2%','2%'], duration:9000, loop:true, alternate:true, ease:'inOutSine' });
+
+/* ---- morph cycle on the rebrand slide ---- */
+const bank=['#m0','#m1','#m2','#m3'];
+let si=0;
+setInterval(()=>{ si=(si+1)%bank.length;
+  animate('#shape',{ d: svg.morphTo(bank[si]), duration:900, ease:'inOutQuad' }); }, 2200);
+
+/* ---- draggable band ---- */
+document.querySelectorAll('.m').forEach(card=>{
+  createDraggable(card, {
+    releaseEase: createSpring({ stiffness:105, damping:13 }),
+    onGrab(){ animate(card,{ scale:1.08, borderColor:'#ff00cc', duration:190 }); },
+    onRelease(){ animate(card,{ scale:1, borderColor:'#7a00ff', duration:430 }); }
+  });
+});
+
+/* ---- per-slide entrance ---- */
+function playSlide(el){
+  const t = el.querySelector('[data-t]');
+  if (t){
+    if (t.dataset.done !== '1'){ t.dataset.done='1'; t._split = text.splitText(t,{ chars:{wrap:true} }); }
+    animate(t._split.chars, {
+      opacity:[0,1], translateY:[70,0], scale:[.4,1],
+      rotate:[()=>utils.random(-50,50),0],
+      delay:stagger(34), duration:900,
+      ease:createSpring({ stiffness:145, damping:11 })
+    });
+  }
+  animate(el.querySelectorAll('.kicker, p, .quote, .tag, .fact, .m, tr, .book'), {
+    opacity:[0,1], translateY:[34,0], filter:['blur(7px)','blur(0px)'],
+    delay:stagger(52,{start:170}), duration:620, ease:'outExpo'
+  });
+  el.querySelectorAll('[data-c]').forEach(b=>{
+    animate(b,{ innerHTML:[0,+b.dataset.c], modifier:utils.round(0),
+                duration:1250, delay:340, ease:'outQuad' });
+  });
+}
+
+/* ---- the transition: grid wipe + screen shake + chroma kick ---- */
+function go(next){
+  if (busy || next===cur || next<0 || next>=N) return;
+  busy = true;
+  const dir = next>cur ? 1 : -1;
+  const from = dir>0 ? 'first' : 'last';
+
+  createTimeline()
+    /* screen shake */
+    .add('#shake', { translateX:[0,-16*dir,12*dir,-6*dir,0], translateY:[0,9,-7,4,0],
+                     duration:420, ease:'outQuad' }, 0)
+    /* wipe covers */
+    .add(cells, {
+      opacity:[0,1], scale:[.2,1],
+      background:['#ff00cc','#39ff14'],
+      delay: stagger(9,{ grid:[16,9], from }),
+      duration:260, ease:'outQuad'
+    }, 0)
+    /* swap under cover */
+    .call(()=>{
+        slides[cur].classList.remove('on');
+        slides[next].classList.add('on');
+        cur = next;
+        [...dots.children].forEach((d,i)=>d.classList.toggle('on', i===cur));
+        document.querySelector('#counter').textContent =
+          String(cur+1).padStart(2,'0')+' / '+String(N).padStart(2,'0');
+        animate('#rail', { width:((cur+1)/N*100)+'%', duration:520, ease:'outExpo' });
+        playSlide(slides[cur]);
+    }, 300)
+    /* wipe clears */
+    .add(cells, {
+      opacity:[1,0], scale:[1,.2],
+      delay: stagger(9,{ grid:[16,9], from: dir>0?'last':'first' }),
+      duration:300, ease:'inQuad',
+      onComplete(){ busy=false; }
+    }, 340);
+}
+
+/* ---- nav ---- */
+addEventListener('keydown', e=>{
+  if (e.key==='ArrowRight' || e.key===' '){ e.preventDefault(); go(cur+1); }
+  if (e.key==='ArrowLeft') go(cur-1);
+});
+addEventListener('click', e=>{ if(!e.target.closest('#dots,.m,a')) go(cur+1); });
+
+/* first slide */
+animate('#rail', { width:(1/N*100)+'%', duration:600, ease:'outExpo' });
+playSlide(slides[0]);
+</script>
+</body>
+</html>
