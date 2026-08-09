@@ -288,9 +288,9 @@ const H = () => cvs.height;
 // ═══════════════════════════════════════════════════════════════
 // IMAGE LOADING
 // ═══════════════════════════════════════════════════════════════
-const img1 = new Image(); img1.src = 'facemelt-premelt.png';   // clean marble
-const img2 = new Image(); img2.src = 'Facemelt.png';            // mid-melt
-const img3 = new Image(); img3.src = 'Facemelt-endmelt.png';    // pure skull
+const img1 = new Image(); img1.src = 'facemelt-premelt.png';       // clean marble
+const img2 = new Image(); img2.src = 'Facemelt.png';                // mid-melt
+const img3 = new Image(); img3.src = 'Facemelt-endmelt-v2.png';     // pure skull, same framing as img1/img2 (was Facemelt-endmelt.png: a different close-up composition entirely, which read as a jump cut)
 
 let imgsLoaded = 0;
 [img1,img2,img3].forEach(i => { i.onload = () => { imgsLoaded++; }; });
@@ -530,44 +530,93 @@ function drawActiveDrips(time) {
   }
 }
 
-// Transition 2: Facemelt → endmelt — neon bloom dissolve + marble crumble
+// Transition 2: Facemelt → endmelt-v2 — a real wave-wipe, same technique as
+// transition 1. This used to be a cross-dissolve between two DIFFERENT
+// compositions (a wide marble bust vs. an unrelated close-up skull), which
+// read as a swap rather than a continuation. Now that endmelt-v2 shares the
+// exact framing of img2 (same head position, same shoulders, same crown of
+// hair remnants), a directional wipe reads as the marble genuinely finishing
+// its melt, the same way transition 1 reads as it starting.
 function drawTrans23(trans, time) {
   const w = W(), h = H();
   ctx.globalAlpha = 1;
 
-  // ── Step 1: Draw endmelt below (at varying opacity) ──
-  // Starts invisible, gains presence as trans increases
-  ctx.globalAlpha = map(trans, 0, 0.5, 0, 1);
+  // ── Step 1: draw endmelt-v2 BELOW the wave (already fully melted) ──
+  // Wave starts near the crown (already mid-melt from phase 2) and sweeps
+  // down to the shoulders, continuing the same top-down motion as trans12.
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(0, h + 1);
+  for (let x = 0; x <= w; x += 3) {
+    ctx.lineTo(x, waveY(x, trans * (h * 1.05) - h * 0.02, time));
+  }
+  ctx.lineTo(w, h + 1);
+  ctx.closePath();
+  ctx.clip();
   ctx.drawImage(img3, 0, 0, w, h);
+  ctx.restore();
 
-  // ── Step 2: Draw Facemelt on top fading out ──
-  // BUT: apply a displacement-style blur as it exits (using globalCompositeOperation)
-  ctx.globalCompositeOperation = 'source-atop';
-  ctx.globalAlpha = map(trans, 0, 0.7, 0.95, 0);
+  // ── Step 2: draw Facemelt (mid-melt) ABOVE the wave (not yet finished) ──
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(0, -1);
+  ctx.lineTo(w, -1);
+  for (let x = w; x >= 0; x -= 3) {
+    ctx.lineTo(x, waveY(x, trans * (h * 1.05) - h * 0.02, time));
+  }
+  ctx.closePath();
+  ctx.clip();
   ctx.drawImage(img2, 0, 0, w, h);
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.globalAlpha = 1;
+  ctx.restore();
 
-  // ── Step 3: Neon bloom from skull center — the pink expands outward ──
-  // Skull lives at ~top-center in both images
-  const skullX  = w * 0.50;
-  const skullY  = h * 0.30;
-  const bloomR  = map(trans, 0, 0.85, w * 0.05, w * 1.8);
-  const bloomA  = Math.sin(trans * Math.PI) * 0.78;  // peaks at mid-transition
+  // ── Step 3: pink glow along the wave boundary (same as trans12) ──
+  const wBase = trans * (h * 1.05) - h * 0.02;
+  ctx.beginPath();
+  ctx.moveTo(0, waveY(0, wBase, time));
+  for (let x = 3; x <= w; x += 3) {
+    ctx.lineTo(x, waveY(x, wBase, time));
+  }
+  ctx.strokeStyle = `rgba(255,0,204,${0.85 * Math.sin(trans * Math.PI)})`;
+  ctx.lineWidth = 5 + 7 * Math.sin(trans * Math.PI);
+  ctx.shadowColor = '#ff00cc';
+  ctx.shadowBlur  = 22;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
 
-  const bloom = ctx.createRadialGradient(skullX, skullY, 0, skullX, skullY, bloomR);
-  bloom.addColorStop(0,    `rgba(255,180,240,${bloomA})`);
-  bloom.addColorStop(0.12, `rgba(255,0,204,${bloomA * 0.85})`);
-  bloom.addColorStop(0.30, `rgba(122,0,255,${bloomA * 0.55})`);
-  bloom.addColorStop(0.55, `rgba(80,0,180,${bloomA * 0.22})`);
-  bloom.addColorStop(1,    'rgba(5,0,8,0)');
-  ctx.fillStyle = bloom;
-  ctx.fillRect(0, 0, w, h);
+  // ── Step 4: neon bloom pulse riding the wave front (kept, toned down) ──
+  const bloomA = Math.sin(trans * Math.PI) * 0.4;
+  if (bloomA > 0.02) {
+    const bloom = ctx.createRadialGradient(w*0.5, wBase, 0, w*0.5, wBase, w*0.7);
+    bloom.addColorStop(0,    `rgba(255,180,240,${bloomA})`);
+    bloom.addColorStop(0.25, `rgba(255,0,204,${bloomA * 0.6})`);
+    bloom.addColorStop(1,    'rgba(5,0,8,0)');
+    ctx.fillStyle = bloom;
+    ctx.fillRect(0, 0, w, h);
+  }
 
-  // ── Step 4: Marble crumble particles ──
-  // Spawn them at the start of transition
-  if (trans > 0.05 && trans < 0.75 && Math.random() < 0.25) spawnMarble();
+  // ── Step 5: drip tendrils at the wave front (reuses the trans12 drips) ──
+  const waveProgress = trans;
+  drips.forEach((d, i) => {
+    d.alive = map(waveProgress, i*0.04, i*0.04+0.25, 0, 1);
+    if (d.alive <= 0.01) return;
+    const dx  = d.x * w;
+    const dy0 = waveY(dx, wBase, time);
+    const dLen = d.len * h * d.alive * 0.7 * (0.8 + 0.4 * Math.abs(Math.sin(time * d.speed + d.phase)));
+    const dy1  = dy0 + dLen;
+    const bulbR = (d.thick * 1.4) * d.alive;
+    const dpg = ctx.createLinearGradient(dx, dy0, dx, dy1);
+    dpg.addColorStop(0,   `rgba(255,0,204,${0.8 * d.alive})`);
+    dpg.addColorStop(1,   `rgba(255,0,204,0)`);
+    ctx.beginPath();
+    ctx.moveTo(dx - d.thick, dy0);
+    ctx.bezierCurveTo(dx - d.thick*1.2, dy0 + dLen*0.5, dx - d.thick*0.5, dy1, dx, dy1 + bulbR);
+    ctx.bezierCurveTo(dx + d.thick*0.5, dy1, dx + d.thick*1.2, dy0 + dLen*0.5, dx + d.thick, dy0);
+    ctx.fillStyle = dpg;
+    ctx.fill();
+  });
 
+  // ── Step 6: marble crumble particles, unchanged, still land nicely on a wipe ──
+  if (trans > 0.05 && trans < 0.75 && Math.random() < 0.22) spawnMarble();
   for (let i = marbleParticles.length - 1; i >= 0; i--) {
     const p = marbleParticles[i];
     p.x  += p.vx;
@@ -576,25 +625,22 @@ function drawTrans23(trans, time) {
     p.rot += p.rv;
     p.op -= 0.008;
     if (p.op <= 0 || p.y > h * 1.1) { marbleParticles.splice(i, 1); continue; }
-
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.rotate(p.rot);
     ctx.fillStyle = `rgba(${p.r},${p.g2},${p.b},${p.op})`;
-    // Small irregular rectangle chunk
     ctx.fillRect(-p.sz/2, -p.sz*0.35, p.sz, p.sz * 0.65);
     ctx.restore();
   }
 
-  // ── Step 5: Glitch slice artifacts during transition ──
-  const sliceA = Math.sin(trans * Math.PI) * 0.45;
-  if (sliceA > 0.05 && Math.random() < 0.3) {
+  // ── Step 7: glitch slice artifacts, unchanged ──
+  const sliceA = Math.sin(trans * Math.PI) * 0.4;
+  if (sliceA > 0.05 && Math.random() < 0.28) {
     const sy    = Math.random() * h;
     const sh    = 3 + Math.random() * 12;
-    const shift = (Math.random() - 0.5) * 40;
+    const shift = (Math.random() - 0.5) * 36;
     ctx.save();
     ctx.globalAlpha = sliceA * Math.random();
-    // Grab a strip and shift it
     const strip = ctx.getImageData(0, sy, w, sh);
     ctx.putImageData(strip, shift, sy);
     ctx.restore();
@@ -609,8 +655,10 @@ function drawPhase3(t, time) {
   const w = W(), h = H();
 
   // Skull glow — strong, pulsing
+  // Centre moved from 0.45h to 0.32h: endmelt-v2 shares img1/img2's framing,
+  // so the skull now sits where the head does in those frames, not lower.
   const pulse = 0.5 + 0.5 * Math.sin(time * 2.4);
-  const sg = ctx.createRadialGradient(w*0.5, h*0.45, 0, w*0.5, h*0.45, w*0.55);
+  const sg = ctx.createRadialGradient(w*0.5, h*0.32, 0, w*0.5, h*0.32, w*0.55);
   sg.addColorStop(0, `rgba(255,0,204,${0.30 * pulse})`);
   sg.addColorStop(0.4, `rgba(122,0,255,${0.14 * pulse})`);
   sg.addColorStop(1,   'rgba(5,0,8,0)');
