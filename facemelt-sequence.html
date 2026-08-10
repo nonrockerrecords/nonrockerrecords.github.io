@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>STATUE.EXE — Sequence · nonrocker</title>
 
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.7.0/dist/elements.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@spectrum-web-components/bundle@1.12.2/src/index.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,11 +23,20 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* sp-theme is a custom element; if it hasn't upgraded yet (or its
+       script fails to load) it defaults to display:inline, which breaks
+       position:sticky for everything nested inside it. Force it out of
+       the layout tree so sticky scroll math is never at its mercy. */
+    sp-theme { display: contents; }
+
+    html {
+      overflow-x: hidden;
+    }
+
     html, body {
       background: var(--black);
       color: #fff;
       font-family: 'VT323', monospace;
-      overflow-x: hidden;
     }
 
     /* ── CRT scanlines ─────────────────────────────────── */
