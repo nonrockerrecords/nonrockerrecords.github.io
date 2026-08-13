@@ -7,7 +7,7 @@ const GIGS = {
     id: 1,
     name: "Gig 1: Aces High Saloon (Salt Lake City)",
     moves: 25,
-    targets: { pick: 25 },
+    targets: { pick: 15 },
     unlockAbility: null, // warm-up set, no ability unlock yet
     rankUpgrade: "OPENER",
     confidence: 10,
@@ -16,7 +16,7 @@ const GIGS = {
     id: 2,
     name: "Gig 2: Kilby Court (Basement)",
     moves: 30,
-    targets: { kazoo: 28 },
+    targets: { kazoo: 18 },
     unlockAbility: "soju", // Yung Soju
     rankUpgrade: "BASSIST",
     confidence: 25,
@@ -25,7 +25,7 @@ const GIGS = {
     id: 3,
     name: "Gig 3: Dongmyo Soju Bar (Back Room)",
     moves: 35,
-    targets: { didgeridoo: 28, soju: 28 },
+    targets: { didgeridoo: 16, soju: 16 },
     unlockAbility: "dj", // DJ 막걸리
     rankUpgrade: "ENGINEER",
     confidence: 45,
@@ -34,7 +34,7 @@ const GIGS = {
     id: 4,
     name: "Gig 4: Gwangalli Underpass (Busan)",
     moves: 38,
-    targets: { statue: 35 },
+    targets: { statue: 20 },
     unlockAbility: "statue", // STATUE.EXE
     rankUpgrade: "VOCALIST",
     confidence: 75,
@@ -53,7 +53,7 @@ const GIGS = {
     id: 6,
     name: "Gig 6: The Reaper's Repo (Locked Archive)",
     moves: 45,
-    targets: { floppy: 40 },
+    targets: { floppy: 24 },
     unlockAbility: null, // final boss stage, all abilities already unlocked
     rankUpgrade: "REMEMBERED",
     confidence: 100,
