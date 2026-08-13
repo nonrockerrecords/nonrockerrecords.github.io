@@ -37,6 +37,17 @@ const C={
   red:'#ff2222', purple:'#cc00ff',
 };
 
+// ── SPRITE ART (Krea 2 glossy 3D redo, 13 Aug 2026) ──────────────────────────
+const SPRITES={};
+function loadSprite(key,src){const img=new Image();img.src=src;SPRITES[key]=img;}
+loadSprite('SHIP_STATUE','game-sprites/ship-statue.png');
+loadSprite('ENEMY_SOJU','game-sprites/enemy-soju.png');
+loadSprite('ENEMY_KAZOO','game-sprites/enemy-kazoo.png');
+loadSprite('ENEMY_WIN95','game-sprites/enemy-win95.png');
+loadSprite('BOSS_NRK666','game-sprites/boss-nrk666.png');
+function spriteReady(img){return img&&img.complete&&img.naturalWidth>0;}
+function drawSprite(img,w,h){cx.drawImage(img,-w/2,-h/2,w,h);}
+
 // ── SHIP SELECTION ─────────────────────────────────────────────────────────
 const SHIP_ID=localStorage.getItem('nrk_ship')||'STATUE';
 const SHIP_LABELS={STATUE:'STATUE.EXE',SOJU:'YUNG_SOJU',MAKKU:'DJ막걸리',KAZOO:'KAZOO_HAWK',FLYINGV:'FLYING-V',STRAT:'STRAT',PSREV:'PS-REV'};
@@ -288,7 +299,8 @@ function drawPlayer(){
   eg.addColorStop(0,'rgba(200,80,255,.35)');eg.addColorStop(1,'rgba(0,0,0,0)');
   cx.fillStyle=eg;cx.beginPath();cx.arc(0,h/2+4,24,0,6.28);cx.fill();
   // dispatch to ship-specific hull
-  if(SHIP_ID==='FLYINGV') _drawFlyingV(cx,sc,w,h,t);
+  if(SHIP_ID==='STATUE'&&spriteReady(SPRITES.SHIP_STATUE)) drawSprite(SPRITES.SHIP_STATUE,w*2,h*2);
+  else if(SHIP_ID==='FLYINGV') _drawFlyingV(cx,sc,w,h,t);
   else if(SHIP_ID==='STRAT') _drawStrat(cx,sc,w,h,t);
   else if(SHIP_ID==='PSREV') _drawPSRev(cx,sc,w,h,t);
   else _drawTriangleShip(cx,sc,w,h,t);
@@ -442,6 +454,7 @@ function drawEnemy(e){
   cx.restore();
 }
 function drawSoju(e){
+  if(spriteReady(SPRITES.ENEMY_SOJU)){drawSprite(SPRITES.ENEMY_SOJU,e.w*2.2,e.h*1.8);return;}
   cx.fillStyle='#1a7a30';cx.fillRect(-10,-e.h/2+9,20,e.h-16);
   cx.fillRect(-5,-e.h/2,10,12);
   cx.fillStyle=C.pink;cx.fillRect(-5,-e.h/2-2,10,6);
@@ -452,6 +465,7 @@ function drawSoju(e){
   cx.fillText('소주',0,6);
 }
 function drawKazoo(e){
+  if(spriteReady(SPRITES.ENEMY_KAZOO)){drawSprite(SPRITES.ENEMY_KAZOO,e.w*2.2,e.h*3.2);return;}
   const b=Math.sin(e.at)*2;
   cx.save();cx.shadowColor=C.yellow;cx.shadowBlur=8;
   cx.fillStyle=C.yellow;cx.beginPath();
@@ -462,6 +476,12 @@ function drawKazoo(e){
   cx.fillText('KZO',0,4+b);
 }
 function drawWin95(e){
+  if(spriteReady(SPRITES.ENEMY_WIN95)){
+    drawSprite(SPRITES.ENEMY_WIN95,e.w*1.9,e.h*1.9);
+    const fl=e.hp<e.maxHp&&(0|e.at*2)%2===0;
+    if(fl){cx.save();cx.globalAlpha=.35;cx.fillStyle=C.red;cx.beginPath();cx.arc(0,0,e.w*.7,0,6.28);cx.fill();cx.restore();}
+    return;
+  }
   const fl=e.hp<e.maxHp&&(0|e.at*2)%2===0;
   cx.fillStyle=C.grey;cx.fillRect(-e.w/2,-e.h/2,e.w,e.h);
   cx.fillStyle=fl?C.red:C.navy;cx.fillRect(-e.w/2,-e.h/2,e.w,11);
@@ -479,33 +499,40 @@ function drawBoss(){
   const{x,y,w,h,ph}=boss;cx.save();cx.translate(x,y);
   const c1=ph===2?C.red:C.purple;
   const c2=ph===2?C.pink:'#8800ff';
-  // arms
-  cx.save();cx.rotate(bossAngle);
-  for(let i=0;i<6;i++){
-    const a=(6.28/6)*i;
-    const ax=Math.cos(a)*w/2,ay=Math.sin(a)*h/2*.7;
-    cx.save();cx.shadowColor=c1;cx.shadowBlur=14;
-    cx.strokeStyle=c1;cx.lineWidth=3;
-    cx.beginPath();cx.moveTo(0,0);cx.lineTo(ax,ay);cx.stroke();
-    cx.fillStyle=c2;cx.beginPath();cx.arc(ax,ay,8,0,6.28);cx.fill();
-    cx.shadowBlur=0;cx.restore();
-  }
-  cx.restore();
   // body glow
   const bg=cx.createRadialGradient(0,0,18,0,0,w/2);
   bg.addColorStop(0,ph===2?'rgba(255,0,0,.3)':'rgba(200,0,255,.28)');
   bg.addColorStop(1,'rgba(0,0,0,0)');
   cx.fillStyle=bg;cx.beginPath();cx.arc(0,0,w/2,0,6.28);cx.fill();
-  // skull
-  cx.save();cx.shadowColor=c1;cx.shadowBlur=22;
-  cx.fillStyle=ph===2?'#2a0000':'#12001e';
-  cx.beginPath();cx.arc(0,0,52,0,6.28);cx.fill();
-  cx.strokeStyle=c1;cx.lineWidth=2;cx.stroke();cx.shadowBlur=0;cx.restore();
-  // 666
-  cx.font='22px "Press Start 2P",monospace';cx.textAlign='center';
-  cx.fillStyle=c1;cx.fillText('666',0,8);
-  cx.font='7px "Press Start 2P",monospace';cx.fillStyle=C.pink;cx.fillText('NRK',0,26);
-  // phase 2 eyes
+  if(spriteReady(SPRITES.BOSS_NRK666)){
+    // gentle idle rock instead of the old rotating-arm ring — the sprite has its own baked-in arms
+    cx.save();cx.rotate(Math.sin(bossAngle)*.05);
+    drawSprite(SPRITES.BOSS_NRK666,w*1.15,h*2.15);
+    cx.restore();
+  }else{
+    // arms
+    cx.save();cx.rotate(bossAngle);
+    for(let i=0;i<6;i++){
+      const a=(6.28/6)*i;
+      const ax=Math.cos(a)*w/2,ay=Math.sin(a)*h/2*.7;
+      cx.save();cx.shadowColor=c1;cx.shadowBlur=14;
+      cx.strokeStyle=c1;cx.lineWidth=3;
+      cx.beginPath();cx.moveTo(0,0);cx.lineTo(ax,ay);cx.stroke();
+      cx.fillStyle=c2;cx.beginPath();cx.arc(ax,ay,8,0,6.28);cx.fill();
+      cx.shadowBlur=0;cx.restore();
+    }
+    cx.restore();
+    // skull
+    cx.save();cx.shadowColor=c1;cx.shadowBlur=22;
+    cx.fillStyle=ph===2?'#2a0000':'#12001e';
+    cx.beginPath();cx.arc(0,0,52,0,6.28);cx.fill();
+    cx.strokeStyle=c1;cx.lineWidth=2;cx.stroke();cx.shadowBlur=0;cx.restore();
+    // 666
+    cx.font='22px "Press Start 2P",monospace';cx.textAlign='center';
+    cx.fillStyle=c1;cx.fillText('666',0,8);
+    cx.font='7px "Press Start 2P",monospace';cx.fillStyle=C.pink;cx.fillText('NRK',0,26);
+  }
+  // phase 2 eyes (also flashes over the sprite's own eyes for extra readability)
   if(ph===2&&(0|frame/20)%3!==0){
     cx.fillStyle=C.red;
     cx.beginPath();cx.arc(-14,-10,6,0,6.28);cx.fill();
