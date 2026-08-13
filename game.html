@@ -14,7 +14,7 @@
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="hint">ARROWS / WASD &nbsp;·&nbsp; SPACE SHOOT &nbsp;·&nbsp; ENTER START</div>
+<div id="hint">ARROWS / WASD &nbsp;·&nbsp; SPACE SHOOT &nbsp;·&nbsp; ENTER START &nbsp;·&nbsp; TOUCH TO PLAY</div>
 <script>
 // ── SETUP ──────────────────────────────────────────────────────────────────
 const W=480,H=720;
@@ -74,6 +74,28 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('keyup',e=>{keys[e.code]=false;});
 
+// ── TOUCH CONTROLS (mobile has no Enter key) ─────────────────────────────
+// Finger down = steer toward touch x + auto-fire, tap on title/gameover = start/restart.
+let touching=false;
+function touchToCanvasX(t){
+  const r=cv.getBoundingClientRect();
+  return (t.clientX-r.left)/r.width*W;
+}
+cv.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  if(gs==='TITLE'||gs==='GAMEOVER'||gs==='WIN'){handleAction();return;}
+  touching=true;keys['Space']=true;
+  if(e.touches[0])player.tx=touchToCanvasX(e.touches[0]);
+},{passive:false});
+cv.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(touching&&e.touches[0])player.tx=touchToCanvasX(e.touches[0]);
+},{passive:false});
+cv.addEventListener('touchend',e=>{
+  e.preventDefault();
+  touching=false;keys['Space']=false;player.tx=null;
+},{passive:false});
+
 function handleAction(){
   if(gs==='TITLE'){initGame();}
   else if(gs==='GAMEOVER'||gs==='WIN'){gs='TITLE';}
@@ -116,7 +138,7 @@ function initGame(){
   shootCD=0;bossAngle=0;
   initPlayer();spawnWave(0);initStars();
 }
-function initPlayer(){player={x:W/2,y:H-80,w:30,h:34,alive:true};}
+function initPlayer(){player={x:W/2,y:H-80,w:30,h:34,alive:true,tx:null};}
 
 function typeW(t){return t==='WIN95'?52:t==='KAZOO'?38:24;}
 function typeH(t){return t==='WIN95'?34:t==='KAZOO'?16:42;}
@@ -162,6 +184,11 @@ function updatePlayer(){
   if(!player.alive)return;
   if((keys['ArrowLeft']||keys['KeyA'])&&player.x-player.w/2>8)player.x-=5;
   if((keys['ArrowRight']||keys['KeyD'])&&player.x+player.w/2<W-8)player.x+=5;
+  if(player.tx!=null){
+    const dx=player.tx-player.x;
+    if(Math.abs(dx)>3)player.x+=Math.sign(dx)*Math.min(7,Math.abs(dx));
+    player.x=Math.max(8+player.w/2,Math.min(W-8-player.w/2,player.x));
+  }
   if(shootCD>0)shootCD--;
   if((keys['Space']||keys['KeyZ'])&&shootCD===0){
     pBullets.push({x:player.x,y:player.y-player.h/2});
