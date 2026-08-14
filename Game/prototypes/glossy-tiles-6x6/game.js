@@ -359,9 +359,15 @@ function updateMapScreen() {
 // ==========================================
 function selectLevel(lvlId) {
   if (!unlockedLevels.includes(lvlId)) {
-    // Play failed didgeridoo buzz
+    // Play failed didgeridoo buzz + shake the card (audio alone is silent feedback for muted/mobile players)
     initAudio();
     playSynth('sawtooth', 120, 0.2, 0.1, 80);
+    const lockedCard = document.getElementById(`gig-${lvlId}`);
+    if (lockedCard) {
+      lockedCard.classList.remove('locked-shake');
+      void lockedCard.offsetWidth; // restart animation if clicked again quickly
+      lockedCard.classList.add('locked-shake');
+    }
     return;
   }
   

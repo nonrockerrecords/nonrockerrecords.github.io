@@ -421,7 +421,10 @@ h2 {
 
 .gig-card {
   border: 1px solid rgba(255,0,204,0.35);
-  background: rgba(255,0,204,0.03);
+  background-image: linear-gradient(rgba(255,0,204,0.05), rgba(255,0,204,0.05)), url('assets/ui/gig-card.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
   padding: 16px;
   cursor: pointer;
   transition: all 200ms ease;
@@ -431,7 +434,7 @@ h2 {
 }
 .gig-card.active {
   border-color: var(--chaos-cyan);
-  background: rgba(0,240,255,0.04);
+  background-image: linear-gradient(rgba(0,240,255,0.06), rgba(0,240,255,0.06)), url('assets/ui/gig-card.png');
 }
 .gig-card.active:hover {
   border-color: var(--chaos-pink);
@@ -440,9 +443,19 @@ h2 {
 }
 .gig-card.locked {
   border-color: #33253b;
-  background: rgba(15,10,20,0.7);
+  background-image: linear-gradient(rgba(15,10,20,0.75), rgba(15,10,20,0.75)), url('assets/ui/gig-card.png');
   cursor: not-allowed;
   opacity: 0.65;
+}
+/* Visual feedback for clicking a locked gig — the sawtooth buzz alone is
+   silent if the player has sound off, which is common on mobile. */
+.gig-card.locked-shake {
+  animation: locked-shake-anim 0.35s ease-in-out;
+}
+@keyframes locked-shake-anim {
+  0%, 100% { transform: translateX(0); border-color: #33253b; }
+  20%, 60% { transform: translateX(-6px); border-color: #ff3333; }
+  40%, 80% { transform: translateX(6px); border-color: #ff3333; }
 }
 
 /* Boss gig (The Reaper's Repo) — HF-generated Repo Reaper portrait pinned
