@@ -1,5 +1,10 @@
-# Local Claude Code state / worktrees - never publish
-.claude/
+.tmp-edge-profile/
 
-# Local testbed - experiments and iteration files, never published to GitHub Pages
+# Local tool state and OS metadata
+.claude/
 local/
+.DS_Store
+._*
+
+# Separate local checkout
+/NRK-Games/

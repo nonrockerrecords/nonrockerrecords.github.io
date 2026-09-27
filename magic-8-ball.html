@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MAGIC 8 BALL // nonrocker records</title>
+<meta name="description" content="Ask the nonrocker Magic 8 Ball for cursed label wisdom."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#040006;
+    --pink:#ff2d78;
+    --hot:#ff00cc;
+    --cyan:#00e5ff;
+    --lime:#39ff14;
+    --amber:#ffb800;
+    --violet:#7a00ff;
+    --text:#f4eaff;
+    --dim:#7c6b85;
+  }
+  html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'VT323',monospace;overflow-x:hidden}
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:clamp(1rem,3vw,2.5rem);
+    background:
+      radial-gradient(circle at 50% 44%,rgba(0,229,255,.16),transparent 18rem),
+      radial-gradient(circle at 22% 16%,rgba(255,45,120,.2),transparent 16rem),
+      radial-gradient(circle at 78% 82%,rgba(57,255,20,.13),transparent 17rem),
+      linear-gradient(135deg,#050007,#09000f 45%,#020103);
+  }
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    z-index:50;
+    pointer-events:none;
+    background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,.2) 3px,transparent 4px);
+    mix-blend-mode:multiply;
+  }
+  body::after{
+    content:'';
+    position:fixed;
+    inset:-20%;
+    z-index:0;
+    pointer-events:none;
+    opacity:.18;
+    background:
+      linear-gradient(90deg,rgba(255,0,204,.16) 1px,transparent 1px),
+      linear-gradient(rgba(0,229,255,.12) 1px,transparent 1px);
+    background-size:54px 54px;
+    transform:perspective(520px) rotateX(64deg) translateY(18%);
+    transform-origin:center bottom;
+  }
+  .shell{
+    width:min(1060px,100%);
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:minmax(280px,1fr) minmax(290px,430px);
+    gap:clamp(1.5rem,4vw,3.5rem);
+    align-items:center;
+  }
+  .panel{min-width:0}
+  .eyebrow{
+    font-family:'Press Start 2P',monospace;
+    font-size:clamp(8px,1.4vw,11px);
+    color:var(--pink);
+    letter-spacing:.16em;
+    text-shadow:0 0 16px rgba(255,45,120,.9);
+    margin-bottom:.9rem;
+  }
+  h1{
+    font-size:clamp(44px,10vw,100px);
+    line-height:.86;
+    letter-spacing:.03em;
+    color:#fff;
+    text-shadow:4px 0 var(--hot),-4px 0 var(--cyan),0 0 34px rgba(255,0,204,.45);
+  }
+  .sub{
+    margin-top:1.1rem;
+    max-width:34rem;
+    color:#cdbddb;
+    font-size:clamp(20px,2.7vw,29px);
+    line-height:1.18;
+  }
+  .terminal{
+    margin-top:1.4rem;
+    max-width:34rem;
+    border:1px solid rgba(0,229,255,.35);
+    background:rgba(0,0,0,.38);
+    box-shadow:0 0 24px rgba(0,229,255,.12),inset 0 0 24px rgba(255,0,204,.06);
+    padding:1rem 1.1rem;
+    font-size:19px;
+    color:#9ef7ff;
+  }
+  .terminal span{color:var(--lime)}
+  .links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.75rem;
+    margin-top:1.3rem;
+  }
+  .links a{
+    color:var(--text);
+    text-decoration:none;
+    border:1px solid rgba(255,45,120,.42);
+    padding:.5rem .75rem;
+    background:rgba(255,45,120,.06);
+    font-family:'Press Start 2P',monospace;
+    font-size:8px;
+    letter-spacing:.12em;
+  }
+  .links a:focus-visible,.ball:focus-visible{outline:2px solid var(--cyan);outline-offset:5px}
+  .links a:hover{box-shadow:0 0 16px rgba(255,45,120,.28);color:#fff}
+  .oracle{
+    display:grid;
+    place-items:center;
+    min-width:0;
+  }
+  .ball{
+    width:min(78vw,420px);
+    aspect-ratio:1;
+    border:0;
+    border-radius:50%;
+    cursor:pointer;
+    color:inherit;
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 35% 25%,rgba(255,255,255,.2),transparent 9%),
+      radial-gradient(circle at 42% 36%,#262430 0 12%,transparent 22%),
+      radial-gradient(circle at 58% 65%,#000 0 38%,#050008 60%,#13001b 76%,#000 100%);
+    box-shadow:
+      0 0 0 2px rgba(255,255,255,.04),
+      0 0 34px rgba(122,0,255,.42),
+      0 0 90px rgba(255,0,204,.2),
+      inset -36px -50px 70px rgba(0,0,0,.95),
+      inset 18px 20px 40px rgba(255,255,255,.08);
+  }
+  .ball::before{
+    content:'8';
+    position:absolute;
+    top:16%;
+    left:50%;
+    transform:translateX(-50%);
+    width:25%;
+    aspect-ratio:1;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:#f4eaff;
+    color:#050008;
+    font-family:'Press Start 2P',monospace;
+    font-size:clamp(18px,5vw,36px);
+    box-shadow:0 0 26px rgba(255,255,255,.25);
+  }
+  .answer-port{
+    position:absolute;
+    left:50%;
+    top:55%;
+    width:53%;
+    aspect-ratio:1.18;
+    transform:translate(-50%,-50%);
+    clip-path:polygon(50% 8%,93% 82%,7% 82%);
+    display:grid;
+    place-items:center;
+    padding:24% 14% 15%;
+    background:
+      radial-gradient(circle at 50% 50%,rgba(0,229,255,.42),transparent 60%),
+      linear-gradient(145deg,rgba(0,229,255,.86),rgba(122,0,255,.78) 46%,rgba(255,0,204,.6));
+    box-shadow:0 0 30px rgba(0,229,255,.65);
+  }
+  .answer-port::before{
+    content:'';
+    position:absolute;
+    inset:9%;
+    clip-path:inherit;
+    background:rgba(0,0,0,.66);
+  }
+  #answer{
+    position:relative;
+    z-index:1;
+    min-height:4.4em;
+    display:grid;
+    place-items:center;
+    text-align:center;
+    color:#d8fbff;
+    text-shadow:0 0 10px rgba(0,229,255,.9);
+    font-family:'Press Start 2P',monospace;
+    font-size:clamp(7px,2vw,12px);
+    line-height:1.55;
+    letter-spacing:.07em;
+    text-wrap:balance;
+  }
+  .status{
+    margin-top:1rem;
+    min-height:1.5em;
+    color:var(--amber);
+    font-size:20px;
+    letter-spacing:.12em;
+    text-align:center;
+  }
+  .hint{
+    margin-top:.25rem;
+    color:var(--dim);
+    font-size:17px;
+    letter-spacing:.1em;
+    text-align:center;
+  }
+  .shaking{
+    animation:shake .74s steps(2,end) infinite;
+  }
+  .shaking #answer{
+    animation:textFuzz .22s steps(2,end) infinite;
+  }
+  @keyframes shake{
+    0%{transform:translate(0,0) rotate(0)}
+    12%{transform:translate(-6px,3px) rotate(-2deg)}
+    28%{transform:translate(7px,-5px) rotate(3deg)}
+    43%{transform:translate(-4px,-7px) rotate(1deg)}
+    61%{transform:translate(8px,4px) rotate(-3deg)}
+    78%{transform:translate(-7px,6px) rotate(2deg)}
+    100%{transform:translate(0,0) rotate(0)}
+  }
+  @keyframes textFuzz{
+    0%,100%{filter:none;transform:translateX(0)}
+    50%{filter:blur(1px);transform:translateX(2px)}
+  }
+  @media (max-width:780px){
+    body{align-items:flex-start}
+    .shell{grid-template-columns:1fr;gap:1.6rem}
+    .panel{text-align:center}
+    .sub,.terminal{margin-left:auto;margin-right:auto}
+    .links{justify-content:center}
+    .ball{width:min(86vw,370px)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+    .shaking{animation:none}
+    .shaking #answer{animation:none}
+  }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel" aria-labelledby="page-title">
+      <div class="eyebrow">NRK OCCULT TOOL // ASK AT YOUR OWN RISK</div>
+      <h1 id="page-title">MAGIC<br/>8 BALL</h1>
+      <p class="sub">A cracked label oracle for release dates, drummer sightings, and choices best made after the static clears.</p>
+      <div class="terminal" aria-hidden="true">
+        <div><span>READY:</span> shake the cursed sphere</div>
+        <div><span>INPUT:</span> click / tap / space / enter</div>
+        <div><span>OUTPUT:</span> wisdom, mostly</div>
+      </div>
+      <nav class="links" aria-label="Site links">
+        <a href="variations.html">CONTENT DIRECTORY</a>
+        <a href="index.html">EPK</a>
+      </nav>
+    </section>
+
+    <section class="oracle" aria-label="Magic 8 Ball oracle">
+      <button class="ball" id="ball" type="button" aria-label="Shake the Magic 8 Ball">
+        <span class="answer-port">
+          <span id="answer" aria-live="polite">ASK THE<br/>CRACKED<br/>ORACLE</span>
+        </span>
+      </button>
+      <div class="status" id="status">SIGNAL: IDLE</div>
+      <div class="hint">click the ball or press space</div>
+    </section>
+  </main>
+
+<script>
+  const answers = [
+    'OUTLOOK: COMPILE ERROR',
+    'ASK AGAIN AFTER SOJU',
+    'THE DRUMMER DENIES IT',
+    'NRK-666 SAYS YES',
+    'NO BPM NO GOD',
+    'PLAY DESTROY REWIND',
+    'REPLY HAZY: TRY TURBOLAG',
+    'METALDATA APPROVES',
+    'KAZOO SUBSYSTEM ONLINE',
+    'SIGNS POINT TO CHAOS',
+    'THE STATIC KNOWS',
+    'DO NOT TRUST TRACK 4',
+    'BOOT MEDIA FOUND',
+    'YES, BUT MAKE IT LOUDER',
+    'FUTURE DELUSIONS CONFIRM',
+    'ANSWER LOST IN GREEN FLUID'
+  ];
+
+  const ball = document.getElementById('ball');
+  const answer = document.getElementById('answer');
+  const status = document.getElementById('status');
+  let isShaking = false;
+  let lastAnswer = '';
+
+  function pickAnswer() {
+    let next = answers[Math.floor(Math.random() * answers.length)];
+    if (answers.length > 1) {
+      while (next === lastAnswer) {
+        next = answers[Math.floor(Math.random() * answers.length)];
+      }
+    }
+    lastAnswer = next;
+    return next;
+  }
+
+  function shake() {
+    if (isShaking) return;
+    isShaking = true;
+    ball.classList.add('shaking');
+    ball.disabled = true;
+    answer.textContent = 'CONSULTING STATIC';
+    status.textContent = 'SIGNAL: SCRYING...';
+
+    window.setTimeout(() => {
+      answer.textContent = pickAnswer();
+      status.textContent = 'SIGNAL: RECEIVED';
+      ball.classList.remove('shaking');
+      ball.disabled = false;
+      isShaking = false;
+      ball.focus({ preventScroll: true });
+    }, 950);
+  }
+
+  ball.addEventListener('click', shake);
+  document.addEventListener('keydown', event => {
+    if (event.code === 'Space' || event.code === 'Enter') {
+      event.preventDefault();
+      shake();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+/* ============================================
+   KANAHOMA — Tell Us Your Story
+   Reverse-pitch: visitor tells us their story
+   ============================================ */
+
+body {
+    background: linear-gradient(180deg, var(--darkest-green) 0%, var(--deep-green) 60%, var(--kanahoma-green) 100%);
+    color: var(--stoddard-cream);
+    min-height: 100vh;
+}
+
+.ys-stage {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 100px 24px 80px;
+    position: relative;
+}
+
+.ys-nav {
+    position: absolute;
+    top: 24px; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 24px;
+}
+.ys-nav a {
+    color: var(--stoddard-cream); text-decoration: none;
+    font-size: var(--fs-sm); letter-spacing: .08em; text-transform: uppercase;
+    font-weight: 500; opacity: .85;
+}
+.ys-nav .nav-wordmark {
+    font-family: var(--font-display); font-size: 1.5rem;
+    text-transform: none; letter-spacing: -.01em;
+}
+
+.ys-intro {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.ys-eyebrow {
+    display: inline-block;
+    background: var(--hellbender); color: var(--white);
+    font-size: .6875rem; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; padding: 6px 14px; border-radius: 2px;
+    margin-bottom: 24px;
+}
+
+.ys-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    line-height: 1.05; letter-spacing: -.02em;
+    margin-bottom: 16px;
+}
+.ys-headline .script {
+    font-family: var(--font-script);
+    color: var(--golden-hour); font-size: 1.25em;
+}
+
+.ys-sub {
+    color: var(--wavebreak);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0 auto;
+    opacity: .85;
+}
+
+/* ── The big story field ─────────────────── */
+.ys-form {
+    background: rgba(13, 31, 21, .6);
+    border: 1px solid rgba(217, 171, 77, .15);
+    border-radius: 6px;
+    padding: 40px;
+    backdrop-filter: blur(10px);
+}
+
+.ys-field {
+    margin-bottom: 28px;
+}
+
+.ys-field label {
+    display: block;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-bottom: 10px;
+}
+
+.ys-field input,
+.ys-field textarea {
+    width: 100%;
+    background: var(--darkest-green);
+    color: var(--stoddard-cream);
+    border: 1.5px solid rgba(217, 171, 77, .3);
+    border-radius: 3px;
+    padding: 16px 18px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    resize: vertical;
+}
+
+.ys-field input:focus,
+.ys-field textarea:focus {
+    border-color: var(--hellbender);
+    box-shadow: 0 0 0 3px rgba(201, 110, 67, .2);
+}
+
+.ys-field input::placeholder,
+.ys-field textarea::placeholder {
+    color: var(--whippoorwill);
+    opacity: .55;
+}
+
+.ys-field textarea {
+    min-height: 200px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.125rem;
+    line-height: 1.5;
+}
+
+/* Character / word count */
+.ys-counter {
+    margin-top: 8px;
+    text-align: right;
+    font-size: .75rem;
+    color: var(--whippoorwill);
+    opacity: .65;
+    font-variant-numeric: tabular-nums;
+}
+.ys-counter.warn { color: var(--golden-hour); opacity: 1; }
+.ys-counter.over { color: #ff9b9b; opacity: 1; }
+
+/* Quick prompts */
+.ys-prompts {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ys-prompt {
+    background: transparent;
+    color: var(--whippoorwill);
+    border: 1px dashed rgba(217, 171, 77, .35);
+    border-radius: 30px;
+    padding: 6px 14px;
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    cursor: pointer;
+    transition: all .15s;
+}
+.ys-prompt:hover {
+    color: var(--stoddard-cream);
+    border-color: var(--golden-hour);
+    border-style: solid;
+    background: rgba(217, 171, 77, .08);
+}
+
+.ys-prompt-label {
+    font-size: .6875rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-right: 8px;
+    align-self: center;
+    opacity: .7;
+}
+
+.ys-submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+}
+
+.ys-promise {
+    font-size: .8125rem;
+    color: var(--whippoorwill);
+    line-height: 1.5;
+    flex: 1;
+    min-width: 220px;
+    opacity: .8;
+}
+
+.ys-submit {
+    background: var(--hellbender);
+    color: var(--white);
+    border: none;
+    padding: 16px 36px;
+    font-family: var(--font-sans);
+    font-size: .875rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+    white-space: nowrap;
+}
+.ys-submit:hover:not(:disabled) {
+    background: #b55e35;
+    transform: translateY(-2px);
+}
+.ys-submit:disabled {
+    background: rgba(201, 110, 67, .35);
+    cursor: not-allowed;
+}
+
+/* ── Success state ────────────────────────── */
+.ys-success {
+    background: var(--stoddard-cream);
+    color: var(--kanahoma-green);
+    padding: 56px 48px;
+    border-radius: 6px;
+    text-align: center;
+    display: none;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+}
+.ys-success.show { display: block; animation: ysIn .5s ease-out; }
+@keyframes ysIn {
+    from { opacity: 0; transform: scale(.96) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.ys-success-icon {
+    width: 80px; height: 80px;
+    background: var(--golden-hour);
+    color: var(--kanahoma-green);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    margin: 0 auto 24px;
+}
+
+.ys-success h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.1;
+    margin-bottom: 16px;
+}
+.ys-success h2 .script {
+    font-family: var(--font-script);
+    color: var(--hellbender); font-size: 1.25em;
+}
+
+.ys-success p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: #2a2a2a;
+    max-width: 480px;
+    margin: 0 auto 24px;
+}
+
+.ys-echo {
+    background: var(--wavebreak);
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin: 24px 0 32px;
+    text-align: left;
+    border-left: 4px solid var(--hellbender);
+}
+.ys-echo strong {
+    display: block;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    margin-bottom: 8px;
+}
+.ys-echo p {
+    margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--kanahoma-green);
+}
+
+@media (max-width: 600px) {
+    .ys-stage { padding: 90px 16px 60px; }
+    .ys-form  { padding: 28px 20px; }
+    .ys-success { padding: 40px 28px; }
+}

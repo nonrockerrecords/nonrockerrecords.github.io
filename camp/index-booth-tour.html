@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour the Booth — Camp Kanahoma</title>
+    <link rel="stylesheet" href="assets/css/brand.css">
+    <link rel="stylesheet" href="assets/css/booth-tour.css">
+</head>
+<body>
+
+<div class="bt-stage">
+    <nav class="bt-nav">
+        <a href="index.html" class="nav-wordmark" aria-label="Kanahoma"><img src="assets/svg/Kanahoma_Logo_White.svg" alt=""></a>
+        <a href="index.html">← Back to site</a>
+    </nav>
+
+    <div class="bt-intro">
+        <span class="bt-eyebrow">★ Walk the booth ★</span>
+        <h1 class="bt-headline">Click around. Take the <span class="script">tour.</span></h1>
+        <p class="bt-sub">Six hotspots, six stories. Click any one to learn what we built — and why.</p>
+    </div>
+
+    <!-- Booth photo with hotspots -->
+    <div class="booth-viewer">
+        <img src="assets/img/kanahoma-camp-stories-booth-v2.jpg" alt="Camp Kanahoma booth at NACAC 2024">
+        <button class="hotspot" data-spot="kanahoma-camp"></button>
+        <button class="hotspot" data-spot="cabin"></button>
+        <button class="hotspot" data-spot="story"></button>
+        <button class="hotspot" data-spot="claw"></button>
+        <button class="hotspot" data-spot="gear"></button>
+        <button class="hotspot" data-spot="campfire"></button>
+    </div>
+
+    <!-- Info panel updates based on selection -->
+    <div class="info-panel" id="infoPanel" aria-live="polite"></div>
+
+    <!-- Quick-jump list -->
+    <div class="spot-list">
+        <button class="spot-thumb" data-spot="kanahoma-camp"><span class="spot-thumb-num">1</span>Brand</button>
+        <button class="spot-thumb" data-spot="cabin"><span class="spot-thumb-num">2</span>Cabin</button>
+        <button class="spot-thumb" data-spot="story"><span class="spot-thumb-num">3</span>Story</button>
+        <button class="spot-thumb" data-spot="claw"><span class="spot-thumb-num">4</span>Claw</button>
+        <button class="spot-thumb" data-spot="gear"><span class="spot-thumb-num">5</span>Gear</button>
+        <button class="spot-thumb" data-spot="campfire"><span class="spot-thumb-num">6</span>Fire</button>
+    </div>
+</div>
+
+<script src="assets/js/booth-tour.js"></script>
+</body>
+</html>

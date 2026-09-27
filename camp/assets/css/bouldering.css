@@ -1,0 +1,463 @@
+/* ============================================
+   KANAHOMA — Go Bold(ering)
+   Newsletter landing inspired by the bouldering booth
+   ============================================ */
+
+body {
+    background: var(--stoddard-cream);
+    color: var(--kanahoma-green);
+}
+
+/* ── Nav ─────────────────────────────────── */
+.gb-nav {
+    position: absolute;
+    top: 32px; left: 0; right: 0;
+    z-index: 20;
+    padding: 0 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gb-nav .nav-wordmark img { height: 24px; }
+
+.gb-tagline {
+    font-size: .6875rem;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--kanahoma-green);
+    opacity: .55;
+}
+
+/* ── HERO ────────────────────────────────── */
+.gb-hero {
+    position: relative;
+    min-height: 100vh;
+    padding: 120px 56px 56px;
+    overflow: hidden;
+}
+
+.gb-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 56px;
+    align-items: center;
+    max-width: 1280px;
+    margin: 0 auto;
+    min-height: calc(100vh - 200px);
+}
+
+/* ── BOULDERING WALL (left column) ──────── */
+.gb-wall {
+    position: relative;
+    aspect-ratio: 5 / 6;
+    width: 100%;
+}
+
+.gb-wall svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Climbing holds with subtle hover */
+.gb-hold {
+    transition: transform .25s ease-out;
+    transform-origin: center;
+    transform-box: fill-box;
+    cursor: pointer;
+}
+.gb-hold:hover {
+    transform: scale(1.18);
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,.25));
+}
+
+/* Eagle gentle drift */
+.gb-eagle {
+    animation: eagleDrift 12s ease-in-out infinite alternate;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+@keyframes eagleDrift {
+    0%   { transform: translate(0,    0)   rotate(0); }
+    50%  { transform: translate(20px, -8px) rotate(-2deg); }
+    100% { transform: translate(40px, 4px)  rotate(2deg); }
+}
+
+/* ── COPY (right column) ─────────────────── */
+.gb-copy {
+    max-width: 540px;
+}
+
+.gb-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    margin-bottom: 28px;
+}
+.gb-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 32px; height: 1.5px;
+    background: var(--hellbender);
+}
+
+.gb-headline {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(3.5rem, 9vw, 6.5rem);
+    line-height: .88;
+    letter-spacing: -.035em;
+    color: var(--kanahoma-green);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+}
+
+.gb-headline .line-go,
+.gb-headline .line-bold {
+    display: block;
+}
+
+.gb-headline .line-bold {
+    color: var(--hellbender);
+}
+
+.gb-subhead {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    letter-spacing: .04em;
+    color: var(--kanahoma-green);
+    margin-bottom: 36px;
+    text-transform: uppercase;
+}
+
+.gb-body {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: #2a2a2a;
+    margin-bottom: 32px;
+    max-width: 460px;
+}
+
+/* ── Newsletter form (climbing-coded) ─── */
+.gb-form {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    max-width: 480px;
+    border: 2px solid var(--kanahoma-green);
+    background: var(--white);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: box-shadow .2s;
+}
+.gb-form:focus-within {
+    box-shadow: 0 0 0 3px rgba(201, 110, 67, .25);
+    border-color: var(--hellbender);
+}
+
+.gb-form input[type="email"] {
+    flex: 1;
+    padding: 16px 20px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--kanahoma-green);
+    background: transparent;
+    border: none;
+    outline: none;
+}
+.gb-form input[type="email"]::placeholder {
+    color: var(--whippoorwill);
+    opacity: .8;
+}
+
+.gb-form button {
+    padding: 16px 28px;
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    border: none;
+    font-family: var(--font-sans);
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+}
+.gb-form button:hover { background: var(--hellbender); }
+
+.gb-form-note {
+    font-size: .75rem;
+    color: var(--whippoorwill);
+    opacity: .85;
+    margin-bottom: 36px;
+    font-style: italic;
+}
+
+/* ── Trail-sign feature pills ─────────── */
+.gb-trail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.trail-sign {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 22px 9px 32px;
+    background: linear-gradient(180deg, #8B6A47 0%, #6E5132 100%);
+    color: var(--stoddard-cream);
+    font-family: var(--font-sans);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    clip-path: polygon(11% 0%, 100% 0%, 100% 100%, 11% 100%, 0% 50%);
+    text-decoration: none;
+    transition: filter .2s, transform .2s;
+    position: relative;
+}
+.trail-sign:hover {
+    filter: brightness(1.1);
+    transform: translateX(-3px);
+}
+.trail-sign.right {
+    padding: 9px 32px 9px 22px;
+    clip-path: polygon(0% 0%, 89% 0%, 100% 50%, 89% 100%, 0% 100%);
+}
+.trail-sign.right:hover {
+    transform: translateX(3px);
+}
+
+/* Wood-grain effect using subtle inner shadow */
+.trail-sign::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        180deg,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,.06) 3px,
+        rgba(0,0,0,.06) 4px
+    );
+    pointer-events: none;
+    mix-blend-mode: multiply;
+}
+
+/* ── SECTION: Find Your Path ────────────── */
+.gb-paths {
+    padding: 120px 56px;
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    position: relative;
+    overflow: hidden;
+}
+
+.gb-paths-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.gb-paths-header {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.gb-paths-eyebrow {
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-bottom: 20px;
+}
+
+.gb-paths-headline {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: -.025em;
+    color: var(--stoddard-cream);
+    margin-bottom: 16px;
+}
+
+.gb-paths-sub {
+    font-size: 1.0625rem;
+    color: var(--wavebreak);
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.6;
+    opacity: .9;
+}
+
+.gb-paths-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.path-card {
+    background: rgba(246, 242, 238, .04);
+    border: 1px solid rgba(246, 242, 238, .12);
+    padding: 36px 32px 32px;
+    border-radius: 4px;
+    position: relative;
+    transition: border-color .2s, transform .2s;
+}
+.path-card:hover {
+    border-color: var(--golden-hour);
+    transform: translateY(-4px);
+}
+
+/* The climbing hold "icon" on each card */
+.path-hold {
+    width: 44px; height: 44px;
+    margin-bottom: 24px;
+    display: grid; place-items: center;
+}
+.path-hold svg { width: 100%; height: 100%; }
+
+.path-card h3 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.375rem;
+    letter-spacing: -.01em;
+    color: var(--stoddard-cream);
+    margin-bottom: 4px;
+}
+
+.path-card .sub {
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-bottom: 18px;
+}
+
+.path-card p {
+    font-size: .9375rem;
+    line-height: 1.6;
+    color: var(--wavebreak);
+    opacity: .9;
+}
+
+/* Decorative pine trees in the green section */
+.gb-paths-tree {
+    position: absolute;
+    pointer-events: none;
+    opacity: .22;
+    z-index: 1;
+}
+.gb-paths-tree.left  { left: -30px;  bottom: -40px; width: 220px; }
+.gb-paths-tree.right { right: -30px; top: -20px;   width: 180px; transform: rotate(8deg); }
+
+/* ── SECTION: Better Agency. Better World. ── */
+.gb-bigger {
+    padding: 120px 56px;
+    text-align: center;
+    background: var(--stoddard-cream);
+    position: relative;
+}
+
+.gb-kbug {
+    width: 88px; height: 88px;
+    margin: 0 auto 36px;
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-wordmark);
+    font-size: 3.5rem;
+    line-height: 1;
+    border-radius: 4px;
+}
+
+.gb-bigger h2 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -.035em;
+    color: var(--kanahoma-green);
+    margin-bottom: 24px;
+}
+
+.gb-bigger h2 .line2 {
+    display: block;
+    color: var(--hellbender);
+}
+
+.gb-bigger p {
+    font-size: 1.125rem;
+    line-height: 1.65;
+    max-width: 580px;
+    margin: 0 auto;
+    color: #2a2a2a;
+}
+
+/* ── FOOTER ──────────────────────────── */
+.gb-footer {
+    background: var(--deep-green);
+    color: var(--stoddard-cream);
+    padding: 48px 56px 36px;
+    text-align: center;
+}
+
+.gb-footer-mark {
+    display: inline-flex;
+    margin-bottom: 18px;
+    opacity: .85;
+}
+.gb-footer-mark img { height: 22px; }
+
+.gb-footer-stamp {
+    font-size: .6875rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--stoddard-cream);
+    opacity: .55;
+    margin-bottom: 8px;
+}
+
+.gb-footer-copy {
+    font-size: .625rem;
+    color: var(--stoddard-cream);
+    opacity: .35;
+}
+
+/* ── RESPONSIVE ─────────────────────── */
+@media (max-width: 980px) {
+    .gb-nav { padding: 0 24px; top: 24px; }
+    .gb-hero { padding: 100px 24px 60px; }
+    .gb-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .gb-wall { max-width: 480px; margin: 0 auto; }
+    .gb-copy { margin: 0 auto; }
+
+    .gb-paths { padding: 80px 24px; }
+    .gb-paths-grid { grid-template-columns: 1fr; gap: 18px; }
+    .gb-paths-tree.left  { width: 140px; opacity: .15; }
+    .gb-paths-tree.right { width: 110px; opacity: .15; }
+
+    .gb-bigger { padding: 80px 24px; }
+    .gb-footer { padding: 36px 24px 28px; }
+}
+
+@media (max-width: 540px) {
+    .gb-form { flex-direction: column; }
+    .gb-form button { width: 100%; }
+    .gb-tagline { display: none; }
+}

@@ -1,0 +1,434 @@
+/* ============================================
+   KANAHOMA — Grab Your Swag claw machine
+   Interactive newsletter signup
+   ============================================ */
+
+/* ── Layout ──────────────────────────────── */
+.claw-stage {
+    position: relative;
+    background: linear-gradient(180deg, var(--darkest-green) 0%, var(--deep-green) 60%, var(--kanahoma-green) 100%);
+    min-height: 100vh;
+    padding: 80px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Decorative shapes echoing the booth */
+.claw-deco {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    opacity: .9;
+}
+.claw-deco.tree-l { left: 4%;  bottom: 8%;  width: 90px; }
+.claw-deco.tree-r { right: 4%; top: 12%;    width: 70px; transform: rotate(6deg); }
+.claw-deco.rect-orange { left: 2%; top: 20%; width: 80px; height: 200px; background: var(--hellbender); opacity: .35; transform: rotate(-4deg); }
+.claw-deco.rect-gold   { right: 8%; bottom: 14%; width: 100px; height: 140px; background: var(--golden-hour); opacity: .35; transform: rotate(6deg); }
+
+/* String lights overhead */
+.claw-lights {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+.claw-lights svg { width: 100%; height: 100px; }
+
+/* ── Two-column layout: machine | copy ───── */
+.claw-wrap {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* ── Machine container ───────────────────── */
+.claw-machine {
+    position: relative;
+    width: 480px;
+    aspect-ratio: 480 / 760;
+    filter: drop-shadow(0 24px 48px rgba(0, 0, 0, .5));
+}
+
+.claw-machine svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ── Form overlay (positioned over the control panel area) ── */
+.claw-form-overlay {
+    position: absolute;
+    /* The control panel runs from y=560-730 on a 760-tall SVG; right side after 220px */
+    left: 47%;
+    right: 4%;
+    top: 76.5%;
+    bottom: 6%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 4px;
+}
+
+.claw-form label {
+    display: block;
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-bottom: 4px;
+}
+
+.claw-form input[type="email"] {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--darkest-green);
+    color: var(--stoddard-cream);
+    border: 1.5px solid var(--golden-hour);
+    border-radius: 2px;
+    font-family: var(--font-sans);
+    font-size: .8125rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.claw-form input[type="email"]:focus {
+    border-color: var(--hellbender);
+    box-shadow: 0 0 0 2px rgba(201, 110, 67, .25);
+}
+
+.claw-form input[type="email"]::placeholder {
+    color: var(--whippoorwill);
+    opacity: .55;
+}
+
+.claw-form input[type="email"]:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* The big lever button */
+.lever-btn {
+    width: 100%;
+    padding: 11px 14px;
+    background: linear-gradient(180deg, #d97f4f, #C96E43);
+    color: var(--white);
+    border: 2px solid #1a2e22;
+    border-radius: 3px;
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #1a2e22, inset 0 1px 0 rgba(255,255,255,.2);
+    transition: transform .1s, box-shadow .1s;
+}
+
+.lever-btn:hover:not(:disabled) {
+    background: linear-gradient(180deg, #e08a5c, #d07853);
+}
+
+.lever-btn:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #1a2e22, inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+.lever-btn:disabled {
+    background: linear-gradient(180deg, #6e4836, #5c3a2a);
+    cursor: not-allowed;
+}
+
+.lever-hint {
+    font-size: .625rem;
+    color: var(--whippoorwill);
+    opacity: .7;
+    text-align: center;
+    font-style: italic;
+}
+
+/* ── Copy column ─────────────────────────── */
+.claw-copy {
+    color: var(--stoddard-cream);
+    max-width: 480px;
+}
+
+.claw-eyebrow {
+    display: inline-block;
+    background: var(--hellbender);
+    color: var(--white);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+}
+
+.claw-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    color: var(--stoddard-cream);
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    margin-bottom: 24px;
+}
+
+.claw-headline .script {
+    font-family: var(--font-script);
+    color: var(--golden-hour);
+    font-size: 1.25em;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.claw-body {
+    font-size: 1.0625rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--wavebreak);
+    margin-bottom: 32px;
+}
+
+.claw-checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 8px;
+}
+
+.claw-checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: .9375rem;
+    color: var(--wavebreak);
+    line-height: 1.5;
+}
+
+.claw-checklist .check {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    background: var(--golden-hour);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--kanahoma-green);
+    font-weight: 700;
+    font-size: .75rem;
+}
+
+/* ============================================
+   CLAW ANIMATION STATES
+   driven by .claw-machine[data-state="..."]
+   ============================================ */
+
+/* Default transitions */
+.claw-assembly {
+    transition: transform 1.1s cubic-bezier(.34, 1.2, .64, 1);
+    transform-box: fill-box;
+}
+.claw-cable {
+    transition: y2 1.1s cubic-bezier(.34, 1.2, .64, 1);
+}
+.claw-head {
+    transition: transform 1.1s cubic-bezier(.34, 1.2, .64, 1);
+}
+.claw-arm-left,
+.claw-arm-right {
+    transition: transform .4s ease-in-out;
+    transform-origin: 0 0;
+    transform-box: fill-box;
+}
+.grabbed-capsule {
+    transition: opacity .15s, transform .4s;
+}
+.delivered-capsule {
+    transition: opacity .4s ease-out, transform .5s cubic-bezier(.34, 1.2, .64, 1);
+}
+
+/* Marquee bulbs blink subtly always */
+.marquee-bulbs circle:nth-child(odd) {
+    animation: bulbBlink 1.4s ease-in-out infinite alternate;
+}
+.marquee-bulbs circle:nth-child(even) {
+    animation: bulbBlink 1.4s ease-in-out infinite alternate-reverse;
+}
+@keyframes bulbBlink {
+    from { opacity: .55; }
+    to   { opacity: 1; }
+}
+
+/* ── State: dropping (claw descends into the pile, stays inside the cabin) ── */
+.claw-machine[data-state="dropping"] .claw-cable {
+    y2: 440;
+    transition-duration: 1.1s;
+}
+.claw-machine[data-state="dropping"] .claw-head {
+    transform: translate(0, 270px);
+    transition-duration: 1.1s;
+}
+
+/* ── State: grabbing (arms close around a capsule, same depth) ── */
+.claw-machine[data-state="grabbing"] .claw-cable { y2: 440; }
+.claw-machine[data-state="grabbing"] .claw-head  { transform: translate(0, 270px); }
+.claw-machine[data-state="grabbing"] .claw-arm-left  { transform: rotate(35deg); }
+.claw-machine[data-state="grabbing"] .claw-arm-right { transform: rotate(-35deg); }
+.claw-machine[data-state="grabbing"] .grabbed-capsule { opacity: 1; }
+
+/* ── State: lifting (claw retracts with capsule) ── */
+.claw-machine[data-state="lifting"] .claw-cable { y2: 170; }
+.claw-machine[data-state="lifting"] .claw-head  { transform: translate(0, 0); }
+.claw-machine[data-state="lifting"] .claw-arm-left  { transform: rotate(35deg); }
+.claw-machine[data-state="lifting"] .claw-arm-right { transform: rotate(-35deg); }
+.claw-machine[data-state="lifting"] .grabbed-capsule { opacity: 1; }
+
+/* ── State: traversing (slide to drop chute, far left) ── */
+.claw-machine[data-state="traversing"] .claw-assembly {
+    transform: translate(-50px, 0);
+}
+.claw-machine[data-state="traversing"] .claw-cable { y2: 170; }
+.claw-machine[data-state="traversing"] .claw-head  { transform: translate(0, 0); }
+.claw-machine[data-state="traversing"] .claw-arm-left  { transform: rotate(35deg); }
+.claw-machine[data-state="traversing"] .claw-arm-right { transform: rotate(-35deg); }
+.claw-machine[data-state="traversing"] .grabbed-capsule { opacity: 1; }
+
+/* ── State: releasing (arms open, capsule drops) ── */
+.claw-machine[data-state="releasing"] .claw-assembly { transform: translate(-50px, 0); }
+.claw-machine[data-state="releasing"] .claw-cable { y2: 170; }
+.claw-machine[data-state="releasing"] .claw-head  { transform: translate(0, 0); }
+.claw-machine[data-state="releasing"] .claw-arm-left  { transform: rotate(0deg); transition-duration: .25s; }
+.claw-machine[data-state="releasing"] .claw-arm-right { transform: rotate(0deg); transition-duration: .25s; }
+.claw-machine[data-state="releasing"] .grabbed-capsule {
+    opacity: 1;
+    transform: translate(0, 380px);
+    transition: transform .55s cubic-bezier(.4, .8, .6, 1.2);
+}
+
+/* ── State: delivered (capsule appears in slot, machine resets) ── */
+.claw-machine[data-state="delivered"] .claw-assembly { transform: translate(0, 0); transition-delay: .3s; }
+.claw-machine[data-state="delivered"] .grabbed-capsule { opacity: 0; }
+.claw-machine[data-state="delivered"] .delivered-capsule {
+    opacity: 1;
+    transform: translate(125px, 645px) scale(1);
+}
+
+/* Delivered capsule sits in slot — add a gentle pulse to draw attention */
+.claw-machine[data-state="delivered"] .delivered-capsule {
+    animation: capsulePulse 1.8s ease-in-out infinite;
+}
+@keyframes capsulePulse {
+    0%, 100% { transform: translate(125px, 645px) scale(1); }
+    50%      { transform: translate(125px, 645px) scale(1.05); }
+}
+
+/* ── Reset / idle state ──────────────────── */
+.claw-machine[data-state="idle"] .claw-assembly { transform: translate(0, 0); }
+.claw-machine[data-state="idle"] .claw-cable { y2: 170; }
+.claw-machine[data-state="idle"] .claw-head  { transform: translate(0, 0); }
+.claw-machine[data-state="idle"] .claw-arm-left  { transform: rotate(0deg); }
+.claw-machine[data-state="idle"] .claw-arm-right { transform: rotate(0deg); }
+.claw-machine[data-state="idle"] .grabbed-capsule { opacity: 0; }
+.claw-machine[data-state="idle"] .delivered-capsule { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee-bulbs circle,
+    .claw-machine[data-state="delivered"] .delivered-capsule {
+        animation: none;
+    }
+
+    .claw-assembly,
+    .claw-cable,
+    .claw-head,
+    .claw-arm-left,
+    .claw-arm-right,
+    .grabbed-capsule,
+    .delivered-capsule {
+        transition-duration: .01ms;
+    }
+}
+
+/* ── Confetti / success overlay ──────────── */
+.success-toast {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--golden-hour);
+    color: var(--kanahoma-green);
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-family: var(--font-sans);
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s, transform .4s;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(217, 171, 77, .4);
+    z-index: 50;
+}
+
+.success-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ── Nav (minimal, reused vibe) ──────────── */
+.claw-nav {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+    z-index: 50;
+}
+
+.claw-nav a {
+    color: var(--stoddard-cream);
+    text-decoration: none;
+    font-size: var(--fs-sm);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 500;
+    opacity: .8;
+}
+.claw-nav a:hover { opacity: 1; }
+.claw-nav .nav-wordmark {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    text-transform: none;
+    letter-spacing: -.01em;
+    opacity: 1;
+}
+
+/* ── RESPONSIVE ──────────────────────────── */
+@media (max-width: 1100px) {
+    .claw-wrap { grid-template-columns: 1fr; gap: 56px; }
+    .claw-machine { margin: 0 auto; }
+    .claw-copy { text-align: center; margin: 0 auto; }
+    .claw-checklist li { justify-content: flex-start; text-align: left; }
+}
+
+@media (max-width: 540px) {
+    .claw-machine { width: 100%; max-width: 380px; }
+    .claw-deco, .claw-lights { display: none; }
+    .claw-stage { padding: 100px 16px 60px; }
+    .claw-nav { padding: 0 20px; }
+}

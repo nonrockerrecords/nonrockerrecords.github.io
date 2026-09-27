@@ -1,0 +1,629 @@
+/* ============================================
+   KANAHOMA — Flashlight cursor
+   Dark forest revealed by cursor beam
+   Now with: easter eggs + werewolf jump scare
+   ============================================ */
+
+* { cursor: none; }
+a, button, .toggle { cursor: pointer; }
+
+html, body { overflow-x: hidden; }
+body {
+    background: #050a07;
+    color: var(--stoddard-cream);
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(circle at 70% 42%, rgba(201, 110, 67, .08), transparent 28%),
+        linear-gradient(180deg, #020403 0%, #07110b 48%, #030504 100%);
+}
+
+/* ════════════════════════════════════════════
+   LAYER STACK (bottom to top):
+   z 0   .forest-scene  — hidden things in the dark forest
+   z 1   .darkness      — overlay with cursor hole
+   z 2   .glow-eyes     — disembodied animal eyes (always visible)
+   z 3   regular content (nav, cards)
+   z 1000 cursor bulb
+   ════════════════════════════════════════════ */
+
+/* ── The dark forest scene (BEHIND darkness) ─ */
+.forest-scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.forest-scene::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(2, 4, 3, .28), rgba(2, 4, 3, .72)),
+        radial-gradient(circle at 52% 78%, rgba(217, 171, 77, .08), transparent 34%);
+    z-index: 0;
+}
+
+.werewolf-backdrop {
+    position: fixed;
+    inset: -4vh -4vw;
+    z-index: 0;
+    background:
+        linear-gradient(90deg, rgba(5, 10, 7, .9) 0%, rgba(5, 10, 7, .3) 45%, rgba(5, 10, 7, .9) 100%),
+        url('../img/forest-creature-v2-web.jpg') center center / cover no-repeat;
+    opacity: .22;
+    filter: saturate(.8) contrast(1.12) brightness(.58);
+    transform: scale(1.04);
+    animation: stalkerBreath 8s ease-in-out infinite alternate;
+}
+
+.background-werewolf {
+    position: fixed;
+    z-index: 1;
+    right: clamp(-90px, -4vw, -28px);
+    bottom: clamp(-58px, -5vw, -22px);
+    width: clamp(520px, 46vw, 760px);
+    height: clamp(300px, 28vw, 430px);
+    object-fit: cover;
+    object-position: 58% 56%;
+    opacity: .62;
+    filter:
+        brightness(.64)
+        contrast(1.28)
+        saturate(.95)
+        drop-shadow(0 0 22px rgba(255, 50, 30, .3));
+    border-radius: 54% 0 0 0;
+    -webkit-mask-image:
+        radial-gradient(ellipse at 62% 62%, #000 0%, #000 42%, rgba(0, 0, 0, .76) 58%, transparent 82%);
+    mask-image:
+        radial-gradient(ellipse at 62% 62%, #000 0%, #000 42%, rgba(0, 0, 0, .76) 58%, transparent 82%);
+    transform: translateY(0);
+    transform-origin: center bottom;
+    animation: backgroundWerewolfBreath 7s ease-in-out infinite alternate;
+}
+
+body.scared .werewolf-backdrop {
+    opacity: .52;
+    filter: saturate(1.1) contrast(1.22) brightness(.72);
+    animation-duration: .7s;
+}
+
+body.scared .background-werewolf {
+    opacity: .9;
+    filter:
+        brightness(.9)
+        contrast(1.38)
+        saturate(1.1)
+        drop-shadow(0 0 34px rgba(255, 50, 30, .68));
+}
+
+.forest-scene svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+}
+
+/* Easter egg positioning (overlaid trees, fires, creatures) */
+.easter {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Trees scattered through */
+.easter-tree {
+    opacity: .85;
+}
+.easter-tree.t1 { top: 18%; left: 6%;  width: 90px; }
+.easter-tree.t2 { top: 38%; left: 22%; width: 70px; opacity: .7; }
+.easter-tree.t3 { top: 12%; right: 14%; width: 100px; }
+.easter-tree.t4 { top: 52%; right: 4%; width: 85px; opacity: .8; }
+.easter-tree.t5 { bottom: 22%; left: 12%; width: 75px; opacity: .75; }
+.easter-tree.t6 { bottom: 8%; left: 38%; width: 65px; opacity: .7; }
+.easter-tree.t7 { bottom: 15%; right: 22%; width: 80px; }
+.easter-tree.t8 { top: 65%; left: 60%; width: 55px; opacity: .65; }
+
+/* Distant campfire — dim glow */
+.easter-fire {
+    width: 90px;
+    height: 90px;
+}
+.easter-fire.f1 { top: 25%; left: 42%; }
+.easter-fire.f2 { bottom: 14%; left: 24%; transform: scale(.7); }
+.easter-fire.f3 { top: 58%; right: 18%; transform: scale(.6); }
+
+.easter-fire-glow {
+    fill: #C96E43;
+    opacity: .4;
+    animation: emberFlicker 1.6s ease-in-out infinite alternate;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+@keyframes emberFlicker {
+    from { opacity: .35; transform: scale(.9); }
+    to   { opacity: .55; transform: scale(1.05); }
+}
+
+.easter-fire-flame {
+    animation: emberDance .7s ease-in-out infinite alternate;
+    transform-origin: 50% 100%;
+    transform-box: fill-box;
+}
+@keyframes emberDance {
+    from { transform: scaleY(.85) rotate(-2deg); }
+    to   { transform: scaleY(1.1)  rotate(2deg); }
+}
+
+/* Hidden creature bodies (revealed when flashlight passes over) */
+.easter-creature {
+    z-index: 0;
+}
+.easter-creature.owl    { top: 14%; left: 9%; width: 60px; }
+.easter-creature.raccoon { bottom: 25%; left: 30%; width: 80px; }
+.easter-creature.fox    { top: 64%; right: 32%; width: 70px; }
+.easter-creature.bear   { top: 48%; left: 50%; width: 110px; }
+.easter-creature.deer   { top: 22%; right: 38%; width: 70px; }
+
+/* ── DARKNESS LAYER ──────────────────────── */
+.darkness {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(
+        circle 230px at var(--mx, 50%) var(--my, 50%),
+        rgba(13, 31, 21, 0) 0%,
+        rgba(217, 171, 77, .06) 24%,
+        rgba(13, 31, 21, .34) 42%,
+        rgba(5, 10, 7, .95) 70%,
+        rgba(5, 10, 7, .99) 100%
+    );
+    transition: background .04s linear;
+}
+
+body.flashlight-off .darkness {
+    background: radial-gradient(
+        circle 50px at var(--mx, 50%) var(--my, 50%),
+        rgba(217, 171, 77, .04) 0%,
+        rgba(5, 10, 7, .99) 100%
+    );
+}
+
+/* ── GLOWING EYES (above darkness — always visible) ── */
+.glow-eyes {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    gap: var(--eye-gap, 14px);
+    animation: blink var(--blink-speed, 4s) ease-in-out infinite;
+}
+
+.glow-eyes .eye {
+    width: var(--eye-size, 6px);
+    height: var(--eye-size, 6px);
+    background: var(--eye-color, #D9AB4D);
+    border-radius: 50%;
+    box-shadow:
+        0 0 8px var(--eye-color, #D9AB4D),
+        0 0 16px var(--eye-color, #D9AB4D);
+}
+
+.glow-eyes {
+    filter: drop-shadow(0 0 12px currentColor);
+}
+
+@keyframes blink {
+    0%, 96%, 100% { opacity: 1; }
+    97%, 99%      { opacity: 0; }
+}
+
+/* Individual eye positions */
+.eyes-owl    { top: 17%;     left: 11.5%;  --eye-size: 7px; --eye-gap: 8px;  --eye-color: #D9AB4D; --blink-speed: 3.2s; }
+.eyes-raccoon{ bottom: 28%;  left: 33%;    --eye-size: 5px; --eye-gap: 10px; --eye-color: #F6F2EE; --blink-speed: 4.1s; }
+.eyes-fox    { top: 67%;     right: 35%;   --eye-size: 5px; --eye-gap: 12px; --eye-color: #D9AB4D; --blink-speed: 5s; }
+.eyes-bear   { top: 51%;     left: 53%;    --eye-size: 8px; --eye-gap: 22px; --eye-color: #C96E43; --blink-speed: 6s; }
+.eyes-deer   { top: 25%;     right: 41%;   --eye-size: 5px; --eye-gap: 16px; --eye-color: #F6F2EE; --blink-speed: 4.5s; }
+.eyes-mystery{ top: 75%;     left: 75%;    --eye-size: 4px; --eye-gap: 9px;  --eye-color: #D9AB4D; --blink-speed: 3.7s; }
+
+/* ── WEREWOLF JUMP SCARE ─────────────────── */
+.werewolf-zone {
+    position: absolute;
+    z-index: 0;
+    bottom: 8%;
+    left: 74%;
+    width: 280px;
+    height: 356px;
+    pointer-events: none;
+}
+
+/* Werewolf eyes — DECOY (look like just another animal's eyes) */
+.werewolf-eyes {
+    position: absolute;
+    z-index: 2;
+    bottom: 24%;
+    left: 83%;
+    display: flex;
+    gap: 18px;
+    pointer-events: none;
+    transition: gap .15s, transform .15s;
+}
+.werewolf-eyes .eye {
+    width: 6px; height: 6px;
+    background: #D9AB4D;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #D9AB4D, 0 0 16px #D9AB4D;
+    transition: background .15s, box-shadow .15s, width .15s, height .15s;
+}
+
+/* When the user gets close — eyes turn RED and widen (warning!) */
+.werewolf-eyes.warned .eye {
+    width: 9px; height: 9px;
+    background: #ff3322;
+    box-shadow: 0 0 14px #ff3322, 0 0 28px #ff3322;
+}
+.werewolf-eyes.warned { gap: 22px; transform: scale(1.1); }
+
+/* The werewolf body itself */
+.werewolf {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(.4);
+    pointer-events: none;
+}
+
+.werewolf svg { width: 100%; height: 100%; }
+
+/* SCARE animation */
+.werewolf.scare {
+    animation: jumpScare 1.2s cubic-bezier(.2, 1.4, .4, 1) forwards;
+    z-index: 1500;
+    filter: drop-shadow(0 0 26px rgba(255, 50, 30, .75));
+}
+
+@keyframes jumpScare {
+    0%   { opacity: 0;  transform: scale(.3) translate(0, 0); }
+    8%   { opacity: 1;  transform: scale(3.5) translate(-200px, -80px); }
+    25%  { opacity: 1;  transform: scale(2.8) translate(-180px, -60px); }
+    65%  { opacity: 1;  transform: scale(2.2) translate(-160px, -40px); }
+    100% { opacity: .9; transform: scale(1.8) translate(-140px, -20px); }
+}
+
+/* Red flash overlay */
+.scare-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 1400;
+    background: radial-gradient(circle, rgba(255, 50, 30, .55) 0%, rgba(80, 5, 5, .85) 100%);
+    opacity: 0;
+    pointer-events: none;
+}
+.scare-flash.flash {
+    animation: redFlash .9s ease-out forwards;
+}
+
+@keyframes redFlash {
+    0%   { opacity: 0; }
+    8%   { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Page shake when scared */
+body.scared {
+    animation: shakeViolently .7s ease-in-out;
+}
+
+@keyframes shakeViolently {
+    0%, 100% { transform: translate(0, 0); }
+    8%   { transform: translate(-18px, 10px) rotate(-1deg); }
+    16%  { transform: translate( 18px, -8px) rotate( 1deg); }
+    24%  { transform: translate(-14px, 12px) rotate(-.8deg); }
+    32%  { transform: translate( 14px, -10px) rotate( .6deg); }
+    40%  { transform: translate(-12px, 6px); }
+    48%  { transform: translate( 12px, -6px); }
+    56%  { transform: translate(-8px, 4px); }
+    64%  { transform: translate( 8px, -3px); }
+    72%  { transform: translate(-4px, 2px); }
+    80%  { transform: translate( 3px, -1px); }
+    90%  { transform: translate(-1px, 0); }
+}
+
+/* "Survived" toast that appears after scare */
+.scare-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    background: rgba(13, 31, 21, .95);
+    color: var(--stoddard-cream);
+    padding: 24px 40px;
+    border: 2px solid #ff3322;
+    border-radius: 4px;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s, transform .4s;
+    box-shadow: 0 0 60px rgba(255, 50, 30, .4);
+}
+.scare-toast .label {
+    display: block;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #ff3322;
+    margin-bottom: 8px;
+}
+.scare-toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* ── Custom cursor: flashlight bulb ───────── */
+.cursor-bulb {
+    position: fixed;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--golden-hour);
+    box-shadow: 0 0 18px var(--golden-hour);
+    pointer-events: none;
+    z-index: 1000;
+    left: var(--mx, 50%);
+    top: var(--my, 50%);
+    transform: translate(-50%, -50%);
+    transition: opacity .15s;
+}
+body.flashlight-off .cursor-bulb {
+    background: rgba(217, 171, 77, .35);
+    box-shadow: 0 0 6px rgba(217, 171, 77, .35);
+}
+
+/* ── Nav (always visible above darkness) ─── */
+.fl-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 48px;
+    background: rgba(5, 10, 7, .85);
+    backdrop-filter: blur(8px);
+}
+.fl-nav a {
+    color: var(--stoddard-cream);
+    text-decoration: none;
+    font-size: var(--fs-sm);
+    letter-spacing: .08em; text-transform: uppercase;
+    font-weight: 500; opacity: .85;
+}
+.fl-nav .nav-wordmark {
+    font-family: var(--font-display);
+    font-size: 1.5rem; text-transform: none;
+    letter-spacing: -.01em; opacity: 1;
+}
+
+.toggle {
+    background: transparent;
+    color: var(--golden-hour);
+    border: 1.5px solid var(--golden-hour);
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+.toggle:hover { background: rgba(217, 171, 77, .12); }
+.toggle.off { color: var(--whippoorwill); border-color: var(--whippoorwill); }
+
+/* ── Content (above darkness) ──────────── */
+.forest {
+    position: relative;
+    z-index: 3;
+    min-height: 100vh;
+    padding: 120px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 80px;
+}
+
+.fl-hero {
+    text-align: center;
+    max-width: 760px;
+    margin-top: 60px;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, .55);
+}
+
+.fl-eyebrow {
+    display: inline-block;
+    background: var(--hellbender);
+    color: var(--white);
+    font-size: .6875rem; font-weight: 700;
+    letter-spacing: .15em; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 2px;
+    margin-bottom: 24px;
+}
+
+.fl-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.05; letter-spacing: -.02em;
+    margin-bottom: 20px;
+}
+.fl-headline .script {
+    font-family: var(--font-script);
+    color: var(--golden-hour);
+    font-size: 1.25em;
+}
+
+.fl-sub {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--whippoorwill);
+    margin-bottom: 16px;
+}
+
+.fl-instruction {
+    font-size: .9375rem;
+    color: var(--wavebreak);
+    opacity: .7;
+    font-style: italic;
+}
+
+.fl-warning {
+    font-size: .8125rem;
+    color: #ff7766;
+    margin-top: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .85;
+    text-shadow: 0 0 16px rgba(255, 80, 50, .35);
+}
+
+/* Discovery cards */
+.discoveries {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 1100px;
+    width: 100%;
+}
+
+.discovery {
+    background: rgba(13, 31, 21, .82);
+    border: 1px solid rgba(217, 171, 77, .18);
+    padding: 40px 32px;
+    border-radius: 4px;
+    color: var(--stoddard-cream);
+    transition: border-color .2s, transform .2s;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .2);
+}
+.discovery:hover {
+    border-color: var(--golden-hour);
+    transform: translateY(-4px);
+}
+
+.discovery-icon {
+    width: 48px; height: 48px;
+    background: var(--hellbender);
+    color: var(--white);
+    border-radius: 4px;
+    display: grid; place-items: center;
+    margin-bottom: 20px;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+}
+
+.discovery h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--golden-hour);
+    margin-bottom: 12px;
+}
+
+.discovery p {
+    font-size: .9375rem;
+    line-height: 1.65;
+    color: var(--wavebreak);
+    opacity: .85;
+}
+
+.easter-egg {
+    margin: 60px auto;
+    max-width: 600px;
+    padding: 36px;
+    background: var(--hellbender);
+    color: var(--stoddard-cream);
+    border-radius: 4px;
+    text-align: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+.easter-egg .label {
+    display: block;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-bottom: 12px;
+}
+
+.fl-cta {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.fl-cta a {
+    display: inline-block;
+    background: var(--hellbender);
+    color: var(--white);
+    padding: 16px 36px;
+    text-decoration: none;
+    font-size: .875rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    border-radius: 2px;
+    transition: background .2s;
+}
+.fl-cta a:hover { background: #b55e35; }
+
+@media (max-width: 800px) {
+    .discoveries { grid-template-columns: 1fr; }
+    .fl-nav { padding: 16px 20px; }
+    * { cursor: auto; }
+    .cursor-bulb { display: none; }
+    .darkness {
+        background: radial-gradient(circle 400px at 50% 30%, transparent 0%, rgba(5,10,7,.95) 100%);
+    }
+}
+
+@keyframes stalkerBreath {
+    from { transform: scale(1.04) translateY(0); opacity: .18; }
+    to { transform: scale(1.08) translateY(-10px); opacity: .3; }
+}
+
+@keyframes backgroundWerewolfBreath {
+    from { transform: translateY(0) scale(1); opacity: .3; }
+    to { transform: translateY(-8px) scale(1.035); opacity: .46; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .werewolf-backdrop,
+    .background-werewolf,
+    .easter-fire-glow,
+    .easter-fire-flame,
+    .glow-eyes,
+    .werewolf.scare,
+    body.scared {
+        animation: none !important;
+    }
+}

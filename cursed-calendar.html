@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CURSED CALENDAR // nonrocker records</title>
+<meta name="description" content="Generate cursed nonrocker calendar omens."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#050006;color:#f8efff;font-family:VT323,monospace}body{background:linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.2) 60%,rgba(0,0,0,.82)),url("assets/generated/cursed-calendar-hero.png") center/cover fixed}.page{min-height:100vh;padding:clamp(20px,4vw,54px);position:relative;display:grid;grid-template-rows:auto 1fr auto}.page::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(-8deg,rgba(255,255,255,.035) 0 1px,transparent 2px 11px),radial-gradient(circle at 35% 62%,rgba(255,45,120,.18),transparent 19%);mix-blend-mode:screen}.nav{position:relative;z-index:2;display:flex;justify-content:space-between;gap:12px;font-family:"Press Start 2P";font-size:9px;letter-spacing:.13em}.nav a{color:#ff8bd8;text-decoration:none}.main{position:relative;z-index:2;align-self:center;max-width:720px}.tag{font-family:"Press Start 2P";font-size:10px;color:#ffb800;letter-spacing:.16em}h1{font-size:clamp(58px,10vw,126px);line-height:.78;margin:16px 0;text-shadow:4px 0 #ff00cc,-4px 0 #00e5ff}.month{font-family:"Press Start 2P";font-size:clamp(12px,2vw,20px);color:#39ff14;letter-spacing:.12em;text-shadow:0 0 14px #39ff14}.omen{margin-top:16px;font-size:clamp(26px,3.2vw,40px);line-height:1;max-width:660px;border-left:2px solid #ffb800;padding-left:16px}.scraps{position:relative;z-index:2;display:flex;gap:14px;flex-wrap:wrap}.scrap{border:0;border-bottom:2px solid currentColor;background:transparent;color:#fff;font:inherit;font-size:28px;cursor:pointer;transform:rotate(var(--r));padding:.1em .2em}.scrap:nth-child(1){--r:-4deg;color:#00e5ff}.scrap:nth-child(2){--r:2deg;color:#ff2d78}.scrap:nth-child(3){--r:-1deg;color:#ffb800}.scrap:focus-visible{outline:2px solid #39ff14;outline-offset:5px}.stamp{position:absolute;right:6vw;top:22vh;width:170px;aspect-ratio:1;border:2px solid rgba(255,45,120,.7);border-radius:50%;display:grid;place-items:center;text-align:center;color:#ff9bdd;font-family:"Press Start 2P";font-size:10px;letter-spacing:.12em;transform:rotate(14deg);mix-blend-mode:screen}@media(max-width:760px){.stamp{position:relative;right:auto;top:auto;margin:20px 0}.page{display:block}.scraps{margin-top:28px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="page">
+  <nav class="nav"><span>NRK ZINE ORACLE</span><span><a href="variations.html">DIRECTORY</a> / <a href="index.html">EPK</a></span></nav>
+  <section class="main" aria-labelledby="title">
+    <div class="tag">PHOTOCOPY THE MONTH // ACCEPT THE CURSE</div>
+    <h1 id="title">CURSED<br/>CALENDAR</h1>
+    <div class="month" id="month">MAY 1998</div>
+    <div class="omen" id="omen" aria-live="polite">This month contains four Tuesdays, one broken kazoo, and a venue that remembers you incorrectly.</div>
+  </section>
+  <div class="stamp" id="stamp">APPROVED<br/>BY NO ONE</div>
+  <section class="scraps" aria-label="Calendar controls">
+    <button class="scrap" id="next" type="button">next omen</button>
+    <button class="scrap" id="tour" type="button">tour date</button>
+    <button class="scrap" id="save" type="button">pin month</button>
+  </section>
+</main>
+<script>
+const months=["MAY 1998","JUNE 1999","JANUARY 2000","OCTOBER 2004","APRIL NEVER","SMARCH 13"];
+const omens=["Four Tuesdays, one broken kazoo, and a venue that remembers you incorrectly.","The calendar bleeds toner. Do not book the second Saturday.","A moon phase shaped like STATUE.EXE appears above the mall fountain.","Every date is a release date until the drummer checks email.","The zine centerfold unfolds into a map of basements that no longer exist.","Track 4 has crossed out the weekend."];
+let i=Number(localStorage.getItem("nrk_calendar_i")||0),audio;
+function chirp(){audio=audio||new AudioContext();const o=audio.createOscillator(),g=audio.createGain();o.frequency.value=720+Math.random()*260;o.type="triangle";g.gain.setValueAtTime(.001,audio.currentTime);g.gain.exponentialRampToValueAtTime(.035,audio.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.14);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.15)}
+function render(playSound=false){month.textContent=months[i%months.length];omen.textContent=omens[i%omens.length];stamp.textContent=(i%2?"VOID WHERE PROHIBITED":"APPROVED BY NO ONE");if(playSound)chirp()}
+document.getElementById("next").onclick=()=>{i++;render(true)};
+document.getElementById("tour").onclick=()=>{i+=2;render(true)};
+document.getElementById("save").onclick=()=>{localStorage.setItem("nrk_calendar_i",i);stamp.textContent="PINNED IN TONER";chirp()};
+render();
+</script>
+</body>
+</html>

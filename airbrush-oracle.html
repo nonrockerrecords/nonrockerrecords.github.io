@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AIRBRUSH ORACLE // nonrocker records</title>
+<meta name="description" content="A glossy Y2K airbrush oracle for nonrocker."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#070014;color:#fff;font-family:VT323,monospace}body{background:linear-gradient(90deg,rgba(10,0,20,.78),rgba(10,0,20,.08) 54%,rgba(10,0,20,.78)),url("assets/generated/airbrush-oracle-hero.png") center/cover fixed}.gloss{min-height:100vh;padding:clamp(20px,4vw,54px);display:grid;grid-template-rows:auto 1fr auto;position:relative;overflow:hidden}.gloss::before{content:"";position:fixed;inset:-20%;pointer-events:none;background:radial-gradient(circle at 52% 24%,rgba(255,255,255,.5),transparent 4%),radial-gradient(circle at 70% 18%,rgba(0,229,255,.2),transparent 18%),repeating-radial-gradient(circle at 50% 50%,transparent 0 35px,rgba(255,255,255,.08) 36px 37px);mix-blend-mode:screen;animation:spark 8s linear infinite}.nav{position:relative;z-index:2;display:flex;justify-content:space-between;font-family:"Press Start 2P";font-size:9px;letter-spacing:.13em}.nav a{color:#ffd6fb;text-decoration:none}.copy{position:relative;z-index:2;align-self:center;max-width:760px}.tag{font-family:"Press Start 2P";font-size:10px;color:#9ef7ff;letter-spacing:.18em;text-shadow:0 0 14px #00e5ff}h1{font-family:"Bungee Shade",VT323,cursive;font-size:clamp(50px,9vw,118px);line-height:.86;margin:18px 0;color:#fff;text-shadow:0 0 18px #ff00cc,0 0 42px #00e5ff}.answer{font-size:clamp(28px,3.4vw,42px);line-height:.98;max-width:650px;color:#fff;text-shadow:0 0 18px #ff6fe7;border-left:2px solid #fff;padding-left:18px}.charms{position:relative;z-index:2;display:flex;gap:12px;flex-wrap:wrap}.charm{width:92px;aspect-ratio:1;border-radius:50%;border:1px solid rgba(255,255,255,.75);background:radial-gradient(circle at 30% 18%,#fff,transparent 18%),linear-gradient(135deg,rgba(255,0,204,.35),rgba(0,229,255,.24));color:#fff;font-family:"Press Start 2P";font-size:8px;cursor:pointer;clip-path:polygon(50% 0,61% 31%,96% 35%,68% 55%,78% 91%,50% 70%,22% 91%,32% 55%,4% 35%,39% 31%)}.charm:focus-visible{outline:2px solid #fff;outline-offset:5px}.shift{animation:gel .55s ease}@keyframes spark{to{transform:rotate(1turn)}}@keyframes gel{50%{filter:hue-rotate(80deg) saturate(1.8)}}@media(max-width:700px){.charms{margin-top:20px}.charm{width:78px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="gloss">
+<nav class="nav"><span>Y2K AIRBRUSH ORACLE</span><span><a href="variations.html">DIRECTORY</a> / <a href="index.html">EPK</a></span></nav>
+<section class="copy" aria-labelledby="title"><div class="tag">LIQUID CHROME DIVINATION</div><h1 id="title">AIRBRUSH<br/>ORACLE</h1><div class="answer" id="answer" aria-live="polite">Ask the chrome sphere. It has already seen the flyer and it has notes.</div></section>
+<section class="charms" aria-label="Oracle charms"><button class="charm">LOVE</button><button class="charm">NOISE</button><button class="charm">DATE</button><button class="charm">NAME</button></section>
+</main>
+<script>
+const lines=["The logo should be shinier and legally less readable.","The chrome says yes, but only in Bungee Shade.","A mall fountain venue opens for one night in 1999.","Turbolag appears inside a sticker sheet, then vanishes.","The kazoo solo needs more lens flare.","No BPM. Maximum gel pen."];
+let audio;function ping(n){audio=audio||new AudioContext();const o=audio.createOscillator(),g=audio.createGain();o.frequency.value=520+n*110;o.type="sine";g.gain.setValueAtTime(.001,audio.currentTime);g.gain.exponentialRampToValueAtTime(.05,audio.currentTime+.04);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.45);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.5)}
+document.querySelectorAll(".charm").forEach((b,n)=>b.onclick=()=>{answer.textContent=lines[Math.floor(Math.random()*lines.length)];document.body.classList.add("shift");setTimeout(()=>document.body.classList.remove("shift"),600);ping(n)});
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AIRBRUSH SHRINE // nonrocker records</title>
+<meta name="description" content="A glossy Y2K airbrush shrine variation."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#090018;color:#fff;font-family:VT323,monospace}body{background:linear-gradient(90deg,rgba(8,0,22,.86),rgba(8,0,22,.16) 55%,rgba(8,0,22,.82)),url("assets/generated/airbrush-shrine-hero.png") center/cover fixed}.page{min-height:100vh;padding:clamp(20px,4vw,54px);position:relative;display:grid;grid-template-rows:auto 1fr auto}.page::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.28),transparent 4%),radial-gradient(circle at 74% 60%,rgba(255,0,204,.3),transparent 18%),linear-gradient(45deg,transparent 48%,rgba(255,255,255,.08) 49%,transparent 51%);mix-blend-mode:screen}.nav{position:relative;z-index:2;display:flex;justify-content:space-between;font-family:"Press Start 2P";font-size:9px;letter-spacing:.13em}.nav a{color:#fff;text-decoration:none}.copy{position:relative;z-index:2;align-self:center;max-width:760px}.tag{font-family:"Press Start 2P";font-size:10px;color:#ffb7f5;letter-spacing:.18em}h1{font-family:"Bungee Shade";font-size:clamp(52px,9vw,120px);line-height:.84;margin:18px 0;text-shadow:0 0 20px #ff00cc,0 0 44px #00e5ff}.blessing{font-size:clamp(28px,3.4vw,42px);line-height:.98;max-width:620px;border-left:2px solid #fff;padding-left:18px;text-shadow:0 0 16px #ff00cc}.stickers{position:relative;z-index:2;display:flex;gap:14px;flex-wrap:wrap}.sticker{border:1px solid rgba(255,255,255,.8);border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.32),rgba(255,0,204,.2),rgba(0,229,255,.22));color:#fff;font-family:"Press Start 2P";font-size:9px;letter-spacing:.09em;padding:16px 22px;cursor:pointer;clip-path:ellipse(50% 46% at 50% 50%)}.sticker:focus-visible{outline:2px solid #fff;outline-offset:5px}.shine{animation:shine .7s ease}@keyframes shine{50%{filter:hue-rotate(130deg) brightness(1.35) saturate(1.5)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="page">
+<nav class="nav"><span>Y2K SHRINE STICKER RITE</span><span><a href="variations.html">DIRECTORY</a> / <a href="index.html">EPK</a></span></nav>
+<section class="copy" aria-labelledby="title"><div class="tag">GLITTER ALTAR // PLASTIC SAINTS</div><h1 id="title">AIRBRUSH<br/>SHRINE</h1><div class="blessing" id="blessing" aria-live="polite">The sticker relics hover in gel light. Choose one and receive an impractical blessing.</div></section>
+<section class="stickers"><button class="sticker">CHROME</button><button class="sticker">VELVET</button><button class="sticker">BATTERY</button><button class="sticker">GLITTER</button></section>
+</main>
+<script>
+const blessings=["Chrome blessing: every promo photo reflects a better band behind you.","Velvet blessing: all stage curtains become portals to 2003.","Battery blessing: the toys sing only when the venue manager arrives.","Glitter blessing: your zine sticks permanently to the timeline."];
+let audio;function sound(i){audio=audio||new AudioContext();const o=audio.createOscillator(),g=audio.createGain();o.type="triangle";o.frequency.value=360+i*160;g.gain.setValueAtTime(.001,audio.currentTime);g.gain.exponentialRampToValueAtTime(.04,audio.currentTime+.03);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.34);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.36)}
+document.querySelectorAll(".sticker").forEach((b,i)=>b.onclick=()=>{blessing.textContent=blessings[i];document.body.classList.add("shine");setTimeout(()=>document.body.classList.remove("shine"),700);sound(i)});
+</script>
+</body>
+</html>

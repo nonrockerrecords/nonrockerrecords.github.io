@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stoke the Fire — Camp Kanahoma</title>
+    <link rel="stylesheet" href="assets/css/brand.css">
+    <link rel="stylesheet" href="assets/css/campfire-scroll.css">
+</head>
+<body>
+
+<nav class="scroll-nav">
+    <a href="index.html" class="nav-wordmark" aria-label="Kanahoma"><img src="assets/svg/Kanahoma_Logo_White.svg" alt=""></a>
+    <a href="index.html">← Back to site</a>
+</nav>
+
+<!-- Scroll progress (right side) -->
+<div class="scroll-progress" aria-hidden="true">
+    <span class="progress-label">Stoke the fire</span>
+    <div class="progress-rail">
+        <div class="progress-fill"></div>
+    </div>
+</div>
+
+<!-- Sticky campfire scene -->
+<div class="scroll-scene" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <radialGradient id="bigFireGlow" cx="50%" cy="60%" r="50%">
+                <stop offset="0%"   stop-color="#C96E43" stop-opacity="0.85"/>
+                <stop offset="40%"  stop-color="#D9AB4D" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#C96E43" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="skyTint" cx="50%" cy="80%" r="80%">
+                <stop offset="0%"   stop-color="#C96E43" stop-opacity="0.4"/>
+                <stop offset="60%"  stop-color="#5c2515" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+        </defs>
+
+        <!-- Stars (fade out as fire grows) -->
+        <g class="stars-fade">
+            <circle cx="80"   cy="40"  r="1.5" fill="#F6F2EE" opacity=".7"/>
+            <circle cx="220"  cy="20"  r="1"   fill="#F6F2EE" opacity=".5"/>
+            <circle cx="380"  cy="50"  r="1.5" fill="#F6F2EE" opacity=".7"/>
+            <circle cx="560"  cy="15"  r="2"   fill="#F6F2EE" opacity=".6"/>
+            <circle cx="720"  cy="30"  r="1.5" fill="#F6F2EE" opacity=".5"/>
+            <circle cx="900"  cy="48"  r="2"   fill="#F6F2EE" opacity=".7"/>
+            <circle cx="1080" cy="22"  r="1.5" fill="#F6F2EE" opacity=".6"/>
+            <circle cx="1260" cy="42"  r="1"   fill="#F6F2EE" opacity=".5"/>
+            <circle cx="160"  cy="90"  r="1"   fill="#F6F2EE" opacity=".4"/>
+            <circle cx="470"  cy="80"  r="1.5" fill="#F6F2EE" opacity=".6"/>
+            <circle cx="740"  cy="76"  r="1"   fill="#F6F2EE" opacity=".5"/>
+            <circle cx="1180" cy="68"  r="1.5" fill="#F6F2EE" opacity=".7"/>
+            <circle cx="1360" cy="34"  r="1"   fill="#F6F2EE" opacity=".5"/>
+        </g>
+
+        <!-- Sky warm tint (fades in with fire) -->
+        <rect class="sky-tint" x="0" y="0" width="1440" height="900" fill="url(#skyTint)"/>
+
+        <!-- Distant mountains -->
+        <path d="M0 480 L180 240 L360 420 L540 200 L720 400 L900 180 L1080 410 L1260 220 L1440 420 L1440 900 L0 900 Z" fill="#162819"/>
+        <path d="M0 560 L220 320 L400 480 L580 280 L760 460 L940 260 L1120 470 L1340 290 L1440 470 L1440 900 L0 900 Z" fill="#1e3320"/>
+        <path d="M0 640 L240 410 L420 560 L600 380 L780 540 L960 360 L1140 530 L1340 380 L1440 540 L1440 900 L0 900 Z" fill="#263d2c"/>
+
+        <!-- Ground -->
+        <rect x="0" y="700" width="1440" height="200" fill="#2f4936"/>
+
+        <!-- Pine trees left -->
+        <g transform="translate(140, 600)">
+            <rect x="-9" y="0" width="18" height="50" fill="#4a3020"/>
+            <polygon points="0,-150 -55,0 55,0" fill="#162819"/>
+            <polygon points="0,-105 -42,15 42,15" fill="#1a2e1e"/>
+            <polygon points="0,-65 -32,25 32,25" fill="#1e3322"/>
+        </g>
+        <g transform="translate(250, 630)">
+            <rect x="-7" y="0" width="14" height="38" fill="#4a3020"/>
+            <polygon points="0,-110 -42,0 42,0" fill="#1a2e1e"/>
+            <polygon points="0,-75 -32,12 32,12" fill="#1e3322"/>
+        </g>
+
+        <!-- Pine trees right -->
+        <g transform="translate(1290, 600)">
+            <rect x="-9" y="0" width="18" height="50" fill="#4a3020"/>
+            <polygon points="0,-150 -55,0 55,0" fill="#162819"/>
+            <polygon points="0,-105 -42,15 42,15" fill="#1a2e1e"/>
+            <polygon points="0,-65 -32,25 32,25" fill="#1e3322"/>
+        </g>
+        <g transform="translate(1190, 630)">
+            <rect x="-7" y="0" width="14" height="38" fill="#4a3020"/>
+            <polygon points="0,-110 -42,0 42,0" fill="#1a2e1e"/>
+        </g>
+
+        <!-- Tree stumps around the fire -->
+        <g transform="translate(550, 760)">
+            <ellipse cx="0" cy="36" rx="50" ry="16" fill="#4a2e18"/>
+            <rect x="-50" y="-4" width="100" height="42" rx="4" fill="#5c3820"/>
+            <ellipse cx="0" cy="-4" rx="50" ry="16" fill="#6e4428"/>
+        </g>
+        <g transform="translate(890, 760)">
+            <ellipse cx="0" cy="36" rx="50" ry="16" fill="#4a2e18"/>
+            <rect x="-50" y="-4" width="100" height="42" rx="4" fill="#5c3820"/>
+            <ellipse cx="0" cy="-4" rx="50" ry="16" fill="#6e4428"/>
+        </g>
+        <g transform="translate(420, 800)">
+            <ellipse cx="0" cy="28" rx="38" ry="12" fill="#4a2e18"/>
+            <rect x="-38" y="-3" width="76" height="32" rx="3" fill="#5c3820"/>
+            <ellipse cx="0" cy="-3" rx="38" ry="12" fill="#6e4428"/>
+        </g>
+        <g transform="translate(1020, 800)">
+            <ellipse cx="0" cy="28" rx="38" ry="12" fill="#4a2e18"/>
+            <rect x="-38" y="-3" width="76" height="32" rx="3" fill="#5c3820"/>
+            <ellipse cx="0" cy="-3" rx="38" ry="12" fill="#6e4428"/>
+        </g>
+
+        <!-- Campfire glow (grows with scroll) -->
+        <ellipse class="fire-glow-big" cx="720" cy="770" rx="280" ry="120" fill="url(#bigFireGlow)"/>
+
+        <!-- Logs -->
+        <g transform="translate(720, 778)">
+            <ellipse cx="0" cy="18" rx="90" ry="20" fill="#2a1a0a" opacity=".7"/>
+            <rect x="-78" y="-10" width="68" height="22" rx="10" fill="#5c3010" transform="rotate(-22)"/>
+            <rect x="10"  y="-10" width="68" height="22" rx="10" fill="#5c3010" transform="rotate( 22)"/>
+            <rect x="-32" y="0" width="64" height="20" rx="10" fill="#6b3812"/>
+            <circle cx="-15" cy="6" r="4" fill="#D9AB4D" opacity=".8"/>
+            <circle cx="6" cy="3" r="3.5" fill="#C96E43" opacity=".9"/>
+            <circle cx="20" cy="8" r="3" fill="#D9AB4D" opacity=".7"/>
+        </g>
+
+        <!-- Flame (scaled by --fire-scale) -->
+        <g class="flame-group" transform="translate(720, 768)">
+            <g class="flame-flicker">
+                <path d="M0 0 C-40,-60 -48,-130 0,-160 C 20,-110 40,-60 0, 0" fill="#D9AB4D" opacity=".95"/>
+                <path d="M0 0 C 28,-50 48,-115 0,-145 C-16,-95 -28,-48 0, 0" fill="#C96E43" opacity=".95"/>
+                <path d="M0 0 C -12,-36 -10,-90 0,-115 C 10,-90 14,-36 0, 0" fill="#F6F2EE" opacity=".55"/>
+            </g>
+        </g>
+    </svg>
+</div>
+
+<!-- Overlay content sections — user scrolls through these and fire grows -->
+<div class="scroll-stage">
+
+    <section class="overlay-section">
+        <div class="overlay-content">
+            <span class="overlay-eyebrow">★ Welcome to camp ★</span>
+            <h1 class="overlay-headline">Every fire starts<br>with a single <span class="script">spark.</span></h1>
+            <p class="overlay-body">Scroll down. Watch the fire grow as we tell you who we are and what we do. By the time you reach the bottom, the blaze will be roaring — just like the partnerships we build.</p>
+        </div>
+    </section>
+
+    <section class="overlay-section">
+        <div class="overlay-content">
+            <span class="overlay-eyebrow">★ Our story ★</span>
+            <h2 class="overlay-headline">Kindling laid in 2020.</h2>
+            <p class="overlay-body">Kanahoma was founded on a simple belief: organizations building a better world deserve a better agency. We've stoked that fire for 12 years and counting — for over 150 institutions, with measurable enrollment results behind every campaign.</p>
+        </div>
+    </section>
+
+    <section class="overlay-section">
+        <div class="overlay-content">
+            <span class="overlay-eyebrow">★ What we do ★</span>
+            <h2 class="overlay-headline">Three logs feed<br>this <span class="script">fire.</span></h2>
+            <p class="overlay-body">Agency of Record partnership. Brand strategy. Strategic consulting. Each engagement is sized to your moment — but they all burn toward the same outcome: institutional growth that lasts beyond any one campaign.</p>
+        </div>
+    </section>
+
+    <section class="overlay-section">
+        <div class="overlay-content">
+            <span class="overlay-eyebrow">★ The results ★</span>
+            <h2 class="overlay-headline">3× enrollment lift.<br>Year after <span class="script">year.</span></h2>
+            <p class="overlay-body">For our full AOR partners, the numbers speak louder than any tagline. Application volume, brand recall, cost per acquisition — all moved meaningfully and durably. The data lives in the case studies. The proof lives in the renewals.</p>
+        </div>
+    </section>
+
+    <section class="overlay-section">
+        <div class="overlay-content">
+            <span class="overlay-eyebrow">★ Let's talk ★</span>
+            <h2 class="overlay-headline">The fire is roaring.<br>Pull up a <span class="script">chair.</span></h2>
+            <p class="overlay-body">Ready to start the conversation? Whether you're looking for a full partnership or a second opinion on a specific challenge — we'd love to hear about it.</p>
+            <a href="mailto:hello@kanahoma.com" class="overlay-cta">Start the Conversation</a>
+        </div>
+    </section>
+
+</div>
+
+<script src="assets/js/campfire-scroll.js"></script>
+</body>
+</html>

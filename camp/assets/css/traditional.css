@@ -1,0 +1,591 @@
+/* ============================================
+   KANAHOMA — Traditional Variation
+   Classic corporate agency layout
+   ============================================ */
+
+body { background: var(--white); color: #1a1a1a; }
+
+/* ── TOP BAR ───────────────────────────────── */
+.topbar {
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    padding: 8px 0;
+    font-size: .8125rem;
+}
+
+.topbar-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topbar-contact a {
+    color: var(--stoddard-cream);
+    text-decoration: none;
+    opacity: .8;
+    margin-left: 20px;
+}
+.topbar-contact a:hover { opacity: 1; }
+
+.topbar-social {
+    display: flex;
+    gap: 16px;
+}
+.topbar-social a {
+    color: var(--stoddard-cream);
+    opacity: .7;
+    transition: opacity .2s;
+}
+.topbar-social a:hover { opacity: 1; }
+.topbar-social svg { width: 16px; height: 16px; display: block; }
+
+/* ── HEADER / NAV ──────────────────────────── */
+.site-header {
+    background: var(--white);
+    border-bottom: 1px solid #e5e5e5;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--kanahoma-green);
+    text-decoration: none;
+    letter-spacing: -.01em;
+}
+
+.header-nav ul {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+    align-items: center;
+}
+
+.header-nav a {
+    font-size: .9375rem;
+    font-weight: 500;
+    color: #2a2a2a;
+    text-decoration: none;
+    transition: color .2s;
+}
+.header-nav a:hover { color: var(--hellbender); }
+
+.header-nav .nav-button {
+    padding: 10px 22px;
+    background: var(--hellbender);
+    color: var(--white) !important;
+    border-radius: 2px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    font-size: .8125rem;
+    transition: background .2s;
+}
+.header-nav .nav-button:hover { background: #b55e35; }
+
+/* ── HERO (traditional split layout) ───────── */
+.trad-hero {
+    background: var(--stoddard-cream);
+    padding: 80px 32px;
+}
+
+.trad-hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.trad-hero-eyebrow {
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    margin-bottom: 20px;
+}
+
+.trad-hero-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--kanahoma-green);
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    margin-bottom: 24px;
+}
+
+.trad-hero-body {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #444;
+    margin-bottom: 36px;
+    max-width: 540px;
+}
+
+.trad-hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.trad-btn-primary {
+    display: inline-block;
+    padding: 14px 32px;
+    background: var(--hellbender);
+    color: var(--white);
+    text-decoration: none;
+    font-size: .875rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: background .2s;
+}
+.trad-btn-primary:hover { background: #b55e35; }
+
+.trad-btn-secondary {
+    display: inline-block;
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--kanahoma-green);
+    text-decoration: none;
+    font-size: .875rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border: 1.5px solid var(--kanahoma-green);
+    border-radius: 2px;
+    transition: background .2s, color .2s;
+}
+.trad-btn-secondary:hover {
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+}
+
+.trad-hero-image {
+    width: 100%;
+    height: 480px;
+    background-image: url('../img/kanahoma-camp-stories-booth-v2.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+    box-shadow: 0 12px 40px rgba(47,73,54,.18);
+}
+
+/* ── TRUSTED BY ───────────────────────────── */
+.trusted {
+    background: var(--white);
+    padding: 48px 32px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.trusted-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.trusted-label {
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 28px;
+}
+
+.trusted-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 56px;
+}
+
+.trusted-logo {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    color: #999;
+    letter-spacing: -.01em;
+    opacity: .7;
+    transition: opacity .2s;
+}
+.trusted-logo:hover { opacity: 1; }
+
+/* ── SERVICES (3-col grid) ────────────────── */
+.trad-services {
+    background: var(--white);
+    padding: 100px 32px;
+}
+
+.trad-section-header {
+    max-width: 700px;
+    margin: 0 auto 64px;
+    text-align: center;
+}
+
+.trad-section-label {
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    margin-bottom: 16px;
+}
+
+.trad-section-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3.5vw, 2.875rem);
+    color: var(--kanahoma-green);
+    line-height: 1.15;
+    margin-bottom: 16px;
+    letter-spacing: -.01em;
+}
+
+.trad-section-sub {
+    font-size: 1.125rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+.trad-services-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+.trad-service {
+    background: var(--white);
+    padding: 40px 32px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    transition: box-shadow .2s, transform .2s;
+}
+.trad-service:hover {
+    box-shadow: 0 12px 32px rgba(0,0,0,.08);
+    transform: translateY(-4px);
+}
+
+.trad-svc-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--stoddard-cream);
+    border-radius: 4px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 24px;
+    color: var(--kanahoma-green);
+}
+.trad-svc-icon svg { width: 28px; height: 28px; }
+
+.trad-svc h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--kanahoma-green);
+    margin-bottom: 12px;
+}
+
+.trad-svc p {
+    font-size: .9375rem;
+    line-height: 1.65;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.trad-svc-link {
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap .2s;
+}
+.trad-svc-link:hover { gap: 10px; }
+
+/* ── ABOUT / WHY US ─────────────────────── */
+.trad-about {
+    background: var(--stoddard-cream);
+    padding: 100px 32px;
+}
+
+.trad-about-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.trad-about-image {
+    height: 520px;
+    background-image: url('../img/kanahoma-camp-stories-banner-v2.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+}
+
+.trad-about-text .trad-section-label,
+.trad-about-text .trad-section-headline {
+    text-align: left;
+}
+
+.trad-about-text .trad-section-header {
+    margin: 0 0 32px;
+    max-width: none;
+    text-align: left;
+}
+
+.trad-about-text p {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.trad-about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid #d0c5b8;
+}
+
+.trad-stat-num {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    color: var(--hellbender);
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.trad-stat-label {
+    font-size: .8125rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* ── TESTIMONIALS ─────────────────────────── */
+.trad-testimonials {
+    background: var(--kanahoma-green);
+    padding: 100px 32px;
+    color: var(--stoddard-cream);
+}
+
+.trad-testimonials .trad-section-label  { color: var(--golden-hour); }
+.trad-testimonials .trad-section-headline { color: var(--stoddard-cream); }
+
+.trad-testimonials-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+}
+
+.trad-testimonial {
+    background: rgba(246, 242, 238, .05);
+    border: 1px solid rgba(246, 242, 238, .12);
+    padding: 40px;
+    border-radius: 4px;
+}
+
+.trad-testimonial-stars {
+    color: var(--golden-hour);
+    margin-bottom: 20px;
+    font-size: 1.125rem;
+    letter-spacing: 4px;
+}
+
+.trad-testimonial-quote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--stoddard-cream);
+    margin-bottom: 24px;
+}
+
+.trad-testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.trad-author-avatar {
+    width: 44px;
+    height: 44px;
+    background: var(--whippoorwill);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    color: var(--kanahoma-green);
+    font-size: 1.125rem;
+}
+
+.trad-author-meta strong {
+    display: block;
+    font-size: .9375rem;
+    color: var(--stoddard-cream);
+    margin-bottom: 2px;
+}
+
+.trad-author-meta span {
+    font-size: .8125rem;
+    color: var(--wavebreak);
+    opacity: .8;
+}
+
+/* ── CTA BAND ─────────────────────────────── */
+.trad-cta {
+    background: var(--white);
+    padding: 80px 32px;
+}
+
+.trad-cta-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--stoddard-cream);
+    padding: 64px 48px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+    align-items: center;
+    border-left: 6px solid var(--hellbender);
+}
+
+.trad-cta h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.875rem, 3.5vw, 2.625rem);
+    color: var(--kanahoma-green);
+    line-height: 1.15;
+    margin-bottom: 12px;
+}
+
+.trad-cta p {
+    font-size: 1.0625rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+.trad-cta-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-self: end;
+}
+
+/* ── FOOTER ───────────────────────────────── */
+.trad-footer {
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    padding: 64px 32px 32px;
+}
+
+.trad-footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.trad-footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid rgba(246, 242, 238, .15);
+}
+
+.trad-footer-brand {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--stoddard-cream);
+    margin-bottom: 16px;
+    display: block;
+}
+
+.trad-footer-tagline {
+    font-size: .9375rem;
+    color: var(--wavebreak);
+    line-height: 1.6;
+    max-width: 320px;
+    opacity: .8;
+}
+
+.trad-footer h4 {
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-bottom: 18px;
+}
+
+.trad-footer ul { list-style: none; }
+.trad-footer li { margin-bottom: 10px; }
+
+.trad-footer a {
+    color: var(--stoddard-cream);
+    opacity: .75;
+    text-decoration: none;
+    font-size: .9375rem;
+    transition: opacity .2s;
+}
+.trad-footer a:hover { opacity: 1; }
+
+.trad-footer-bottom {
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .8125rem;
+    color: var(--wavebreak);
+    opacity: .6;
+}
+
+.trad-footer-bottom-links a { margin-left: 24px; }
+
+/* ── RESPONSIVE ─────────────────────────── */
+@media (max-width: 960px) {
+    .topbar { display: none; }
+    .header-inner { height: 64px; padding: 0 20px; }
+    .header-nav ul { gap: 20px; }
+    .header-nav li:not(.nav-button-wrap) { display: none; }
+
+    .trad-hero-inner,
+    .trad-about-inner,
+    .trad-cta-inner { grid-template-columns: 1fr; gap: 48px; }
+    .trad-cta-buttons { justify-self: stretch; }
+    .trad-services-grid,
+    .trad-testimonials-grid { grid-template-columns: 1fr; }
+    .trad-about-stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .trad-stat-num { font-size: 2rem; }
+    .trad-footer-grid { grid-template-columns: 1fr 1fr; }
+    .trad-footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    .trad-footer-bottom-links a:first-child { margin-left: 0; }
+}

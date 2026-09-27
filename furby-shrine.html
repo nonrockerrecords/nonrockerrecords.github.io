@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FURBY SHRINE // nonrocker records</title>
+<meta name="description" content="Offer noise, soju, and chaos to the nonrocker toy shrine."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#050007;color:#fff;font-family:VT323,monospace}body{background:radial-gradient(circle at 50% 35%,rgba(255,0,204,.2),transparent 24%),linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.25) 54%,rgba(0,0,0,.78)),url("assets/generated/furby-shrine-hero.png") center/cover fixed}.veil{min-height:100vh;position:relative;padding:clamp(20px,4vw,50px);display:grid;grid-template-columns:minmax(280px,520px) 1fr;gap:24px}.veil::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(0,0,0,.22) 3px,transparent 4px),radial-gradient(circle at 78% 58%,rgba(0,229,255,.18),transparent 20%);mix-blend-mode:screen}.nav{position:relative;z-index:2;grid-column:1/-1;display:flex;justify-content:space-between;gap:14px;font-family:"Press Start 2P";font-size:9px;letter-spacing:.12em}.nav a{color:#ff7ad7;text-decoration:none}.copy{position:relative;z-index:2;align-self:center}.sig{font-family:"Press Start 2P";font-size:10px;color:#39ff14;letter-spacing:.18em;text-shadow:0 0 14px #39ff14}h1{font-size:clamp(58px,10vw,128px);line-height:.75;margin:18px 0;text-shadow:5px 0 #ff00cc,-5px 0 #00e5ff}.oracle{font-size:clamp(26px,3.3vw,40px);line-height:.98;max-width:560px;border-left:2px solid #ff2d78;padding-left:16px;text-shadow:0 0 18px rgba(255,0,204,.7)}.offerings{position:relative;z-index:2;align-self:end;justify-self:end;display:flex;flex-wrap:wrap;gap:14px;max-width:560px;justify-content:flex-end}.relic{width:112px;aspect-ratio:1;border-radius:48% 52% 44% 56%;border:1px solid rgba(255,255,255,.5);background:radial-gradient(circle at 35% 20%,rgba(255,255,255,.35),transparent 20%),rgba(0,0,0,.28);color:#fff;font-family:"Press Start 2P";font-size:8px;letter-spacing:.08em;cursor:pointer;backdrop-filter:blur(3px);clip-path:polygon(50% 0,90% 18%,100% 60%,72% 100%,26% 96%,0 58%,12% 15%)}.relic:nth-child(2n){border-color:#00e5ff}.relic:nth-child(3n){border-color:#ffb800}.relic:focus-visible{outline:2px solid #fff;outline-offset:5px}.mood{grid-column:1/-1;justify-self:end;color:#ffb800;font-family:"Press Start 2P";font-size:9px;letter-spacing:.12em}.lit{animation:bless .5s steps(2,end) 3}@keyframes bless{50%{filter:hue-rotate(90deg) saturate(1.8);transform:translateY(-5px)}}@media(max-width:850px){.veil{grid-template-columns:1fr}.offerings{justify-self:start}.relic{width:92px}body{background-position:center}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="veil">
+  <nav class="nav"><span>NRK TOY ALTAR</span><span><a href="variations.html">DIRECTORY</a> / <a href="index.html">EPK</a></span></nav>
+  <section class="copy" aria-labelledby="title">
+    <div class="sig">CLICK A RELIC // DO NOT FEED AFTER MIDNIGHT</div>
+    <h1 id="title">FURBY<br/>SHRINE</h1>
+    <div class="oracle" id="oracle" aria-live="polite">The shrine is awake. It smells like batteries, velvet, candle wax, and unpaid studio time.</div>
+  </section>
+  <section class="offerings" aria-label="Shrine offerings">
+    <button class="relic" data-k="soju" type="button">SOJU</button>
+    <button class="relic" data-k="noise" type="button">NOISE</button>
+    <button class="relic" data-k="chaos" type="button">CHAOS</button>
+    <button class="relic" data-k="drummer" type="button">CHAIR</button>
+    <button class="relic" data-k="kazoo" type="button">KAZOO</button>
+    <div class="mood" id="mood">MOOD: WATCHING</div>
+  </section>
+</main>
+<script>
+const lines={soju:"The central relic chirps. It accepts soju and returns a contract written in crumbs.",noise:"All toys blink at once. Somewhere, a sampler starts recording the room tone.",chaos:"The shrine blesses the band with three gigs and one cursed extension cord.",drummer:"The empty chair receives the offering. The drummer denies being summoned.",kazoo:"A tiny brass scream escapes the altar. Track 4 looks nervous."};
+let audio;function tone(f=140){audio=audio||new AudioContext();const o=audio.createOscillator(),g=audio.createGain();o.type="sawtooth";o.frequency.value=f;g.gain.setValueAtTime(.001,audio.currentTime);g.gain.exponentialRampToValueAtTime(.05,audio.currentTime+.03);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.5);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.55)}
+document.querySelectorAll(".relic").forEach((b,n)=>b.addEventListener("click",()=>{document.body.classList.add("lit");setTimeout(()=>document.body.classList.remove("lit"),900);oracle.textContent=lines[b.dataset.k];mood.textContent="MOOD: "+b.dataset.k.toUpperCase()+" ACCEPTED";localStorage.setItem("nrk_shrine",b.dataset.k);tone(100+n*70)}));
+const saved=localStorage.getItem("nrk_shrine");if(saved&&lines[saved]){oracle.textContent=lines[saved];mood.textContent="MOOD: "+saved.toUpperCase()+" REMEMBERED"}
+</script>
+</body>
+</html>

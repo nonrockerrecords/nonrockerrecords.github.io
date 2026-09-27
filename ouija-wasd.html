@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OUIJA WASD // nonrocker records</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#09000d;color:#f4eaff;font-family:VT323,monospace;overflow:hidden}body:before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(0,0,0,.22) 3px,transparent 4px),radial-gradient(circle at 50% 30%,rgba(255,0,204,.18),transparent 35%);pointer-events:none;z-index:5}.wrap{height:100vh;display:grid;grid-template-rows:auto 1fr auto;padding:24px;gap:14px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center}.label,.links a{font-family:"Press Start 2P";font-size:9px;color:#ff2d78;letter-spacing:.12em}.links{display:flex;gap:8px}.links a{text-decoration:none;border:1px solid #ff2d78;padding:8px;background:#130012}h1{font-size:clamp(38px,7vw,86px);margin:0;text-shadow:3px 0 #ff00cc,-3px 0 #00e5ff}.board{position:relative;border:2px solid #ff2d78;background:radial-gradient(circle at 50% 50%,rgba(255,184,0,.12),transparent 42%),#170511;box-shadow:0 0 45px rgba(255,0,204,.25),inset 0 0 60px rgba(0,229,255,.08);padding:22px;display:grid;place-items:center;overflow:hidden}.letters{display:grid;grid-template-columns:repeat(9,1fr);gap:10px;width:min(880px,96vw)}.tile{height:46px;display:grid;place-items:center;border:1px solid rgba(0,229,255,.28);font-family:"Press Start 2P";font-size:13px;color:#00e5ff;background:rgba(0,0,0,.25)}.planchette{position:absolute;width:118px;height:82px;border-radius:50% 50% 45% 45%;border:2px solid #39ff14;background:rgba(0,0,0,.66);box-shadow:0 0 28px #39ff14;display:grid;place-items:center;font-family:"Press Start 2P";font-size:10px;color:#fff;transition:transform .16s}.planchette:after{content:"";width:22px;height:22px;border-radius:50%;border:2px solid #00e5ff;box-shadow:0 0 18px #00e5ff}.readout{border:1px solid #00e5ff;padding:12px;background:#000;min-height:82px;font-size:26px;color:#39ff14}.hint{color:#ffb800}@media(max-width:650px){.letters{grid-template-columns:repeat(6,1fr)}.tile{height:38px;font-size:10px}.planchette{width:92px;height:64px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<div class="top"><div><div class="label">WASD SPIRIT BOARD</div><h1>OUIJA_WASD</h1></div><nav class="links"><a href="variations.html">DIRECTORY</a><a href="index.html">EPK</a></nav></div>
+<section class="board" id="board" aria-label="Ouija keyboard board"><div class="letters" id="letters"></div><div class="planchette" id="p" aria-hidden="true"></div></section>
+<section class="readout" aria-live="polite"><div id="out">PRESS SPACE TO ASK. MOVE WITH WASD OR ARROWS.</div><div class="hint">The board likes: BOOK US / NO BPM / TRACK 4 LIED / TRY TURBOLAG</div></section>
+</main>
+<script>
+const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split(''),letters=document.getElementById('letters'),p=document.getElementById('p'),out=document.getElementById('out'),msgs=['BOOK US','NO BPM NO GOD','TRACK 4 LIED','TRY TURBOLAG','DRUMMER DENIES IT','INSERT CHAOS HERE'];let x=4,y=2,spelling=false;
+chars.forEach(c=>{const d=document.createElement('div');d.className='tile';d.textContent=c;letters.appendChild(d);});
+function place(){const board=document.getElementById('board').getBoundingClientRect();const cols=innerWidth<650?6:9;const cellW=Math.min(880,innerWidth*.96)/cols;const left=(board.width-Math.min(880,innerWidth*.96))/2+x*cellW+cellW/2-59;const top=90+y*56;p.style.transform=`translate(${left}px,${top}px)`;}
+function move(dx,dy){if(spelling)return;const cols=innerWidth<650?6:9,rows=Math.ceil(chars.length/cols);x=Math.max(0,Math.min(cols-1,x+dx));y=Math.max(0,Math.min(rows-1,y+dy));place();}
+async function ask(){if(spelling)return;spelling=true;const msg=msgs[Math.floor(Math.random()*msgs.length)];out.textContent='';for(const ch of msg){out.textContent+=ch;await new Promise(r=>setTimeout(r,120));}spelling=false;}
+addEventListener('resize',place);addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();ask()}if(e.key==='a'||e.key==='ArrowLeft')move(-1,0);if(e.key==='d'||e.key==='ArrowRight')move(1,0);if(e.key==='w'||e.key==='ArrowUp')move(0,-1);if(e.key==='s'||e.key==='ArrowDown')move(0,1);});document.getElementById('board').addEventListener('click',ask);place();
+</script>
+</body></html>

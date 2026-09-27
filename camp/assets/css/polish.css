@@ -1,0 +1,353 @@
+/* ============================================
+   KANAHOMA — Polish demos
+   Small interactive touches in one showcase page
+   ============================================ */
+
+body {
+    background: var(--stoddard-cream);
+    color: var(--kanahoma-green);
+}
+
+.pl-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 48px;
+    background: rgba(13, 31, 21, .92);
+    backdrop-filter: blur(10px);
+}
+.pl-nav a {
+    color: var(--stoddard-cream); text-decoration: none;
+    font-size: var(--fs-sm); letter-spacing: .08em; text-transform: uppercase;
+    font-weight: 500; opacity: .85;
+}
+.pl-nav .nav-wordmark {
+    font-family: var(--font-display); font-size: 1.5rem;
+    text-transform: none; letter-spacing: -.01em;
+}
+
+/* Header */
+.pl-header {
+    text-align: center;
+    padding: 140px 24px 60px;
+    background: var(--wavebreak);
+}
+
+.pl-eyebrow {
+    display: inline-block;
+    background: var(--hellbender); color: var(--white);
+    font-size: .6875rem; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; padding: 6px 14px; border-radius: 2px;
+    margin-bottom: 24px;
+}
+
+.pl-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    line-height: 1.1; letter-spacing: -.02em;
+    margin-bottom: 12px;
+}
+.pl-headline .script {
+    font-family: var(--font-script);
+    color: var(--hellbender); font-size: 1.25em;
+}
+
+.pl-sub {
+    color: #555; font-size: 1.0625rem;
+    max-width: 580px; margin: 0 auto;
+}
+
+/* Demo sections */
+.pl-demo {
+    padding: 80px 24px;
+    border-bottom: 1px solid #d0c5b8;
+}
+
+.pl-demo-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.pl-demo-label {
+    display: inline-block;
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    background: var(--wavebreak);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+}
+
+.pl-demo-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    color: var(--kanahoma-green);
+    margin-bottom: 12px;
+    line-height: 1.15;
+}
+
+.pl-demo-desc {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 32px;
+    max-width: 60ch;
+    line-height: 1.6;
+}
+
+.pl-demo-stage {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 48px;
+    border: 1px solid #e5e5e5;
+}
+
+/* ── Demo 1: Count-up stats ───────────────── */
+.countup-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    background: var(--kanahoma-green);
+    border-radius: 4px;
+    padding: 56px 40px;
+}
+
+.countup {
+    text-align: center;
+    color: var(--stoddard-cream);
+}
+
+.countup-num {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 5rem);
+    color: var(--golden-hour);
+    line-height: 1;
+    margin-bottom: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.countup-label {
+    font-size: .9375rem;
+    letter-spacing: .05em;
+    color: var(--wavebreak);
+    opacity: .85;
+}
+
+/* ── Demo 2: Twinkling star footer ────────── */
+.twinkle-footer {
+    background: var(--kanahoma-green);
+    padding: 56px 40px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.twinkle-stars {
+    position: absolute; inset: 0;
+    pointer-events: none;
+}
+
+.twinkle-star {
+    position: absolute;
+    color: var(--golden-hour);
+    font-size: 12px;
+    animation: twinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+    0%   { opacity: .3; transform: scale(.8); }
+    100% { opacity: 1;  transform: scale(1.1); }
+}
+
+.twinkle-footer-content {
+    text-align: center;
+    color: var(--stoddard-cream);
+    position: relative;
+    z-index: 2;
+}
+.twinkle-footer-content h4 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+}
+.twinkle-footer-content p {
+    color: var(--whippoorwill);
+    font-size: .875rem;
+    letter-spacing: .05em;
+}
+
+/* ── Demo 3: Marshmallow loader ───────────── */
+.marshmallow-stage {
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--darkest-green);
+    border-radius: 4px;
+}
+
+.marshmallow {
+    width: 60px; height: 60px;
+    background: var(--stoddard-cream);
+    border-radius: 50%;
+    margin: 0 auto 28px;
+    position: relative;
+    box-shadow: 0 0 30px rgba(217, 171, 77, .4);
+    animation: roast 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes roast {
+    0%   { background: #F6F2EE; box-shadow: 0 0 20px rgba(217, 171, 77, .2); transform: translateY(0); }
+    50%  { background: #D9AB4D; box-shadow: 0 0 30px rgba(217, 171, 77, .6); transform: translateY(-4px); }
+    100% { background: #C96E43; box-shadow: 0 0 40px rgba(201, 110, 67, .8); transform: translateY(-2px); }
+}
+
+.marshmallow::before {
+    content: '';
+    position: absolute;
+    left: 50%; top: 100%;
+    width: 4px;
+    height: 60px;
+    background: #5c3820;
+    transform: translateX(-50%) rotate(-15deg);
+    transform-origin: top;
+    border-radius: 2px;
+}
+
+.marshmallow-text {
+    color: var(--stoddard-cream);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.125rem;
+    margin-top: 60px;
+}
+
+.marshmallow-text .dots::after {
+    content: '...';
+    display: inline-block;
+    width: 1.5em;
+    text-align: left;
+    animation: dots 1.5s steps(4) infinite;
+}
+@keyframes dots {
+    0%   { content: ''; }
+    25%  { content: '.'; }
+    50%  { content: '..'; }
+    75%  { content: '...'; }
+    100% { content: ''; }
+}
+
+/* ── Demo 4: Sticky floating CTA ──────────── */
+.floating-cta {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: var(--hellbender);
+    color: var(--white);
+    padding: 14px 24px 14px 18px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 12px 36px rgba(201, 110, 67, .4);
+    transition: transform .2s, box-shadow .2s;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.floating-cta.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.floating-cta:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 44px rgba(201, 110, 67, .5);
+}
+
+.floating-cta-flame {
+    font-size: 1.125rem;
+    animation: flameFlicker 1.2s ease-in-out infinite alternate;
+}
+@keyframes flameFlicker {
+    from { transform: scale(1) rotate(-2deg); }
+    to   { transform: scale(1.15) rotate(2deg); }
+}
+
+/* ── Demo 5: Animated underline link ─────── */
+.underline-demo {
+    text-align: center;
+    padding: 40px;
+}
+.fancy-link {
+    color: var(--kanahoma-green);
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    text-decoration: none;
+    position: relative;
+    padding: 4px 0;
+}
+.fancy-link::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--hellbender);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .35s ease-out;
+}
+.fancy-link:hover::after {
+    transform: scaleX(1);
+}
+
+/* ── Demo 6: Tree-stump favicon preview ─── */
+.favicon-demo {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 28px;
+    background: var(--wavebreak);
+    border-radius: 4px;
+}
+.favicon-preview {
+    width: 64px; height: 64px;
+    background: var(--white);
+    border: 1px solid #d0c5b8;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+.favicon-preview svg { width: 48px; height: 48px; }
+
+.favicon-info h4 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--kanahoma-green);
+    margin-bottom: 4px;
+}
+.favicon-info p {
+    font-size: .875rem;
+    color: #555;
+}
+
+@media (max-width: 700px) {
+    .pl-nav { padding: 16px 20px; }
+    .pl-demo-stage { padding: 28px 20px; }
+    .countup-grid { grid-template-columns: 1fr; gap: 32px; padding: 32px 24px; }
+    .floating-cta { bottom: 16px; right: 16px; padding: 12px 18px 12px 14px; }
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AIRBRUSH CALENDAR // nonrocker records</title>
+<meta name="description" content="A glossy Y2K airbrush calendar oracle."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#080015;color:#fff;font-family:VT323,monospace}body{background:linear-gradient(90deg,rgba(12,0,24,.84),rgba(12,0,24,.14) 58%,rgba(12,0,24,.8)),url("assets/generated/airbrush-calendar-hero.png") center/cover fixed}.sheet{min-height:100vh;padding:clamp(20px,4vw,54px);position:relative;display:grid;grid-template-rows:auto 1fr auto}.sheet::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 61% 35%,rgba(255,255,255,.35),transparent 5%),radial-gradient(circle at 35% 80%,rgba(0,229,255,.24),transparent 20%),repeating-linear-gradient(115deg,transparent 0 34px,rgba(255,255,255,.08) 35px 36px);mix-blend-mode:screen}.nav{position:relative;z-index:2;display:flex;justify-content:space-between;font-family:"Press Start 2P";font-size:9px;letter-spacing:.13em}.nav a{color:#fff;text-decoration:none}.copy{position:relative;z-index:2;align-self:center;max-width:780px}.tag{font-family:"Press Start 2P";font-size:10px;color:#aefcff;letter-spacing:.18em}h1{font-family:"Bungee Shade";font-size:clamp(52px,9vw,120px);line-height:.84;margin:18px 0;text-shadow:0 0 18px #ff00cc,0 0 42px #00e5ff}.date{font-family:"Press Start 2P";font-size:clamp(12px,2vw,20px);color:#ffb800;letter-spacing:.14em}.forecast{margin-top:16px;font-size:clamp(28px,3.4vw,42px);line-height:.98;max-width:650px;border-left:2px solid #fff;padding-left:18px;text-shadow:0 0 18px #00e5ff}.tabs{position:relative;z-index:2;display:flex;gap:12px;flex-wrap:wrap}.tab{border:1px solid rgba(255,255,255,.75);background:rgba(255,255,255,.12);color:#fff;font-family:"Press Start 2P";font-size:9px;padding:15px 20px;cursor:pointer;border-radius:50% 42% 48% 44%;transform:rotate(var(--r))}.tab:nth-child(1){--r:-4deg}.tab:nth-child(2){--r:3deg}.tab:nth-child(3){--r:-1deg}.tab:focus-visible{outline:2px solid #fff;outline-offset:5px}.flip{animation:flip .55s ease}@keyframes flip{50%{filter:hue-rotate(90deg) brightness(1.3);transform:scale(1.01)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="sheet">
+<nav class="nav"><span>Y2K HOLOGRAPHIC DATEBOOK</span><span><a href="variations.html">DIRECTORY</a> / <a href="index.html">EPK</a></span></nav>
+<section class="copy" aria-labelledby="title"><div class="tag">GEL PEN PROPHECY // STICKER WEATHER</div><h1 id="title">AIRBRUSH<br/>CALENDAR</h1><div class="date" id="date">FRIDAY // 13:13 PM</div><div class="forecast" id="forecast" aria-live="polite">Today is glossy with a chance of venue cancellation and surprise holographic merch.</div></section>
+<section class="tabs"><button class="tab">forecast</button><button class="tab">merch omen</button><button class="tab">wrong date</button></section>
+</main>
+<script>
+const data=[["FRIDAY // 13:13 PM","Glossy with a chance of venue cancellation and surprise holographic merch."],["SATURDAY // 00:00","Sticker sheets rain from the ceiling. The opener is a screensaver."],["MONTH 08 // DAY BALL","Every calendar square says play destroy rewind, but in gel ink."],["SMARCH // NEVER","The mall closes. The fountain keeps booking shows."],["JUNE // TRACK 4","Track 4 replaced the date with a chrome skull sticker."]];
+let i=0,audio;function tone(){audio=audio||new AudioContext();const o=audio.createOscillator(),g=audio.createGain();o.type="sine";o.frequency.value=620+i*80;g.gain.setValueAtTime(.001,audio.currentTime);g.gain.exponentialRampToValueAtTime(.045,audio.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.3);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.32)}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{i=(i+1)%data.length;date.textContent=data[i][0];forecast.textContent=data[i][1];document.body.classList.add("flip");setTimeout(()=>document.body.classList.remove("flip"),600);tone()});
+</script>
+</body>
+</html>

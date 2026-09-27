@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Variations — Camp Kanahoma Build</title>
+    <link rel="stylesheet" href="assets/css/brand.css">
+    <style>
+        body { background: var(--darkest-green); color: var(--stoddard-cream); padding: 60px 24px; min-height: 100vh; }
+        .wrap { max-width: 1100px; margin: 0 auto; }
+        h1 { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 3.75rem); line-height: 1.05; margin-bottom: 12px; letter-spacing: -.02em; }
+        h1 .script { font-family: var(--font-script); color: var(--golden-hour); font-size: 1.25em; }
+        .sub { color: var(--wavebreak); margin-bottom: 48px; font-size: 1.0625rem; opacity: .85; max-width: 60ch; }
+        .group { margin-bottom: 48px; }
+        .group-label { font-size: .75rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--golden-hour); margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .card { background: rgba(246, 242, 238, .04); border: 1px solid rgba(217, 171, 77, .15); border-radius: 6px; padding: 24px; text-decoration: none; color: var(--stoddard-cream); transition: all .2s; display: block; }
+        .card:hover { background: rgba(246, 242, 238, .08); border-color: var(--golden-hour); transform: translateY(-3px); }
+        .card-num { font-family: var(--font-display); font-size: 1.5rem; color: var(--golden-hour); display: block; margin-bottom: 8px; line-height: 1; }
+        .card h3 { font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 6px; line-height: 1.2; }
+        .card p { font-size: .875rem; color: var(--wavebreak); line-height: 1.5; opacity: .8; }
+        .card-tag { display: inline-block; font-size: .625rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 3px 10px; border-radius: 30px; margin-top: 14px; }
+        .tag-main      { background: var(--hellbender); color: var(--white); }
+        .tag-interact  { background: var(--golden-hour); color: var(--kanahoma-green); }
+        .tag-utility   { background: rgba(195, 169, 142, .25); color: var(--whippoorwill); }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>All the <span class="script">variations.</span></h1>
+        <p class="sub">Every HTML file in this project, organized by what it demonstrates. Click any card to view.</p>
+
+        <div class="group" id="fresh-camp-collection">
+            <p class="group-label">★ Fresh camp collection — new artwork &amp; playable claw games ★</p>
+            <div class="grid">
+                <a class="card" href="cinematic/index.html"><span class="card-num">01</span><h3>Cinematic Camp</h3><p>A complete new camp collection with freshly generated scenes, stories, and two playable claw machines.</p><span class="card-tag tag-main">New collection</span></a>
+                <a class="card" href="field-guide/index.html"><span class="card-num">02</span><h3>Illustrated Field Guide</h3><p>Woodcut-inspired artwork, an editorial layout, and a fresh newsletter campaign.</p><span class="card-tag tag-main">New direction</span></a>
+                <a class="card" href="surreal/index.html"><span class="card-num">03</span><h3>Camp After Hours</h3><p>Impossible campsites, surreal prize sculptures, and a different perspective.</p><span class="card-tag tag-main">New direction</span></a>
+                <a class="card" href="cinematic/claw-3d/index.html"><span class="card-num">↗</span><h3>Play the 3D Camp Cabinet</h3><p>Aim in depth, drop the articulated claw, and catch a physical capsule. Unlimited tries.</p><span class="card-tag tag-interact">Three.js + Rapier</span></a>
+                <a class="card" href="cinematic/claw-arcade/index.html"><span class="card-num">↗</span><h3>Play the Illustrated Arcade</h3><p>Line up your shot, time the sway, and bring a capsule home.</p><span class="card-tag tag-interact">Phaser + Matter</span></a>
+            </div>
+        </div>
+
+        <div class="group">
+            <p class="group-label">★ Production page + full-page variations ★</p>
+            <div class="grid">
+                <a class="card" href="index.html">
+                    <span class="card-num">★</span>
+                    <h3>Camp Kanahoma Splash</h3>
+                    <p>Production splash page for newsletter signup, generated campaign graphics, and free store-item code reveal.</p>
+                    <span class="card-tag tag-main">Production</span>
+                </a>
+                <a class="card" href="index-traditional.html">
+                    <span class="card-num">01</span>
+                    <h3>Traditional</h3>
+                    <p>Classic corporate agency layout — topbar, sticky nav, testimonials, 4-column footer.</p>
+                    <span class="card-tag tag-main">Variation</span>
+                </a>
+                <a class="card" href="index-chaotic.html">
+                    <span class="card-num">02</span>
+                    <h3>Chaotic</h3>
+                    <p>Maximalist. Marquee ticker, floating shapes, tilted collage grid, sparkle cursor.</p>
+                    <span class="card-tag tag-main">Variation</span>
+                </a>
+                <a class="card" href="index-newsletter.html">
+                    <span class="card-num">03</span>
+                    <h3>Grab Your Swag (Newsletter)</h3>
+                    <p>Interactive claw machine signup with booth-style decorations — rectangles, trees, string lights.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-newsletter-pure.html">
+                    <span class="card-num">03+</span>
+                    <h3>Newsletter (Pure Brand)</h3>
+                    <p>Same claw machine, stripped-down editorial layout. No floating decorations — just the machine, the copy, and the typography.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-bouldering.html">
+                    <span class="card-num">03++</span>
+                    <h3>Go Bold(ering) Newsletter</h3>
+                    <p>Brand-new direction inspired by the Go Bouldering booth. Mountain wall with climbing holds, trail signs, Reach Further / Think Bigger. No claw machine (yet).</p>
+                    <span class="card-tag tag-main">Variation</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="group">
+            <p class="group-label">★ Interactive experiences ★</p>
+            <div class="grid">
+                <a class="card" href="index-chairs.html">
+                    <span class="card-num">04</span>
+                    <h3>Pull Up a Chair</h3>
+                    <p>Click any tree stump around the campfire to hear that client's testimonial.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-campfire-scroll.html">
+                    <span class="card-num">05</span>
+                    <h3>Stoke the Fire</h3>
+                    <p>Subtle scroll-driven hero — the campfire grows gently as you read.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-campfire-chaos.html">
+                    <span class="card-num">05+</span>
+                    <h3>🔥 Hellfire (Chaos Variant)</h3>
+                    <p>The fire grows FAST. By the end it's a bonfire with demons dancing around it. Earth cracks, sky bleeds, screen shakes.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-flashlight.html">
+                    <span class="card-num">06</span>
+                    <h3>Find Your Way</h3>
+                    <p>Dark forest with hidden trees, fires, and glowing animal eyes. Plus one werewolf jump scare. Toggle the flashlight off if you dare.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-campsite.html">
+                    <span class="card-num">07</span>
+                    <h3>Build Your Campsite</h3>
+                    <p>3-question quiz that recommends AOR / Brand / Consulting based on your needs.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-stories.html">
+                    <span class="card-num">08</span>
+                    <h3>Campfire Stories</h3>
+                    <p>Case study as scrollytelling — sticky visuals swap as you scroll the narrative.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-daynight.html">
+                    <span class="card-num">09</span>
+                    <h3>Morning Light / Campfire</h3>
+                    <p>Day/night mode reframed as brand moment. Animated mountain scene flips.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-booth-tour.html">
+                    <span class="card-num">10</span>
+                    <h3>Tour the Booth</h3>
+                    <p>Click hotspots on the booth photo to learn about each element.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-yourstory.html">
+                    <span class="card-num">11</span>
+                    <h3>Tell Us Your Story</h3>
+                    <p>Reverse pitch. The visitor tells their story; a human writes back.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+                <a class="card" href="index-polish.html">
+                    <span class="card-num">12</span>
+                    <h3>Polish Demos</h3>
+                    <p>Six small touches: count-up, twinkle stars, marshmallow loader, floating CTA, favicon, animated underline.</p>
+                    <span class="card-tag tag-interact">Interactive</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="group">
+            <p class="group-label">★ Utility pages ★</p>
+            <div class="grid">
+                <a class="card" href="404.html">
+                    <span class="card-num">404</span>
+                    <h3>Lost in the Woods</h3>
+                    <p>Custom 404 page with a spinning compass and suggested trails back.</p>
+                    <span class="card-tag tag-utility">Utility</span>
+                </a>
+                <a class="card" href="NOTES.md" download>
+                    <span class="card-num">📋</span>
+                    <h3>NOTES.md</h3>
+                    <p>Review items + decisions to make + interactive ideas backlog.</p>
+                    <span class="card-tag tag-utility">Docs</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
