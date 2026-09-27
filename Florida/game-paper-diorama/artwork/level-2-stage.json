@@ -1,0 +1,86 @@
+{
+  "project": "Florida Man — Level 2: Vortex Putt-Putt",
+  "tool": "built-in imagegen",
+  "direction": "Moonlit supernatural roadside mini-golf rendered as separate handmade painted-cardboard cutouts. Match the approved Level 1 broad gouache, dark ink accents, irregular cream paper edge, coral, bright turquoise, dark raspberry, swamp teal, faded cream and spectral mint. No photorealism or glossy 3D.",
+  "integration": "Generate distinct assets, inspect at full size, copy accepted PNG masters into artwork/level-2-masters, optimize runtime copies into public/assets/level-2, then compose them with real Three.js ground, water, lighting and shadows.",
+  "coreReview": "artwork/level-2-core-review.png",
+  "assets": [
+    {
+      "slug": "vortex-putt-putt-clubhouse",
+      "target": "public/assets/level-2/vortex-putt-putt-clubhouse.png",
+      "master": "artwork/level-2-masters/vortex-putt-putt-clubhouse.png",
+      "consumer": "Level 2 rear-stage clubhouse cutout",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent environment cutout for a Three.js tabletop game stage. Primary request: a low, wide, gloriously tacky 1980s Florida roadside miniature-golf clubhouse and entrance facade after dark. Subject: shallow coral stucco clubhouse, turquoise striped awning, shell-shaped lamps, crooked entrance arch, small ticket window, decorative fiberglass waves and one blank sign panel reserved for code-rendered lettering. Style/medium: flat painted American roadside-pulp illustration printed on cardboard, broad gouache brushwork, strong dark ink accents, visibly handmade, matching the approved Florida Man paper-diorama assets. Composition/framing: straight-on wide elevation, complete roofline and both outer edges visible, one continuous clean silhouette, generous 7 percent transparent margin, no perspective floor. Lighting/mood: moonlit teal shadows with warm mustard bulbs and faint spectral mint spill from below. Color palette: swamp teal, bright turquoise, faded coral, dark raspberry, sun-bleached cream, tiny mustard accents. Constraints: genuinely transparent background; thin irregular cream paper cut edge; no ground, no cast shadow, no base, no characters, no readable text, no logo, no UI, no frame, no watermark. Avoid: photorealism, glossy CGI, theme-park concept render, cropped roof or sides, illegible fake signage.",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-730045aa-97e5-44cc-94ab-4f764a896e63.png",
+      "review": "Accepted: true alpha verified; complete roofline and edges, blank marquee, central entrance and shell lamps remain readable at stage scale. Master and runtime PNG copied.",
+      "status": "copied-awaiting-stage-integration"
+    },
+    {
+      "slug": "crooked-windmill-obstacle",
+      "target": "public/assets/level-2/crooked-windmill-obstacle.png",
+      "master": "artwork/level-2-masters/crooked-windmill-obstacle.png",
+      "consumer": "Level 2 center interactive target",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent obstacle cutout for a Three.js tabletop game stage. Primary request: one tall, crooked miniature-golf windmill obstacle that looks mysteriously active after closing. Subject: squat coral-and-cream windmill tower with turquoise trim, four oversized raspberry blades, chipped paint, a tiny arched golf-ball tunnel and subtle spectral mint glow leaking through cracks. Style/medium: flat painted American roadside-pulp illustration printed on cardboard, broad gouache, strong dark ink accents, handmade irregular shapes, matching the approved Florida Man diorama. Composition/framing: near-front three-quarter view, full tower, all four complete blades and base visible, tall readable silhouette, generous 9 percent transparent margin. Lighting/mood: moonlit teal shadow with warm edge light and restrained supernatural mint glow. Constraints: genuinely transparent background; thin irregular cream paper cut edge; no ground, no cast shadow, no baked base, no characters, no text, no logo, no UI, no frame, no watermark. Avoid: realistic Dutch architecture, glossy 3D, cropped blades, detached pieces, excessive magical particles.",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-c2168000-5fc0-4588-8e53-298e35a814d2.png",
+      "review": "Accepted: true alpha verified; all four blades, tower and golf-ball tunnel are complete with a strong vertical target silhouette. Master and runtime PNG copied.",
+      "status": "copied-awaiting-stage-integration"
+    },
+    {
+      "slug": "fiberglass-sea-serpent",
+      "target": "public/assets/level-2/fiberglass-sea-serpent.png",
+      "master": "artwork/level-2-masters/fiberglass-sea-serpent.png",
+      "consumer": "Level 2 lagoon interactive target",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent creature-obstacle cutout for a Three.js tabletop game stage. Primary request: a huge tacky fiberglass miniature-golf sea serpent that may have become genuinely alive. Subject: long turquoise serpent rising in three looping humps, oversized coral fins, cream belly, dark raspberry spots, one huge skeptical eye, chipped paint revealing fiberglass, open goofy jaw with blunt teeth, tail fully visible. Style/medium: exaggerated adult painted-pulp caricature on printed cardboard, broad gouache brushwork, dark ink accents, affectionate roadside kitsch, matching the approved Florida Man diorama. Composition/framing: long horizontal near-side view, complete head, humps and curled tail inside generous 8 percent transparent margins, strong readable silhouette. Lighting/mood: moonlit teal shadows, mustard rim light, spectral mint glow in the cracks. Constraints: genuinely transparent background; thin irregular cream paper cut edge; no water, no lagoon, no ground, no cast shadow, no base, no characters, no text, no logo, no UI, no frame, no watermark. Avoid: realistic dragon, horror gore, cute children’s mascot, glossy CGI, cropped tail or jaw, extra creatures.",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-644b1813-97f4-425f-96d6-991ad3dec199.png",
+      "review": "Accepted: true alpha verified; complete jaw, three-hump body and curled tail, with a clearly weathered fiberglass surface and readable horizontal silhouette. Master and runtime PNG copied.",
+      "status": "copied-awaiting-stage-integration"
+    },
+    {
+      "slug": "haunted-pump-shack",
+      "target": "public/assets/level-2/haunted-pump-shack.png",
+      "master": "artwork/level-2-masters/haunted-pump-shack.png",
+      "consumer": "Level 2 left interactive target",
+      "subject": "battered mini-golf pump shack merged with an overflowing ball-return machine",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent interactive-target cutout for a Three.js tabletop game stage. Primary request: one battered Florida miniature-golf pump shack fused with an overflowing golf-ball return machine. Subject: compact crooked utility hut with a coral corrugated roof, turquoise plank walls, exposed cream pipes, a round pump gauge, one dark raspberry ball-return mouth and three glowing mint golf balls visibly jammed inside; funny and ominous, not cute. Style/medium: flat painted American roadside-pulp illustration printed on cardboard, broad gouache brushwork, dark ink accents, irregular handmade construction, matching the approved Florida Man paper-diorama assets. Composition/framing: wide near-front three-quarter view, complete roof, walls, pipes and base silhouette visible, generous 8 percent transparent margin, no perspective floor. Lighting/mood: moonlit swamp-teal shadows, warm mustard utility bulb, restrained spectral mint glow from the jammed machine. Color palette: swamp teal, bright turquoise, faded coral, dark raspberry, sun-bleached cream, mustard and spectral mint. Constraints: genuinely transparent background; thin irregular cream paper cut edge; one connected readable silhouette; no ground, no cast shadow, no baked stand, no characters, no readable text, no logo, no UI, no frame, no watermark. Avoid: photorealism, glossy CGI, modern industrial equipment, cropped pipes, separate floating parts, excessive magical particles.",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-da0e8dcd-ed26-412e-9285-c1e69b9163d9.png",
+      "review": "Accepted for live stage check: true alpha 0–255; complete shack, pump, gauge, pipes and three luminous balls form one strong interactive-target silhouette.",
+      "status": "integrated-in-level2-preview"
+    },
+    {
+      "slug": "putt-putt-ticket-booth",
+      "target": "public/assets/level-2/putt-putt-ticket-booth.png",
+      "consumer": "Level 2 secondary rear-stage dressing",
+      "subject": "tiny crooked ticket booth with shell awning and blank sign panel",
+      "status": "pending-after-core-review"
+    },
+    {
+      "slug": "cardboard-mangrove-clump",
+      "target": "public/assets/level-2/cardboard-mangrove-clump.png",
+      "master": "artwork/level-2-masters/cardboard-mangrove-clump.png",
+      "consumer": "Repeated modular stage dressing",
+      "subject": "full mangrove-root clump with broad leaves and complete silhouette",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent modular foliage cutout for a Three.js tabletop game stage. Primary request: one dense Florida mangrove clump growing through a flooded miniature-golf course. Subject: broad tangled cream-and-brown prop roots, three clusters of big swamp-teal leaves with turquoise highlights, a few faded coral seed pods, visibly hand-painted and slightly weathered. Style/medium: flat painted roadside-pulp botanical illustration printed on cardboard, broad gouache, dark ink accents, irregular cream paper edge, matching the approved Florida Man diorama. Composition/framing: wide low clump in near-front view, complete roots and every outer leaf visible, one continuous silhouette, generous 8 percent transparent margin. Lighting/mood: moonlit teal with a faint spectral mint reflection from below. Constraints: genuinely transparent background; no water, no ground, no cast shadow, no base, no animals, no characters, no text, no logo, no UI, no frame, no watermark. Avoid: photoreal foliage, glossy 3D, cropped leaves, isolated floating leaves, tropical palm tree shape.",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-495ebc96-42de-4d9c-9a00-c9e831b2a7b5.png",
+      "review": "Accepted for live stage check: alpha present 0–254; complete roots and outer leaves, wide silhouette suitable for mirrored/repeated rear dressing.",
+      "status": "integrated-in-level2-preview"
+    },
+    {
+      "slug": "striped-golf-flag",
+      "target": "public/assets/level-2/striped-golf-flag.png",
+      "master": "artwork/level-2-masters/striped-golf-flag.png",
+      "consumer": "Repeated modular putting-green marker",
+      "subject": "crooked coral-and-cream golf flag with complete pole and cup marker",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent modular course-marker cutout for a Three.js tabletop game stage. Primary request: one crooked miniature-golf flag and cup marker from a decaying Florida roadside attraction. Subject: tall thin turquoise pole, windblown triangular flag with alternating faded coral and sun-bleached cream stripes, tiny dark raspberry finial, chipped paint, small circular cup rim connected at the bottom. Style/medium: flat painted roadside-pulp prop illustration printed on cardboard, broad gouache, dark ink accents, irregular cream paper edge, matching the approved Florida Man diorama. Composition/framing: complete vertical silhouette centered in a portrait canvas, full finial, flag, pole and cup visible with generous 10 percent transparent margin; flag leans slightly for character. Lighting/mood: moonlit teal shadow with a faint mustard edge. Constraints: genuinely transparent background; no number, no readable text, no ground, no cast shadow, no baked stand, no character, no logo, no UI, no frame, no watermark. Avoid: realistic golf photography, glossy CGI, cropped pole or flag, detached cup, elaborate scenery.",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-e5232a90-0696-432b-9626-3452a07740ec.png",
+      "review": "Accepted for live stage check: alpha present 0–254; complete finial, striped flag, pole and cup marker read clearly at small repeated scale.",
+      "status": "integrated-in-level2-preview"
+    },
+    {
+      "slug": "spectral-golf-ball",
+      "target": "public/assets/level-2/spectral-golf-ball.png",
+      "consumer": "Repeated animated supernatural hazard",
+      "subject": "glowing mint golf ball with an annoyed ghostly face and motion wisps",
+      "status": "pending-after-core-review"
+    }
+  ]
+}

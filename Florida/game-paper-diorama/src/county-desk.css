@@ -1,0 +1,223 @@
+/* Playable incident scrapbook. Printed surfaces surround live, accessible UI. */
+.paper-diorama{--cream:#f8e9c7;--gold:#edc779;--salmon:#e76f61;--aqua:#58c7b6;--raspberry:#bd3b63;--pink:var(--salmon);--mint:#8dddc3;--teal:#173f3c;background:#173f3c url('/assets/interface/county-teal-paper.webp') center top/cover fixed;color:var(--cream)}
+.paper-diorama #app{max-width:1800px;min-height:100svh;margin:auto;padding:0 24px;background:transparent;box-shadow:none}
+.paper-diorama .topbar{height:104px;padding:8px 4px;gap:24px;background:none;border:0;box-shadow:none}
+.paper-diorama .wordmark{width:280px;transform:rotate(-1deg)}
+.paper-diorama .wordmark i{font-size:7px;letter-spacing:1.6px}
+.paper-diorama .location .eyebrow{color:#dcc69e;letter-spacing:2px}
+.paper-diorama .location strong{font-size:23px;color:var(--cream);text-shadow:none}
+.paper-diorama .quiet{background:#153d39aa;border:1px solid #cbab687a;border-radius:6px;color:var(--cream);min-height:38px;padding:8px 12px}
+.paper-diorama main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.paper-diorama .desk{width:100%;min-width:0}
+.paper-diorama .encounter-layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:18px;align-items:stretch}
+.paper-diorama .county-dossier{display:flex;flex-direction:column;gap:12px;min-width:0}
+.paper-diorama .objective{position:relative;inset:auto;width:100%;min-height:375px;padding:27px 27px 25px;display:block;transform:rotate(-.7deg);filter:drop-shadow(2px 4px 3px #081d2160);text-shadow:none;pointer-events:auto;background:transparent url('/assets/roadside/county-citation-paper.webp') center/100% 100% no-repeat}
+.paper-diorama .objective:before{font-size:8px;padding:7px 0;margin:0 20px 8px 0}
+.paper-diorama .objective:after{display:none}
+.paper-diorama .objective>.eyebrow{font-size:9px;color:#963e59;letter-spacing:1.2px}
+.paper-diorama .objective h1{display:block;font:800 27px/.98 'Barlow Condensed',Impact,sans-serif;text-wrap:balance;margin:9px 0 12px;color:#243e37}
+.paper-diorama .objective #flavor{display:none}
+.paper-diorama .objective .objective-rule{font-size:11px;margin-top:6px;letter-spacing:.6px}
+.paper-diorama .objective .objective-rule b{font-size:24px;white-space:nowrap;color:#9d3358}
+.paper-diorama .objective .track{display:block;height:5px;background:#b6a386;margin-top:4px}
+.paper-diorama .objective .track>div{background:#367a6d}
+.paper-diorama .objective .or{display:block;margin:6px 0 0;font-size:8px;color:#6b5c4b}
+.paper-diorama .objective .spectral-dots{display:none}
+.paper-diorama .objective .deadline{display:block;max-width:none;font-size:10px;margin:10px 0 0;padding-top:8px;color:#655647}
+.paper-diorama .board-hud{position:relative;inset:auto;width:100%;display:block;background:#113632b3;color:var(--cream);border:1px solid #d6b87566;border-radius:9px;clip-path:none;box-shadow:inset 0 0 0 3px #163b3570}
+.paper-diorama .desk-status{display:flex;flex-direction:column;gap:0;padding:2px 14px;min-height:0;width:auto}
+.paper-diorama .stat{display:grid;grid-template-columns:1fr auto;gap:4px 10px;width:auto;padding:10px 0;background:none;border:0;border-bottom:1px solid #d4b47344;box-shadow:none;border-radius:0;transform:none;position:relative}
+.paper-diorama .stat:nth-child(2),.paper-diorama .stat:nth-child(3){transform:none}
+.paper-diorama .stat>span{color:#eddfbb;font-size:11px;letter-spacing:1.4px;align-self:center}
+.paper-diorama .stat>span:before{display:inline-block;width:24px;font:20px/1 Georgia;color:var(--salmon);content:'ϟ'}
+.paper-diorama .stat.endurance>span:before{content:'♥'}
+.paper-diorama .stat:nth-child(2)>span:before{color:var(--aqua)}
+.paper-diorama .stat.chaos>span:before{content:'◎';color:var(--raspberry)}
+.paper-diorama .stat b,.paper-diorama .stat.chaos b{font-size:25px;color:var(--cream);grid-column:2;grid-row:1 / 3;align-self:center}
+.paper-diorama .stat b small{font-size:13px;color:#cbbd9c;opacity:1}
+.paper-diorama .stat .mini-track{--segments:12;grid-column:1;height:10px;border-radius:0;background:#ead5a31a;margin:0 0 0 24px;max-width:none;mask-image:repeating-linear-gradient(90deg,#000 0 calc(100% / var(--segments) - 3px),transparent calc(100% / var(--segments) - 3px) calc(100% / var(--segments)))}
+.paper-diorama .stat.chaos .mini-track{--segments:6}
+.paper-diorama .stat .mini-track i{background:var(--salmon)}
+.paper-diorama .stat.chaos .mini-track i{background:var(--raspberry)}
+.paper-diorama .action-pips{grid-column:1;margin:0 0 0 24px;gap:5px;min-height:10px}
+.paper-diorama .action-pips i{width:14px;height:10px;background:var(--aqua);transform:none;border:1px solid #bcebdd;box-shadow:inset 0 0 0 1px #197e7466}
+.paper-diorama .stat.chaos .text-btn{display:block;grid-column:1/-1;justify-self:start;font-size:9px;margin:3px 0 0 24px;color:#c7ba9b}
+.paper-diorama .equipment-status{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;padding:8px 14px;font-size:9px;color:#dbc9a5}
+.paper-diorama .stage{height:auto;min-height:440px;max-height:none;margin:0;background:transparent;border:0;box-shadow:none;border-radius:10px;overflow:hidden}
+.paper-diorama #scene{inset:0 0 24px}
+.paper-diorama #scene canvas{filter:saturate(.94) contrast(1.015)}
+.paper-diorama .scene-vignette{inset:0 0 24px;box-shadow:inset 0 -20px 22px -21px #173f3c;z-index:1}
+.paper-diorama .scene-targets{position:absolute;inset:0 0 24px;display:block;z-index:2}
+.paper-diorama .target{position:absolute;transform:translate(-50%,-50%);pointer-events:none;min-height:0;clip-path:none;border-radius:4px;font-size:11px;padding:7px 10px;background:#f4dcac;color:#243c31;box-shadow:0 3px 8px #10252380}
+.paper-diorama .board-caption{position:absolute;inset:auto 8px 0;display:flex;justify-content:space-between;gap:12px;pointer-events:none;color:#d1c4a5;font:700 9px 'Barlow Condensed',sans-serif;letter-spacing:1.5px}
+.paper-diorama .desk{display:grid;grid-template-columns:minmax(0,1fr) 232px;grid-template-rows:auto 1fr;gap:10px 18px;min-height:0;padding:0;margin:0;background:transparent;border:0;box-shadow:none}
+.paper-diorama .desk:before,.paper-diorama .desk:after{display:none}
+.paper-diorama .incident{position:relative;inset:auto;grid-column:1/-1;min-width:0;max-width:none;min-height:34px;padding:6px 12px;gap:10px;transform:none;clip-path:polygon(0 6%,15% 1%,35% 4%,60% 0,85% 4%,100% 0,99.7% 94%,78% 100%,55% 96%,32% 100%,12% 96%,0 100%);background:#ecdcba url('/assets/roadside/county-citation-paper.webp') center/cover;color:#303d33;border:0;box-shadow:none}
+.paper-diorama .incident>div{flex:1;flex-direction:row;align-items:center;gap:16px;flex-wrap:wrap}
+.paper-diorama .incident .eyebrow{font-size:10px;letter-spacing:1px;color:#5e5146}
+.paper-diorama .incident strong{font:700 16px 'Barlow Condensed',sans-serif;color:#26443c}
+.paper-diorama .incident #incidentDetail{font-size:11px;font-weight:700;color:#913757}
+.paper-diorama .incident-icon{width:20px;height:20px;font-size:14px;border-color:#9a4960;color:#9a4960;flex-shrink:0}
+.paper-diorama .incident .quiet{padding:0;min-height:22px;min-width:28px;background:none;border:0;color:#24413c}
+.paper-diorama .hand-area{margin:0;padding:0;background:transparent;border:0;box-shadow:none;min-width:0;transform:none}
+.paper-diorama .hand-area:before{display:none}
+.paper-diorama .hand-heading{margin:0 0 12px;padding:2px 4px;background:none;color:#e4d6b4;font-size:10px;letter-spacing:1.4px}
+.paper-diorama .hand-heading #turn{color:var(--aqua)}
+.paper-diorama .hand{display:flex;align-items:stretch;justify-content:center;gap:12px;min-height:258px;overflow-x:auto;overflow-y:hidden;padding:9px 7px 12px;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#c4a777 #123b35}
+.paper-diorama .card{flex:1 0 148px;min-width:148px;max-width:236px;height:258px;padding:6px;border-width:4px;transform:none;transform-origin:center;box-shadow:0 3px #8c6d4d,0 5px #203129,0 8px 12px #031d2455;scroll-snap-align:center}
+.paper-diorama .card:hover,.paper-diorama .card:focus-visible{transform:translateY(-5px);z-index:2}
+.paper-diorama .card.selected{transform:translateY(-5px);box-shadow:0 0 0 2px #f2d99a,0 0 0 4px #b94169,0 6px 18px #021f29aa}
+.paper-diorama .card-art{height:118px;border:1px solid #bda26c;background:radial-gradient(ellipse at 50% 80%,#72907a,#244b43);flex-shrink:0;border-radius:3px}
+.paper-diorama .card-art img{width:100%;height:210%;left:0;top:-6%;object-fit:contain;object-position:center top}
+.paper-diorama .card-art:after{display:none}
+.paper-diorama .card-art.item-art img{inset:0;width:100%;height:100%;object-fit:contain}
+.paper-diorama .card-symbol{width:22px;height:22px;left:5px;bottom:5px;font-size:16px;background:#1e4c43e8;color:#f5dda5;border-color:#d3b275}
+.paper-diorama .card-cost{width:29px;height:29px;top:0;left:0;background:#b73863 url('/assets/interface/pink-enamel.webp') center/cover;color:#fff0cd;border:2px solid #f0d391;font-size:20px}
+.paper-diorama .card-owner{font-size:9px;letter-spacing:1.2px;margin-top:7px;color:#8a3958}
+.paper-diorama .card-name{font-size:20px;line-height:1;min-height:38px;margin-top:3px;color:#243e36;text-wrap:balance}
+.paper-diorama .card-text{font:11px/1.32 'DM Sans',sans-serif;color:#473e31;margin-top:4px}
+.paper-diorama .card.unavailable{filter:saturate(.65);opacity:.78}
+.paper-diorama .deck-counts{margin:4px 0 0;padding:3px 5px;background:none;color:#d2c6a8;font-size:10px;gap:12px}
+.paper-diorama .desk .text-btn{color:#e3cc9d;font-size:10px}
+.paper-diorama .action-dock{display:flex;flex-direction:column;gap:9px;min-width:0;padding-top:0}
+.paper-diorama .selection-slot{position:relative;flex:1;min-height:227px;background:#102f2bc9;border:1px solid #bd9c6266;border-radius:7px;overflow:hidden}
+.paper-diorama .selection-empty{padding:22px 18px;position:relative;height:100%;min-height:215px;overflow:hidden}
+.paper-diorama .selection-empty .eyebrow{font-size:9px;color:#d3ba8d}
+.paper-diorama .selection-empty h2{font:800 29px/.98 'Barlow Condensed',sans-serif;margin:8px 0;color:var(--cream)}
+.paper-diorama .selection-empty p{font-size:12px;line-height:1.6;color:#c0c4aa}
+.paper-diorama .empty-stamp{position:absolute;bottom:15px;right:20px;border:3px double var(--salmon);color:var(--salmon);padding:7px 14px;transform:rotate(-12deg);font:800 16px/.9 'Barlow Condensed',sans-serif;opacity:.65;text-align:center}
+.paper-diorama .selection:not([hidden])+.selection-empty{display:none}
+.paper-diorama .selection{position:relative;inset:auto;width:auto;border:0;background:none;box-shadow:none;padding:14px}
+.paper-diorama .selection .eyebrow{font-size:9px;color:#e8c58a;letter-spacing:1px}
+.paper-diorama .selection h2{font-size:25px;line-height:1.03;margin:7px 0;color:var(--cream)}
+.paper-diorama .selection p{font-size:11px;line-height:1.4;margin:7px 0;color:#dfd5bb}
+.paper-diorama .selection .effect{font-size:11px;padding:7px 0;color:#a9e5c7}
+.paper-diorama .selection .target-prompt{font-size:10px;color:var(--aqua);letter-spacing:.5px}
+.paper-diorama .selection .cancel{font-size:10px;color:#d2c2a1;padding-top:9px}
+.paper-diorama .primary{background:#b63860 url('/assets/interface/pink-enamel.webp') center/cover;color:#fff0ce;border:2px solid #e4c483;border-radius:7px;box-shadow:inset 0 0 0 2px #fbdc9c55,0 3px #682b3c;text-shadow:0 1px #612135;transition:transform .15s,filter .15s}
+.paper-diorama .primary:active:not(:disabled){transform:translateY(2px)}
+.paper-diorama .selection .primary{font-size:20px;min-height:43px;padding:8px}
+.paper-diorama .end-area{position:relative;padding:0;background:none;border:0;box-shadow:none;display:flex;flex-direction:column;gap:5px;transform:none}
+.paper-diorama .end-area:after{display:none}
+.paper-diorama .end-turn{background:linear-gradient(110deg,#61cdbb,#2b968b);border:2px solid #b9eadc;border-radius:6px;box-shadow:inset 0 0 0 2px #e1f4dc44,0 3px #0d5e58;color:#113b38;text-shadow:0 1px #dff8ef80;min-height:44px;padding:9px 15px;font-size:21px;letter-spacing:1.5px}
+.paper-diorama .end-area .end-note{display:block;font-size:9px;text-align:center;line-height:1.3;color:#cdbd9c}
+.paper-diorama footer{height:32px;padding:6px 0;margin:10px 0 0;background:none;border:0;color:#bbae8e;font-size:8px;letter-spacing:1.3px}
+.paper-diorama .toast{z-index:6;top:12px;bottom:auto;width:max-content;max-width:90%;background:#153d35f5;border-color:#dcb477;color:#f4e6c8}
+.paper-diorama #tutorialGuide{border:1px solid #b69764;border-radius:6px;background:#163f3aed;padding:12px 18px}
+.paper-diorama .start-dialog{background:#16433f url('/assets/interface/county-teal-paper.webp') center/cover;border-color:#d9b779}
+.paper-diorama #modal{background:#183f3b url('/assets/interface/county-teal-paper.webp') center/cover;border-color:#d9b779}
+.paper-diorama .loading{background:#173f3c}
+.paper-diorama .roster-option.selected{background:var(--salmon)}
+.paper-diorama .warning{color:#f29a88!important}
+.paper-diorama .turn-report{background:radial-gradient(circle at 50% 35%,#e76f61cc,#163f3df2 76%),url('/assets/roadside/roadside-terrazzo.webp') center/cover}
+.paper-diorama .chaos-continue{background:linear-gradient(120deg,var(--salmon),#bd3b63)}
+@media(min-width:1500px){.paper-diorama .encounter-layout{grid-template-columns:292px minmax(0,1fr)}.paper-diorama .stage{min-height:490px}.paper-diorama .objective h1{font-size:30px}.paper-diorama .desk{grid-template-columns:minmax(0,1fr) 260px}.paper-diorama .card{height:276px}.paper-diorama .card-art{height:136px}.paper-diorama .card-text{font-size:12px}}
+@media(max-width:1100px){.paper-diorama #app{padding:0 16px}.paper-diorama .encounter-layout{grid-template-columns:244px minmax(0,1fr);gap:12px}.paper-diorama .objective{min-height:350px;padding:24px 23px}.paper-diorama .objective h1{font-size:25px}.paper-diorama .desk{grid-template-columns:minmax(0,1fr) 208px;gap:10px 12px}.paper-diorama .hand{justify-content:flex-start;gap:10px}.paper-diorama .card{flex:0 0 162px;min-width:162px}.paper-diorama .incident>div{gap:8px 12px}}
+@media(max-width:760px){.paper-diorama #app{padding:0 10px}.paper-diorama .topbar{height:84px;padding:6px 0;gap:10px}.paper-diorama .wordmark{width:220px;max-width:52%}.paper-diorama .wordmark i{font-size:5px}.paper-diorama .topbar nav{gap:5px}.paper-diorama .quiet{font-size:10px;padding:7px}.paper-diorama .location{display:none}.paper-diorama .encounter-layout{display:flex;flex-direction:column;gap:8px}.paper-diorama .county-dossier{display:grid;grid-template-columns:1fr 1fr;gap:10px}.paper-diorama .objective{padding:18px 16px;align-self:stretch}.paper-diorama .objective:before{display:none}.paper-diorama .objective h1{font-size:24px;margin:8px 0}.paper-diorama .objective .objective-rule{font-size:10px}.paper-diorama .objective .objective-rule b{font-size:22px}.paper-diorama .objective .deadline{font-size:9px;margin-top:7px}.paper-diorama .desk-status{padding:0 10px}.paper-diorama .stat{padding:9px 0}.paper-diorama .stat>span{font-size:10px;letter-spacing:.7px}.paper-diorama .stat>span:before{width:19px;font-size:17px}.paper-diorama .stat b{font-size:23px}.paper-diorama .equipment-status{padding:8px 10px;font-size:8px}.paper-diorama .stage{height:340px;min-height:340px}.paper-diorama .board-caption{font-size:8px;letter-spacing:.8px}.paper-diorama .board-caption span:last-child{display:none}.paper-diorama .desk{display:flex;flex-direction:column;gap:12px}.paper-diorama .incident{order:0;padding:7px 10px}.paper-diorama .incident>div{gap:3px 10px}.paper-diorama .incident .eyebrow{font-size:8px;flex-basis:100%}.paper-diorama .incident strong{font-size:16px}.paper-diorama .incident #incidentDetail{font-size:10px}.paper-diorama .hand-area{order:1;width:auto}.paper-diorama .hand-heading{font-size:9px;letter-spacing:.7px;margin-bottom:5px}.paper-diorama .hand{min-height:270px;padding-top:9px}.paper-diorama .card{height:252px;flex:0 0 170px;min-width:170px}.paper-diorama .card-art{height:115px}.paper-diorama .card-name{font-size:20px}.paper-diorama .card-text{font-size:11px}.paper-diorama .action-dock{order:2;display:grid;grid-template-columns:minmax(0,1fr) 142px;align-items:start;gap:10px}.paper-diorama .selection-slot{min-height:0}.paper-diorama .selection-empty{min-height:126px;padding:15px}.paper-diorama .selection-empty h2{font-size:24px}.paper-diorama .selection-empty p{font-size:11px;margin:5px 0}.paper-diorama .empty-stamp{display:none}.paper-diorama .selection{padding:12px}.paper-diorama .end-area{display:flex}.paper-diorama .end-turn{font-size:18px;padding:10px}.paper-diorama .end-area .end-note{font-size:9px}.paper-diorama .deck-counts{font-size:9px;gap:9px}.paper-diorama .desk .text-btn{font-size:9px}.paper-diorama footer{font-size:7px;letter-spacing:.6px;gap:10px}}
+@media(max-width:390px){.paper-diorama .objective{padding:16px 12px}.paper-diorama .objective h1{font-size:21px}.paper-diorama .objective .objective-rule{font-size:9px}.paper-diorama .stat>span:before{display:none}.paper-diorama .stat .mini-track,.paper-diorama .action-pips,.paper-diorama .stat.chaos .text-btn{margin-left:0}.paper-diorama .action-dock{grid-template-columns:minmax(0,1fr) 125px}}
+@media(max-width:760px){.paper-diorama .desk{flex-wrap:nowrap;align-items:stretch}.paper-diorama .incident,.paper-diorama .hand-area,.paper-diorama .action-dock{width:100%;min-width:0;max-width:100%}.paper-diorama .stage{height:270px;min-height:270px}.paper-diorama .hand{width:100%;min-width:0}}
+@media(min-width:761px) and (max-height:900px){
+  .paper-diorama .topbar{height:82px}.paper-diorama .wordmark{width:225px}.paper-diorama .wordmark i{font-size:6px}
+  .paper-diorama main{gap:8px}.paper-diorama .county-dossier{gap:8px}
+  .paper-diorama .objective{padding:17px 20px 15px}.paper-diorama .objective:before{display:none}.paper-diorama .objective>.eyebrow{font-size:8px}.paper-diorama .objective h1{font-size:24px;margin:6px 0 8px}.paper-diorama .objective .objective-rule{margin-top:4px;font-size:10px}.paper-diorama .objective .objective-rule b{font-size:21px}.paper-diorama .objective .or{margin-top:4px}.paper-diorama .objective .deadline{font-size:9px;margin-top:6px;padding-top:5px}
+  .paper-diorama .stat{padding:6px 0;gap:3px 10px}.paper-diorama .stat b{font-size:22px}.paper-diorama .stat>span{font-size:10px}.paper-diorama .stat>span:before{font-size:16px}.paper-diorama .stat .mini-track,.paper-diorama .action-pips,.paper-diorama .action-pips i{height:8px;min-height:8px}.paper-diorama .stat.chaos .text-btn{font-size:8px;margin-top:1px}.paper-diorama .equipment-status{padding-block:6px;font-size:8px}
+  .paper-diorama .stage{min-height:340px}.paper-diorama .desk{gap:8px 18px}.paper-diorama .hand-heading{margin-bottom:4px;font-size:9px}.paper-diorama .hand{min-height:0;padding-block:7px 9px}.paper-diorama .card{height:230px}.paper-diorama .card-art{height:92px}.paper-diorama .card-name{font-size:19px;min-height:36px}.paper-diorama .card-text{font-size:11px;line-height:1.25}.paper-diorama .card-owner{margin-top:5px}.paper-diorama .deck-counts{font-size:9px;margin-top:0}.paper-diorama .selection-slot{min-height:190px}.paper-diorama .selection-empty{min-height:190px;padding:16px}.paper-diorama .selection-empty h2{font-size:27px}.paper-diorama .selection h2{font-size:23px}.paper-diorama .selection p{margin:5px 0}.paper-diorama .selection .effect{padding:5px 0}.paper-diorama .selection{padding:11px 13px}.paper-diorama .selection .primary{min-height:38px;font-size:18px}.paper-diorama .end-turn{min-height:39px;font-size:19px;padding:7px 12px}.paper-diorama footer{height:24px;margin-top:5px}
+}
+/* Expanded crew cards can have longer rules. Let the whole hand grow with them. */
+.paper-diorama .card{height:auto;min-height:258px}
+.paper-diorama .card-name,.paper-diorama .card-text{flex-shrink:0}
+.paper-diorama .end-area>span.end-note:not(.eyebrow){color:#d8c8a6;font-size:9px}
+@media(min-width:1500px){.paper-diorama .card{min-height:276px}}
+@media(max-width:760px){.paper-diorama .card{min-height:252px}}
+@media(min-width:761px) and (max-height:900px){.paper-diorama .card{min-height:230px}}
+
+/* Consolidated briefing at left; uninterrupted board and thin resource rail at right. */
+.paper-diorama #app{padding-top:12px}
+.paper-diorama .county-dossier{gap:10px;display:flex;flex-direction:column}
+.paper-diorama .county-dossier .topbar{height:auto;display:flex;flex-direction:column;padding:0;gap:10px;flex-shrink:0}
+.paper-diorama .county-dossier .wordmark{width:100%;max-width:100%}
+.paper-diorama .county-dossier .topbar nav{width:100%;justify-content:center;gap:8px}
+.paper-diorama .county-dossier .quiet{min-height:30px;padding:6px 12px;font-size:11px}
+.paper-diorama .objective{margin:0}
+.paper-diorama .objective .incident{width:100%;min-width:0;max-width:100%;margin-top:12px;padding:10px 0 0;gap:7px;clip-path:none;transform:none;background:none;border-top:3px double #91725488;align-items:flex-start}
+.paper-diorama .objective .incident>div{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+.paper-diorama .objective .incident .eyebrow{font-size:8px;letter-spacing:.7px}
+.paper-diorama .objective .incident strong{font-size:20px;line-height:1.05;text-wrap:balance}
+.paper-diorama .objective .incident #incidentDetail{font-size:11px;line-height:1.4}
+.paper-diorama .objective .incident-icon{display:none}
+.paper-diorama .objective .incident .quiet{color:#533c32;min-width:24px;padding:0;min-height:24px}
+.paper-diorama .board-column{display:flex;flex-direction:column;min-width:0;gap:8px}
+.paper-diorama .board-column .stage{flex:1;min-height:465px;height:auto}
+.paper-diorama .board-column .board-hud{display:flex;align-items:center;gap:12px;padding:7px 14px;flex-shrink:0;border-radius:5px;background:#10363099;border:0;border-block:1px solid #d6b87555}
+.paper-diorama .board-column .desk-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));flex:1;gap:22px;padding:0}
+.paper-diorama .board-column .stat{padding:0 14px 0 0;border:0;border-right:1px solid #d4b47344;gap:4px 8px}
+.paper-diorama .board-column .stat:last-child{border-right:0;padding-right:0}
+.paper-diorama .board-column .stat>span{font-size:10px;letter-spacing:1px}
+.paper-diorama .board-column .stat b{font-size:25px}
+.paper-diorama .board-column .stat.chaos .text-btn{position:absolute;right:0;top:-3px;width:18px;height:18px;overflow:hidden;font-size:0;margin:0;border:1px solid #d4b47377;border-radius:50%}
+.paper-diorama .board-column .stat.chaos .text-btn:after{content:'?';font-size:11px}
+.paper-diorama .board-column .stat.chaos b{margin-right:24px}
+.paper-diorama .board-column .equipment-status{display:flex;flex-direction:column;gap:5px;min-width:106px;padding:0 0 0 12px;border-left:1px solid #d4b47344;font-size:9px}
+.paper-diorama .desk{grid-template-rows:1fr}
+@media(min-width:761px) and (max-height:900px){.paper-diorama .board-column .stage{min-height:420px}.paper-diorama .objective{min-height:350px;padding:22px 24px 23px}.paper-diorama .objective .incident{margin-top:12px;padding-top:10px}}
+@media(max-width:1100px){.paper-diorama .board-column .desk-status{gap:12px}.paper-diorama .board-column .board-hud{padding:8px 10px;flex-wrap:wrap}.paper-diorama .board-column .equipment-status{flex-direction:row;justify-content:flex-end;border:0;padding:0;width:100%;gap:16px;font-size:8px}.paper-diorama .board-column .stat{padding-right:8px}}
+@media(max-width:760px){.paper-diorama #app{padding-top:8px}.paper-diorama .county-dossier{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);align-items:start;gap:10px}.paper-diorama .county-dossier .topbar{padding-top:14px;gap:14px}.paper-diorama .county-dossier .topbar nav{flex-wrap:wrap;gap:5px}.paper-diorama .county-dossier .quiet{padding:6px 8px;font-size:10px}.paper-diorama .objective{padding:18px 14px}.paper-diorama .objective h1{font-size:23px}.paper-diorama .objective .incident strong{font-size:18px}.paper-diorama .objective .incident #incidentDetail{font-size:10px}.paper-diorama .board-column .stage{height:270px;min-height:270px;flex:none}.paper-diorama .board-column .board-hud{gap:7px}.paper-diorama .board-column .desk-status{gap:8px;min-width:0;width:100%}.paper-diorama .board-column .stat{gap:3px 4px}.paper-diorama .board-column .stat>span{font-size:9px;letter-spacing:.5px}.paper-diorama .board-column .stat>span:before{display:none}.paper-diorama .board-column .stat b{font-size:20px}.paper-diorama .board-column .stat b small{font-size:10px}.paper-diorama .board-column .stat .mini-track,.paper-diorama .board-column .action-pips{margin-left:0}.paper-diorama .board-column .stat.chaos b{margin-right:0}.paper-diorama .board-column .stat.chaos .text-btn{position:static;grid-column:1/-1;justify-self:end;width:auto;height:auto;overflow:visible;border:0;font-size:8px}.paper-diorama .board-column .stat.chaos .text-btn:after{display:none}.paper-diorama .board-column .equipment-status{justify-content:center}.paper-diorama .board-column .stat .mini-track{min-width:34px}}
+/* Size the hand for five stable slots. Four-card hands leave a gap instead of stretching. */
+.paper-diorama .hand{--card-width:clamp(140px,calc((100% - 48px)/5),190px);--card-height:clamp(230px,20vw,276px);justify-content:flex-start;min-height:calc(var(--card-height) + 24px);overflow-x:auto;overflow-y:visible;padding:10px 8px 14px}
+.paper-diorama .card{flex:0 0 var(--card-width);width:var(--card-width);min-width:var(--card-width);max-width:var(--card-width);height:var(--card-height);min-height:var(--card-height);max-height:var(--card-height);scroll-snap-align:start}
+.paper-diorama .card-art{height:clamp(92px,9.3vw,136px);flex:0 0 clamp(92px,9.3vw,136px)}
+.paper-diorama .card-name{font-size:20px;min-height:38px}
+.paper-diorama .card-text{font-size:11px;line-height:1.25}
+@media(max-width:760px){.paper-diorama .hand{--card-width:170px;--card-height:252px}.paper-diorama .card-art{height:115px;flex-basis:115px}}
+
+/* The verdict arrives as a battered county newspaper, not a standard modal. */
+.paper-diorama #modal.result-modal{width:min(900px,calc(100% - 40px));max-width:900px;padding:0 0 12px;background:transparent;border:0;box-shadow:none;overflow:visible}
+.paper-diorama #modal.result-modal #modalBody{color:#2f3932}
+.paper-diorama .result-paper{position:relative;aspect-ratio:3/2;padding:48px 66px 52px;background:transparent url('/assets/interface/verdict-newspaper-sheet.webp') center/contain no-repeat;filter:drop-shadow(11px 14px 7px #061d1c99);font-family:Georgia,'Times New Roman',serif;isolation:isolate}
+.paper-diorama .result-paper:before{display:none}
+.paper-diorama .result-paper:after{content:'☀  ☀  ☀';position:absolute;right:29px;top:122px;color:#24756d;font-size:16px;letter-spacing:7px;transform:rotate(4deg);opacity:.58}
+.paper-diorama .result-header{display:flex;justify-content:space-between;gap:12px;padding:0 3px 6px;border-bottom:1px solid #42392f;font:700 9px 'Barlow Condensed',sans-serif;letter-spacing:1px;color:#51483d}
+.paper-diorama .result-masthead{display:flex;align-items:baseline;justify-content:center;gap:8px;padding:4px 0 3px;border-bottom:5px double #283a32;text-align:center;line-height:.85;color:#203d37}
+.paper-diorama .result-masthead small{font:900 13px 'Barlow Condensed',sans-serif;letter-spacing:2px}
+.paper-diorama .result-masthead b{font:900 clamp(39px,7vw,68px)/.8 'Barlow Condensed',Impact,sans-serif;letter-spacing:-2.5px}
+.paper-diorama .result-masthead em{font:italic 700 19px Georgia,serif;color:#a23559;transform:rotate(-4deg)}
+.paper-diorama .result-edition{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:7px 2px 5px;border-bottom:1px solid #72604d;font:800 11px 'Barlow Condensed',sans-serif;letter-spacing:1.4px}
+.paper-diorama .result-edition span{padding:4px 8px;background:#a9365a;color:#f5e7c8;transform:rotate(-1deg)}
+.paper-diorama .result-edition i{font-style:normal;color:#436a60}
+.paper-diorama .result-paper h2{max-width:640px;margin:12px auto 8px;color:#272d29;font:900 clamp(34px,5.5vw,54px)/.87 'Barlow Condensed',Impact,sans-serif;letter-spacing:-.5px;text-align:center;text-wrap:balance;text-transform:uppercase}
+.paper-diorama .result-columns{display:grid;grid-template-columns:minmax(0,1fr) 140px;gap:24px;margin-top:9px;padding:10px 4px 9px;border-block:1px solid #75624f}
+.paper-diorama .result-columns section{columns:2;column-gap:22px;column-rule:1px solid #9a8469}
+.paper-diorama .result-columns p{margin:0 0 9px;color:#41382e;font:12px/1.45 Georgia,serif;text-align:justify}
+.paper-diorama .result-columns .result-lede:first-letter{float:left;margin:1px 5px 0 0;color:#a73559;font:900 38px/.75 Georgia,serif}
+.paper-diorama .result-seal{align-self:center;display:grid;place-items:center;min-height:108px;padding:8px;border:4px double #2b766d;border-radius:50%;color:#2b766d;text-align:center;transform:rotate(7deg);opacity:.82}
+.paper-diorama .result-seal span{font-size:15px}.paper-diorama .result-seal b{white-space:pre-line;font:900 25px/.82 'Barlow Condensed',sans-serif;letter-spacing:1px}.paper-diorama .result-seal small{font:800 8px/1.2 'Barlow Condensed',sans-serif;letter-spacing:1px;opacity:1}
+.paper-diorama .result-paper.lost .result-edition span{background:#343f39}.paper-diorama .result-paper.lost .result-seal{color:#a33557;border-color:#a33557;transform:rotate(-8deg)}
+.paper-diorama .result-paper .result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:9px 0 6px;border-block:3px double #44382d}
+.paper-diorama .result-paper .result-stats>div{display:flex;align-items:baseline;justify-content:center;gap:8px;padding:7px 8px;border:0;border-right:1px solid #8b745b}
+.paper-diorama .result-paper .result-stats>div:last-child{border-right:0}
+.paper-diorama .result-paper .result-stats b{color:#a33557;font:900 30px 'Barlow Condensed',sans-serif}
+.paper-diorama .result-paper .result-stats span{color:#4c4034;font:800 9px 'Barlow Condensed',sans-serif;letter-spacing:1.2px}
+.paper-diorama .result-fineprint{text-align:center;color:#70604e;font:700 7px 'Barlow Condensed',sans-serif;letter-spacing:1.1px}
+.paper-diorama .result-paper .button-row{justify-content:center;margin-top:11px;font-family:'Barlow Condensed',sans-serif}
+.paper-diorama #modal.result-modal>#closeModal{display:block;margin:12px auto 0;background:#153d39dd;color:#efe0bd;border-color:#d6b87588}
+@media(max-width:600px){.paper-diorama .result-paper{aspect-ratio:auto;min-height:600px;padding:42px 34px 45px;background-size:100% 100%}.paper-diorama .result-header span:nth-child(2){display:none}.paper-diorama .result-masthead{gap:5px}.paper-diorama .result-masthead em{font-size:14px}.paper-diorama .result-columns{grid-template-columns:1fr 96px;gap:13px}.paper-diorama .result-columns section{columns:1}.paper-diorama .result-seal{min-height:92px}.paper-diorama .result-seal b{font-size:19px}.paper-diorama .result-paper .result-stats>div{display:block;text-align:center}.paper-diorama .result-paper .result-stats span{display:block;font-size:7px}.paper-diorama .result-paper .button-row{flex-direction:column}.paper-diorama .result-paper .button-row button{width:100%}}
+
+/* Between-turn incidents are the photo edition of the same county newspaper. */
+.paper-diorama .chaos-board,.paper-diorama .chaos-board.illustrated{box-sizing:border-box;width:min(960px,100%);aspect-ratio:3/2;padding:44px 66px 42px;background:transparent url('/assets/interface/verdict-newspaper-sheet.webp') center/contain no-repeat;border:0;box-shadow:none;filter:drop-shadow(11px 15px 8px #061d1caa);overflow:hidden}
+.paper-diorama .chaos-board:before{display:none}
+.paper-diorama .chaos-masthead{padding:0 6px 5px;border-bottom-width:5px}
+.paper-diorama .chaos-masthead strong{font-size:clamp(38px,5vw,56px)}
+.paper-diorama .chaos-masthead>b{font-size:15px}
+.paper-diorama .chaos-masthead em{font-size:8px}
+.paper-diorama .chaos-kicker{padding:4px 3px}.paper-diorama .chaos-kicker b{font-size:12px;padding:2px 13px}
+.paper-diorama .chaos-head{gap:9px;margin:7px 0 8px;padding-bottom:7px;border-bottom-width:2px}
+.paper-diorama .chaos-head h2{font-size:clamp(31px,4.4vw,48px);margin:2px 0 3px}
+.paper-diorama .chaos-head p{font-size:9px;line-height:1.2}.paper-diorama .chaos-burst{width:48px;height:48px;font-size:22px}
+.paper-diorama .chaos-main.illustrated{grid-template-columns:minmax(0,1.55fr) minmax(245px,.72fr);gap:14px}
+.paper-diorama .chaos-event-art img{height:218px}.paper-diorama .chaos-event-art figcaption{padding-top:5px;font-size:9px;line-height:1.15}
+.paper-diorama .chaos-incident{padding:6px 8px}.paper-diorama .chaos-incident strong{font-size:21px}.paper-diorama .chaos-incident small{margin-top:3px;font-size:9px}
+.paper-diorama .chaos-impact{margin:6px 0}.paper-diorama .chaos-impact>div{padding:6px}.paper-diorama .chaos-impact b{font-size:27px}.paper-diorama .chaos-meter{margin-top:4px;gap:3px}.paper-diorama .chaos-meter i{width:17px;height:8px}
+.paper-diorama .surge-ticket{margin:2px 0 5px;padding:6px 9px}.paper-diorama .surge-ticket b{font-size:13px}.paper-diorama .surge-ticket span{font-size:9px}
+.paper-diorama .chaos-aftermath{margin:4px 0 5px}.paper-diorama .chaos-continue{margin:8px 0 5px;min-height:34px;padding:7px}.paper-diorama .chaos-fineprint{font-size:7px}
+.paper-diorama .chaos-board.surged{padding:38px 66px 36px}.paper-diorama .chaos-board.surged .chaos-event-art img{height:205px}
+@media(max-width:760px){.paper-diorama .chaos-board,.paper-diorama .chaos-board.illustrated{aspect-ratio:auto;min-height:760px;padding:43px 34px 45px;background-size:100% 100%;overflow:visible}.paper-diorama .chaos-main.illustrated{grid-template-columns:1fr}.paper-diorama .chaos-event-art img{height:210px}.paper-diorama .chaos-board.surged{padding:43px 34px 45px}.paper-diorama .chaos-board.surged .chaos-event-art img{height:210px}}

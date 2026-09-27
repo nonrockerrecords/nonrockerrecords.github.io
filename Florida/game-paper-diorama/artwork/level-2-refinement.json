@@ -1,0 +1,67 @@
+{
+  "tool": "built-in imagegen",
+  "direction": "Preserve approved paper diorama composition. Gouache roadside kitsch, salmon, teal, raspberry, cream cut edges. Native transparent PNGs. Original art remains untouched.",
+  "assets": [
+    {
+      "slug": "haunted-golf-ball-spirit",
+      "target": "public/assets/level-2/haunted-golf-ball-spirit.png",
+      "consumer": "Brief spirit-rehoming animation emerging from the windmill tunnel",
+      "prompt": "One simple haunted golf ball with visible dimples, tiny expressive eyes, mint spectral glow and a short curling ghost tail. Painted gouache paper cutout matching the Vortex Putt-Putt stage. Transparent background, complete compact silhouette, no limbs, putter, text, ground, shadow, scenery or extra spirits.",
+      "status": "verified",
+      "master": "artwork/level-2-masters/haunted-golf-ball-spirit.png",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-ed805653-0cca-465d-967f-a08f6fae3f86.png",
+      "review": "Accepted: 1024 x 1536 with native alpha 0–254. One readable cream golf-ball head, tiny raspberry eyes and short mint tail; wired at 0.72 x 1.08 stage units."
+    },
+    {
+      "slug": "sunglasses-gator",
+      "target": "public/assets/level-2/sunglasses-gator.png",
+      "consumer": "Small front-right decorative cutout",
+      "prompt": "Low wide sun-faded teal concrete miniature-golf gator wearing tiny black sunglasses, facing left toward green. Gouache cardboard layers, chipped paint, thin cream edge, complete silhouette. Transparent background, no ground or shadow, no text.",
+      "status": "verified",
+      "master": "artwork/level-2-masters/sunglasses-gator.png",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-b241e350-f76e-4319-a006-05cf4ac3c7eb.png",
+      "review": "Native alpha verified; inspected in expanded and objective-column browser views. Original source retained."
+    },
+    {
+      "slug": "windmill-tower-v2",
+      "target": "public/assets/level-2/windmill-tower-v2.png",
+      "consumer": "Final-hole tower, fixed layer",
+      "prompt": "Reference-matched coral cream teal crooked windmill with NO blades. Complete facade and exposed round hub. Tunnel at base facing slightly left toward incoming green, open floor flush with bottom. Native transparent background, complete silhouette, no scenery.",
+      "status": "verified",
+      "master": "artwork/level-2-masters/windmill-tower-v2.png",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-fe2453fd-69b9-403c-842c-9a42aa8ad449.png",
+      "review": "Native alpha verified; inspected in expanded and objective-column browser views. Original source retained."
+    },
+    {
+      "slug": "windmill-rotor-v2",
+      "target": "public/assets/level-2/windmill-rotor-v2.png",
+      "consumer": "Independent rotating blade layer",
+      "prompt": "Four raspberry weathered wooden windmill blades, teal central round hub, front-on centered square, equally spaced and balanced around exact center, generous rotation-safe transparent margins. Gouache cream cardboard edge matching tower. No tower or scenery.",
+      "status": "verified",
+      "master": "artwork/level-2-masters/windmill-rotor-v2.png",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-2c499b4d-d58a-474b-9d98-9773de9e4796.png",
+      "review": "Native alpha verified; inspected in expanded and objective-column browser views. Original source retained."
+    },
+    {
+      "slug": "clubhouse-lettered-v2",
+      "target": "public/assets/level-2/clubhouse-lettered-v2.png",
+      "consumer": "Rear clubhouse, lettering baked into existing marquee",
+      "prompt": "Edit existing clubhouse only to add VORTEX PUTT-PUTT in large teal vintage letters fitting cream marquee face. Preserve every other building, palm, edge, color and proportion. Native transparent background.",
+      "status": "verified",
+      "master": "artwork/level-2-masters/clubhouse-lettered-v2.png",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-ae3fb4ba-5a6f-460c-96ac-59d4e62877b6.png",
+      "review": "Native alpha verified; inspected in expanded and objective-column browser views. Original source retained."
+    }
+  ],
+  "rotor": {
+    "hub": "image center",
+    "trim": false,
+    "towerLocalPivot": [
+      -0.34,
+      3.15,
+      0.1
+    ],
+    "diameter": 3.55
+  },
+  "verification": "TypeScript and Vite production build passed; 33 rules tests passed. Browser checked both win routes, save/resume, progress and compact composition."
+}

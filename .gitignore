@@ -3,3 +3,9 @@
 
 # Local testbed - experiments and iteration files, never published to GitHub Pages
 local/
+
+# Local dependencies and OS metadata
+node_modules/
+.claude/
+.DS_Store
+._*

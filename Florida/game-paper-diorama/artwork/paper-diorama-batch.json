@@ -1,0 +1,60 @@
+{
+  "tool": "built-in imagegen",
+  "direction": "Painted American roadside-pulp illustrations presented as handmade printed cardboard standees. Preserve the approved coral, turquoise, mustard, cream, swamp-teal and spectral-mint palette. Every asset is isolated on genuine transparency, includes a thin irregular cream paper cut edge, has a clean readable silhouette, and contains no baked floor shadow, base, labels, logos, watermark, UI, or surrounding scene.",
+  "assets": [
+    {
+      "slug": "sunshine-discounts-storefront",
+      "target": "public/assets/diorama/sunshine-discounts-storefront.png",
+      "consumer": "Three.js rear stage storefront",
+      "composition": "wide straight-on elevation, full facade visible, shallow roofline, five bays",
+      "status": "verified",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-51e7cd75-3992-45df-a8b8-cdb44953e955.png",
+      "review": "Transparent wide silhouette, both required signs rendered legibly, copied and verified in the live Three.js stage."
+    },
+    {
+      "slug": "cardboard-palm",
+      "target": "public/assets/diorama/cardboard-palm.png",
+      "consumer": "repeated Three.js palm standees",
+      "composition": "tall vertical full tree, mildly crooked trunk, complete fronds",
+      "status": "verified",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-4a9fbe82-44d3-4d38-b5f0-4f21cb3207d9.png",
+      "review": "Full trunk and fronds preserved with transparent corners; repeated at varied scale on the live board."
+    },
+    {
+      "slug": "traffic-cone",
+      "target": "public/assets/diorama/traffic-cone.png",
+      "consumer": "repeated Three.js parking-lot cone standees",
+      "composition": "single full cone, near-front three-quarter view",
+      "status": "verified",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-dda988e5-2555-420e-8421-08bed1157af0.png",
+      "review": "Complete battered cone and base remain readable at game-board scale; transparency verified."
+    },
+    {
+      "slug": "county-barricade",
+      "target": "public/assets/diorama/county-barricade.png",
+      "consumer": "Three.js barricade target standee",
+      "composition": "wide full barricade, near-front view, complete feet",
+      "status": "verified",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-29221b1a-9046-415a-86af-d4f36172409d.png",
+      "review": "Wide striped silhouette, complete legs and transparent gaps verified as the barricade target."
+    },
+    {
+      "slug": "portable-generator",
+      "target": "public/assets/diorama/portable-generator.png",
+      "consumer": "Three.js generator target standee",
+      "composition": "compact full generator, near-front three-quarter view, readable handle and wheels",
+      "status": "verified",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-ba926a84-682d-4710-ae4e-6aea563d2310.png",
+      "review": "Mechanically readable generator, handle and wheels preserved; transparency and target state verified live."
+    },
+    {
+      "slug": "spectral-gator",
+      "target": "public/assets/diorama/spectral-gator.png",
+      "consumer": "repeated animated Three.js spirit standees",
+      "composition": "long horizontal full-body side view, curled tail and open jaw intact",
+      "status": "verified",
+      "source": "C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-1ccaadbf-5dc1-4f4e-9800-c385f730f86c.png",
+      "review": "Complete tail, jaw and feet preserved; transparent mint spirit silhouette reads cleanly in all three animated instances."
+    }
+  ]
+}

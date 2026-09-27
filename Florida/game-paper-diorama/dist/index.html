@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#102d2c"><meta name="description" content="Three locals. One unpermitted portal. A supernatural Florida card adventure."><title>Florida Man — Paper Diorama Study</title>  <script type="module" crossorigin src="./assets/game-BGDdhe8n.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/level2-scene-91sdjEl_.js">
+  <link rel="stylesheet" crossorigin href="./assets/game-DpHKpgmQ.css">
+</head><body>
+<div id="app">
+  <main>
+    <div class="encounter-layout">
+    <aside class="county-dossier" aria-label="Objectives and crew status">
+      <header class="topbar"><a class="wordmark" href="./" aria-label="Florida Man home">FLORIDA<span>MAN</span><i>COLLECT THE CAST. SURVIVE THE STATE.</i></a><nav><button id="helpBtn" class="quiet" aria-label="How to play">?</button><button id="soundBtn" class="quiet" aria-label="Enable sound" aria-pressed="false">Sound off</button><button id="pauseBtn" class="quiet">Pause</button></nav></header>
+      <aside class="objective"><span class="eyebrow">ANOTHER DAY IN PARADISE</span><h1>Something’s<br>under the asphalt.</h1><p id="flavor">The county called it a pothole.<br>The pothole disagreed.</p><div class="objective-rule"><span>SEAL THE RIFT</span><b id="stability">0 <small>/ 12</small></b></div><div class="track"><div id="stabilityFill"></div></div><span class="or">OR</span><div class="objective-rule"><span>RELOCATE THE SPIRITS</span><b id="spirits">3</b></div><div class="spectral-dots" id="spiritDots">◆ ◆ ◆</div><p class="deadline">Five turns before the lot collapses.</p></aside>
+      <div class="incident"><span class="incident-icon">!</span><div><span class="eyebrow">WHEN YOU END YOUR TURN</span><strong id="incidentName">Spectral Tail Slap</strong><span id="incidentDetail">2 damage · +1 Chaos</span></div><button id="threatInfo" class="quiet" aria-label="Explain incoming damage">ⓘ</button></div>
+    </aside>
+    <div class="board-column">
+    <section class="stage" aria-label="County Jurisdiction encounter">
+      <div id="scene"></div><div class="scene-vignette"></div>
+      <div class="scene-targets" id="sceneTargets"></div>
+      <div class="board-caption"><span>SUNSHINE DISCOUNTS · COUNTY JURISDICTION</span><span>EST. BEFORE THE INCIDENT</span></div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <div class="loading" id="loading">SETTING UP THE COUNTY’S PROBLEM…</div>
+    </section>
+      <div class="board-hud" aria-label="Crew resources">
+        <div class="desk-status"><div class="stat endurance"><span>ENDURANCE</span><b id="endurance">12<small>/12</small></b><div class="mini-track"><i id="enduranceFill"></i></div></div><div class="stat"><span>ACTIONS</span><b id="actions">3</b><div id="actionPips" class="action-pips"></div></div><div class="stat chaos"><span>CHAOS</span><b id="chaos">0<small>/6</small></b><div class="mini-track"><i id="chaosFill"></i></div><button id="chaosInfo" class="text-btn">What happens at 6?</button></div></div>
+        <div class="equipment-status"><span id="blockLabel">Barricade · 0 Block</span><span id="generatorLabel">Generator · off</span></div>
+      </div>
+    </div>
+    </div>
+    <section class="desk" aria-label="Your hand and turn controls">
+      <div class="hand-area"><div class="hand-heading"><span id="handHint">PICK A CARD. MAKE IT EVERYONE’S PROBLEM.</span><span id="turn">TURN 1 / 5</span></div><div id="hand" class="hand" aria-label="Cards in hand"></div><div class="deck-counts"><span id="deckCounts"></span><button id="logBtn" class="text-btn">Incident log ↗</button></div></div>
+      <aside class="action-dock" aria-label="Selected card and turn controls"><div class="selection-slot"><div id="selection" class="selection" hidden></div><div class="selection-empty"><span class="eyebrow">YOUR NEXT BAD IDEA</span><h2>Make it official.</h2><p>Pick a card. We’ll mark its target.<br>You make the call.</p><span class="empty-stamp" aria-hidden="true">COUNTY<br>APPROVED*</span></div></div><div class="end-area"><button id="endTurn" class="primary end-turn">END TURN <span>→</span></button><span class="end-note">Unplayed cards are discarded.</span></div></aside>
+    </section>
+  </main>
+  <footer><span>FLORIDA MAN <b>◆</b> A DEEPLY UNWELL CARD ADVENTURE</span><span id="saveStatus">SAVED ON THIS DEVICE</span></footer>
+</div>
+<section id="turnReport" class="turn-report" hidden role="dialog" aria-modal="true" aria-labelledby="turnReportTitle"></section>
+<dialog id="startDialog" class="start-dialog"><div class="start-copy"><span class="eyebrow">WELCOME TO SUNSHINE COUNTY</span><h2>FLORIDA<br><em>MAN.</em></h2><p>Three locals.<br>One unpermitted portal.</p><small>Deal your crew’s cards. Contain a supernatural sinkhole.<br>Try to keep the paperwork out of the afterlife.</small><div class="start-actions"><button class="primary" id="normalStart">Start selected crew <span>→</span></button><button class="outline" id="tutorialStart">Teach me to play</button><button class="outline" id="resumeBtn" hidden>Resume incident</button></div><span class="start-foot">SOLO · FIVE TURNS · QUESTIONABLE DECISIONS</span></div><div class="start-art"><img src="./assets/characters/darlene.webp" alt="Darlene Bix, county sinkhole liaison"><span class="paper-stamp">COUNTY<br>APPROVED*</span><small>*APPROVAL CURRENTLY UNDER REVIEW</small></div></dialog>
+<dialog id="modal"><div id="modalBody"></div><button class="outline" id="closeModal">Back to the incident</button></dialog></body></html>

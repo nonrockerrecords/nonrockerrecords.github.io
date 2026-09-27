@@ -1,0 +1,22 @@
+/* Florida souvenir-shop maximalism: pink lacquer, turquoise neon, gold foil. */
+:root{--cream:#fff1e6;--gold:#ffda72;--pink:#ff65be;--mint:#55f3e1;--teal:#522047;color:var(--cream);background:#301331}
+.topbar{background:linear-gradient(110deg,#711651,#c1267e 55%,#52204e);border-bottom:3px solid #ffda72;box-shadow:0 3px 20px #ff3caa44}
+.wordmark{color:#fff3c0;text-shadow:2px 2px #ab175c,3px 3px #4b1544}.wordmark span{color:#ffdc70}.wordmark i{color:#ffebef;text-shadow:none}
+.quiet{background:#35153380;border-color:#ffa8d866}.location .eyebrow{color:#ffcae8}
+.stage{background:#491942}.scene-vignette{box-shadow:inset 0 -30px 45px -30px #42183c}
+.objective{text-shadow:0 2px 6px #381139}.objective p,.objective .deadline{color:#ffe0ef}.objective .eyebrow{color:#ffe58a}
+.desk{background:radial-gradient(ellipse at 50% 0,#ad326f,#4d1a49 85%);border-top:3px solid #f6c85e}.desk:before{opacity:.13;background:radial-gradient(circle,#ffdf90 1px,transparent 2px) 0 0/22px 22px}
+.card{background:linear-gradient(145deg,#fff4e2,#ffd3e5);border:2px solid #ffdb78;box-shadow:0 3px #a86631,0 5px #4d1840,0 9px 20px #230d39aa;color:#4d1943}
+.card-art{background:radial-gradient(ellipse at 30% 40%,#fa60af,#623673);border-color:#dfac50}.card-art:after{background:linear-gradient(100deg,#a61d7833,transparent 60%)}
+.card-cost,.primary{background:linear-gradient(125deg,#fff3b8,#ffc447 45%,#ffec9e 70%,#eaa636);color:#50163e;border-color:#fff1b1}.primary{box-shadow:0 3px #b36b38,0 0 13px #ffd85c30}
+.card-owner{color:#833660}.card-symbol{background:#6c2255;color:#ffe796;border-color:#ffda72}.card.selected{border-color:#fff2a1;box-shadow:0 0 0 3px #ff5cac,0 0 25px #ff42c988}
+.hand-heading,.stat>span,.end-area>span:not(.eyebrow),.deck-counts{color:#ffdaee}.text-btn{color:#ffe1ef}.stat b small{color:#e6b2d5}.stat.chaos b{color:#ff97cd}
+.incident,.selection,.toast{background:#481940f5;border-color:#ffcf70}.incident .eyebrow{color:#ffd4ef}.incident #incidentDetail{color:#ffb1d5}.selection .effect{color:#70ffe6}
+.target{background:#831f65ed;border-color:#ffe19a}.target.valid,.target.picked{background:#ffda72;color:#47133c}.target .dot{background:#65ffe2}
+dialog{background:linear-gradient(135deg,#80245f,#341638);border:2px solid #ffcf70;box-shadow:0 0 0 5px #ac397a55,0 35px 120px #250528cc}dialog::backdrop{background:#220923a8}
+.start-dialog{background:radial-gradient(ellipse at 75% 40%,#fa69b3,#7e246b 60%,#361239)}.start-copy h2{text-shadow:3px 4px #8b205f,5px 6px #3d193a}.start-copy h2 em{color:#ffe588}.start-copy>small,.start-foot{color:#ffe4ee}.paper-stamp{color:#ffe785;border-color:#ffe785}.start-art img{opacity:1}
+footer{background:#301331;color:#e8b1d4}.loading{background:#481940}
+#tutorialGuide{display:flex;align-items:center;gap:20px;padding:16px 28px;background:linear-gradient(115deg,#8d216b,#4c204d);border-bottom:2px solid #ffda72;position:relative;z-index:7}
+#tutorialGuide .eyebrow{color:#ffe58a;font-size:10px}#tutorialGuide h2{font:800 23px/1.05 'Barlow Condensed',Impact,sans-serif;margin:5px 0}#tutorialGuide p{font-size:12px;line-height:1.5;margin:0;max-width:850px;color:#fff0f7}#tutorialGuide .outline{margin-left:auto;flex-shrink:0;border-color:#ffde87;color:#fff0c0}
+.tutorial-focus{outline:3px solid #68ffe5!important;outline-offset:4px;box-shadow:0 0 20px #40ffe580!important}
+@media(max-width:760px){#tutorialGuide{padding:12px;gap:10px;align-items:flex-start}#tutorialGuide h2{font-size:20px}#tutorialGuide p{font-size:11px}#tutorialGuide .outline{padding:8px;font-size:10px;max-width:85px}.objective{background:#481940dc}.toast{background:#671b51f5}}

@@ -1,0 +1,86 @@
+{
+  "tool": "built-in imagegen",
+  "assets": [
+    {
+      "slug": "dj",
+      "folder": "characters",
+      "prompt": "Use case: illustration-story. Production transparent full-body painted standee for Florida Man tabletop game. Create from text only, no image references. Exaggerated adult satirical pulp caricature, head 40 percent oversized, expressive huge features and hands, strong dark ink accents, broad gouache brushwork, angular painted shadows, rich coral pink turquoise mustard cream palette, thin cream paper silhouette outline. Front three-quarter pose slightly facing right. Complete body feet hair hands inside 8 percent margins. Flat illustrated cutout, not photo, not realistic anatomy, not 3D render. Genuine transparent background, no ground, no pedestal, no scene, no text, no watermark. Portrait 2:3. DJ Rip Current: stocky middle-aged pirate radio host, enormous unruly dark shoulder-length hair, huge gold aviator sunglasses with pink lenses, oversized headphones in pink and turquoise, scruffy goatee, broad toothy open grin. Short legs, pink tropical shirt open over black lightning shirt, teal shorts, gaudy layered gold chains, pink sneakers. One hand points emphatically, other holds chunky vintage microphone. Huge charismatic face, absurd rock-star confidence.",
+      "status": "verified",
+      "target": "public/assets/characters/dj.webp",
+      "original": "public/assets/characters/dj.png",
+      "review": "Approved prior render preserved; transparent alpha verified and optimized for the selectable crew standee."
+    },
+    {
+      "slug": "cheryl",
+      "folder": "characters",
+      "prompt": "Use case: illustration-story. Production transparent full-body painted standee for Florida Man tabletop game. Create from text only, no image references. Exaggerated adult satirical pulp caricature, head 40 percent oversized, expressive huge features and hands, strong dark ink accents, broad gouache brushwork, angular painted shadows, rich coral pink turquoise mustard cream palette, thin cream paper silhouette outline. Front three-quarter pose slightly facing right. Complete body feet hair hands inside 8 percent margins. Flat illustrated cutout, not photo, not realistic anatomy, not 3D render. Genuine transparent background, no ground, no pedestal, no scene, no text, no watermark. Portrait 2:3. Cheryl Vortex: short curvy middle-aged mini golf owner with an ENORMOUS messy blonde bouffant bun, hot-pink visor, giant hoop earrings, turquoise eyeshadow, huge determined grin and prominent cheeks. Pink polo with checkerboard collar and turquoise trim, teal shorts, pink belt with spiral buckle, tiny white sneakers. One hand on hip, other holding a crooked putter. Comically assertive saleswoman, very exaggerated proportions.",
+      "status": "verified",
+      "target": "public/assets/characters/cheryl.webp",
+      "original": "public/assets/characters/cheryl.png",
+      "review": "Approved prior render preserved; transparent alpha verified and optimized for the selectable crew standee."
+    },
+    {
+      "slug": "mara",
+      "folder": "characters",
+      "prompt": "Use case: illustration-story. Production transparent full-body painted standee for Florida Man tabletop game. Create from text only, no image references. Exaggerated adult satirical pulp caricature, head 40 percent oversized, expressive huge features and hands, strong dark ink accents, broad gouache brushwork, angular painted shadows, rich coral pink turquoise mustard cream palette, thin cream paper silhouette outline. Front three-quarter pose slightly facing right. Complete body feet hair hands inside 8 percent margins. Flat illustrated cutout, not photo, not realistic anatomy, not 3D render. Genuine transparent background, no ground, no pedestal, no scene, no text, no watermark. Portrait 2:3. Mara Key: lanky adult theme park night technician, huge expressive angular face with raised eyebrow, enormous messy dark bun, half-lidded unimpressed eyes, radio headset and boom microphone. Turquoise short-sleeve mechanic jumpsuit, enormous tool belt, jangling gold keys, pink watch, black work boots. Long arms, oversized hands, one holding flashlight, other resting on tool belt. Sharp deadpan silhouette and weary adult humor.",
+      "status": "verified",
+      "target": "public/assets/characters/mara.webp",
+      "original": "public/assets/characters/mara.png",
+      "review": "Full-body silhouette, tools and feet inspected; transparent alpha verified and optimized for the selectable crew standee."
+    },
+    {
+      "slug": "bass-possum",
+      "folder": "cards",
+      "prompt": "Use case: illustration-story. Production individual card illustration for Florida Man. Bold exaggerated painted-pulp caricature, broad gouache, dark ink accents, rich coral pink turquoise mustard cream, matching handmade roadside kitsch. Landscape 3:2, centered single subject fills 75 percent with clear silhouette on simple dark-teal painterly background. No text, no borders, no UI, no watermark, not photorealistic, not glossy 3D. Bass Possum: gray opossum with huge pink ears, enormous pink-and-turquoise headphones, wild tufted fur and a comically ecstatic grin, long curled pink tail. Tiny gold lightning pendant. Dancing on hind feet, outrageous pirate-radio pet.",
+      "status": "verified",
+      "target": "public/assets/cards/bass-possum.webp",
+      "master": "artwork/deck-masters/bass-possum.png",
+      "review": "Inspected at full size; readable single-subject silhouette, no text or watermark, optimized and wired to DJ's mini-deck."
+    },
+    {
+      "slug": "boombox",
+      "folder": "cards",
+      "prompt": "Use case: illustration-story. Production individual card illustration for Florida Man. Bold exaggerated painted-pulp caricature, broad gouache, dark ink accents, rich coral pink turquoise mustard cream, matching handmade roadside kitsch. Landscape 3:2, centered single subject fills 75 percent with clear silhouette on simple dark-teal painterly background. No text, no borders, no UI, no watermark, not photorealistic, not glossy 3D. Bootleg Boombox: battered oversized 1980s turquoise-and-hot-pink stereo cassette player, huge round speakers, bent antenna, worn gold knobs, pink duct tape, absurd little pirate skull sticker WITHOUT lettering. Small painted mint sound-wave curls. No humans.",
+      "status": "verified",
+      "target": "public/assets/cards/boombox.webp",
+      "master": "artwork/deck-masters/boombox.png",
+      "review": "Inspected at full size; readable single-object silhouette, no text or watermark, optimized and wired to DJ's mini-deck."
+    },
+    {
+      "slug": "putt-putt",
+      "folder": "cards",
+      "prompt": "Use case: illustration-story. Production individual card illustration for Florida Man. Bold exaggerated painted-pulp caricature, broad gouache, dark ink accents, rich coral pink turquoise mustard cream, matching handmade roadside kitsch. Landscape 3:2, centered single subject fills 75 percent with clear silhouette on simple dark-teal painterly background. No text, no borders, no UI, no watermark, not photorealistic, not glossy 3D. Putt-Putt: bright green iguana wearing a tiny pink golf visor, huge smug half-lidded eyes and orange dewlap, gold ankle bracelet, resting one claw on a pink golf ball. Long curved tail and spiky back fully visible, exaggerated funny pet.",
+      "status": "verified",
+      "target": "public/assets/cards/putt-putt.webp",
+      "master": "artwork/deck-masters/putt-putt.png",
+      "review": "Inspected at full size; complete tail and golf prop remain legible in the card crop, optimized and wired to Cheryl's mini-deck."
+    },
+    {
+      "slug": "putter",
+      "folder": "cards",
+      "prompt": "Use case: illustration-story. Production individual card illustration for Florida Man. Bold exaggerated painted-pulp caricature, broad gouache, dark ink accents, rich coral pink turquoise mustard cream, matching handmade roadside kitsch. Landscape 3:2, centered single subject fills 75 percent with clear silhouette on simple dark-teal painterly background. No text, no borders, no UI, no watermark, not photorealistic, not glossy 3D. Cursed Putter: one crooked miniature-golf putter diagonally across frame, worn turquoise grip and gold shaft, pink metallic club head shaped subtly like a grinning windmill, small mint supernatural swirls and two golf balls. No hands, no characters.",
+      "status": "verified",
+      "target": "public/assets/cards/putter.webp",
+      "master": "artwork/deck-masters/putter.png",
+      "review": "Inspected at full size; diagonal object silhouette and supernatural swirls remain legible, optimized and wired to Cheryl's mini-deck."
+    },
+    {
+      "slug": "raccoon",
+      "folder": "cards",
+      "prompt": "Use case: illustration-story. Production individual card illustration for Florida Man. Bold exaggerated painted-pulp caricature, broad gouache, dark ink accents, rich coral pink turquoise mustard cream, matching handmade roadside kitsch. Landscape 3:2, centered single subject fills 75 percent with clear silhouette on simple dark-teal painterly background. No text, no borders, no UI, no watermark, not photorealistic, not glossy 3D. Judgmental Raccoon: stout scruffy gray raccoon, HUGE angular eyebrows and half-lidded judgmental eyes, pink ear interiors, folded forearms, striped tail curled around feet, tiny turquoise maintenance vest and dangling gold key. Adult satirical animal caricature, profoundly unimpressed.",
+      "status": "verified",
+      "target": "public/assets/cards/raccoon.webp",
+      "master": "artwork/deck-masters/raccoon.png",
+      "review": "Inspected retry at full size; expression, folded arms, tail and key are clear, optimized and wired to Mara's mini-deck."
+    },
+    {
+      "slug": "multitool",
+      "folder": "cards",
+      "prompt": "Use case: illustration-story. Production individual card illustration for Florida Man. Bold exaggerated painted-pulp caricature, broad gouache, dark ink accents, rich coral pink turquoise mustard cream, matching handmade roadside kitsch. Landscape 3:2, centered single subject fills 75 percent with clear silhouette on simple dark-teal painterly background. No text, no borders, no UI, no watermark, not photorealistic, not glossy 3D. Questionable Multitool: battered pink and turquoise folding multitool opened into an absurd but coherent fan of screwdriver, pliers, tiny wrench and bottle opener, tarnished gold rivets and taped grip, one dangling theme-park key. Strong graphic silhouette, improvised repair equipment, no hands.",
+      "status": "verified",
+      "target": "public/assets/cards/multitool.webp",
+      "master": "artwork/deck-masters/multitool.png",
+      "review": "Inspected at full size; coherent tool fan and dangling key are clear, optimized and wired to Mara's mini-deck."
+    }
+  ]
+}
