@@ -1,0 +1,324 @@
+/* ============================================
+   KANAHOMA — Newsletter Signup Variation
+   Focused conversion landing page
+   ============================================ */
+
+/* ── NAV (minimal) ───────────────────────────── */
+.nav-min {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 48px;
+}
+
+.nav-min .nav-wordmark {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--stoddard-cream);
+    text-decoration: none;
+}
+
+.nav-min .nav-back {
+    font-size: var(--fs-sm);
+    color: var(--stoddard-cream);
+    text-decoration: none;
+    opacity: .75;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+.nav-min .nav-back:hover { opacity: 1; }
+
+/* ── HERO / FORM ─────────────────────────────── */
+.signup-hero {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--darkest-green) 0%, var(--deep-green) 40%, var(--kanahoma-green) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    overflow: hidden;
+}
+
+/* Decorative orange rectangle (booth branding style) */
+.deco-rect {
+    position: absolute;
+    background: var(--hellbender);
+    z-index: 1;
+}
+.deco-rect.r1 { top: 0;    left: 8%;  width: 90px; height: 240px; }
+.deco-rect.r2 { bottom: 0; right: 6%; width: 140px; height: 180px; background: var(--golden-hour); }
+
+.deco-tree {
+    position: absolute;
+    width: 90px;
+    height: 150px;
+    z-index: 1;
+    opacity: .85;
+}
+.deco-tree.t1 { top: 200px; left: 12%; }
+.deco-tree.t2 { bottom: 140px; right: 10%; transform: scale(.8); }
+
+.signup-card {
+    position: relative;
+    z-index: 10;
+    max-width: 720px;
+    width: 100%;
+    background: var(--stoddard-cream);
+    border-radius: 4px;
+    padding: 64px 56px;
+    box-shadow: 0 24px 64px rgba(13, 31, 21, .4);
+}
+
+.signup-eyebrow {
+    display: inline-block;
+    background: var(--hellbender);
+    color: var(--white);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+}
+
+.signup-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+    color: var(--kanahoma-green);
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    margin-bottom: 20px;
+}
+
+.signup-headline .script {
+    font-family: var(--font-script);
+    color: var(--hellbender);
+    font-size: 1.2em;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.signup-body {
+    font-size: 1.125rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--kanahoma-green);
+    margin-bottom: 36px;
+    opacity: .85;
+}
+
+.signup-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.signup-form input[type="email"] {
+    flex: 1;
+    padding: 18px 22px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--kanahoma-green);
+    background: var(--white);
+    border: 1.5px solid var(--whippoorwill);
+    border-radius: 2px;
+    outline: none;
+    transition: border-color .2s;
+}
+
+.signup-form input[type="email"]:focus {
+    border-color: var(--hellbender);
+}
+
+.signup-form input[type="email"]::placeholder {
+    color: var(--whippoorwill);
+    opacity: .9;
+}
+
+.signup-form button {
+    padding: 18px 32px;
+    font-family: var(--font-sans);
+    font-size: .875rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--hellbender);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+    white-space: nowrap;
+}
+.signup-form button:hover {
+    background: #b55e35;
+    transform: translateY(-2px);
+}
+
+.signup-fineprint {
+    font-size: .8125rem;
+    color: var(--kanahoma-green);
+    opacity: .6;
+    line-height: 1.6;
+}
+
+.signup-success {
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    padding: 24px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    display: none;
+}
+
+.signup-success.show { display: block; }
+
+.signup-success strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin-bottom: 6px;
+    color: var(--golden-hour);
+}
+
+/* ── BENEFITS STRIP ──────────────────────────── */
+.benefits {
+    background: var(--stoddard-cream);
+    padding: 80px 48px;
+}
+
+.benefits-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.benefits-label {
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    margin-bottom: 16px;
+}
+
+.benefits-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    color: var(--kanahoma-green);
+    margin-bottom: 56px;
+    line-height: 1.15;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    text-align: left;
+}
+
+.benefit {
+    padding: 28px;
+    background: var(--white);
+    border-radius: 3px;
+    border-top: 4px solid var(--hellbender);
+    transition: transform .2s;
+}
+
+.benefit:nth-child(2) { border-top-color: var(--golden-hour); }
+.benefit:nth-child(3) { border-top-color: var(--whippoorwill); }
+
+.benefit:hover { transform: translateY(-4px); }
+
+.benefit-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 20px;
+    color: var(--kanahoma-green);
+}
+
+.benefit h3 {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    color: var(--kanahoma-green);
+    margin-bottom: 12px;
+}
+
+.benefit p {
+    font-size: .9375rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: #2a2a2a;
+}
+
+/* ── SOCIAL PROOF ────────────────────────────── */
+.proof {
+    background: var(--kanahoma-green);
+    padding: 80px 48px;
+    text-align: center;
+}
+
+.proof-inner {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.proof-quote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--stoddard-cream);
+    line-height: 1.4;
+    margin-bottom: 32px;
+}
+
+.proof-quote::before {
+    content: '"';
+    display: block;
+    font-size: 4rem;
+    color: var(--golden-hour);
+    line-height: 0.5;
+    margin-bottom: 24px;
+}
+
+.proof-cite {
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+}
+
+.proof-cite strong { display: block; color: var(--stoddard-cream); margin-bottom: 4px; }
+
+/* ── FOOTER ──────────────────────────────────── */
+.footer-min {
+    background: var(--deep-green);
+    padding: 32px 48px;
+    text-align: center;
+}
+
+.footer-min span {
+    font-size: var(--fs-sm);
+    color: var(--stoddard-cream);
+    opacity: .4;
+}
+
+/* ── RESPONSIVE ──────────────────────────────── */
+@media (max-width: 700px) {
+    .nav-min { padding: 20px 24px; }
+    .signup-hero { padding: 100px 24px 60px; }
+    .signup-card { padding: 40px 28px; }
+    .signup-form { flex-direction: column; }
+    .signup-form button { width: 100%; }
+    .deco-rect, .deco-tree { display: none; }
+    .benefits { padding: 60px 24px; }
+    .benefits-grid { grid-template-columns: 1fr; gap: 20px; }
+    .proof { padding: 60px 24px; }
+}

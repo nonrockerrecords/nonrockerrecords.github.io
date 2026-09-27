@@ -1,0 +1,571 @@
+/* ============================================
+   KANAHOMA — Go Bold(ering): Topo Map + Summit Polaroid
+   ============================================ */
+
+body {
+    background: var(--stoddard-cream);
+    color: var(--kanahoma-green);
+}
+
+/* ── NAV ─────────────────────────────────── */
+.gb-nav {
+    position: absolute;
+    top: 32px; left: 0; right: 0;
+    z-index: 30;
+    padding: 0 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.gb-nav .nav-wordmark img { height: 24px; }
+.gb-nav-tag {
+    font-size: .6875rem;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--kanahoma-green);
+    opacity: .55;
+}
+
+/* ── HERO ───────────────────────────────── */
+.gb-hero {
+    position: relative;
+    min-height: 88vh;
+    padding: 120px 56px 80px;
+    overflow: hidden;
+    background: var(--stoddard-cream);
+}
+
+.gb-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.gb-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    margin-bottom: 24px;
+}
+.gb-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 32px; height: 1.5px;
+    background: var(--hellbender);
+}
+
+.gb-headline {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(3.5rem, 8.5vw, 6rem);
+    line-height: .88;
+    letter-spacing: -.035em;
+    color: var(--kanahoma-green);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+.gb-headline span { display: block; }
+.gb-headline .line-bold { color: var(--hellbender); }
+
+.gb-subhead {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    letter-spacing: .12em;
+    color: var(--kanahoma-green);
+    margin-bottom: 32px;
+    text-transform: uppercase;
+}
+
+.gb-body {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: #2a2a2a;
+    margin-bottom: 28px;
+    max-width: 460px;
+}
+
+/* ── Email form ──────────────────────── */
+.gb-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    border: 2px solid var(--kanahoma-green);
+    background: var(--white);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: box-shadow .2s, border-color .2s;
+}
+.gb-form:focus-within {
+    box-shadow: 0 0 0 3px rgba(201, 110, 67, .2);
+    border-color: var(--hellbender);
+}
+.gb-form input[type="email"] {
+    flex: 1;
+    padding: 16px 20px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--kanahoma-green);
+    background: transparent;
+    border: none;
+    outline: none;
+}
+.gb-form input[type="email"]::placeholder {
+    color: var(--whippoorwill);
+    opacity: .85;
+}
+.gb-form button {
+    padding: 16px 28px;
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    border: none;
+    font-family: var(--font-sans);
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+}
+.gb-form button:hover:not(:disabled) { background: var(--hellbender); }
+.gb-form button:disabled { background: var(--whippoorwill); cursor: not-allowed; }
+
+.gb-form-note {
+    margin-top: 14px;
+    font-size: .75rem;
+    color: var(--whippoorwill);
+    font-style: italic;
+}
+
+/* ── Hero illustration (right side: valley + eagle) ─── */
+.gb-hero-art {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    background: linear-gradient(180deg, #F0E6D6 0%, #E5D9C5 100%);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--whippoorwill);
+}
+.gb-hero-art svg { width: 100%; height: 100%; display: block; }
+
+.gb-eagle {
+    animation: eagleDrift 14s ease-in-out infinite alternate;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+@keyframes eagleDrift {
+    0%   { transform: translate(0, 0)    rotate(0); }
+    50%  { transform: translate(30px, -10px) rotate(-2deg); }
+    100% { transform: translate(60px, 5px)   rotate(2deg); }
+}
+
+/* ── TOPO MAP SECTION ────────────────────── */
+.topo {
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    padding: 120px 56px;
+    position: relative;
+    overflow: hidden;
+}
+
+.topo-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 60px;
+}
+
+.topo-eyebrow {
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-bottom: 16px;
+}
+
+.topo-headline {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -.025em;
+    color: var(--stoddard-cream);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+.topo-headline .accent { color: var(--hellbender); }
+
+.topo-sub {
+    font-size: 1rem;
+    color: var(--wavebreak);
+    opacity: .9;
+    line-height: 1.6;
+}
+
+/* The map itself */
+.topo-map {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    aspect-ratio: 18 / 11;
+    background: #F4EDE0;
+    border: 2px solid var(--whippoorwill);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+}
+
+.topo-map svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Pin button — invisible button overlaid on each SVG marker */
+.topo-pin-btn {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    z-index: 5;
+    padding: 0;
+}
+.topo-pin-btn::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    border: 2px dashed var(--hellbender);
+    opacity: 0;
+    transition: opacity .2s, transform .25s;
+}
+.topo-pin-btn:hover::after,
+.topo-pin-btn[aria-expanded="true"]::after {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+/* The pin SVG markers themselves are animated when active */
+.pin-marker {
+    transition: transform .2s ease-out;
+    transform-origin: bottom center;
+    transform-box: fill-box;
+}
+.topo-pin-btn:hover + .pin-marker,
+.pin-marker.visited {
+    transform: scale(1.12) translateY(-3px);
+}
+
+/* Waypoint card (popover) */
+.topo-card {
+    position: absolute;
+    background: var(--white);
+    color: var(--kanahoma-green);
+    padding: 20px 22px;
+    border-radius: 4px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .35);
+    max-width: 260px;
+    z-index: 20;
+    opacity: 0;
+    transform: translateY(-8px) scale(.95);
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    border-top: 4px solid var(--hellbender);
+}
+.topo-card.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+.topo-card .waypoint-num {
+    font-family: var(--font-sans);
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    margin-bottom: 6px;
+}
+.topo-card h3 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--kanahoma-green);
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+.topo-card p {
+    font-size: .875rem;
+    line-height: 1.5;
+    color: #2a2a2a;
+}
+
+/* Visit progress counter */
+.topo-progress {
+    text-align: center;
+    margin-top: 32px;
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--wavebreak);
+    opacity: .75;
+}
+.topo-progress strong { color: var(--golden-hour); }
+
+/* ── SUMMIT POLAROID MODAL ───────────────── */
+.summit-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(13, 31, 21, .85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease-out;
+}
+.summit-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.summit-card {
+    position: relative;
+    background: transparent;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    transform: translateY(20px) scale(.94);
+    transition: transform .45s cubic-bezier(.4, 1.4, .5, 1);
+}
+.summit-modal.show .summit-card {
+    transform: translateY(0) scale(1);
+}
+
+/* The polaroid itself */
+.polaroid {
+    background: var(--white);
+    padding: 14px 14px 56px;
+    border-radius: 3px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+    transform: rotate(-2.5deg);
+    position: relative;
+    margin: 0 auto 32px;
+    width: 92%;
+    max-width: 360px;
+}
+
+/* Washi tape across the top of the polaroid */
+.polaroid::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-4deg);
+    width: 96px;
+    height: 22px;
+    background: rgba(217, 171, 77, .65);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
+}
+
+.polaroid-photo {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(180deg, #d9b97a 0%, #c19355 40%, #5a7560 80%, #2f4936 100%);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.polaroid-photo svg { width: 100%; height: 100%; }
+
+.polaroid-caption {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: .9375rem;
+    color: var(--kanahoma-green);
+    margin-bottom: 4px;
+    letter-spacing: -.01em;
+    line-height: 1.2;
+}
+.polaroid-caption .name {
+    color: var(--hellbender);
+    text-transform: capitalize;
+}
+.polaroid-date {
+    font-size: .6875rem;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--whippoorwill);
+}
+
+/* Code reward */
+.summit-reward {
+    background: var(--white);
+    border-radius: 4px;
+    padding: 24px 24px 20px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .3);
+    transform: rotate(1deg);
+}
+.summit-reward-label {
+    font-family: var(--font-sans);
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--hellbender);
+    margin-bottom: 10px;
+}
+.summit-reward h4 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--kanahoma-green);
+    line-height: 1.15;
+    margin-bottom: 16px;
+}
+.summit-reward h4 .pct { color: var(--hellbender); }
+
+.summit-code {
+    display: flex;
+    align-items: stretch;
+    background: var(--wavebreak);
+    border: 1.5px dashed var(--whippoorwill);
+    border-radius: 3px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.summit-code code {
+    flex: 1;
+    padding: 12px 16px;
+    font-family: 'DM Sans', monospace;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: var(--kanahoma-green);
+    user-select: all;
+    text-align: center;
+    text-transform: uppercase;
+}
+.summit-code button {
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    border: none;
+    padding: 0 18px;
+    font-family: var(--font-sans);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    min-width: 80px;
+    transition: background .15s;
+}
+.summit-code button:hover { background: var(--hellbender); }
+.summit-code button .done { display: none; color: var(--golden-hour); }
+.summit-code button.done .default { display: none; }
+.summit-code button.done .done { display: inline; }
+
+.summit-cta {
+    display: inline-block;
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--hellbender);
+    color: var(--white);
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    transition: background .15s, transform .15s;
+}
+.summit-cta:hover {
+    background: #b55e35;
+    transform: translateY(-1px);
+}
+
+.summit-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--stoddard-cream);
+    background: var(--kanahoma-green);
+    color: var(--stoddard-cream);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+    transition: background .15s, transform .15s;
+}
+.summit-close:hover {
+    background: var(--hellbender);
+    transform: rotate(90deg);
+}
+
+/* ── FOOTER ─────────────────────────────── */
+.gb-footer {
+    background: var(--deep-green);
+    color: var(--stoddard-cream);
+    padding: 48px 56px 36px;
+    text-align: center;
+}
+.gb-footer-mark { display: inline-flex; margin-bottom: 18px; opacity: .85; }
+.gb-footer-mark img { height: 22px; }
+.gb-footer-stamp {
+    font-size: .6875rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--stoddard-cream);
+    opacity: .55;
+    margin-bottom: 8px;
+}
+.gb-footer-copy {
+    font-size: .625rem;
+    color: var(--stoddard-cream);
+    opacity: .35;
+}
+
+/* ── RESPONSIVE ─────────────────────────── */
+@media (max-width: 980px) {
+    .gb-nav { padding: 0 24px; top: 24px; }
+    .gb-nav-tag { display: none; }
+    .gb-hero { padding: 100px 24px 60px; }
+    .gb-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .gb-hero-art { max-width: 500px; margin: 0 auto; }
+
+    .topo { padding: 80px 24px; }
+    .topo-card { max-width: 240px; }
+
+    .gb-footer { padding: 36px 24px 28px; }
+}
+@media (max-width: 540px) {
+    .gb-form { flex-direction: column; }
+    .gb-form button { width: 100%; }
+    .polaroid { transform: rotate(-1.5deg); }
+    .summit-reward { transform: rotate(.5deg); }
+}

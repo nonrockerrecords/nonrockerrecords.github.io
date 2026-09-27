@@ -1,0 +1,156 @@
+<svg viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="stalkerTitle stalkerDesc">
+    <title id="stalkerTitle">Stalking werewolf silhouette</title>
+    <desc id="stalkerDesc">A dark low-profile predator silhouette with glowing eyes for the experimental flashlight page.</desc>
+    <defs>
+        <radialGradient id="stalkerEye" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#ff5530" stop-opacity="1"/>
+            <stop offset="40%"  stop-color="#ff2200" stop-opacity=".8"/>
+            <stop offset="100%" stop-color="#ff2200" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="stalkerDrool" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#f0e8d8" stop-opacity=".9"/>
+            <stop offset="100%" stop-color="#f0e8d8" stop-opacity="0"/>
+        </linearGradient>
+    </defs>
+
+    <!-- Tail trailing back, frayed -->
+    <path d="M 25,130 Q 5,125 0,140 Q 4,148 18,142 L 32,138 L 40,134 Q 36,132 25,130 Z" fill="#060606"/>
+    <path d="M 0,140 L -2,148 L 6,144 Z" fill="#060606"/>
+    <!-- Tail fur tufts -->
+    <polygon points="20,128 18,118 24,128" fill="#060606"/>
+    <polygon points="35,135 38,124 40,135" fill="#060606"/>
+
+    <!-- Rear haunches (raised, predator stance) -->
+    <path d="M 48,98 L 38,135 L 50,148 L 68,140 L 80,118 L 78,98 Z" fill="#060606"/>
+    <!-- Hind leg right -->
+    <path d="M 55,140 L 48,180 L 42,210 L 56,215 L 65,200 L 68,178 L 72,150 Z" fill="#060606"/>
+    <!-- Rear paw + claws -->
+    <ellipse cx="55" cy="218" rx="14" ry="6" fill="#060606"/>
+    <path d="M 44,222 L 41,232 M 52,224 L 51,234 M 60,224 L 62,234 M 68,222 L 70,232" stroke="#060606" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Hind leg left (further back, partially hidden) -->
+    <path d="M 80,135 L 88,175 L 92,205 L 105,210 L 108,178 L 102,142 Z" fill="#0a0a0a"/>
+    <ellipse cx="100" cy="212" rx="13" ry="5" fill="#0a0a0a"/>
+    <path d="M 90,216 L 88,224 M 96,218 L 96,226 M 104,218 L 106,226" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Body: elongated silhouette with arched spine -->
+    <path d="M 60,108
+             L 78,82
+             L 110,68
+             L 150,62
+             L 195,68
+             L 225,80
+             L 240,98
+             L 245,118
+             L 235,138
+             L 220,148
+             L 180,150
+             L 140,148
+             L 100,142
+             L 70,128
+             Z" fill="#060606"/>
+
+    <!-- Hackles raised (spiky fur on back) -->
+    <polygon points="100,72 102,55 110,72" fill="#060606"/>
+    <polygon points="115,68 119,50 128,68" fill="#060606"/>
+    <polygon points="135,64 140,46 148,64" fill="#060606"/>
+    <polygon points="155,62 162,45 170,63" fill="#060606"/>
+    <polygon points="180,64 185,48 192,65" fill="#060606"/>
+
+    <!-- Ribs showing (the gaunt detail) -->
+    <path d="M 105,138 Q 108,118 114,108" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity=".75"/>
+    <path d="M 130,143 Q 132,118 138,108" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity=".75"/>
+    <path d="M 155,144 Q 156,118 162,108" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity=".7"/>
+    <path d="M 180,143 Q 182,120 188,110" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity=".6"/>
+
+    <!-- Belly shadow -->
+    <ellipse cx="155" cy="148" rx="55" ry="5" fill="#000" opacity=".7"/>
+
+    <!-- Front leg right (planted, viewer's right) -->
+    <path d="M 215,128 L 218,160 L 220,195 L 230,215 L 244,213 L 245,190 L 240,155 L 232,130 Z" fill="#060606"/>
+    <ellipse cx="237" cy="218" rx="14" ry="6" fill="#060606"/>
+    <!-- Long claws extending from paw -->
+    <path d="M 224,225 L 220,238 M 232,226 L 231,240 M 240,226 L 243,240 M 248,225 L 252,238" stroke="#060606" stroke-width="2.8" stroke-linecap="round"/>
+    <!-- Claw tip glints -->
+    <circle cx="220" cy="238" r="1" fill="#3a1010"/>
+    <circle cx="243" cy="240" r="1" fill="#3a1010"/>
+
+    <!-- Front leg left (slightly forward, mid-step) -->
+    <path d="M 248,118 L 258,150 L 268,188 L 285,212 L 298,205 L 290,180 L 280,148 L 270,120 Z" fill="#0a0a0a"/>
+    <ellipse cx="290" cy="212" rx="13" ry="5" fill="#0a0a0a"/>
+    <path d="M 280,216 L 277,228 M 287,218 L 287,232 M 295,217 L 298,230 M 302,215 L 305,228" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Neck -->
+    <path d="M 215,82
+             L 240,72
+             L 260,72
+             L 268,82
+             L 250,98
+             L 230,100
+             Z" fill="#060606"/>
+
+    <!-- Head -->
+    <!-- Skull base -->
+    <ellipse cx="270" cy="80" rx="22" ry="18" fill="#060606"/>
+
+    <!-- Pointed ears swept back (predator alert) -->
+    <polygon points="258,68 252,52 268,64" fill="#060606"/>
+    <polygon points="278,68 282,50 290,66" fill="#060606"/>
+
+    <!-- Elongated snout -->
+    <path d="M 285,75
+             L 318,78
+             L 335,85
+             L 332,95
+             L 322,100
+             L 295,98
+             L 280,90
+             Z" fill="#060606"/>
+
+    <!-- Nose tip -->
+    <ellipse cx="332" cy="86" rx="4" ry="3" fill="#1a0a0a"/>
+
+    <!-- Jaw line shadow -->
+    <path d="M 285,92 Q 305,102 325,94" stroke="#000" stroke-width="2" fill="none"/>
+
+    <!-- Lip / mouth opening for snarl -->
+    <path d="M 295,92 L 320,94 L 322,98 L 295,96 Z" fill="#000"/>
+
+    <!-- Bared teeth -->
+    <polygon points="298,92 296,102 300,92" fill="#e8e0d0"/>
+    <polygon points="304,92 303,104 308,93" fill="#d8d0c0"/>
+    <polygon points="312,93 311,103 316,93" fill="#e8e0d0"/>
+    <polygon points="320,93 322,101 324,94" fill="#d8d0c0"/>
+    <!-- Lower jaw fangs -->
+    <polygon points="298,96 296,90 300,96" fill="#e8e0d0"/>
+    <polygon points="318,96 320,90 322,96" fill="#e8e0d0"/>
+    <!-- Tongue glimpse -->
+    <ellipse cx="310" cy="97" rx="6" ry="2" fill="#3a0808"/>
+
+    <!-- Glowing eyes -->
+    <circle cx="265" cy="76" r="10" fill="url(#stalkerEye)"/>
+    <circle cx="278" cy="76" r="10" fill="url(#stalkerEye)"/>
+    <ellipse cx="265" cy="76" rx="4" ry="3" fill="#ff4422"/>
+    <ellipse cx="278" cy="76" rx="4" ry="3" fill="#ff4422"/>
+    <!-- Slit pupils -->
+    <ellipse cx="265" cy="76" rx="1" ry="2.5" fill="#000"/>
+    <ellipse cx="278" cy="76" rx="1" ry="2.5" fill="#000"/>
+
+    <!-- Brow ridge shadow (intense glare) -->
+    <path d="M 256,68 L 268,72 L 280,72 L 290,68" stroke="#000" stroke-width="3" fill="none" opacity=".9"/>
+
+    <!-- DROOL strings from open mouth -->
+    <path d="M 303,102 L 304,118" stroke="url(#stalkerDrool)" stroke-width="1.2"/>
+    <path d="M 315,103 L 317,115" stroke="url(#stalkerDrool)" stroke-width="1"/>
+    <!-- Drool droplets -->
+    <ellipse cx="304" cy="120" rx="1" ry="2" fill="#f0e8d8" opacity=".6"/>
+
+    <!-- Bloody muzzle (subtle stain) -->
+    <ellipse cx="318" cy="91" rx="6" ry="2" fill="#3a0a0a" opacity=".7"/>
+
+    <!-- Jagged fur silhouette tufts (on shoulders/back) -->
+    <polygon points="200,70 205,55 210,70" fill="#060606"/>
+    <polygon points="215,75 220,60 225,75" fill="#060606"/>
+    <!-- Chin tuft -->
+    <polygon points="288,95 286,108 292,98" fill="#060606"/>
+</svg>

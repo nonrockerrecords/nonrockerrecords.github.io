@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Campsite — Camp Kanahoma</title>
+    <link rel="stylesheet" href="assets/css/brand.css">
+    <link rel="stylesheet" href="assets/css/campsite.css">
+</head>
+<body>
+
+<div class="cs-stage">
+    <nav class="cs-nav">
+        <a href="index.html" class="nav-wordmark" aria-label="Kanahoma"><img src="assets/svg/Kanahoma_Logo_White.svg" alt=""></a>
+        <a href="index.html">← Back to site</a>
+    </nav>
+
+    <div class="cs-intro">
+        <span class="cs-eyebrow">★ Three quick questions ★</span>
+        <h1 class="cs-headline">Build your <span class="script">campsite.</span></h1>
+        <p class="cs-sub">Tell us about your trip and we'll recommend the right way to work together.</p>
+    </div>
+
+    <div class="cs-progress" id="quizProgress" aria-hidden="true"></div>
+
+    <div class="cs-card" id="quizCard">
+        <p class="cs-step"></p>
+        <h2 class="cs-question"></h2>
+        <div class="cs-options" role="radiogroup"></div>
+        <div class="cs-controls">
+            <button type="button" class="cs-back">← Back</button>
+            <button type="button" class="cs-next" disabled>Next →</button>
+        </div>
+    </div>
+
+    <div class="cs-result" id="quizResult" aria-live="polite"></div>
+</div>
+
+<script src="assets/js/campsite.js"></script>
+</body>
+</html>

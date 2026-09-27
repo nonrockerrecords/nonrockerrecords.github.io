@@ -1,0 +1,177 @@
+<svg viewBox="0 0 480 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="clawTitle clawDesc">
+    <title id="clawTitle">Grab Your Swag claw machine</title>
+    <desc id="clawDesc">A Camp Kanahoma claw machine filled with branded prize capsules.</desc>
+    <defs>
+        <linearGradient id="cabinetSide" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#0D1F15"/>
+            <stop offset=".5" stop-color="#2F4936"/>
+            <stop offset="1" stop-color="#0D1F15"/>
+        </linearGradient>
+        <linearGradient id="cabinetFace" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#1A2E22"/>
+            <stop offset="1" stop-color="#0D1F15"/>
+        </linearGradient>
+        <linearGradient id="signGrad" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#D97F4F"/>
+            <stop offset="1" stop-color="#C96E43"/>
+        </linearGradient>
+        <linearGradient id="panelGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#2F4936"/>
+            <stop offset="1" stop-color="#1A2E22"/>
+        </linearGradient>
+        <radialGradient id="bulbGlow" cx="50%" cy="50%" r="60%">
+            <stop offset="0" stop-color="#D9AB4D" stop-opacity=".95"/>
+            <stop offset="1" stop-color="#D9AB4D" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="capsuleGlow" cx="50%" cy="35%" r="65%">
+            <stop offset="0" stop-color="#FFFFFF" stop-opacity=".35"/>
+            <stop offset=".42" stop-color="#F6F2EE" stop-opacity=".12"/>
+            <stop offset="1" stop-color="#F6F2EE" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="machineShadow" x="-15%" y="-10%" width="130%" height="125%">
+            <feDropShadow dx="0" dy="22" stdDeviation="20" flood-color="#000000" flood-opacity=".36"/>
+        </filter>
+        <style>
+            .machine-label {
+                font-family: 'DM Sans', Arial, sans-serif;
+                font-weight: 700;
+                letter-spacing: 3px;
+            }
+            .marquee-bulbs circle:nth-child(even) {
+                animation: bulbGlow 2.6s ease-in-out infinite;
+                transform-box: fill-box;
+                transform-origin: center;
+            }
+            .marquee-bulbs circle:nth-child(4n) { animation-delay: .25s; }
+            .marquee-bulbs circle:nth-child(6n) { animation-delay: .5s; }
+            .glass-sheen {
+                animation: glassDrift 5.8s ease-in-out infinite alternate;
+            }
+            .claw-idle {
+                animation: clawIdle 4.4s ease-in-out infinite;
+            }
+            .capsule-pile > g {
+                animation: capsuleSettle 5.2s ease-in-out infinite;
+                transform-box: fill-box;
+                transform-origin: center;
+            }
+            .capsule-pile > g:nth-child(3n) { animation-delay: .35s; }
+            .capsule-pile > g:nth-child(4n) { animation-delay: .7s; }
+            .delivered-capsule {
+                animation: deliveredPulse 2.4s ease-in-out infinite;
+                transform-box: fill-box;
+                transform-origin: center;
+            }
+            @keyframes bulbGlow {
+                0%, 100% { opacity: .82; transform: scale(.92); }
+                50% { opacity: 1; transform: scale(1.12); }
+            }
+            @keyframes glassDrift {
+                0% { opacity: .035; transform: translateX(-8px); }
+                100% { opacity: .075; transform: translateX(8px); }
+            }
+            @keyframes clawIdle {
+                0%, 100% { transform: translate(0, 0); }
+                45% { transform: translate(18px, 0); }
+                70% { transform: translate(18px, 8px); }
+            }
+            @keyframes capsuleSettle {
+                0%, 100% { transform: translateY(0) rotate(0); }
+                50% { transform: translateY(-2px) rotate(1.5deg); }
+            }
+            @keyframes deliveredPulse {
+                0%, 100% { opacity: .96; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.05); }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .marquee-bulbs circle:nth-child(even),
+                .glass-sheen,
+                .claw-idle,
+                .capsule-pile > g,
+                .delivered-capsule {
+                    animation: none;
+                }
+            }
+        </style>
+    </defs>
+
+    <g filter="url(#machineShadow)">
+        <rect x="0" y="20" width="480" height="720" rx="18" fill="url(#cabinetSide)"/>
+        <rect x="12" y="32" width="456" height="696" rx="13" fill="url(#cabinetFace)"/>
+
+        <rect x="22" y="42" width="436" height="78" rx="8" fill="url(#signGrad)"/>
+        <rect x="22" y="42" width="436" height="78" rx="8" fill="none" stroke="#0D1F15" stroke-width="3"/>
+        <g class="marquee-bulbs">
+            <circle cx="42" cy="42" r="5" fill="#D9AB4D"/><circle cx="42" cy="42" r="13" fill="url(#bulbGlow)"/>
+            <circle cx="120" cy="42" r="5" fill="#D9AB4D"/><circle cx="120" cy="42" r="13" fill="url(#bulbGlow)"/>
+            <circle cx="198" cy="42" r="5" fill="#D9AB4D"/><circle cx="198" cy="42" r="13" fill="url(#bulbGlow)"/>
+            <circle cx="276" cy="42" r="5" fill="#D9AB4D"/><circle cx="276" cy="42" r="13" fill="url(#bulbGlow)"/>
+            <circle cx="354" cy="42" r="5" fill="#D9AB4D"/><circle cx="354" cy="42" r="13" fill="url(#bulbGlow)"/>
+            <circle cx="438" cy="42" r="5" fill="#D9AB4D"/><circle cx="438" cy="42" r="13" fill="url(#bulbGlow)"/>
+        </g>
+        <text class="machine-label" x="240" y="84" text-anchor="middle" fill="#F6F2EE" font-size="31">GRAB YOUR SWAG</text>
+        <text class="machine-label" x="240" y="105" text-anchor="middle" fill="#F6F2EE" font-size="10" opacity=".78">CAMP KANAHOMA</text>
+
+        <rect x="30" y="130" width="420" height="420" rx="6" fill="#F6F2EE" opacity=".04" stroke="#2F4936" stroke-width="2"/>
+        <rect x="30" y="130" width="420" height="420" rx="6" fill="#F6F2EE" opacity=".05"/>
+        <path d="M42 142 H438 V548 H42 Z" fill="none" stroke="#F6F2EE" stroke-width="2" opacity=".08"/>
+        <path class="glass-sheen" d="M46 140 L46 540 L58 540 L58 140 Z" fill="#FFFFFF" opacity=".07"/>
+        <path class="glass-sheen" d="M382 140 L418 140 L300 540 L264 540 Z" fill="#FFFFFF" opacity=".045"/>
+
+        <rect x="42" y="148" width="396" height="7" rx="3" fill="#4A2E18"/>
+        <rect x="42" y="148" width="396" height="2" rx="1" fill="#7A4F30"/>
+
+        <g transform="translate(220 0)">
+            <g class="claw-idle">
+            <rect x="-24" y="141" width="48" height="18" rx="3" fill="#3A2516"/>
+            <rect x="-24" y="141" width="48" height="5" rx="3" fill="#6E4428"/>
+            <line x1="0" y1="158" x2="0" y2="204" stroke="#C3A98E" stroke-width="3" stroke-linecap="round"/>
+            <g transform="translate(0 204)">
+                <rect x="-20" y="0" width="40" height="15" rx="4" fill="#4A2E18"/>
+                <circle cx="0" cy="17" r="4" fill="#2A1A0A"/>
+                <path d="M-4 17 L-23 55 L-18 61 L2 23 Z" fill="#5C3820"/>
+                <path d="M4 17 L23 55 L18 61 L-2 23 Z" fill="#5C3820"/>
+                <path d="M-23 55 L-31 65 M23 55 L31 65" stroke="#3A2516" stroke-width="5" stroke-linecap="round"/>
+            </g>
+            </g>
+        </g>
+
+        <g class="capsule-pile">
+            <g transform="translate(80 510)"><circle r="22" fill="#C96E43"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(125 515)"><circle r="22" fill="#D9AB4D"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(170 510)"><circle r="22" fill="#F6F2EE"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".18"/></g>
+            <g transform="translate(215 515)"><circle r="22" fill="#C3A98E"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".2"/></g>
+            <g transform="translate(260 510)"><circle r="22" fill="#C96E43"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(305 515)"><circle r="22" fill="#D9AB4D"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(350 510)"><circle r="22" fill="#2F4936"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#F6F2EE" opacity=".18"/></g>
+            <g transform="translate(395 515)"><circle r="22" fill="#F6F2EE"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".18"/></g>
+            <g transform="translate(102 478)"><circle r="22" fill="#D9AB4D"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(147 475)"><circle r="22" fill="#C96E43"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(192 478)"><circle r="22" fill="#2F4936"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#F6F2EE" opacity=".18"/></g>
+            <g transform="translate(237 475)"><circle r="22" fill="#F6F2EE"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".18"/></g>
+            <g transform="translate(282 478)"><circle r="22" fill="#C3A98E"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".2"/></g>
+            <g transform="translate(327 475)"><circle r="22" fill="#D9AB4D"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(372 478)"><circle r="22" fill="#C96E43"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(125 445)"><circle r="22" fill="#F6F2EE"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".18"/></g>
+            <g transform="translate(220 442)"><circle r="22" fill="#D9AB4D"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+            <g transform="translate(315 445)"><circle r="22" fill="#C96E43"/><circle r="22" fill="url(#capsuleGlow)"/><path d="M-22 0 H22" stroke="#1A2E22" opacity=".22"/></g>
+        </g>
+
+        <line x1="440" y1="150" x2="440" y2="540" stroke="#2F4936" stroke-width="2" opacity=".45"/>
+
+        <rect x="12" y="560" width="456" height="168" rx="13" fill="#0D1F15"/>
+        <rect x="24" y="570" width="432" height="148" rx="8" fill="url(#panelGrad)"/>
+        <rect x="42" y="588" width="168" height="96" rx="5" fill="#0D1F15" stroke="#4A2E18" stroke-width="2"/>
+        <rect x="42" y="588" width="168" height="15" rx="5" fill="#1A2E22"/>
+        <text class="machine-label" x="126" y="599" text-anchor="middle" fill="#D9AB4D" font-size="9">PRIZE SLOT</text>
+        <g class="delivered-capsule" transform="translate(126 646)">
+            <circle r="30" fill="#D9AB4D"/>
+            <circle r="30" fill="url(#capsuleGlow)"/>
+            <path d="M-30 0 H30" stroke="#1A2E22" opacity=".25"/>
+            <text class="machine-label" x="0" y="-3" text-anchor="middle" fill="#1A2E22" font-size="8">YOU'RE IN</text>
+            <text x="0" y="10" text-anchor="middle" fill="#1A2E22" font-family="'DM Sans', Arial, sans-serif" font-size="7" opacity=".72">welcome</text>
+        </g>
+        <rect x="424" y="600" width="24" height="7" rx="3" fill="#0D1F15"/>
+        <text class="machine-label" x="436" y="620" text-anchor="middle" fill="#D9AB4D" font-size="7">INSERT</text>
+    </g>
+</svg>

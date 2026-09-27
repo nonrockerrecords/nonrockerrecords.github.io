@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stoke the Hellfire - Camp Kanahoma</title>
+    <link rel="stylesheet" href="assets/css/brand.css">
+    <link rel="stylesheet" href="assets/css/campfire-chaos.css">
+</head>
+<body>
+
+<!-- Hidden demon SVG symbol library -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+        <!-- Demon variant 1: arms raised, classic -->
+        <symbol id="demon-1" viewBox="0 0 100 140">
+            <!-- Horns -->
+            <polygon points="38,18 32,2 44,14" fill="#000"/>
+            <polygon points="62,18 68,2 56,14" fill="#000"/>
+            <!-- Head -->
+            <ellipse cx="50" cy="28" rx="18" ry="16" fill="#000"/>
+            <!-- Glowing red eyes -->
+            <circle cx="44" cy="26" r="2" fill="#ff3322"/>
+            <circle cx="56" cy="26" r="2" fill="#ff3322"/>
+            <!-- Pointed chin -->
+            <polygon points="44,42 50,52 56,42" fill="#000"/>
+            <!-- Body -->
+            <path d="M 35,45 L 28,80 L 30,115 L 38,130 L 42,140 L 58,140 L 62,130 L 70,115 L 72,80 L 65,45 Z" fill="#000"/>
+            <!-- Arms raised -->
+            <path d="M 35,52 L 22,30 L 18,15 L 16,18 L 19,32 L 30,55 Z" fill="#000"/>
+            <path d="M 65,52 L 78,30 L 82,15 L 84,18 L 81,32 L 70,55 Z" fill="#000"/>
+            <!-- Tail -->
+            <path d="M 58,118 Q 80,130 90,115 L 85,115 Q 78,122 60,115 Z" fill="#000"/>
+            <polygon points="90,115 96,112 92,118" fill="#000"/>
+        </symbol>
+
+        <!-- Demon variant 2: leaning forward -->
+        <symbol id="demon-2" viewBox="0 0 100 140">
+            <polygon points="35,22 28,4 42,16" fill="#000"/>
+            <polygon points="65,22 72,4 58,16" fill="#000"/>
+            <ellipse cx="50" cy="32" rx="17" ry="15" fill="#000"/>
+            <circle cx="44" cy="30" r="1.8" fill="#ff3322"/>
+            <circle cx="56" cy="30" r="1.8" fill="#ff3322"/>
+            <path d="M 45,42 L 35,50 L 48,52 Z" fill="#000"/>
+            <!-- Hunched body -->
+            <path d="M 33,48 L 25,75 L 30,108 L 42,135 L 56,140 L 70,135 L 72,108 L 67,75 L 65,48 Z" fill="#000"/>
+            <!-- Arms forward -->
+            <path d="M 32,55 L 18,68 L 12,82 L 15,84 L 22,72 L 35,60 Z" fill="#000"/>
+            <path d="M 68,55 L 82,68 L 88,82 L 85,84 L 78,72 L 65,60 Z" fill="#000"/>
+            <!-- Tail -->
+            <path d="M 55,125 Q 78,135 92,120 L 87,120 Q 75,128 58,122 Z" fill="#000"/>
+            <polygon points="92,120 98,116 94,122" fill="#000"/>
+        </symbol>
+
+        <!-- Demon variant 3: standing tall, arms out -->
+        <symbol id="demon-3" viewBox="0 0 100 140">
+            <polygon points="38,15 30,0 46,14" fill="#000"/>
+            <polygon points="62,15 70,0 54,14" fill="#000"/>
+            <ellipse cx="50" cy="25" rx="19" ry="17" fill="#000"/>
+            <circle cx="43" cy="22" r="2.2" fill="#ff5530"/>
+            <circle cx="57" cy="22" r="2.2" fill="#ff5530"/>
+            <!-- Mouth (open, screaming) -->
+            <ellipse cx="50" cy="34" rx="4" ry="5" fill="#3a0808"/>
+            <polygon points="46,30 48,40 50,32 52,40 54,30" fill="#fff"/>
+            <!-- Body -->
+            <path d="M 33,42 L 26,80 L 28,118 L 36,138 L 42,140 L 58,140 L 64,138 L 72,118 L 74,80 L 67,42 Z" fill="#000"/>
+            <!-- Arms out wide -->
+            <path d="M 33,55 L 12,52 L 0,60 L 0,64 L 12,58 L 35,62 Z" fill="#000"/>
+            <path d="M 67,55 L 88,52 L 100,60 L 100,64 L 88,58 L 65,62 Z" fill="#000"/>
+            <!-- Tail -->
+            <path d="M 58,115 Q 84,120 95,100 L 90,100 Q 80,112 60,112 Z" fill="#000"/>
+            <polygon points="95,100 100,95 96,103" fill="#000"/>
+        </symbol>
+
+        <!-- Demon variant 4: crouched -->
+        <symbol id="demon-4" viewBox="0 0 100 140">
+            <polygon points="34,25 28,8 42,20" fill="#000"/>
+            <polygon points="66,25 72,8 58,20" fill="#000"/>
+            <ellipse cx="50" cy="34" rx="17" ry="15" fill="#000"/>
+            <circle cx="44" cy="32" r="1.8" fill="#ff3322"/>
+            <circle cx="56" cy="32" r="1.8" fill="#ff3322"/>
+            <polygon points="45,46 50,55 55,46" fill="#000"/>
+            <!-- Crouched chunky body -->
+            <ellipse cx="50" cy="88" rx="28" ry="32" fill="#000"/>
+            <!-- Arms holding knees -->
+            <ellipse cx="32" cy="100" rx="12" ry="22" fill="#000"/>
+            <ellipse cx="68" cy="100" rx="12" ry="22" fill="#000"/>
+            <!-- Feet -->
+            <ellipse cx="35" cy="130" rx="10" ry="8" fill="#000"/>
+            <ellipse cx="65" cy="130" rx="10" ry="8" fill="#000"/>
+            <!-- Claws -->
+            <path d="M 28,130 L 25,138 M 32,132 L 30,140 M 38,132 L 38,140" stroke="#000" stroke-width="2"/>
+            <path d="M 72,130 L 75,138 M 68,132 L 70,140 M 62,132 L 62,140" stroke="#000" stroke-width="2"/>
+            <!-- Tail curling up -->
+            <path d="M 75,90 Q 95,85 88,65 L 84,68 Q 88,82 73,92 Z" fill="#000"/>
+            <polygon points="88,65 95,62 89,68" fill="#000"/>
+        </symbol>
+
+        <!-- Demon variant 5: dancing, mid-stride -->
+        <symbol id="demon-5" viewBox="0 0 100 140">
+            <polygon points="36,20 28,4 44,18" fill="#000"/>
+            <polygon points="64,20 72,4 56,18" fill="#000"/>
+            <ellipse cx="50" cy="30" rx="18" ry="16" fill="#000"/>
+            <circle cx="44" cy="28" r="2" fill="#ff3322"/>
+            <circle cx="56" cy="28" r="2" fill="#ff3322"/>
+            <polygon points="44,44 50,54 56,44" fill="#000"/>
+            <!-- Twisted body -->
+            <path d="M 36,46 L 30,75 L 38,105 L 32,135 L 42,140 L 50,115 L 58,140 L 68,135 L 62,105 L 70,75 L 64,46 Z" fill="#000"/>
+            <!-- One arm up, one out -->
+            <path d="M 35,52 L 18,30 L 22,18 L 24,18 L 24,30 L 38,55 Z" fill="#000"/>
+            <path d="M 65,52 L 88,68 L 94,80 L 92,82 L 84,72 L 62,60 Z" fill="#000"/>
+            <!-- Tail flicking -->
+            <path d="M 48,118 Q 30,125 22,108 L 26,108 Q 32,118 50,115 Z" fill="#000"/>
+            <polygon points="22,108 16,105 22,112" fill="#000"/>
+        </symbol>
+
+        <!-- Demon variant 6: small imp -->
+        <symbol id="demon-6" viewBox="0 0 100 140">
+            <polygon points="38,28 32,12 44,22" fill="#000"/>
+            <polygon points="62,28 68,12 56,22" fill="#000"/>
+            <ellipse cx="50" cy="38" rx="16" ry="14" fill="#000"/>
+            <circle cx="44" cy="36" r="2.5" fill="#ff5530"/>
+            <circle cx="56" cy="36" r="2.5" fill="#ff5530"/>
+            <!-- Mouth open showing teeth -->
+            <ellipse cx="50" cy="46" rx="6" ry="3" fill="#3a0808"/>
+            <polygon points="46,44 48,49 50,45 52,49 54,44" fill="#fff"/>
+            <!-- Stubby body -->
+            <ellipse cx="50" cy="80" rx="22" ry="30" fill="#000"/>
+            <!-- Stubby arms -->
+            <path d="M 30,68 L 10,72 L 5,82 L 10,82 L 20,76 L 33,76 Z" fill="#000"/>
+            <path d="M 70,68 L 90,72 L 95,82 L 90,82 L 80,76 L 67,76 Z" fill="#000"/>
+            <!-- Stubby legs -->
+            <ellipse cx="40" cy="125" rx="8" ry="14" fill="#000"/>
+            <ellipse cx="60" cy="125" rx="8" ry="14" fill="#000"/>
+            <!-- Long curling tail -->
+            <path d="M 70,95 Q 92,98 96,80 Q 99,68 90,68 L 88,72 Q 95,75 92,85 Q 88,93 72,92 Z" fill="#000"/>
+            <polygon points="90,68 96,62 91,72" fill="#000"/>
+        </symbol>
+    </defs>
+</svg>
+
+<nav class="chaos-nav">
+    <a href="index.html" class="nav-wordmark" aria-label="Kanahoma"><img src="assets/svg/Kanahoma_Logo_White.svg" alt=""></a>
+    <a href="index.html">← Back to site</a>
+</nav>
+
+<!-- Progress meter -->
+<div class="chaos-meter" aria-hidden="true">
+    <span class="meter-label hot">↑ Hellfire</span>
+    <div class="meter-rail">
+        <div class="meter-fill"></div>
+    </div>
+    <span class="meter-label">Spark ↓</span>
+</div>
+
+<!-- Sticky chaotic fire scene -->
+<div class="chaos-scene" aria-hidden="true">
+    <div class="inferno-backdrop"></div>
+
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <radialGradient id="chaosFireGlow" cx="50%" cy="65%" r="50%">
+                <stop offset="0%"   stop-color="#ff8844" stop-opacity="1"/>
+                <stop offset="30%"  stop-color="#C96E43" stop-opacity=".8"/>
+                <stop offset="100%" stop-color="#ff3322" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="chaosBlood" cx="50%" cy="85%" r="80%">
+                <stop offset="0%"   stop-color="#ff3322" stop-opacity=".5"/>
+                <stop offset="100%" stop-color="#2a0808" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+
+        <!-- Blood-red sky tint (intensifies with progress) -->
+        <rect class="sky-blood" x="0" y="0" width="1440" height="900" fill="url(#chaosBlood)"/>
+
+        <!-- Stars (fade out fast) -->
+        <g class="stars-chaos">
+            <circle cx="120"  cy="60"  r="1.5" fill="#F6F2EE"/>
+            <circle cx="280"  cy="40"  r="1"   fill="#F6F2EE"/>
+            <circle cx="450"  cy="70"  r="1.5" fill="#F6F2EE"/>
+            <circle cx="620"  cy="30"  r="1"   fill="#F6F2EE"/>
+            <circle cx="800"  cy="50"  r="2"   fill="#F6F2EE"/>
+            <circle cx="970"  cy="35"  r="1.5" fill="#F6F2EE"/>
+            <circle cx="1150" cy="55"  r="1"   fill="#F6F2EE"/>
+            <circle cx="1320" cy="42"  r="1.5" fill="#F6F2EE"/>
+        </g>
+
+        <!-- Mountains -->
+        <path class="mtn-1" d="M0 480 L180 240 L360 420 L540 200 L720 400 L900 180 L1080 410 L1260 220 L1440 410 L1440 900 L0 900 Z" fill="#162819"/>
+        <path class="mtn-2" d="M0 560 L220 320 L400 480 L580 280 L760 460 L940 260 L1120 470 L1340 290 L1440 470 L1440 900 L0 900 Z" fill="#1e3320"/>
+        <path class="mtn-3" d="M0 650 L240 470 L420 600 L600 450 L780 590 L960 430 L1140 580 L1340 460 L1440 590 L1440 900 L0 900 Z" fill="#263d2c"/>
+
+        <!-- Ground -->
+        <rect class="ground-base" x="0" y="700" width="1440" height="200" fill="#2a1a10"/>
+        <!-- Cracked ground veins -->
+        <g class="ground-cracks">
+            <path d="M 0,820 L 200,810 L 350,830 L 500,815 L 720,820 L 900,815 L 1100,830 L 1440,818"
+                  stroke="#ff3322" stroke-width="2" fill="none" opacity=".7"/>
+            <path d="M 120,860 L 280,850 L 450,870 L 600,855 L 760,865 L 900,850 L 1100,870 L 1280,860"
+                  stroke="#C96E43" stroke-width="1.5" fill="none" opacity=".6"/>
+            <!-- branching cracks -->
+            <path d="M 350,830 L 380,855 L 420,870 M 720,820 L 750,855 L 770,890" stroke="#ff3322" stroke-width="1.5" fill="none" opacity=".7"/>
+            <path d="M 500,815 L 480,850 L 510,890" stroke="#ff5530" stroke-width="1.5" fill="none" opacity=".6"/>
+            <!-- glowing crack centers -->
+            <circle cx="400" cy="820" r="3" fill="#ff5530" opacity=".8"/>
+            <circle cx="720" cy="820" r="4" fill="#ff5530" opacity=".9"/>
+            <circle cx="1000" cy="822" r="3" fill="#ff5530" opacity=".8"/>
+        </g>
+
+        <!-- Pine trees (will silhouette darker as it grows) -->
+        <g transform="translate(140, 600)">
+            <rect x="-9" y="0" width="18" height="50" fill="#1a0a08"/>
+            <polygon points="0,-150 -55,0 55,0" fill="#0a0408"/>
+        </g>
+        <g transform="translate(260, 640)">
+            <rect x="-7" y="0" width="14" height="38" fill="#1a0a08"/>
+            <polygon points="0,-110 -42,0 42,0" fill="#0a0408"/>
+        </g>
+        <g transform="translate(1290, 600)">
+            <rect x="-9" y="0" width="18" height="50" fill="#1a0a08"/>
+            <polygon points="0,-150 -55,0 55,0" fill="#0a0408"/>
+        </g>
+        <g transform="translate(1180, 640)">
+            <rect x="-7" y="0" width="14" height="38" fill="#1a0a08"/>
+            <polygon points="0,-110 -42,0 42,0" fill="#0a0408"/>
+        </g>
+
+        <!-- ── BONFIRE GLOW (massive, scales fast) ── -->
+        <ellipse class="bonfire-glow" cx="720" cy="800" rx="380" ry="180" fill="url(#chaosFireGlow)"/>
+
+        <!-- Logs at the base -->
+        <g transform="translate(720, 800)">
+            <ellipse cx="0" cy="20" rx="120" ry="22" fill="#1a0608"/>
+            <rect x="-100" y="-6" width="70" height="18" rx="8" fill="#5c1810" transform="rotate(-22)"/>
+            <rect x="30"   y="-6" width="70" height="18" rx="8" fill="#5c1810" transform="rotate( 22)"/>
+            <rect x="-50"  y="2"  width="100" height="16" rx="8" fill="#6b2412"/>
+            <!-- Glowing log cores -->
+            <ellipse cx="-30" cy="10" rx="22" ry="3" fill="#ff5530" opacity=".9"/>
+            <ellipse cx="30"  cy="10" rx="22" ry="3" fill="#ff3322" opacity=".9"/>
+            <ellipse cx="0"   cy="14" rx="35" ry="3" fill="#D9AB4D" opacity=".8"/>
+        </g>
+
+        <!-- ── THE FIRE ITSELF — grows on scroll ── -->
+        <g class="bonfire" transform="translate(720, 790)">
+            <g class="bonfire-flicker">
+                <!-- Outer flame -->
+                <path d="M0 0 C-60,-80 -80,-180 0,-220 C 30,-150 60,-80 0,0" fill="#ff3322" opacity=".95"/>
+                <!-- Middle flame -->
+                <path d="M0 0 C 50,-70 80,-160 0,-200 C-25,-130 -50,-70 0,0" fill="#C96E43" opacity=".95"/>
+                <!-- Inner flame -->
+                <path d="M0 0 C-30,-50 -40,-130 0,-160 C 16,-100 32,-50 0, 0" fill="#D9AB4D" opacity="1"/>
+                <!-- White hot core -->
+                <path d="M0 0 C -14,-32 -10,-90 0,-115 C 12,-90 16,-32 0,0" fill="#F6F2EE" opacity=".7"/>
+                <!-- Small flickers on sides -->
+                <path d="M -50,-20 C -65,-50 -55,-100 -40,-110 C -32,-80 -28,-40 -50,-20" fill="#C96E43" opacity=".8"/>
+                <path d="M  50,-20 C  65,-50  55,-100  40,-110 C  32,-80  28,-40  50,-20" fill="#D9AB4D" opacity=".8"/>
+            </g>
+        </g>
+    </svg>
+
+    <!-- Flying embers overlay -->
+    <div class="embers" aria-hidden="true"></div>
+
+    <!-- ── DEMONS dancing around the fire ── -->
+    <svg class="demon demon-1" viewBox="0 0 100 140"><use href="#demon-1"/></svg>
+    <svg class="demon demon-2" viewBox="0 0 100 140"><use href="#demon-2"/></svg>
+    <svg class="demon demon-3" viewBox="0 0 100 140"><use href="#demon-3"/></svg>
+    <svg class="demon demon-4" viewBox="0 0 100 140"><use href="#demon-4"/></svg>
+    <svg class="demon demon-5" viewBox="0 0 100 140"><use href="#demon-5"/></svg>
+    <svg class="demon demon-6" viewBox="0 0 100 140"><use href="#demon-6"/></svg>
+</div>
+
+<!-- ── SCROLLING NARRATIVE — gets progressively unhinged ── -->
+<div class="chaos-stage">
+
+    <section class="chaos-overlay">
+        <div class="chaos-content">
+            <span class="chaos-eyebrow">★ A small flame ★</span>
+            <h1 class="chaos-headline">It started so <span class="script">innocent.</span></h1>
+            <p class="chaos-body">A spark. A few twigs. The kind of cozy camp moment you remember fondly. Then you scrolled. And things… escalated.</p>
+        </div>
+    </section>
+
+    <section class="chaos-overlay">
+        <div class="chaos-content">
+            <span class="chaos-eyebrow">★ Pretty quickly ★</span>
+            <h2 class="chaos-headline">Things took an <span class="script">unexpected</span> turn.</h2>
+            <p class="chaos-body">The fire's growing faster than expected. The stars are fading. The mountains look different somehow. Have you noticed the cracks in the ground yet?</p>
+        </div>
+    </section>
+
+    <section class="chaos-overlay">
+        <div class="chaos-content">
+            <span class="chaos-eyebrow">⚠ Concerning ⚠</span>
+            <h2 class="chaos-headline">Wait — is that <span class="script">dancing?</span></h2>
+            <p class="chaos-body">Something's moving around the flames now. You squint. There are figures. They have horns. The fire's not a campfire anymore. This is a bonfire. This is… something else.</p>
+        </div>
+    </section>
+
+    <section class="chaos-overlay">
+        <div class="chaos-content">
+            <span class="chaos-eyebrow">🔥 INFERNO 🔥</span>
+            <h2 class="chaos-headline">Welcome to the <span class="script">hellscape.</span></h2>
+            <p class="chaos-body">The bonfire is roaring. The demons are here. The earth is cracked. The sky is bleeding. This is fine. Everything is fine. This is exactly how brand campaigns work, actually.</p>
+        </div>
+    </section>
+
+    <section class="chaos-overlay">
+        <div class="chaos-content">
+            <span class="chaos-eyebrow">★ The point ★</span>
+            <h2 class="chaos-headline">Light a fire with <span class="script">Kanahoma.</span></h2>
+            <p class="chaos-body">Demonic chaos optional. (Probably advisable to skip the demons.) But the energy — that part we can absolutely deliver. Big swings, real results, and a brand voice that doesn't apologize for itself.</p>
+            <a href="mailto:hello@kanahoma.com" class="chaos-cta">Start the Conversation</a>
+        </div>
+    </section>
+
+</div>
+
+<script src="assets/js/campfire-chaos.js"></script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+{
+  "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-spot=\"2\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button data-spot=\"2\" class=\"hotspot\" aria-pressed=\"false\" aria-label=\"Explore the camp arcade\">3</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"scene-overlay\">…</div> intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"scene-overlay\">…</div> intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    57 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"scene-overlay\">…</div> intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+  "results": [
+    {
+      "route": "cinematic/404.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/404.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/all-variations.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/all-variations.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-booth-tour.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-booth-tour.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-bouldering-topo.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-bouldering-topo.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-bouldering.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-bouldering.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-campfire-chaos.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-campfire-chaos.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-campfire-scroll.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-campfire-scroll.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-campsite.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-campsite.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-chairs.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-chairs.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-chaotic.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-chaotic.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-daynight.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-daynight.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-flashlight.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-flashlight.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-newsletter-pure.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-newsletter-pure.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-newsletter.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-newsletter.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-polish.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-polish.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-stories.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-stories.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-traditional.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-traditional.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-yourstory.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index-yourstory.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "cinematic/index.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "field-guide/index.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "field-guide/index.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "surreal/index.html",
+      "width": 1440,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "route": "surreal/index.html",
+      "width": 390,
+      "broken": [],
+      "overflow": false,
+      "errors": []
+    }
+  ]
+}

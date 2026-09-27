@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tell Us Your Story — Camp Kanahoma</title>
+    <link rel="stylesheet" href="assets/css/brand.css">
+    <link rel="stylesheet" href="assets/css/yourstory.css">
+</head>
+<body>
+
+<div class="ys-stage">
+    <nav class="ys-nav">
+        <a href="index.html" class="nav-wordmark" aria-label="Kanahoma"><img src="assets/svg/Kanahoma_Logo_White.svg" alt=""></a>
+        <a href="index.html">← Back to site</a>
+    </nav>
+
+    <div class="ys-intro">
+        <span class="ys-eyebrow">★ You talk. We listen first. ★</span>
+        <h1 class="ys-headline">Tell us your <span class="script">story.</span></h1>
+        <p class="ys-sub">Every other agency pitches you. We'd rather hear from you first. What's working, what's not, what you wish someone would just say out loud — share it here and a human (named Aaron) will respond within one business day.</p>
+    </div>
+
+    <form class="ys-form" id="ysForm" novalidate>
+
+        <div class="ys-field">
+            <label for="ysInstitution">Your institution</label>
+            <input type="text" id="ysInstitution" name="institution" placeholder="Pinecrest University, Mountainview ISD, etc." required>
+        </div>
+
+        <div class="ys-field">
+            <label for="ysStory">Your story</label>
+            <p class="ys-prompt-label">Need a nudge? Try one of these openers:</p>
+            <div class="ys-prompts" id="ysPrompts"></div>
+            <textarea id="ysStory" name="story" placeholder="Tell us what's really going on at your institution. The good, the messy, the parts you don't put in the board deck. We read everything that comes in."></textarea>
+            <p class="ys-counter" id="ysCounter">0 characters</p>
+        </div>
+
+        <div class="ys-submit-row">
+            <p class="ys-promise">★ No marketing automation. No drip campaigns. One human reads this and writes back.</p>
+            <button type="submit" id="ysSubmit" class="ys-submit" disabled>Send It →</button>
+        </div>
+    </form>
+
+    <!-- Success state -->
+    <div class="ys-success" id="ysSuccess" aria-live="polite">
+        <div class="ys-success-icon">✓</div>
+        <h2>Got it. We're <span class="script">reading.</span></h2>
+        <p>Aaron will respond personally within one business day — no auto-reply, no follow-up sequences, no boilerplate.</p>
+        <div class="ys-echo">
+            <strong>What you sent:</strong>
+            <p><span class="ys-echo-text"></span> <em>— <span class="ys-echo-institution"></span></em></p>
+        </div>
+        <p style="font-size: .9375rem; opacity: .75;">In the meantime — <a href="index.html" style="color: var(--hellbender); text-decoration: underline;">explore the rest of the site</a> or <a href="index-stories.html" style="color: var(--hellbender); text-decoration: underline;">read a campfire story</a>.</p>
+    </div>
+</div>
+
+<script src="assets/js/yourstory.js"></script>
+</body>
+</html>

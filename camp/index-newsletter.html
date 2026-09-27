@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grab Your Swag — Camp Kanahoma Newsletter</title>
+    <meta name="description" content="Higher ed marketing insights, delivered. Pull the lever and join Camp Kanahoma.">
+
+    <link rel="stylesheet" href="assets/css/brand.css">
+    <link rel="stylesheet" href="assets/css/claw.css">
+</head>
+<body>
+
+<!-- ── STAGE ─────────────────────────────────────────── -->
+<section class="claw-stage">
+
+    <!-- Nav -->
+    <nav class="claw-nav">
+        <a href="index.html" class="nav-wordmark" aria-label="Kanahoma"><img src="assets/svg/Kanahoma_Logo_White.svg" alt=""></a>
+        <a href="index.html">← Back to site</a>
+    </nav>
+
+    <!-- String lights overhead -->
+    <div class="claw-lights" aria-hidden="true">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path d="M0 14 Q 360 70, 720 36 T 1440 24" stroke="#5c3820" stroke-width="1.5" fill="none"/>
+            <g fill="#D9AB4D">
+                <circle cx="80"   cy="36" r="3.5"/>
+                <circle cx="200"  cy="48" r="3.5"/>
+                <circle cx="320"  cy="58" r="3.5"/>
+                <circle cx="440"  cy="62" r="3.5"/>
+                <circle cx="560"  cy="56" r="3.5"/>
+                <circle cx="680"  cy="42" r="3.5"/>
+                <circle cx="800"  cy="34" r="3.5"/>
+                <circle cx="920"  cy="30" r="3.5"/>
+                <circle cx="1040" cy="28" r="3.5"/>
+                <circle cx="1160" cy="26" r="3.5"/>
+                <circle cx="1280" cy="24" r="3.5"/>
+                <circle cx="1380" cy="22" r="3.5"/>
+            </g>
+        </svg>
+    </div>
+
+    <!-- Booth-style decoration -->
+    <div class="claw-deco rect-orange" aria-hidden="true"></div>
+    <div class="claw-deco rect-gold" aria-hidden="true"></div>
+    <img class="claw-deco tree-l" src="assets/svg/pine-tree.svg" alt="" aria-hidden="true">
+    <img class="claw-deco tree-r" src="assets/svg/pine-tree.svg" alt="" aria-hidden="true">
+
+    <div class="claw-wrap">
+
+        <!-- ── THE MACHINE ───────────────────────────── -->
+        <div class="claw-machine" data-state="idle" aria-label="Grab Your Swag claw machine">
+            <div class="success-toast" id="clawToast" role="status" aria-live="polite"></div>
+
+            <!-- The claw machine SVG inlined so we can animate its inner elements -->
+            <svg viewBox="0 0 480 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Camp Kanahoma claw machine">
+                <defs>
+                    <linearGradient id="cabinetSide" x1="0" x2="1" y1="0" y2="0">
+                        <stop offset="0%"  stop-color="#1a2e22"/>
+                        <stop offset="50%" stop-color="#2f4936"/>
+                        <stop offset="100%" stop-color="#1a2e22"/>
+                    </linearGradient>
+                    <linearGradient id="glassGrad" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%"  stop-color="rgba(246,242,238,.12)"/>
+                        <stop offset="40%" stop-color="rgba(246,242,238,.04)"/>
+                        <stop offset="100%" stop-color="rgba(13,31,21,.20)"/>
+                    </linearGradient>
+                    <linearGradient id="signGrad" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%"  stop-color="#d97f4f"/>
+                        <stop offset="100%" stop-color="#C96E43"/>
+                    </linearGradient>
+                    <radialGradient id="bulbGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%"  stop-color="#D9AB4D" stop-opacity=".9"/>
+                        <stop offset="100%" stop-color="#D9AB4D" stop-opacity="0"/>
+                    </radialGradient>
+                </defs>
+
+                <!-- Cabinet body -->
+                <rect x="0"  y="20"  width="480" height="720" rx="14" fill="url(#cabinetSide)"/>
+                <rect x="10" y="30"  width="460" height="700" rx="10" fill="#1a2e22"/>
+
+                <!-- Top marquee sign -->
+                <rect x="20" y="40" width="440" height="78" rx="6" fill="url(#signGrad)"/>
+                <rect x="20" y="40" width="440" height="78" rx="6" fill="none" stroke="#1a2e22" stroke-width="2"/>
+                <g class="marquee-bulbs">
+                    <circle cx="40"  cy="40" r="5" fill="#D9AB4D"/>
+                    <circle cx="40"  cy="40" r="9" fill="url(#bulbGlow)"/>
+                    <circle cx="120" cy="40" r="5" fill="#D9AB4D"/>
+                    <circle cx="120" cy="40" r="9" fill="url(#bulbGlow)"/>
+                    <circle cx="200" cy="40" r="5" fill="#D9AB4D"/>
+                    <circle cx="200" cy="40" r="9" fill="url(#bulbGlow)"/>
+                    <circle cx="280" cy="40" r="5" fill="#D9AB4D"/>
+                    <circle cx="280" cy="40" r="9" fill="url(#bulbGlow)"/>
+                    <circle cx="360" cy="40" r="5" fill="#D9AB4D"/>
+                    <circle cx="360" cy="40" r="9" fill="url(#bulbGlow)"/>
+                    <circle cx="440" cy="40" r="5" fill="#D9AB4D"/>
+                    <circle cx="440" cy="40" r="9" fill="url(#bulbGlow)"/>
+                </g>
+                <text x="240" y="82" text-anchor="middle" fill="#F6F2EE"
+                      font-family="'DM Sans', Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="3">GRAB YOUR SWAG</text>
+                <text x="240" y="103" text-anchor="middle" fill="#F6F2EE"
+                      font-family="'DM Sans', sans-serif" font-size="10" font-weight="500" letter-spacing="3" opacity=".75">★ CAMP KANAHOMA ★</text>
+
+                <!-- Glass cabin -->
+                <rect x="30" y="130" width="420" height="420" rx="4" fill="rgba(246,242,238,.04)" stroke="#2f4936" stroke-width="2"/>
+                <rect x="30" y="130" width="420" height="420" rx="4" fill="url(#glassGrad)"/>
+                <path d="M 40 140 L 40 540 L 50 540 L 50 140 Z" fill="#F6F2EE" opacity=".08"/>
+                <path d="M 410 140 L 410 540 L 420 540 L 420 140 Z" fill="#F6F2EE" opacity=".05"/>
+
+                <!-- Track -->
+                <rect x="40" y="148" width="400" height="6" rx="2" fill="#5c3820"/>
+                <rect x="40" y="148" width="400" height="2" rx="1" fill="#7a4f30"/>
+
+                <!-- Claw assembly (rendered BEFORE capsules so the pile occludes the claw arms during grab) -->
+                <g class="claw-assembly" transform="translate(220, 0)">
+                    <rect x="-22" y="142" width="44" height="16" rx="2" fill="#3a2516"/>
+                    <rect x="-22" y="142" width="44" height="4"  rx="2" fill="#5c3820"/>
+                    <line class="claw-cable" x1="0" y1="158" x2="0" y2="170" stroke="#888" stroke-width="2.5"/>
+                    <g class="claw-head" transform="translate(0, 0)">
+                        <g transform="translate(0, 170)">
+                            <rect x="-18" y="0" width="36" height="14" rx="3" fill="#4a3020"/>
+                            <rect x="-18" y="0" width="36" height="4" rx="2" fill="#6b4828"/>
+                            <circle cx="0" cy="14" r="4" fill="#3a2516"/>
+                            <g class="claw-arm-left" transform="translate(-3, 14) rotate(0)">
+                                <path d="M 0 0 L -16 30 L -12 36 L 4 8 Z" fill="#5c3820"/>
+                                <path d="M -16 30 L -22 38 L -18 42 L -12 36 Z" fill="#3a2516"/>
+                            </g>
+                            <g class="claw-arm-right" transform="translate(3, 14) rotate(0)">
+                                <path d="M 0 0 L 16 30 L 12 36 L -4 8 Z" fill="#5c3820"/>
+                                <path d="M 16 30 L 22 38 L 18 42 L 12 36 Z" fill="#3a2516"/>
+                            </g>
+                            <g class="grabbed-capsule" opacity="0" transform="translate(0, 50)">
+                                <circle cx="0" cy="0" r="20" fill="#D9AB4D"/>
+                                <circle cx="0" cy="0" r="20" fill="rgba(246,242,238,.22)" clip-path="inset(0 0 50% 0)"/>
+                                <circle cx="0" cy="0" r="20" fill="none" stroke="#1a2e22" stroke-width="1.5" opacity=".4"/>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+
+                <!-- Capsule pile (renders AFTER claw so front capsules occlude the claw arms) -->
+                <g class="capsule-pile">
+                    <!-- Bottom row -->
+                    <circle cx="80"  cy="510" r="22" fill="#C96E43"/><circle cx="80"  cy="510" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="125" cy="515" r="22" fill="#D9AB4D"/><circle cx="125" cy="515" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="170" cy="510" r="22" fill="#F6F2EE"/><circle cx="170" cy="510" r="22" fill="rgba(47,73,54,.15)"  clip-path="inset(50% 0 0 0)"/>
+                    <circle cx="215" cy="515" r="22" fill="#C3A98E"/><circle cx="215" cy="515" r="22" fill="rgba(246,242,238,.2)"  clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="260" cy="510" r="22" fill="#C96E43"/><circle cx="260" cy="510" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="305" cy="515" r="22" fill="#D9AB4D"/><circle cx="305" cy="515" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="350" cy="510" r="22" fill="#2F4936"/><circle cx="350" cy="510" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="395" cy="515" r="22" fill="#F6F2EE"/><circle cx="395" cy="515" r="22" fill="rgba(47,73,54,.15)"  clip-path="inset(50% 0 0 0)"/>
+                    <!-- Middle row -->
+                    <circle cx="102" cy="478" r="22" fill="#D9AB4D"/><circle cx="102" cy="478" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="147" cy="475" r="22" fill="#C96E43"/><circle cx="147" cy="475" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="192" cy="478" r="22" fill="#2F4936"/><circle cx="192" cy="478" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="237" cy="475" r="22" fill="#F6F2EE"/><circle cx="237" cy="475" r="22" fill="rgba(47,73,54,.15)"  clip-path="inset(50% 0 0 0)"/>
+                    <circle cx="282" cy="478" r="22" fill="#C3A98E"/><circle cx="282" cy="478" r="22" fill="rgba(246,242,238,.2)"  clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="327" cy="475" r="22" fill="#D9AB4D"/><circle cx="327" cy="475" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="372" cy="478" r="22" fill="#C96E43"/><circle cx="372" cy="478" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <!-- Top scattered -->
+                    <circle cx="125" cy="445" r="22" fill="#F6F2EE"/><circle cx="125" cy="445" r="22" fill="rgba(47,73,54,.15)"  clip-path="inset(50% 0 0 0)"/>
+                    <circle cx="220" cy="442" r="22" fill="#D9AB4D"/><circle cx="220" cy="442" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="315" cy="445" r="22" fill="#C96E43"/><circle cx="315" cy="445" r="22" fill="rgba(246,242,238,.18)" clip-path="inset(0 0 50% 0)"/>
+                </g>
+
+                <!-- Internal divider (right chute) -->
+                <line x1="440" y1="150" x2="440" y2="540" stroke="#2f4936" stroke-width="2" opacity=".4"/>
+
+                <!-- Glass front reflection -->
+                <rect x="30" y="130" width="420" height="60" fill="#F6F2EE" opacity=".04" rx="4"/>
+
+                <!-- Bottom panel -->
+                <rect x="10" y="560" width="460" height="170" rx="10" fill="#1a2e22"/>
+                <rect x="20" y="568" width="440" height="158" rx="6" fill="#243d2a"/>
+
+                <!-- Delivery slot (left) -->
+                <rect x="40" y="585" width="170" height="100" rx="4" fill="#0d1f15" stroke="#3a2516" stroke-width="2"/>
+                <rect x="40" y="585" width="170" height="14" rx="4" fill="#1a2e22"/>
+                <text x="125" y="595" text-anchor="middle" fill="#D9AB4D"
+                      font-family="'DM Sans', sans-serif" font-size="9" font-weight="700" letter-spacing="2">PRIZE SLOT</text>
+
+                <!-- Delivered capsule (hidden until success) -->
+                <g class="delivered-capsule" opacity="0" transform="translate(125, 645) scale(.5)">
+                    <circle cx="0" cy="0" r="32" fill="#D9AB4D"/>
+                    <circle cx="0" cy="0" r="32" fill="rgba(246,242,238,.22)" clip-path="inset(0 0 50% 0)"/>
+                    <circle cx="0" cy="0" r="32" fill="none" stroke="#1a2e22" stroke-width="2" opacity=".5"/>
+                    <text x="0" y="-3" text-anchor="middle" fill="#1a2e22"
+                          font-family="'DM Sans', sans-serif" font-size="8" font-weight="700" letter-spacing="1.5">YOU'RE IN!</text>
+                    <text x="0" y="9" text-anchor="middle" fill="#1a2e22"
+                          font-family="'DM Sans', sans-serif" font-size="7" opacity=".75">welcome to camp</text>
+                </g>
+
+                <!-- Coin slot deco -->
+                <rect x="425" y="600" width="22" height="6" rx="2" fill="#0d1f15"/>
+                <text x="436" y="618" text-anchor="middle" fill="#D9AB4D"
+                      font-family="'DM Sans', sans-serif" font-size="7" font-weight="700" letter-spacing="1">INSERT</text>
+            </svg>
+
+            <!-- Form overlaid on the control panel -->
+            <div class="claw-form-overlay">
+                <form class="claw-form" id="clawForm" novalidate>
+                    <label for="clawEmail">Enter to play</label>
+                    <input type="email" id="clawEmail" name="email" placeholder="you@institution.edu" required autocomplete="email">
+                    <button type="submit" id="clawLever" class="lever-btn">Pull the Lever</button>
+                </form>
+                <p class="lever-hint" id="clawHint"></p>
+            </div>
+        </div>
+
+        <!-- ── COPY COLUMN ────────────────────────────── -->
+        <div class="claw-copy">
+            <span class="claw-eyebrow">★ Camp Kanahoma Newsletter ★</span>
+            <h1 class="claw-headline">Pull the lever.<br>Grab your <span class="script">swag.</span></h1>
+            <p class="claw-body">
+                Real higher ed marketing strategy in your inbox every other Tuesday.
+                No filler. No recycled blog posts. Just the kind of takes you'd hear
+                from us around the actual campfire.
+            </p>
+            <ul class="claw-checklist">
+                <li><span class="check">✓</span> Performance data from active enrollment campaigns</li>
+                <li><span class="check">✓</span> Strategic frameworks you can use Monday morning</li>
+                <li><span class="check">✓</span> Unvarnished takes on what the industry gets wrong</li>
+                <li><span class="check">✓</span> Unsubscribe whenever — we never share your email</li>
+            </ul>
+        </div>
+
+    </div>
+</section>
+
+<script src="assets/js/claw.js"></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+/* ============================================
+   KANAHOMA — Interactive Booth Tour
+   Hotspots on the booth photo reveal content
+   ============================================ */
+
+body {
+    background: var(--darkest-green);
+    color: var(--stoddard-cream);
+}
+
+.bt-stage {
+    min-height: 100vh;
+    padding: 80px 24px;
+    position: relative;
+}
+
+.bt-nav {
+    position: absolute;
+    top: 24px; left: 0; right: 0;
+    z-index: 30;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 48px;
+}
+.bt-nav a {
+    color: var(--stoddard-cream); text-decoration: none;
+    font-size: var(--fs-sm); letter-spacing: .08em; text-transform: uppercase;
+    font-weight: 500; opacity: .85;
+}
+.bt-nav .nav-wordmark {
+    font-family: var(--font-display); font-size: 1.5rem;
+    text-transform: none; letter-spacing: -.01em;
+}
+
+.bt-intro {
+    max-width: 740px;
+    margin: 80px auto 40px;
+    text-align: center;
+}
+
+.bt-eyebrow {
+    display: inline-block;
+    background: var(--hellbender); color: var(--white);
+    font-size: .6875rem; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; padding: 6px 14px; border-radius: 2px;
+    margin-bottom: 24px;
+}
+
+.bt-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    line-height: 1.05; letter-spacing: -.02em;
+    margin-bottom: 16px;
+}
+.bt-headline .script {
+    font-family: var(--font-script);
+    color: var(--golden-hour); font-size: 1.25em;
+}
+
+.bt-sub {
+    color: var(--wavebreak); font-size: 1.0625rem;
+    opacity: .85;
+}
+
+/* ── The booth viewer ─────────────────────── */
+.booth-viewer {
+    position: relative;
+    max-width: 1100px;
+    margin: 40px auto 0;
+    background: #07110b;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(217, 171, 77, .24);
+}
+
+.booth-viewer img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Hotspot button — pulses to draw attention */
+.hotspot {
+    position: absolute;
+    width: 44px; height: 44px;
+    background: var(--hellbender);
+    border: 3px solid var(--stoddard-cream);
+    border-radius: 50%;
+    color: var(--white);
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 700;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition: transform .2s, background .2s;
+    z-index: 5;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .4);
+}
+
+.hotspot::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid var(--hellbender);
+    opacity: .7;
+    animation: hotspotPulse 2s ease-out infinite;
+}
+
+@keyframes hotspotPulse {
+    0%   { transform: scale(1);   opacity: .7; }
+    100% { transform: scale(1.8); opacity: 0;  }
+}
+
+.hotspot:hover, .hotspot.active {
+    transform: translate(-50%, -50%) scale(1.15);
+    background: var(--golden-hour);
+    color: var(--kanahoma-green);
+}
+.hotspot.active::before { animation-play-state: paused; opacity: 0; }
+
+/* Hotspot positions (% on the booth image) */
+.hotspot[data-spot="kanahoma-camp"]  { left: 13.5%; top: 24%; }
+.hotspot[data-spot="cabin"]          { left: 30%;   top: 50%; }
+.hotspot[data-spot="story"]          { left: 47%;   top: 32%; }
+.hotspot[data-spot="claw"]           { left: 65%;   top: 50%; }
+.hotspot[data-spot="gear"]           { left: 84%;   top: 28%; }
+.hotspot[data-spot="campfire"]       { left: 45%;   top: 78%; }
+
+/* ── Info panel (slides in from right when hotspot clicked) ── */
+.info-panel {
+    margin-top: 32px;
+    background: var(--kanahoma-green);
+    border: 1px solid rgba(217, 171, 77, .2);
+    border-radius: 6px;
+    padding: 0;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 200px;
+    overflow: hidden;
+    transition: opacity .35s ease-out, transform .35s ease-out;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.info-panel.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.info-panel-inner {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 32px;
+    padding: 36px 40px;
+}
+
+.info-icon {
+    width: 80px; height: 80px;
+    background: var(--hellbender);
+    color: var(--white);
+    border-radius: 6px;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+}
+
+.info-content {
+    color: var(--stoddard-cream);
+}
+
+.info-label {
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--golden-hour);
+    margin-bottom: 8px;
+}
+
+.info-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    margin-bottom: 12px;
+    color: var(--stoddard-cream);
+    line-height: 1.15;
+}
+
+.info-body {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--wavebreak);
+    margin-bottom: 16px;
+}
+
+.info-link {
+    display: inline-block;
+    color: var(--golden-hour);
+    text-decoration: none;
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border-bottom: 1.5px solid var(--golden-hour);
+    padding-bottom: 2px;
+}
+.info-link:hover { opacity: .8; }
+
+.info-empty {
+    padding: 60px 40px;
+    text-align: center;
+    color: var(--whippoorwill);
+    font-style: italic;
+    font-family: var(--font-display);
+}
+
+/* Hotspot list (alt entry — list of spots beneath the image) */
+.spot-list {
+    margin-top: 40px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+}
+
+.spot-thumb {
+    background: rgba(246, 242, 238, .04);
+    border: 1px solid rgba(217, 171, 77, .15);
+    color: var(--stoddard-cream);
+    border-radius: 4px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    letter-spacing: .05em;
+    transition: all .2s;
+}
+.spot-thumb:hover { background: rgba(217, 171, 77, .12); border-color: var(--golden-hour); }
+.spot-thumb.active { background: var(--hellbender); border-color: var(--hellbender); color: var(--white); }
+.spot-thumb-num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--golden-hour);
+    margin-bottom: 4px;
+}
+.spot-thumb.active .spot-thumb-num { color: var(--white); }
+
+@media (max-width: 800px) {
+    .bt-nav { padding: 0 20px; }
+    .hotspot { width: 32px; height: 32px; font-size: .875rem; border-width: 2px; }
+    .info-panel-inner { grid-template-columns: 1fr; gap: 16px; padding: 28px 24px; }
+    .info-icon { width: 56px; height: 56px; font-size: 1.5rem; }
+    .spot-list { grid-template-columns: repeat(3, 1fr); }
+}
