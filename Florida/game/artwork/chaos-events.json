@@ -1,0 +1,87 @@
+{
+  "project": "Florida Man — County Jurisdiction",
+  "batch": "Chaos Report event illustrations",
+  "status": "verified",
+  "integration": "Turns 1–5 use their matching event art. An uncanceled Chaos-at-6 surge overrides the turn art with chaos-manifestation; possum-canceled surges retain the turn illustration.",
+  "direction": "Wide roadside-pulp action vignettes that preserve the approved coral, swamp-teal, mustard-cream palette and weathered souvenir-sign character. Approved crew portraits remain untouched.",
+  "assets": [
+    {
+      "slug": "spectral-tail-slap",
+      "target": "public/assets/events/spectral-tail-slap.webp",
+      "consumer": "Turn 1 Chaos Report",
+      "source": "Current game scene, roadside marquee, terrazzo palette, approved painted character-art finish",
+      "style": "Hand-painted 1950s Florida roadside pulp illustration with gouache texture and heavy ink accents",
+      "subject": "A translucent ghost-alligator tail whipping across a cracked strip-mall parking lot, scattering cones and county paperwork",
+      "composition": "Wide 3:2 action vignette; tail sweeps diagonally; readable focal action at popup scale; darkened edge space for UI framing",
+      "constraints": "No text, logos, interface, watermark, people, extra limbs, photorealism, glossy 3D, or character redesigns",
+      "status": "verified",
+      "master": "artwork/event-masters/spectral-tail-slap.png",
+      "review": "Accepted after live popup inspection at desktop viewport. The focal action remains legible beside the incident stats, the continue action stays visible, and no unwanted text, logos, people, or watermarks appear in the artwork."
+    },
+    {
+      "slug": "parking-lot-stampede",
+      "target": "public/assets/events/parking-lot-stampede.webp",
+      "consumer": "Turn 2 Chaos Report",
+      "source": "Verified Spectral Tail Slap master plus approved roadside palette",
+      "style": "Matching hand-painted 1950s Florida roadside pulp illustration",
+      "subject": "Three translucent ghost alligators stampede through parking spaces, scattering cones and a shopping cart",
+      "composition": "Wide 3:2; low dynamic viewpoint; stampede crosses the frame with clean small-scale silhouettes",
+      "constraints": "No people, text, logos, interface, watermark, photorealism, glossy 3D, or repeated tail-slap composition",
+      "status": "verified",
+      "master": "artwork/event-masters/parking-lot-stampede.png",
+      "review": "Accepted: exactly three readable ghost alligators, distinct low stampede composition, and no unwanted text or people."
+    },
+    {
+      "slug": "something-under-asphalt",
+      "target": "public/assets/events/something-under-asphalt.webp",
+      "consumer": "Turn 3 Chaos Report",
+      "source": "Verified Spectral Tail Slap master plus approved roadside palette",
+      "style": "Matching hand-painted 1950s Florida roadside pulp illustration",
+      "subject": "The parking lot buckles upward from below as a gigantic spectral snout and claws press through cracked asphalt",
+      "composition": "Wide 3:2; ominous central ground bulge and radiating cracks; distinct from above-ground gator action",
+      "constraints": "No people, text, logos, interface, watermark, gore, photorealism, glossy 3D, or full surfaced alligator",
+      "status": "verified",
+      "master": "artwork/event-masters/something-under-asphalt.png",
+      "review": "Accepted: threat remains mostly underground, the buckled pavement reads immediately, and the composition is distinct from the above-ground incidents."
+    },
+    {
+      "slug": "awning-gives-way",
+      "target": "public/assets/events/awning-gives-way.webp",
+      "consumer": "Turn 4 Chaos Report",
+      "source": "Verified Spectral Tail Slap master plus approved roadside palette",
+      "style": "Matching hand-painted 1950s Florida roadside pulp illustration",
+      "subject": "A striped strip-mall awning tears loose and collapses while a spectral alligator coils through its supports",
+      "composition": "Wide 3:2; strong falling diagonal, fabric and metal in motion, storefront remains readable",
+      "constraints": "No people, readable signs, logos, interface, watermark, gore, photorealism, glossy 3D, or duplicate stampede composition",
+      "status": "verified",
+      "master": "artwork/event-masters/awning-gives-way.png",
+      "review": "Accepted: strong collapsing diagonal, clearly failing awning structure, one readable spectral alligator, and no legible storefront text."
+    },
+    {
+      "slug": "final-manifestation",
+      "target": "public/assets/events/final-manifestation.webp",
+      "consumer": "Turn 5 Chaos Report",
+      "source": "Verified Spectral Tail Slap master plus approved roadside palette",
+      "style": "Matching hand-painted 1950s Florida roadside pulp illustration",
+      "subject": "A towering complete ghost alligator rises from the sinkhole over the strip mall for the final turn",
+      "composition": "Wide 3:2; dramatic low-angle finale, large readable silhouette, portal and failing parking lot below",
+      "constraints": "No people, text, logos, interface, watermark, gore, photorealism, glossy 3D, or generic fantasy dragon anatomy",
+      "status": "verified",
+      "master": "artwork/event-masters/final-manifestation.png",
+      "review": "Accepted: one climactic complete alligator silhouette, correct broad-snouted anatomy, and clear final-turn scale escalation."
+    },
+    {
+      "slug": "chaos-manifestation",
+      "target": "public/assets/events/chaos-manifestation.webp",
+      "consumer": "Universal Chaos-at-6 newspaper report",
+      "source": "Verified Spectral Tail Slap master plus approved roadside palette",
+      "style": "Matching hand-painted 1950s Florida roadside pulp illustration with bureaucratic supernatural comedy",
+      "subject": "A mint spectral shockwave erupts through an outdoor county filing station, blasting drawers, forms, stamps, cones, and coffee into a paperwork cyclone",
+      "composition": "Wide 3:2; central supernatural burst with readable administrative debris; usable for any turn",
+      "constraints": "No people, readable form text, logos, interface, watermark, gore, photorealism, glossy 3D, or dominant full alligator",
+      "status": "verified",
+      "master": "artwork/event-masters/chaos-manifestation.png",
+      "review": "Accepted: distinct bureaucratic shockwave, clear filing-station destruction, restrained alligator presence, and no readable form text."
+    }
+  ]
+}

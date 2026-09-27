@@ -1,0 +1,8 @@
+{
+  "direction": "Playable incident scrapbook: approved cutouts, readable live cards, compact left dossier, quiet incident strip, pink enamel controls.",
+  "generator": "built-in image_gen",
+  "assets": [
+    {"slug":"county-teal-paper","target":"public/assets/interface/county-teal-paper.webp","consumer":"Page and dialog backgrounds; transparent Three.js scene sits over this surface","status":"verified","source":"C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-0ad9bfd6-06d2-4b63-ba70-81aa8866c485.png","prompt":"Flat petrol-teal screen-printed paper texture, faded tonal palm fronds at outer edges, subtle gold ink wear, quiet center, no text or objects."},
+    {"slug":"pink-enamel","target":"public/assets/interface/pink-enamel.webp","consumer":"Play Card, primary action buttons and card cost badges","status":"verified","source":"C:/Users/Alicia/.codex/generated_images/01a0c5a8-1356-7450-9503-f7c3f88d138f/exec-b5459ad0-2662-4a29-85fa-2c1c4d96fcb6.png","prompt":"Flat hot-pink vintage roadside enamel material, restrained scratches and weathering, open center, no lettering, borders, objects or shadows."}
+  ]
+}

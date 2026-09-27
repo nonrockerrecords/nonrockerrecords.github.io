@@ -1,0 +1,35 @@
+.paper-diorama{background:#81565d url('/assets/roadside/roadside-terrazzo.webp') center/560px;color:#f5e5c4}
+.paper-diorama #app{max-width:none;margin:0;background:#345e58;box-shadow:none}
+.paper-diorama .topbar{position:relative;border-bottom:1px solid #d3a26e55;box-shadow:0 5px 18px #2e1f2433}
+.paper-diorama .topbar:after{display:none}
+.paper-diorama .stage{height:calc(100vh - 355px);min-height:400px;margin:0;border:0;box-shadow:none}
+.paper-diorama .stage:before{display:none}
+.paper-diorama #scene canvas{filter:saturate(.9) contrast(1.035)}
+.paper-diorama .scene-vignette{box-shadow:inset 0 -42px 48px -38px #37262a,inset 20px 0 42px -27px #442c3166,inset -20px 0 42px -27px #442c3166}
+.paper-diorama .objective{transform:rotate(-1.4deg);filter:drop-shadow(7px 9px 3px #24171d66)}
+.paper-diorama .objective:after{content:'';position:absolute;top:6px;right:12px;width:28px;height:8px;background:#d7b075aa;transform:rotate(7deg);box-shadow:0 1px #73584455}
+.paper-diorama .incident{bottom:22px;left:34px;background:#ead8b8;color:#40342f;border:0;clip-path:polygon(0 3%,98% 0,100% 92%,95% 100%,3% 97%);box-shadow:5px 7px 0 #442d3255;transform:rotate(.8deg)}
+.paper-diorama .incident .eyebrow{color:#7b584d}.paper-diorama .incident strong{color:#3b5650}.paper-diorama .incident #incidentDetail{color:#a5395d}.paper-diorama .incident-icon{border-color:#a33a5d;color:#a33a5d}
+.paper-diorama .target{pointer-events:none;background:#ecd7ae;color:#47352f;border:2px solid #76533e;box-shadow:4px 5px 0 #402b3155;clip-path:polygon(3% 5%,98% 0,100% 90%,94% 100%,0 96%)}
+.paper-diorama .target.valid{background:#e5bd59;color:#342c27;border-color:#694934}
+.paper-diorama .board-hud{position:absolute;z-index:4;right:20px;top:20px;width:395px;display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:0;background:#ecd9b5;color:#49382f;border:1px solid #866448;box-shadow:6px 8px 0 #472d3544;clip-path:polygon(1% 2%,99% 0,100% 96%,97% 100%,0 98%)}
+.paper-diorama .desk-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;align-items:stretch;position:relative;z-index:1}
+.paper-diorama .stat{width:auto;min-width:0;padding:10px 11px 8px;background:transparent;color:#48372f;border:0;border-right:1px solid #9b76534d;border-radius:0;clip-path:none;box-shadow:none;transform:none}
+.paper-diorama .stat:nth-child(2),.paper-diorama .stat:nth-child(3){transform:none}
+.paper-diorama .stat>span{color:#76584a;font-size:8px;letter-spacing:1.2px}.paper-diorama .stat b{color:#365e58;font-size:25px}.paper-diorama .stat.chaos b{color:#a7385b}
+.paper-diorama .stat .mini-track{margin-top:5px}.paper-diorama .stat.chaos .text-btn{font-size:7px;margin-top:3px;color:#76584a}
+.paper-diorama .end-area{position:relative;z-index:1;display:flex;justify-content:center;gap:5px;padding:8px 9px;background:#e3c892;border:0;box-shadow:none;transform:none}
+.paper-diorama .board-hud .end-area:after{display:none}
+.paper-diorama .end-area .eyebrow,.paper-diorama .end-area>span:not(.eyebrow){color:#60483e}.paper-diorama .end-area .eyebrow{font-size:7px}.paper-diorama .end-area>span:not(.eyebrow){font-size:7px;line-height:1.1}.paper-diorama .end-turn{padding:9px 10px;font-size:13px;box-shadow:0 3px 0 #987444}
+.paper-diorama .desk{display:block;min-height:255px;margin:0;padding:0 28px 8px;background:#d88c91 url('/assets/roadside/roadside-terrazzo.webp') center/cover;border:0;box-shadow:inset 0 14px 24px #4f2d3524;position:relative;z-index:3}
+.paper-diorama .desk:before,.paper-diorama .desk:after{display:none}
+.paper-diorama .hand-area{position:relative;z-index:1;margin-top:-14px;padding:25px 8px 4px;background:transparent;border:0;box-shadow:none;transform:none}
+.paper-diorama .hand-area:before{content:'COUNTY EVIDENCE · DO NOT BEND';position:absolute;right:18px;top:9px;padding:3px 9px;background:#d5a763;color:#70434a;font:900 8px 'Barlow Condensed',sans-serif;letter-spacing:1px;transform:rotate(2deg)}
+.paper-diorama .hand-heading,.paper-diorama .deck-counts{background:transparent;color:#49383b;padding-inline:6px}
+.paper-diorama .hand{gap:15px;min-height:202px;align-items:flex-start;overflow:visible}
+.paper-diorama .card{flex-basis:172px;min-width:145px;max-width:182px;height:198px;box-shadow:0 3px #8c6d4d,0 6px #4e383d,0 14px 20px #44273777}
+.paper-diorama .card-art{height:85px}.paper-diorama .card-name{font-size:18px}.paper-diorama .deck-counts{margin-top:5px}
+.paper-diorama .selection{z-index:5;right:24px;bottom:20px;width:300px}
+.paper-diorama footer{margin:0;background:#6e4a43;color:#f0d7b6;border-top:0}
+@media(max-width:900px){.paper-diorama .board-hud{width:365px;grid-template-columns:minmax(0,1fr) 118px}.paper-diorama .stat{padding-inline:7px}.paper-diorama .hand{justify-content:flex-start;overflow-x:auto;padding-inline:8px}.paper-diorama .card{flex:0 0 158px;min-width:158px}}
+@media(max-width:760px){.paper-diorama .stage{min-height:410px}.paper-diorama .board-hud{top:10px;right:8px;width:calc(100% - 165px);grid-template-columns:1fr}.paper-diorama .end-area{display:grid;grid-template-columns:1fr auto;align-items:center;padding:5px 7px}.paper-diorama .end-area .eyebrow{display:none}.paper-diorama .end-turn{grid-row:1 / 3;grid-column:2;padding:8px}.paper-diorama .desk-status{min-height:61px}.paper-diorama .stat{width:auto;padding:6px}.paper-diorama .stat b{font-size:21px}.paper-diorama .stat.chaos .text-btn{display:none}.paper-diorama .desk{margin:0;padding:0 10px 7px}.paper-diorama .hand-area{padding-inline:0}.paper-diorama .hand{min-height:210px}.paper-diorama .selection{right:8px;bottom:8px;width:min(290px,calc(100% - 16px))}}

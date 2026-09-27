@@ -1,0 +1,20 @@
+{
+  "tool": "built-in imagegen",
+  "direction": "Dedicated wide verdict newspaper substrate. Preserve the approved roadside-kitsch palette and tactile printed-paper world while making this read unmistakably as folded newsprint rather than a county note.",
+  "assets": [
+    {
+      "slug": "verdict-newspaper-sheet",
+      "target": "public/assets/interface/verdict-newspaper-sheet.webp",
+      "master": "artwork/interface-masters/verdict-newspaper-sheet.png",
+      "consumer": "Win/loss verdict and between-turn incident newspaper behind live HTML mastheads, headlines, event photography, stats, and controls",
+      "source_of_direction": "User feedback plus the existing cream, teal, raspberry, salmon roadside-kitsch interface",
+      "style_lane": "stylized-concept game UI substrate",
+      "subject": "One isolated vintage Florida small-town broadsheet newspaper sheet",
+      "composition": "Wide landscape, nearly front-on, broad newspaper proportions, slightly irregular corners, generous clean printable center and shallow safe margins",
+      "constraints": "Native transparent background; newsprint fibers, subtle center fold and horizontal fold, deckled/torn perimeter, light age marks and sparse faded teal/raspberry print-registration accents; no readable words, masthead, logos, paperclip, notebook styling, UI, drop shadow, scenery, or watermark",
+      "status": "verified",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-783c635d-2108-4350-a632-2159c097a3cc.png",
+      "review": "Accepted at 1536 × 1024 with native alpha. Broad front-facing newsprint silhouette, four-panel folds, deckled perimeter, quiet printable center, and sparse faded teal/raspberry registration stripes. Full PNG retained as the artwork master; optimized transparent WebP (375,896 bytes) is wired and visually verified in the live Stage 1 victory verdict and photo-led between-turn incident report."
+    }
+  ]
+}

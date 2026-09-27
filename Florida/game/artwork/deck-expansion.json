@@ -1,0 +1,53 @@
+{
+  "tool": "built-in imagegen",
+  "assets": [
+    {
+      "slug": "possum",
+      "prompt": "Use case: illustration-story. Production card illustration for Florida Man, painted pulp roadside kitsch. Strong exaggerated cartoon silhouette, broad gouache brushwork, dark ink accents, expressive comic proportions, rich coral pink and turquoise with warm cream and tiny gold highlights. Landscape 3:2 illustration, single subject centered prominently filling 75 percent, simple dark teal painterly backdrop, no people, no letters, no card frame, no UI, no watermark, not photo or glossy 3D. Keep subject readable when reduced to a tiny horizontal card window. A scruffy gray opossum with ridiculously huge pink ears, long pointed nose, worried bulging eyes and toothy anxious smile, curled pink tail, wearing a tiny faded coral emotional-support vest without text. Full body three-quarter pose, lovable chaotic companion.",
+      "status": "verified",
+      "target": "public/assets/cards/possum.webp",
+      "master": "artwork/deck-masters/possum.png",
+      "review": "Inspected generated illustration; optimized WebP integrated with matte art window and live foil border."
+    },
+    {
+      "slug": "chihuahua",
+      "prompt": "Use case: illustration-story. Production card illustration for Florida Man, painted pulp roadside kitsch. Strong exaggerated cartoon silhouette, broad gouache brushwork, dark ink accents, expressive comic proportions, rich coral pink and turquoise with warm cream and tiny gold highlights. Landscape 3:2 illustration, single subject centered prominently filling 75 percent, simple dark teal painterly backdrop, no people, no letters, no card frame, no UI, no watermark, not photo or glossy 3D. Keep subject readable when reduced to a tiny horizontal card window. A tiny tan chihuahua with comically enormous ears and eyes, furiously bossy expression, pink heart sunglasses and an extravagant hot-pink rhinestone harness with a huge gold charm. Barking with one tiny paw raised, full body.",
+      "status": "verified",
+      "target": "public/assets/cards/chihuahua.webp",
+      "master": "artwork/deck-masters/chihuahua.png",
+      "review": "Inspected generated illustration; optimized WebP integrated with matte art window and live foil border."
+    },
+    {
+      "slug": "noodle",
+      "prompt": "Use case: illustration-story. Production card illustration for Florida Man, painted pulp roadside kitsch. Strong exaggerated cartoon silhouette, broad gouache brushwork, dark ink accents, expressive comic proportions, rich coral pink and turquoise with warm cream and tiny gold highlights. Landscape 3:2 illustration, single subject centered prominently filling 75 percent, simple dark teal painterly backdrop, no people, no letters, no card frame, no UI, no watermark, not photo or glossy 3D. Keep subject readable when reduced to a tiny horizontal card window. One ridiculous bent bright turquoise foam swimming pool noodle wielded like a heroic protective shield, with a pink duct-tape repair and small water splashes. No hands or characters. Dynamic diagonal composition, clearly recognizable hollow foam cylinder.",
+      "status": "verified",
+      "target": "public/assets/cards/noodle.webp",
+      "master": "artwork/deck-masters/noodle.png",
+      "review": "Inspected generated illustration; optimized WebP integrated with matte art window and live foil border."
+    },
+    {
+      "slug": "crystal",
+      "prompt": "Use case: illustration-story. Production card illustration for Florida Man, painted pulp roadside kitsch. Strong exaggerated cartoon silhouette, broad gouache brushwork, dark ink accents, expressive comic proportions, rich coral pink and turquoise with warm cream and tiny gold highlights. Landscape 3:2 illustration, single subject centered prominently filling 75 percent, simple dark teal painterly backdrop, no people, no letters, no card frame, no UI, no watermark, not photo or glossy 3D. Keep subject readable when reduced to a tiny horizontal card window. A chunky pink and purple quartz crystal perched on a cheap scratched gold gas-station souvenir pedestal, surrounded by a small mint supernatural aura. A tacky tiny palm-tree charm dangles from it. Oversized graphic facets, no writing.",
+      "status": "verified",
+      "target": "public/assets/cards/crystal.webp",
+      "master": "artwork/deck-masters/crystal.png",
+      "review": "Inspected generated illustration; optimized WebP integrated with matte art window and live foil border."
+    },
+    {
+      "slug": "iguana",
+      "prompt": "Use case: illustration-story. Production card illustration for Florida Man, painted pulp roadside kitsch. Strong exaggerated cartoon silhouette, broad gouache brushwork, dark ink accents, expressive comic proportions, rich coral pink and turquoise with warm cream and tiny gold highlights. Landscape 3:2 illustration, single subject centered prominently filling 75 percent, simple dark teal painterly backdrop, no people, no letters, no card frame, no UI, no watermark, not photo or glossy 3D. Keep subject readable when reduced to a tiny horizontal card window. A lanky lime-green iguana with comically oversized orange dewlap, bulging smug eyes and spiky back, tangled inside an open turquoise electrical fuse box with bright pink wires and a few tiny harmless yellow sparks. Full coherent lizard silhouette, humorous, no text.",
+      "status": "verified",
+      "target": "public/assets/cards/iguana.webp",
+      "master": "artwork/deck-masters/iguana.png",
+      "review": "Inspected generated illustration; optimized WebP integrated with matte art window and live foil border."
+    },
+    {
+      "slug": "flamingo",
+      "prompt": "Use case: illustration-story. Production card illustration for Florida Man, painted pulp roadside kitsch. Strong exaggerated cartoon silhouette, broad gouache brushwork, dark ink accents, expressive comic proportions, rich coral pink and turquoise with warm cream and tiny gold highlights. Landscape 3:2 illustration, single subject centered prominently filling 75 percent, simple dark teal painterly backdrop, no people, no letters, no card frame, no UI, no watermark, not photo or glossy 3D. Keep subject readable when reduced to a tiny horizontal card window. One haunted hot-pink plastic lawn flamingo, very long absurd S-shaped neck, huge suspicious eye, chipped painted surface, gold ankle bangle, one bent wire leg. Mint spectral aura curls around its base, funny sinister expression, whole body visible.",
+      "status": "verified",
+      "target": "public/assets/cards/flamingo.webp",
+      "master": "artwork/deck-masters/flamingo.png",
+      "review": "Inspected generated illustration; optimized WebP integrated with matte art window and live foil border."
+    }
+  ]
+}

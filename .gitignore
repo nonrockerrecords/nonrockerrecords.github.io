@@ -1,8 +1,9 @@
 .tmp-edge-profile/
 
-# Local tool state and OS metadata
+# Local tool state, dependencies, and OS metadata
 .claude/
 local/
+node_modules/
 .DS_Store
 ._*
 

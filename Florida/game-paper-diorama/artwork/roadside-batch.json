@@ -1,0 +1,33 @@
+{
+  "direction": "Weathered roadside kitsch; approved characters unchanged",
+  "tool": "built-in imagegen",
+  "assets": [
+    {
+      "slug": "roadside-marquee",
+      "consumer": "header wordmark",
+      "prompt": "Use case: illustration-story. Production isolated game UI asset. One spectacular Florida roadside motel souvenir sign, front-facing horizontal 3:1 silhouette, centered filling frame, no perspective skew. Exact only text FLORIDA MAN in huge readable condensed coral-pink raised enamel letters. Hand-painted pulp illustration with rich turquoise backing, weathered cream inset, chipped chrome and tarnished champagne gold rim, small rhinestones, two subtle star glints and a tiny palm ornament on upper left. Sun-faded and salt-worn but colors still rich. Beautiful dimensional craftsmanship, not flat vector or glossy casino. Transparent background, no poles, no scene, no cast shadow outside silhouette, full object with small margin, no extra words, no watermark.",
+      "target": "public/assets/roadside/roadside-marquee.png",
+      "status": "verified",
+      "runtime": "public/assets/roadside/roadside-marquee.webp",
+      "review": "Inspected generated output and in-game integration. Character artwork unchanged. Alpha verified on marquee and citation; tabletop opaque."
+    },
+    {
+      "slug": "roadside-terrazzo",
+      "consumer": "card tabletop background and 3D table texture",
+      "prompt": "Use case: stylized-concept. Production game surface texture, flat orthographic top-down edge-to-edge landscape 3:2 image. An old Florida roadside souvenir counter made of rich faded coral pink terrazzo with irregular turquoise, cream and muted gold mineral chips. Beautiful hand-painted tactile pulp material, sun-worn scratches, subtle small stains, occasional embedded pearlescent shell fragments and tiny specks of gold catching light. Low contrast calm middle for readable card overlays, richer turquoise mineral flecks toward outer areas. Uniform diffuse illumination no scene, no objects placed on top, no text, no signage, no frames, no perspective, no vignette, no watermark. Material only, not UI screenshot. Worn, tired, charming, not dirty brown or sepia.",
+      "target": "public/assets/roadside/roadside-terrazzo.png",
+      "status": "verified",
+      "runtime": "public/assets/roadside/roadside-terrazzo.webp",
+      "review": "Inspected generated output and in-game integration. Character artwork unchanged. Alpha verified on marquee and citation; tabletop opaque."
+    },
+    {
+      "slug": "county-citation-paper",
+      "consumer": "live objective panel background",
+      "prompt": "Use case: illustration-story. Production game UI background asset, one portrait 2:3 county citation paper sheet viewed dead straight on. Blank warm ivory paper with uneven torn corners, worn fibrous edges, subtle fold and pale coffee marks only along perimeter. Tiny faint magenta palm-tree rubber-stamp SYMBOL in upper right margin, no letters or words anywhere. Restrained small tarnished brass paperclip on top left. Central 80 percent completely empty very light cream for dark live gameplay text, no lines or boxes. Hand-painted tactile pulp illustration, Florida roadside kitsch, polished artistic rendering. Whole sheet visible with minimal transparent margin, genuine transparent background, no desk, no environment, no extra objects, no drop shadow beyond silhouette, no watermark.",
+      "target": "public/assets/roadside/county-citation-paper.png",
+      "status": "verified",
+      "runtime": "public/assets/roadside/county-citation-paper.webp",
+      "review": "Inspected generated output and in-game integration. Character artwork unchanged. Alpha verified on marquee and citation; tabletop opaque."
+    }
+  ]
+}

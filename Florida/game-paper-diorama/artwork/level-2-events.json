@@ -1,0 +1,82 @@
+{
+  "project": "Florida Man — Vortex Putt-Putt",
+  "batch": "Stage 2 newspaper event illustrations",
+  "tool": "built-in imagegen",
+  "status": "verified",
+  "integration": "Turns 1–5 use matching Vortex Putt-Putt event art. An uncanceled Chaos-at-6 surge overrides the turn art with the Stage 2 chaos image; a possum-canceled surge retains the normal turn illustration.",
+  "direction": "Wide 3:2 roadside-pulp action vignettes matching the approved Stage 1 newspaper illustrations and Stage 2 pink cardboard mini-golf world. Coral sunset, swamp teal, raspberry, cream and mint spectral light; weathered gouache and heavy ink. No readable text, UI, watermark or people.",
+  "assets": [
+    {
+      "slug": "blades-without-wind",
+      "target": "public/assets/level-2-events/blades-without-wind.webp",
+      "master": "artwork/level-2-event-masters/blades-without-wind.png",
+      "consumer": "Stage 2 Turn 1 newspaper report",
+      "subject": "The crooked pink-and-teal windmill's blades spin violently in perfectly still air, making mint spectral arcs while nearby palms remain motionless and loose golf balls begin to lift",
+      "composition": "Wide 3:2, low dramatic view, windmill and impossible spinning blades dominate, recessed green leads toward the glowing tunnel",
+      "constraints": "No people, readable text, logos, UI, watermark, photorealism, glossy 3D, or ordinary windy palms",
+      "status": "verified",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-77295f11-76cf-49a0-b2d7-ee223eca4ae8.png",
+      "review": "Accepted: impossible blade motion is the clear focal action, the still course remains readable, and no unwanted text or people appear."
+    },
+    {
+      "slug": "ball-return-backfire",
+      "target": "public/assets/level-2-events/ball-return-backfire.webp",
+      "master": "artwork/level-2-event-masters/ball-return-backfire.png",
+      "consumer": "Stage 2 Turn 2 newspaper report",
+      "subject": "A battered mini-golf ball return erupts like a cannon, blasting haunted dimpled golf balls with short mint ghost tails across the pink platform",
+      "composition": "Wide 3:2 action diagonal, ball return foreground, readable individual ghost-ball silhouettes, windmill and clubhouse behind",
+      "constraints": "No people, readable text, logos, UI, watermark, photorealism, glossy 3D, bowling balls, or sports stadium",
+      "status": "verified",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-8a732baf-1e35-4b2f-80b7-1db97756d9ae.png",
+      "review": "Accepted: dynamic ball-return eruption, readable haunted-ball silhouettes, distinct composition, and no unwanted readable text."
+    },
+    {
+      "slug": "green-buckles",
+      "target": "public/assets/level-2-events/green-buckles.webp",
+      "master": "artwork/level-2-event-masters/green-buckles.png",
+      "consumer": "Stage 2 Turn 3 newspaper report",
+      "subject": "The single recessed mini-golf green buckles upward in broken waves, torn turf and cardboard layers exposing an eerie mint void beneath while one golf ball balances at the edge",
+      "composition": "Wide 3:2, ground-level central upheaval with radiating cracks, windmill tunnel visible at the far end",
+      "constraints": "No people, readable text, logos, UI, watermark, gore, photorealism, glossy 3D, ordinary earthquake street, or multiple holes",
+      "status": "verified",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-71e6a55f-d3b6-44c3-a9b5-50ababcd0ef3.png",
+      "review": "Accepted: clearly reads as one mini-golf green splitting over a mint void rather than reused parking-lot damage."
+    },
+    {
+      "slug": "course-comes-alive",
+      "target": "public/assets/level-2-events/course-comes-alive.webp",
+      "master": "artwork/level-2-event-masters/course-comes-alive.png",
+      "consumer": "Stage 2 Turn 4 newspaper report",
+      "subject": "Hole 18 itself wakes up: the recessed putting lane curls like a tongue toward the viewer, the crooked windmill leans forward, fiberglass obstacles twist, and haunted balls swarm",
+      "composition": "Wide 3:2, one coherent mini-golf hole transformed into a living contraption, dramatic converging perspective and clear silhouettes",
+      "constraints": "No people, readable text, logos, UI, watermark, gore, photorealism, glossy 3D, crowded amusement park, or multiple golf holes",
+      "status": "verified",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-cddf2842-33c7-4b40-813a-b6665d5a4a40.png",
+      "review": "Accepted targeted retry: course geometry comes alive without gators, flamingos, monster faces, or multiple holes. The rejected first render was not copied into the project."
+    },
+    {
+      "slug": "last-putt-afterlife",
+      "target": "public/assets/level-2-events/last-putt-afterlife.webp",
+      "master": "artwork/level-2-event-masters/last-putt-afterlife.png",
+      "consumer": "Stage 2 Turn 5 newspaper report",
+      "subject": "A giant haunted dimpled golf ball with a curling ghost tail hangs over the final green as the windmill tunnel opens into a roaring mint vortex and pulls the course inward",
+      "composition": "Wide 3:2 climactic low angle, giant spectral ball and glowing tunnel are unmistakable focal points, collapsing pink platform below",
+      "constraints": "No people, readable text, logos, UI, watermark, gore, photorealism, glossy 3D, planet, moon, or generic fantasy portal",
+      "status": "verified",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-bef00d29-49a8-4036-8e24-6add556e346d.png",
+      "review": "Accepted: giant haunted ball and windmill vortex create a clear final-turn escalation without reading as outer space."
+    },
+    {
+      "slug": "putt-putt-chaos-surge",
+      "target": "public/assets/level-2-events/putt-putt-chaos-surge.webp",
+      "master": "artwork/level-2-event-masters/putt-putt-chaos-surge.png",
+      "consumer": "Stage 2 Chaos-at-6 newspaper report override",
+      "subject": "A mint spectral cyclone of haunted golf balls, snapped pencils, blank scorecards and arcade tokens explodes around the windmill and ball return",
+      "composition": "Wide 3:2, central supernatural burst with readable golf debris and course context, distinct from all five turn incidents",
+      "constraints": "No people, readable scorecard text, logos, UI, watermark, gore, photorealism, glossy 3D, alligators, or generic paperwork office",
+      "status": "verified",
+      "source": "C:\\Users\\Alicia\\.codex\\generated_images\\01a0c5a8-1356-7450-9503-f7c3f88d138f\\exec-cf57a0c7-11ea-47a3-bfbc-73fc961a0154.png",
+      "review": "Accepted: whole-course cyclone is visually distinct from the Turn 2 ball-return blast and contains no gators or office filing imagery."
+    }
+  ]
+}
