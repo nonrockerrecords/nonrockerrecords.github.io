@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:8790/. `npm test` runs the pure rules tests; `npm run build` type-checks and produces `dist/`. Build uses relative asset paths for eventual subdirectory hosting. Nothing has been deployed.
+Open http://127.0.0.1:8790/index.source.html. `npm test` runs the pure rules tests; `npm run build` type-checks and produces `dist/`. Build uses relative asset paths for eventual subdirectory hosting. The committed index.html and assets/ contain the browser build served by GitHub Pages.
 
 ## Play
 
@@ -37,3 +37,15 @@ Pause contains quick-animation and low-graphics settings. Sound is off by defaul
 This is a playable vertical slice, not a production launch. Next: broader trio-combination balance testing, more detailed environment dressing, real-device performance/accessibility checks, and deployment review. The current bundle triggers Vite's 500 KB uncompressed chunk advisory. Character PNG masters currently copy to `dist`; move masters out of public before final packaging if they are no longer needed there.
 
 See `VERIFICATION.md` for checks completed and limitations. Design rules and approved visual direction live in `../design/`.
+
+## Publish to GitHub Pages
+
+Edit `index.source.html` and `src/` for source changes; `index.html` is generated.
+
+```powershell
+npm ci
+npm test
+npm run publish
+```
+
+`npm run publish` type-checks and builds into `dist/`, then copies the compiled HTML, JavaScript, CSS, and public artwork into `index.html` and `assets/`. Commit those generated files together with the source changes and push to the website repository's `main` branch. GitHub Pages serves the game at `https://nonrockerrecords.github.io/Florida/game/index.html` without a development server. `npm run build` only prepares `dist/`.

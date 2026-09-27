@@ -4,9 +4,10 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 8790",
-    "build": "tsc --noEmit && vite build",
-    "test": "node --experimental-strip-types --test tests/rules.test.ts"
+    "dev": "vite --host 127.0.0.1 --port 8790 --open /index.source.html",
+    "build": "tsc --noEmit && vite build && node tools/publish.mjs --prepare",
+    "test": "node --experimental-strip-types --test tests/rules.test.ts",
+    "publish": "npm run build && node tools/publish.mjs"
   },
   "dependencies": {
     "animejs": "4.1.3",

@@ -35,3 +35,13 @@ Codex in-app Chromium browser at the local development URL:
 ## Not yet certified
 
 Physical mobile hardware, Safari/Firefox, screen-reader usability, drag/drop gestures, audio quality, WebGL-loss recovery, prolonged performance, random-deal difficulty distribution and deployment. Browser checks used the development server; the production output was compiled but not separately served for a browser smoke test.
+
+## Static browser deployment — 2026-09-27
+
+Separated the editable source entry (`index.source.html`) from the generated published `index.html`. Added `npm run publish` to compile and copy the complete browser build and artwork to the GitHub Pages path.
+
+- TypeScript strict check and Vite production build passed.
+- All 28 rules tests passed.
+- Served the published files at `/Florida/game/index.html` with an ordinary static server, without Vite.
+- Headless Edge at 1440 × 1000 and 390 × 844: 3D canvas initialized; tutorial started; a card was targeted and played; ending the turn and its incident report advanced to turn 2; reload and resume restored turn 2.
+- No uncaught JavaScript errors, failed same-origin requests, or broken image elements in either browser check.
