@@ -33,3 +33,10 @@ footer{display:none}h1{font-size:clamp(60px,9vw,124px)}
  .machine{margin-top:2px}.playfield{width:calc((100dvh - 130px)*2/3)}.deck{min-height:45px;padding:3px 0}.object-guide{margin-top:3px}
  h1{font-size:46px;letter-spacing:-3px;margin:8px 0}.title-logo{margin-top:4%}.title-rule,.title-meta,.best,.title-bottom p{display:none}.title-bottom .text-btn{padding:8px 0}.title-bottom .primary{padding:10px}
 }
+
+/* Overdrive 2 phase 1: bomb button */
+#bomb-btn{width:92px;min-height:46px;padding:6px 10px;text-align:left;background:#2a1730;color:#ffb3ff;border:1px solid #8a4a92}
+#bomb-btn>span:first-child{font:bold 10px monospace;display:block;line-height:12px}
+#bomb-btn small{display:block;font:bold 15px monospace;margin-top:3px;color:#ff8dff}
+#bomb-btn:not(:disabled):active{background:#ff8dff;color:#1a0d1f}
+@media(max-width:700px){#bomb-btn{width:74px;min-height:44px;padding:6px 8px}}
