@@ -146,7 +146,7 @@ function point(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)
 cv.addEventListener('pointerdown',e=>{if(state!=='playing'||pointer)return;e.preventDefault();unlockAudio();cv.focus({preventScroll:true});const p=point(e);pointer={id:e.pointerId,...p};try{cv.setPointerCapture(e.pointerId);}catch{pointer=null;}});
 cv.addEventListener('pointermove',e=>{if(!pointer||e.pointerId!==pointer.id||state!=='playing')return;const p=point(e);player.x=clamp(player.x+(p.x-pointer.x)*1.25,25,W-25);player.y=clamp(player.y+(p.y-pointer.y)*1.25,85,H-38);pointer={id:e.pointerId,...p};});
 for(const ev of ['pointerup','pointercancel','lostpointercapture'])cv.addEventListener(ev,e=>{if(pointer?.id===e.pointerId)pointer=null;});
-addEventListener('blur',()=>pause());document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
+let blurT=0;addEventListener('blur',()=>{clearTimeout(blurT);blurT=setTimeout(()=>{if(!document.hasFocus())pause();},250);});addEventListener('focus',()=>clearTimeout(blurT));document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
 $('start-btn').onclick=start;$('retry-btn').onclick=start;$('resume-btn').onclick=resume;$('pause-btn').onclick=pause;$('overdrive-btn').onclick=activateDrive;$('bomb-btn').onclick=bombNow;$('quit-btn').onclick=()=>finish(false);$('menu-btn').onclick=title;$('save-btn').onclick=saveScore;
 $('home-link').onclick=e=>{e.preventDefault();if(state==='playing')pause();else if(state!=='paused')title();};
 function openDialog(id){pause();keys.clear();pointer=null;$(id).showModal();}
