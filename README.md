@@ -26,7 +26,7 @@ Two HTML variants live in this folder; both pull from the same 11 PNG assets alr
 Easiest: double-click the HTML file. Chrome handles it. If Spectrum Web Components fail to render under `file://`, fall back to:
 
 ```
-cd /mnt/c/Users/snibo/Deimos/Projects/Music/nonrocker
+cd path/to/this/folder
 python3 -m http.server 8000
 ```
 
