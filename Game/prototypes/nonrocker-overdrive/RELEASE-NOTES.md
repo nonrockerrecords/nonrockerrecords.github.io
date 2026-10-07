@@ -1,5 +1,13 @@
 # Full Throttle visual update
 
+## Arcade Flight — October 7, 2026
+
+This follow-up adds an evasive roll (C / Space / on-screen ROLL), focused fire (Shift or the Focused touch fire setting), level-3 homing missiles, formation-clear bonuses, a visible chain meter, three boss attack phases with warning windups, banked player animation and original ground landmarks. It also corrects canvas redraw on resize and keeps defeated enemies out of collision checks. The existing new enemy art, bombs, stage terrain and pause debounce remain integrated.
+
+See [the production review](PRODUCTION-REVIEW.md) for the 1942, Raiden IV and DoDonPachi research, implementation decisions and verification scope. The gameplay suite and 29 arcade checks passed on Edge, including six responsive layouts, keyboard activation and emulated touch. Physical device testing and human balance review remain next steps.
+
+## Earlier Full Throttle pass
+
 This release responds to playtest feedback about speed, object readability, and screen size.
 
 - Terrain scrolls vertically beneath the player. Distant dust, nearer streaks and edge markers move at different speeds; overdrive accelerates the scenery. Reduced effects slows this motion.

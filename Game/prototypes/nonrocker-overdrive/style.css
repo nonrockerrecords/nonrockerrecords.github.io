@@ -40,3 +40,20 @@ footer{display:none}h1{font-size:clamp(60px,9vw,124px)}
 #bomb-btn small{display:block;font:bold 15px monospace;margin-top:3px;color:#ff8dff}
 #bomb-btn:not(:disabled):active{background:#ff8dff;color:#1a0d1f}
 @media(max-width:700px){#bomb-btn{width:74px;min-height:44px;padding:6px 8px}}
+
+/* Arcade flight: gameplay information stays inside the arena, close to the action. */
+.hud{background:linear-gradient(#060b18f5,#060b1899 70%,transparent);padding-bottom:24px;gap:10px}
+.chain-hud{flex:1;max-width:160px;text-align:center;align-self:center}.chain-hud small{font-size:8px;color:#e3cb81}
+.chain-track{display:block;height:3px;background:#fff2;margin:6px 0}.chain-track i{display:block;height:100%;background:#ffd56a;width:0}
+#power-hud{color:#83edff;font-size:8px;letter-spacing:1px}.stage-hud{margin-left:auto}
+.boss-hud{padding:7px 9px;background:#080c1dbf;border:1px solid #ff697840}.boss-hud progress{height:7px;background:#3b273b}
+.roll-control{position:absolute;bottom:15px;left:13px;z-index:2;min-width:74px;min-height:48px;background:#091322ec;border:1px solid #486a80;border-radius:5px;color:#8eeeff;padding:8px 10px;text-align:left;opacity:1!important}
+.roll-control span{display:flex;justify-content:space-between;gap:12px;font:bold 10px monospace}.roll-control small{display:block;font:8px monospace;margin-top:5px;color:#aab8c8}.roll-control.ready{border-color:#69edff;box-shadow:inset 0 -2px #69edff33}.roll-control.ready small{color:#69edff}
+.notice{top:20%;font-size:14px;left:14%;right:14%;background:#080d1cdd;border-color:#ffd56a}
+.flight-label{min-width:0}.flight-label small{line-height:1.4}.deck button{flex-shrink:0}
+@media(max-width:700px){
+ .hud{gap:5px;padding:9px 10px 18px}.chain-hud{max-width:100px}.chain-hud small,#power-hud{font-size:6px;letter-spacing:0}.hud strong{font-size:17px}.hud small{font-size:7px}
+ .notice{font-size:11px;left:12%;right:12%;padding:9px}.roll-control{bottom:10px;left:8px;min-width:68px;min-height:44px;padding:7px 8px}
+ .deck{gap:5px;padding-inline:7px}#overdrive-btn{width:112px}#bomb-btn{width:61px;padding:6px}.deck .icon-btn{min-width:36px;padding:8px 5px}.flight-label{font-size:7px}.flight-label small{font-size:6px;letter-spacing:0;max-width:120px}
+}
+@media(max-width:350px){.chain-hud{max-width:75px}.stage-hud small{font-size:6px}.hud strong{font-size:15px}.object-guide{font-size:7px;gap:6px}}

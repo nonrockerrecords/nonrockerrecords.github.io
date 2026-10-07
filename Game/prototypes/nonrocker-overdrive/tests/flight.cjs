@@ -17,8 +17,8 @@ const assert=require('node:assert/strict');
   await page.evaluate(()=>{__qa.god(false);__qa.setPlayer({inv:0});__qa.bullet();__qa.advance(.02);});assert.equal((await page.evaluate(()=>__qa.state())).player.hp,2);
   await page.evaluate(()=>{__qa.charge(100);__qa.activateDrive();__qa.advance(.5);});await page.screenshot({path:'qa-overdrive.png'});
   await page.keyboard.press('p');const paused=await page.evaluate(()=>__qa.state().stageTime);await page.evaluate(()=>__qa.advance(1));assert.equal(await page.evaluate(()=>__qa.state().stageTime),paused);await page.click('#resume-btn');
-  await page.evaluate(()=>{__qa.god(true);__qa.advance(60);});
-  for(let i=0;i<3;i++){if(i)await page.evaluate(()=>__qa.advance(65));assert((await page.evaluate(()=>__qa.state())).boss);await page.evaluate(()=>{__qa.setBossHP(0);__qa.advance(4.1);});}
+  await page.evaluate(()=>__qa.god(true));
+  for(let i=0;i<3;i++){for(let n=0;n<180&&!(await page.evaluate(()=>__qa.state())).boss;n++)await page.evaluate(()=>__qa.advance(1));const s=await page.evaluate(()=>__qa.state());assert(s.boss,'stage '+(i+1)+' boss must arrive');assert.equal(s.stage,i);await page.evaluate(()=>{__qa.setBossHP(0);__qa.advance(4.5);});}
   assert.equal((await page.evaluate(()=>__qa.state())).state,'result');
   const layouts=[];
   for(const [width,height] of [[1440,1000],[1920,1080],[390,844],[375,667],[320,568],[844,390]]){
