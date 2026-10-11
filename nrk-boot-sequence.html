@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NRK Boot Sequence</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Metal+Mania&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* Layout: one 4:3 CRT screen, centered. Look: the EPK chaos layer (deep purple-black, pink/lime/cyan/violet/amber, Metal Mania with chromatic split, VT323 BIOS text, Press Start 2P prompts, scanlines). Single dark look by choice. */
+:root{
+  --black:#0a0010; --ink:#f4eaff; --dim:#9a86b8;
+  --pink:#ff00cc; --lime:#39ff14; --cyan:#00f0ff; --violet:#7a00ff; --amber:#ffb800;
+  --metal:'Metal Mania','Bungee',cursive; --bungee:'Bungee',Impact,sans-serif;
+  --px:'Press Start 2P',ui-monospace,monospace; --vt:'VT323',ui-monospace,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%;margin:0;background:var(--black);color:var(--ink)}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-inline:16px;padding-block:12px;font-family:var(--vt);font-size:18px}
+#crt{position:relative;width:min(100%,calc((100dvh - 150px)*4/3),980px);aspect-ratio:4/3;background:var(--black);overflow:hidden;border:2px solid #2a0a4a;box-shadow:0 0 0 1px #000,0 0 46px rgba(255,0,204,.22),inset 0 0 90px rgba(0,0,0,.7);cursor:pointer;container-type:inline-size}
+/* EPK background wash and grid */
+#crt::before{content:"";position:absolute;inset:0;pointer-events:none;background:
+ radial-gradient(ellipse at 20% 10%,rgba(255,0,204,.22),transparent 60%),
+ radial-gradient(ellipse at 80% 90%,rgba(57,255,20,.14),transparent 60%),
+ radial-gradient(ellipse at 50% 50%,rgba(122,0,255,.16),transparent 70%)}
+.grid{position:absolute;inset:0;opacity:0;pointer-events:none;background:
+ linear-gradient(rgba(0,240,255,.14) 1px,transparent 1px) 0 0/100% 8%,
+ linear-gradient(90deg,rgba(255,0,204,.12) 1px,transparent 1px) 0 0/6% 100%;
+ transform:perspective(500px) rotateX(58deg) translateY(30%) scale(1.8);transform-origin:50% 100%;mask-image:linear-gradient(transparent,#000 60%)}
+/* CRT scanlines over everything */
+#crt::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:50;background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.2) 3px,rgba(0,0,0,0) 4px);mix-blend-mode:multiply}
+.layer{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#off{background:#000;z-index:40}
+#line{position:absolute;left:0;right:0;top:50%;height:2px;background:#fff;box-shadow:0 0 18px 4px var(--cyan);transform:scaleX(0);opacity:0}
+#bios{align-items:flex-start;justify-content:flex-start;padding:5cqw;font-family:var(--vt);font-size:clamp(14px,3.6cqw,30px);line-height:1.15;color:var(--lime);text-align:left;white-space:pre;opacity:0}
+#bios b{color:var(--cyan);font-weight:400}
+#title{opacity:0;gap:1.5cqw}
+.word{font-family:var(--metal);font-size:clamp(34px,13.5cqw,150px);line-height:.95;letter-spacing:.01em;color:#fff;display:flex}
+.word span{display:inline-block;opacity:0;transform:translateY(-120%);text-shadow:2px 0 var(--pink),-2px 0 var(--cyan),0 0 18px rgba(255,0,204,.7)}
+.word span.in{opacity:1;transform:none}
+.word span.in.pop{animation:pop .24s steps(4,end)}
+@keyframes pop{0%{transform:translateY(-14%) scale(1.12)}100%{transform:none}}
+.records{font-family:var(--bungee);font-size:clamp(14px,6cqw,66px);letter-spacing:.42em;margin-right:-.42em;color:var(--lime);-webkit-text-stroke:0;text-shadow:3px 3px 0 #000,0 0 14px rgba(57,255,20,.65);clip-path:inset(0 100% 0 0)}
+.records.in{animation:wipe .5s steps(8,end) forwards}
+@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+.shine{position:absolute;top:0;bottom:0;width:7%;left:-12%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);mix-blend-mode:screen;opacity:0}
+.shine.go{animation:shine .7s linear forwards}
+@keyframes shine{from{left:-12%;opacity:1}to{left:112%;opacity:1}}
+/* Win95 faux dialog, as in the EPK hero */
+#dlg{position:absolute;right:5cqw;bottom:16cqw;width:30cqw;background:#c0c0c0;border:2px solid;border-color:#fff #404040 #404040 #fff;box-shadow:2px 2px 0 #000;font-family:var(--vt);font-size:clamp(11px,2.6cqw,22px);color:#000;opacity:0;transform:rotate(2deg);text-align:left}
+#dlg .tb{background:#000080;color:#fff;padding:2px 6px;font-family:var(--px);font-size:clamp(5px,1.3cqw,10px);letter-spacing:.04em}
+#dlg .bd{padding:6px 8px}
+#dlg .bar{margin-top:6px;height:1.4cqw;min-height:8px;background:#fff;border:2px inset #808080;display:flex;gap:2px;padding:1px}
+#dlg .bar i{flex:1;background:var(--violet);opacity:0}
+.press{position:absolute;left:0;right:0;bottom:7cqw;font-family:var(--px);font-size:clamp(8px,2.4cqw,22px);color:var(--cyan);text-shadow:0 0 10px rgba(0,240,255,.8);opacity:0}
+.press.blink{opacity:1;animation:blink 1s steps(1,end) infinite}
+@keyframes blink{50%{opacity:0}}
+.copy{position:absolute;left:0;right:0;bottom:3cqw;font-family:var(--px);font-size:clamp(5px,1.35cqw,11px);color:var(--dim);opacity:0}
+.ticker{position:absolute;left:0;right:0;top:0;background:var(--pink);color:#000;border-bottom:2px solid #000;font-family:var(--px);font-size:clamp(5px,1.5cqw,12px);letter-spacing:.1em;padding:.7cqw 0;white-space:nowrap;overflow:hidden;opacity:0}
+.ticker span{display:inline-block;padding-left:100%;animation:tk 16s linear infinite}
+@keyframes tk{to{transform:translateX(-100%)}}
+.idle{position:absolute;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;font-family:var(--px);font-size:clamp(8px,2.2cqw,18px);color:#5a3a8a;letter-spacing:.1em;text-align:center}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:30}
+.flash.go{animation:fl .35s steps(3,end)}
+@keyframes fl{0%{opacity:.8}100%{opacity:0}}
+.note{font-size:20px;color:var(--amber);text-align:center;max-width:70ch}
+.dim{font-size:18px;color:var(--dim);text-align:center;max-width:70ch}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button{font-family:var(--px);font-size:10px;background:#12001f;color:var(--cyan);border:2px solid var(--violet);padding:9px 12px;cursor:pointer}
+button:hover{background:#1d0033}
+button:focus-visible,#crt:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.word span.in.pop{animation:none}.ticker span{animation:none;padding-left:2cqw}}
+</style>
+</head>
+<body>
+
+<div id="crt" tabindex="0" role="button" aria-label="nonrocker records boot sequence. Press Enter or click to power on.">
+  <div class="grid" id="grid"></div>
+  <div class="layer" id="bios"></div>
+  <div class="layer" id="title">
+    <div class="word" id="w1" aria-label="NONROCKER"></div>
+    <div class="records" id="rec">RECORDS</div>
+    <div class="shine" id="shine"></div>
+  </div>
+  <div id="dlg"><div class="tb">NRK.EXE</div><div class="bd">Loading soju, kazoos and didgeridoos...<div class="bar" id="bar"></div></div></div>
+  <div class="ticker" id="tk"><span>NRK-2024 &#9733; SOJU, KAZOOS AND DIDGERIDOOS &#9733; NONROCKER RECORDS &#9733; SOJU NATION &#9733; </span></div>
+  <div class="press" id="press" style="text-align:center">PRESS START</div>
+  <div class="copy" id="copy" style="text-align:center">&copy; NRK 2026 &nbsp; NONROCKER RECORDS</div>
+  <div id="line"></div>
+  <div class="flash" id="flash"></div>
+  <div id="off" class="layer"><div class="idle">CLICK TO POWER ON</div></div>
+</div>
+<div class="note">Draft v2 for approval (decision D040). EPK palette and fonts. Nothing is rolled out until it is approved.</div>
+<div class="dim">Click the screen or press Enter to power on. Click again to replay. Sound starts on that first click.</div>
+<div class="row"><button id="replay" type="button">REPLAY</button><button id="mute" type="button">SOUND: ON</button></div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const crt=$('crt'),off=$('off'),line=$('line'),bios=$('bios'),title=$('title'),w1=$('w1'),rec=$('rec'),shine=$('shine'),
+ dlg=$('dlg'),bar=$('bar'),press=$('press'),copy=$('copy'),tk=$('tk'),grid=$('grid'),flash=$('flash');
+let ac=null,muted=false,timers=[],run=0;
+const LET='NONROCKER'.split('');
+w1.innerHTML=LET.map(c=>'<span>'+c+'</span>').join('');
+bar.innerHTML=Array.from({length:12},()=>'<i></i>').join('');
+function beep(f,at,d,type,v){ if(!ac||muted)return; const o=ac.createOscillator(),g=ac.createGain(); const t=ac.currentTime+at;
+  o.type=type||'square'; o.frequency.setValueAtTime(f,t); g.gain.setValueAtTime(v||.06,t); g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g).connect(ac.destination); o.start(t); o.stop(t+d+.02); }
+function at(ms,fn){ const id=run; timers.push(setTimeout(()=>{ if(id===run) fn(); },ms)); }
+function reset(){
+  timers.forEach(clearTimeout); timers=[]; run++;
+  off.style.display='flex'; off.style.opacity=1; line.style.opacity=0; line.style.transform='scaleX(0)';
+  bios.style.opacity=0; bios.textContent=''; title.style.opacity=0; grid.style.opacity=0;
+  w1.querySelectorAll('span').forEach(s=>s.className=''); rec.className='records'; shine.className='shine';
+  dlg.style.opacity=0; bar.querySelectorAll('i').forEach(i=>i.style.opacity=0); press.className='press'; copy.style.opacity=0; tk.style.opacity=0; flash.className='flash';
+}
+const BIOS=[
+ ['NRK-BIOS v2.4.1','b'],['(c) NONROCKER RECORDS',''],['',''],
+ ['MEMORY TEST ........ 640K OK',''],['SOJU ................ OK',''],['KAZOO ............... OK',''],['DIDGERIDOO .......... OK',''],
+ ['',''],['BOOTING NRK-2024 ...','b']];
+function start(){
+  if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ ac=null; } }
+  if(ac&&ac.state==='suspended') ac.resume();
+  reset();
+  off.style.opacity=0; setTimeout(()=>{ if(true) off.style.display='none'; },0);
+  // 0.0 power on: CRT line expands
+  at(10,()=>{ line.style.transition='none'; line.style.opacity=1; line.style.transform='scaleX(0)';
+    requestAnimationFrame(()=>{ line.style.transition='transform .25s steps(5,end)'; line.style.transform='scaleX(1)'; }); beep(90,0,.15,'triangle',.1); });
+  at(320,()=>{ line.style.opacity=0; bios.style.opacity=1; beep(880,0,.05); });
+  // BIOS lines
+  BIOS.forEach((l,i)=>at(450+i*210,()=>{ bios.innerHTML+=(l[1]==='b'?'<b>'+l[0]+'</b>':l[0])+'\n'; if(l[0]) beep(660+i*30,0,.04,'square',.03); }));
+  // title
+  const T=2700;
+  at(T-120,()=>{ flash.className='flash go'; beep(60,0,.25,'sawtooth',.08); });
+  at(T,()=>{ bios.style.opacity=0; title.style.opacity=1; grid.style.opacity=1; tk.style.opacity=1; });
+  const notes=[261.6,293.7,329.6,349.2,392,440,493.9,523.3,587.3];
+  LET.forEach((c,i)=>at(T+250+i*150,()=>{ const s=w1.children[i]; s.className='in pop'; beep(notes[i],0,.1); }));
+  const R=T+250+9*150+150;
+  at(R,()=>{ rec.className='records in'; for(let i=0;i<8;i++) beep(1100+i*70,i*.06,.05,'square',.04); });
+  at(R+650,()=>{ shine.className='shine go'; [523.3,659.3,784,1046.5].forEach((f,i)=>beep(f,i*.09,.4,'square',.05)); [261.6,329.6,392].forEach((f,i)=>beep(f,i*.09,.7,'triangle',.07)); });
+  // dialog loads
+  at(R+1100,()=>{ dlg.style.opacity=1; });
+  for(let i=0;i<12;i++) at(R+1200+i*110,()=>{ bar.children[i].style.opacity=1; beep(300+i*40,0,.03,'square',.025); });
+  at(R+2700,()=>{ dlg.style.opacity=0; press.className='press blink'; copy.style.opacity=1; beep(1318,0,.12,'square',.05); beep(1568,.12,.2,'square',.05); });
+}
+function begin(e){ if(e&&e.type==='keydown'&&!(e.key==='Enter'||e.key===' ')) return; if(e&&e.type==='keydown') e.preventDefault(); start(); }
+crt.addEventListener('click',begin); crt.addEventListener('keydown',begin);
+$('replay').onclick=start;
+$('mute').onclick=e=>{ muted=!muted; e.target.textContent='SOUND: '+(muted?'OFF':'ON'); };
+reset();
+})();
+</script>
+
+</body>
+</html>
