@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>NRK Boot Sequence, Variations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* Look taken from slides.html (the Black Mirror glitch deck): Bungee headline with RGB split and sliced layers, VHS roll bar, noise, difference-blend slice bars, corrupt text fragments, flashbang cuts, vignette, #050008. */
+:root{--pink:#ff00cc;--green:#39ff14;--cyan:#00f0ff;--violet:#7a00ff;--amber:#ffb800;--black:#050008}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:var(--black);color:#fff;font-family:'VT323',monospace;overflow:hidden}
+.deck{position:fixed;inset:0;overflow:hidden;background:var(--black);cursor:pointer}
+.deck::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:80;background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.22) 3px,rgba(0,0,0,0) 4px);mix-blend-mode:multiply}
+.deck::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:79;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.72) 100%)}
+.wash{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 15%,rgba(255,0,204,.2),transparent 60%),radial-gradient(ellipse at 80% 90%,rgba(57,255,20,.1),transparent 60%),radial-gradient(ellipse at 50% 50%,rgba(122,0,255,.16),transparent 70%);opacity:0}
+.noise{position:absolute;inset:-10%;opacity:0;mix-blend-mode:screen;pointer-events:none;animation:ns .12s steps(4) infinite;
+ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.1 -0.2'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+@keyframes ns{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-2%)}100%{transform:translate(3%,3%)}}
+.vhs{position:absolute;left:0;right:0;height:90px;top:-90px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.08) 30%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.08) 70%,transparent);mix-blend-mode:screen;pointer-events:none;opacity:0}
+.vhs.on{opacity:1;animation:roll 2.1s linear infinite}
+@keyframes roll{from{top:-90px}to{top:100%}}
+.slice{position:absolute;left:0;right:0;background:rgba(255,255,255,.07);mix-blend-mode:difference;pointer-events:none;opacity:0}
+.slice.on{opacity:1}
+.s1{top:18%;height:8px;animation:sj 1.8s steps(9) infinite}.s2{top:42%;height:14px;animation:sj 1.3s steps(7) infinite reverse}.s3{top:67%;height:5px;animation:sj 2.4s steps(11) infinite}
+@keyframes sj{0%,100%{transform:translateX(0)}20%{transform:translateX(-30px)}40%{transform:translateX(45px)}60%{transform:translateX(-22px)}80%{transform:translateX(60px)}}
+.corrupt{position:absolute;font-family:'Press Start 2P',monospace;font-size:clamp(7px,1.1vw,12px);letter-spacing:.08em;mix-blend-mode:difference;pointer-events:none;opacity:0;white-space:nowrap}
+.corrupt.show{opacity:1}
+.stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5vh 5vw;z-index:10}
+.glitch{position:relative;display:inline-block;color:#fff;font-family:'Bungee',Impact,sans-serif;font-size:clamp(40px,12.5vw,200px);line-height:.9;letter-spacing:-.02em;white-space:nowrap;visibility:hidden;
+ text-shadow:.04em 0 0 rgba(255,0,204,.9),-.03em -.04em 0 rgba(57,255,20,.85),.02em .05em 0 rgba(0,240,255,.85)}
+.glitch.on{visibility:visible;animation:gm 1.4s infinite steps(8,end)}
+.glitch.calm.on{animation:gm 3.2s infinite steps(8,end)}
+@keyframes gm{0%,12%,28%,36%,60%,68%,84%,100%{transform:none;text-shadow:.04em 0 0 rgba(255,0,204,.9),-.03em -.04em 0 rgba(57,255,20,.85),.02em .05em 0 rgba(0,240,255,.85)}
+ 14%{transform:translate(-4px,1px) skew(-2deg)}30%{transform:translate(3px,-2px) skew(1deg)}40%{transform:translate(-2px,3px) skew(-1deg);text-shadow:.08em 0 0 #f0c,-.07em 0 0 #0ff}
+ 62%{transform:translate(5px,0) skew(3deg)}70%{transform:translate(-3px,-1px) skew(-2deg);text-shadow:none;color:var(--green)}72%{color:#fff}86%{transform:translate(2px,2px) skew(1deg)}}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;overflow:hidden}
+.glitch::before{color:#fff;text-shadow:3px 0 var(--pink);clip-path:inset(0 0 60% 0);animation:g1 1.1s infinite steps(6,end)}
+.glitch::after{color:#fff;text-shadow:-3px 0 var(--cyan);clip-path:inset(60% 0 0 0);animation:g2 1.6s infinite steps(7,end)}
+@keyframes g1{0%,100%{clip-path:inset(0 0 75% 0);transform:translate(0)}18%{clip-path:inset(20% 0 55% 0);transform:translate(-10px,0)}28%{clip-path:inset(8% 0 70% 0);transform:translate(12px,0)}40%{clip-path:inset(45% 0 30% 0);transform:translate(-6px,0)}55%{clip-path:inset(2% 0 80% 0);transform:translate(8px,0)}72%{clip-path:inset(35% 0 50% 0);transform:translate(-14px,0)}88%{clip-path:inset(60% 0 18% 0);transform:translate(5px,0)}}
+@keyframes g2{0%,100%{clip-path:inset(70% 0 5% 0);transform:translate(0)}14%{clip-path:inset(80% 0 2% 0);transform:translate(8px,0)}26%{clip-path:inset(55% 0 25% 0);transform:translate(-12px,0)}42%{clip-path:inset(30% 0 50% 0);transform:translate(10px,0)}60%{clip-path:inset(75% 0 8% 0);transform:translate(-6px,0)}78%{clip-path:inset(40% 0 35% 0);transform:translate(14px,0)}92%{clip-path:inset(20% 0 60% 0);transform:translate(-9px,0)}}
+.records{font-family:'Bungee',Impact,sans-serif;font-size:clamp(14px,3.3vw,50px);letter-spacing:.7em;margin-right:-.7em;margin-top:1.2vh;color:var(--green);text-shadow:2px 0 var(--pink),-2px 0 var(--cyan);opacity:0;clip-path:inset(0 100% 0 0)}
+.records.on{opacity:1;animation:wipe .45s steps(7,end) forwards}
+@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+.sub{font-family:'VT323',monospace;font-size:clamp(16px,2.4vw,34px);letter-spacing:.14em;color:#e9d9ff;margin-top:2.2vh;opacity:0}
+.sub.on{opacity:1;animation:pop .5s steps(2,end)}
+@keyframes pop{0%{opacity:0}30%{opacity:1}45%{opacity:.2}100%{opacity:1}}
+.warn{font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.5vw,16px);letter-spacing:.14em;color:var(--pink);border:2px solid var(--pink);padding:1.4vh 1.6vw;line-height:2.2;text-align:center;opacity:0;text-shadow:0 0 12px rgba(255,0,204,.7)}
+.warn.on{opacity:1}
+.warn small{display:block;font-size:.72em;color:#cbb7ee;letter-spacing:.1em}
+.mono{font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.4vw,15px);letter-spacing:.1em;color:var(--green);opacity:0}
+.mono.on{opacity:1}
+.counter{font-family:'Bungee',Impact,sans-serif;font-size:clamp(34px,9vw,130px);color:#fff;text-shadow:.04em 0 0 rgba(255,0,204,.9),-.03em 0 0 rgba(0,240,255,.85);opacity:0;line-height:1}
+.counter.on{opacity:1}
+.flash{position:absolute;inset:0;background:#fff;pointer-events:none;opacity:0;z-index:70;mix-blend-mode:difference}
+.flash.fire{animation:fb .32s steps(6,end)}
+@keyframes fb{0%{opacity:0}10%{opacity:1;background:#fff}20%{opacity:.2;background:var(--pink)}30%{opacity:1;background:#000}45%{opacity:.4;background:var(--green)}60%{opacity:1;background:#fff}80%{opacity:.1;background:#000}100%{opacity:0}}
+.idle{position:absolute;inset:0;z-index:90;background:#000;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.4vw,14px);color:#6a4a9a;letter-spacing:.12em;text-align:center}
+.ctl{position:fixed;left:0;right:0;bottom:0;z-index:100;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,rgba(5,0,8,.92))}
+.ctl button{font-family:'Press Start 2P',monospace;font-size:10px;letter-spacing:.06em;background:#0d0016;color:var(--cyan);border:2px solid var(--violet);padding:9px 12px;cursor:pointer}
+.ctl button.sel{background:var(--pink);color:#000;border-color:var(--pink)}
+.ctl button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.ctl .tag{font-family:'VT323',monospace;font-size:18px;color:#cbb7ee;width:100%;text-align:center}
+.tl{position:absolute;right:2vw;top:2vh;font-family:'Press Start 2P',monospace;font-size:clamp(7px,1vw,11px);color:var(--green);letter-spacing:.1em;opacity:0;z-index:15}
+.tl.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.glitch.on,.glitch::before,.glitch::after,.noise,.slice,.vhs.on{animation:none}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck" tabindex="0" role="button" aria-label="nonrocker records boot sequence, click to start">
+  <div class="wash" id="wash"></div>
+  <div class="noise" id="noise"></div>
+  <div class="vhs" id="vhs"></div>
+  <div class="slice s1" id="s1"></div><div class="slice s2" id="s2"></div><div class="slice s3" id="s3"></div>
+  <span class="corrupt" id="c1" style="top:12%;left:6%;color:var(--green)">SIGNAL_LOST</span>
+  <span class="corrupt" id="c2" style="top:24%;right:8%;color:var(--amber)">REALITY.EXE NOT FOUND</span>
+  <span class="corrupt" id="c3" style="bottom:26%;left:10%;color:var(--cyan)">NRK-666</span>
+  <span class="corrupt" id="c4" style="bottom:14%;right:6%;color:var(--pink)">REBRAND 13%</span>
+  <span class="corrupt" id="c5" style="top:50%;left:7%;color:#fff">DO NOT ADJUST</span>
+  <span class="corrupt" id="c6" style="top:36%;right:12%;color:var(--green)">SOJU.EXE STOPPED</span>
+  <div class="tl" id="tl">NRK-2024</div>
+  <div class="stage" id="stage">
+    <div class="warn" id="warn">&#9619; PARENTAL ADVISORY &#9619;<br>EXISTENTIAL CONTENT<small>KAZOOS &middot; DIDGERIDOOS &middot; SOJU</small></div>
+    <div class="mono" id="mono"></div>
+    <div class="counter" id="counter">0%</div>
+    <h1 class="glitch" id="g" data-text="NONROCKER">NONROCKER</h1>
+    <div class="records" id="rec">RECORDS</div>
+    <div class="sub" id="sub">soju &middot; kazoos &middot; didgeridoos &middot; digital audio</div>
+  </div>
+  <div class="flash" id="fl"></div>
+  <div class="idle" id="idle"><div>CLICK TO POWER ON</div><div style="font-size:.8em;color:#4a3a70">SOUND STARTS ON THE CLICK</div></div>
+</div>
+<div class="ctl">
+  <div class="tag" id="tag">A: SIGNAL ACQUIRED</div>
+  <button type="button" data-v="A" class="sel">A SIGNAL</button>
+  <button type="button" data-v="B">B ADVISORY</button>
+  <button type="button" data-v="C">C DECODE</button>
+  <button type="button" id="replay">REPLAY</button>
+  <button type="button" id="mute">SOUND ON</button>
+</div>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const deck=$('deck'),g=$('g'),rec=$('rec'),sub_=$('sub'),warn=$('warn'),mono=$('mono'),counter=$('counter'),noise=$('noise'),vhs=$('vhs'),wash=$('wash'),fl=$('fl'),tl=$('tl'),idle=$('idle'),tag=$('tag');
+const slices=[$('s1'),$('s2'),$('s3')],cs=[1,2,3,4,5,6].map(i=>$('c'+i));
+let ac=null,muted=false,timers=[],run=0,variant='A',master=null,nbuf=null;
+const NAMES={A:'A: SIGNAL ACQUIRED',B:'B: PARENTAL ADVISORY + REBRAND',C:'C: DECODE'};
+/* ---------- audio: noise, sub bass, detuned stabs. no square-wave melody ---------- */
+function initAudio(){
+  if(ac)return; try{ac=new (window.AudioContext||window.webkitAudioContext)()}catch(e){ac=null;return}
+  master=ac.createGain();master.gain.value=.9;master.connect(ac.destination);
+  const len=ac.sampleRate*2;nbuf=ac.createBuffer(1,len,ac.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+}
+function noiseHit(at,dur,vol,f0,f1,type){ if(!ac||muted)return; const s=ac.createBufferSource();s.buffer=nbuf;s.loop=true;
+  const f=ac.createBiquadFilter();f.type=type||'bandpass';const t=ac.currentTime+at;f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(f1||f0,t+dur);f.Q.value=1.2;
+  const gn=ac.createGain();gn.gain.setValueAtTime(0,t);gn.gain.linearRampToValueAtTime(vol,t+Math.min(.03,dur/3));gn.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  s.connect(f).connect(gn).connect(master);s.start(t);s.stop(t+dur+.05); }
+function subBass(at,f0,f1,dur,vol){ if(!ac||muted)return; const o=ac.createOscillator(),gn=ac.createGain();const t=ac.currentTime+at;o.type='sine';
+  o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+dur);gn.gain.setValueAtTime(vol,t);gn.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(gn).connect(master);o.start(t);o.stop(t+dur+.05); }
+function stab(at,f,dur,vol){ if(!ac||muted)return; const t=ac.currentTime+at;const gn=ac.createGain();const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.setValueAtTime(2400,t);lp.frequency.exponentialRampToValueAtTime(180,t+dur);
+  const sh=ac.createWaveShaper();const cv=new Float32Array(256);for(let i=0;i<256;i++){const x=i/128-1;cv[i]=Math.tanh(x*4)}sh.curve=cv;
+  gn.gain.setValueAtTime(vol,t);gn.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  [-9,0,11].forEach(c=>{const o=ac.createOscillator();o.type='sawtooth';o.frequency.value=f;o.detune.value=c;o.connect(sh);o.start(t);o.stop(t+dur+.05)});
+  sh.connect(lp).connect(gn).connect(master); }
+const subHit=(at,v)=>subBass(at,70,34,.7,v||.9);
+function click(at){noiseHit(at,.05,.25,3000,1500,'highpass')}
+/* ---------- helpers ---------- */
+function T(ms,fn){const id=run;timers.push(setTimeout(()=>{if(id===run)fn()},ms))}
+function flash(){fl.className='flash';void fl.offsetWidth;fl.className='flash fire'}
+function corrupt(i,ms){cs[i].classList.add('show');T(ms,()=>cs[i].classList.remove('show'))}
+function reset(){
+  timers.forEach(clearTimeout);timers=[];run++;
+  [g,rec,sub_,warn,mono,counter,tl].forEach(e=>e.classList.remove('on','calm'));
+  rec.className='records';noise.style.opacity=0;noise.style.transition='';vhs.classList.remove('on');wash.style.opacity=0;wash.style.transition='';
+  slices.forEach(s=>s.classList.remove('on'));cs.forEach(c=>c.classList.remove('show'));fl.className='flash';
+  g.setAttribute('data-text','NONROCKER');g.textContent='NONROCKER';mono.textContent='';counter.textContent='0%';
+}
+function titleIn(){ g.classList.add('on');wash.style.transition='opacity .6s steps(4)';wash.style.opacity=1; }
+function lockIn(){ [rec,sub_].forEach((e,i)=>T(i*600,()=>e.classList.add('on'))); }
+/* ---------- A: SIGNAL ACQUIRED ---------- */
+function runA(){
+  noise.style.opacity=1;noiseHit(.2,.55,.5,800,4000);
+  T(700,()=>{noise.style.transition='opacity .4s';noise.style.opacity=.25;vhs.classList.add('on');slices.forEach(s=>s.classList.add('on'))});
+  T(850,()=>{corrupt(0,500);click(0)});T(1400,()=>{corrupt(1,420);click(0)});
+  T(1900,()=>{flash();subHit(0,1);noiseHit(0,.35,.5,300,6000);stab(.02,110,1.1,.18);titleIn();tl.classList.add('on')});
+  T(2500,()=>{corrupt(2,600);corrupt(5,500)});
+  T(2700,()=>{rec.classList.add('on');noiseHit(0,.45,.3,500,3000)});
+  T(3400,()=>{sub_.classList.add('on');click(0)});
+  T(4300,()=>{g.classList.add('calm');corrupt(4,1400);});
+}
+/* ---------- B: PARENTAL ADVISORY + REBRAND ---------- */
+function runB(){
+  T(300,()=>{warn.classList.add('on');noiseHit(0,.4,.3,1200,300,'lowpass');subBass(0,48,48,1.2,.35)});
+  T(1900,()=>{flash();click(0);warn.classList.remove('on');counter.classList.add('on');noise.style.opacity=.2;vhs.classList.add('on')});
+  const steps=[1,2,4,7,9,11,12,13];steps.forEach((n,i)=>T(2000+i*180,()=>{counter.textContent=n+'%';click(0);if(i===6)corrupt(3,900)}));
+  T(3550,()=>{corrupt(1,900);corrupt(5,900);slices.forEach(s=>s.classList.add('on'));noiseHit(0,.8,.35,200,2500)});
+  T(4400,()=>{flash();subHit(0,1);stab(.02,98,1.2,.2);counter.classList.remove('on');titleIn();tl.classList.add('on')});
+  // identity flicker: NONROCKER <-> TURBOLAG, then back
+  T(5000,()=>{g.textContent='TURBOLAG';g.setAttribute('data-text','TURBOLAG');click(0)});
+  T(5180,()=>{g.textContent='NONROCKER';g.setAttribute('data-text','NONROCKER')});
+  T(5350,()=>{g.textContent='TURBOLAG';g.setAttribute('data-text','TURBOLAG')});
+  T(5480,()=>{g.textContent='NONROCKER';g.setAttribute('data-text','NONROCKER');noiseHit(0,.3,.4,600,5000)});
+  T(5700,()=>{rec.classList.add('on')});T(6300,()=>{sub_.classList.add('on');g.classList.add('calm')});
+}
+/* ---------- C: DECODE ---------- */
+function runC(){
+  vhs.classList.add('on');noise.style.opacity=.3;wash.style.transition='opacity 1s steps(5)';wash.style.opacity=1;
+  T(300,()=>{mono.classList.add('on');mono.textContent='SOJU.EXE STOPPED'; subBass(0,55,40,1.4,.35)});
+  T(1000,()=>{mono.textContent='REALITY.EXE NOT FOUND';click(0)});
+  T(1700,()=>{mono.textContent='DECODING NRK-2024 ...';noiseHit(0,1.2,.25,300,5000)});
+  T(2000,()=>{g.classList.add('on');tl.classList.add('on');slices.forEach(s=>s.classList.add('on'));scramble()});
+  T(4300,()=>{flash();mono.classList.remove('on');subHit(0,1);stab(.02,87,1.3,.2);rec.classList.add('on')});
+  T(4900,()=>{sub_.classList.add('on');g.classList.add('calm');corrupt(2,900)});
+}
+function scramble(){
+  const target='NONROCKER',ch='▓▒░#%&@$*?/\\|<>01',id=run;let tick=0;
+  const iv=setInterval(()=>{ if(id!==run){clearInterval(iv);return}
+    const lock=Math.floor(tick/3); let s='';
+    for(let i=0;i<target.length;i++){ s+= i<lock? target[i] : ch[Math.floor(Math.random()*ch.length)]; }
+    g.textContent=s;g.setAttribute('data-text',s); if(tick%3===0&&lock<=target.length)click(0);
+    tick++; if(lock>=target.length){clearInterval(iv);g.textContent=target;g.setAttribute('data-text',target)} },80);
+}
+const RUN={A:runA,B:runB,C:runC};
+function start(){
+  initAudio(); if(ac&&ac.state==='suspended')ac.resume();
+  idle.style.display='none'; reset(); tag.textContent=NAMES[variant]; RUN[variant]();
+}
+function setV(v){variant=v;document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('sel',b.dataset.v===v));start()}
+deck.addEventListener('click',()=>{ if(idle.style.display!=='none')start() });
+deck.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();start()} });
+document.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();setV(b.dataset.v)}));
+$('replay').addEventListener('click',e=>{e.stopPropagation();start()});
+$('mute').addEventListener('click',e=>{e.stopPropagation();muted=!muted;e.target.textContent='SOUND '+(muted?'OFF':'ON')});
+const h=(location.hash||'').replace('#','').toUpperCase(); if(RUN[h]){variant=h;document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('sel',b.dataset.v===h));tag.textContent=NAMES[h]}
+})();
+</script>
+</body>
+</html>
