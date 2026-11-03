@@ -51,7 +51,7 @@
 </main>
 <script>
 (() => {
-  const SRC = [1, 2, 3, 4, 5, 6].map(n => 'logo-seq-' + n + '.webp');
+  const SRC = [1, 2, 3, 4, 5, 6, 7].map(n => 'logo-seq-' + n + '.webp');
   SRC.forEach(s => { new Image().src = s; });
   const ids = ['base', 'ir', 'ic', 'is', 'is2'].map(id => document.getElementById(id));
   const rig = document.getElementById('rig'), flash = document.getElementById('flash');
